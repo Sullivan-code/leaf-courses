@@ -497,10 +497,6 @@ export default function Lesson10LanguagesAndCountries() {
     interrogative: true,
     unlock: true
   });
-
-  // Estados para as imagens selecionadas
-  const [selectedFlag, setSelectedFlag] = useState("https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg");
-  const [selectedFood, setSelectedFood] = useState("https://i.ibb.co/8LF0pHjv/yogurt.jpg");
   
   // Estados para as práticas de substituição
   const [subs1Exercises, setSubs1Exercises] = useState(substitutionPractice1);
@@ -514,7 +510,7 @@ export default function Lesson10LanguagesAndCountries() {
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
 
   // Estado para diálogos dinâmicos baseados na seleção
-  const [practiceDialogs, setPracticeDialogs] = useState([
+  const [practiceDialogs] = useState([
     {
       question: "Do you want to speak Portuguese or French with me?",
       response: "I want to speak Portuguese with you.",
@@ -564,29 +560,6 @@ export default function Lesson10LanguagesAndCountries() {
       }
     }
   }, []);
-
-  // Atualizar diálogos quando a bandeira for selecionada
-  useEffect(() => {
-    const countryInfo = countryLanguageMap[selectedFlag];
-    const foodInfo = foodSpellingMap[selectedFood];
-    if (countryInfo && foodInfo) {
-      setPracticeDialogs([
-        {
-          question: `Do you want to speak ${countryInfo.language} or French with me?`,
-          response: `I want to speak ${countryInfo.language} with you.`,
-          highlighted: [countryInfo.language, "French", countryInfo.language]
-        },
-        {
-          question: `How do you spell '${foodInfo.food}'?`,
-          response: foodInfo.spelling,
-          highlighted: [
-            foodInfo.food,
-            ...foodInfo.spelling.split(' ')
-          ]
-        }
-      ]);
-    }
-  }, [selectedFlag, selectedFood]);
 
   const saveAllAnswers = async () => {
     const data = {
@@ -680,26 +653,6 @@ export default function Lesson10LanguagesAndCountries() {
     }));
   };
 
-  // Array de bandeiras para a galeria
-  const flagImages = [
-    "https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg",
-    "https://i.ibb.co/7xnjGkDN/italian-flag.jpg", 
-    "https://i.ibb.co/21VkwN19/spanish-fla.jpg",
-    "https://i.ibb.co/kskr0zmq/german-flag.jpg",
-    "https://i.ibb.co/qLL8CKv5/american-flag.jpg",
-    "https://i.ibb.co/dwjk9s3S/france-flag.jpg"
-  ];
-
-  // Array de comidas para a galeria
-  const foodImages = [
-    "https://i.ibb.co/8LF0pHjv/yogurt.jpg",
-    "https://i.ibb.co/99zBTC4q/sandwich.jpg",
-    "https://i.ibb.co/W4kNfZ2F/cookies.jpg",
-    "https://i.ibb.co/pjYHqBsc/juice.jpg",
-    "https://i.ibb.co/jvg8bfKY/orange-juice.jpg",
-    "https://i.ibb.co/HfCPk3qD/friends.jpg"
-  ];
-
   return (
     <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/world-map-bg.jpg')` }}>
       <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
@@ -747,70 +700,37 @@ export default function Lesson10LanguagesAndCountries() {
                   ))}
                 </div>
               </div>
-
-              {/* Galeria de Bandeiras */}
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-purple-800 mb-4">🌍 Practice with Countries and Languages</h3>
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
-                  {flagImages.map((src, index) => (
-                    <div 
-                      key={index} 
-                      className={`relative w-full aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden cursor-pointer border-3 transition-all duration-200 ${
-                        selectedFlag === src ? 'border-purple-500 shadow-md scale-105' : 'border-gray-300 hover:border-purple-300'
-                      }`}
-                      onClick={() => setSelectedFlag(src)}
-                    >
-                      <Image 
-                        src={src} 
-                        alt={`Flag ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        quality={85}
-                        priority={index < 4}
-                        sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 16vw"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iODAiIGZpbGw9IiNmM2YzZjMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5OTk5OTkiIGZvbnQtc2l6ZT0iMTIiPkZsYWc8L3RleHQ+PC9zdmc+';
-                        }}
-                      />
-                      <div className={`absolute inset-0 transition-opacity duration-200 ${
-                        selectedFlag === src ? 'bg-purple-500 bg-opacity-20' : 'bg-black bg-opacity-0 hover:bg-opacity-10'
-                      }`} />
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           )}
         </div>
 
         {/* TAKE A LOOK - VOCABULARY */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-blue-50/80 border-2 border-blue-200 rounded-xl shadow-sm mb-10 overflow-hidden">
+          <div className="bg-blue-500 text-white py-3 px-6 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">📘 TAKE A LOOK - VOCABULARY</h2>
+              <h2 className="text-lg font-bold">📘 VOCABULARY</h2>
               <button 
                 onClick={() => toggleSection('vocabulary')}
-                className="ml-4 p-2 rounded-full hover:bg-blue-600 transition"
+                className="ml-3 p-1 rounded-full hover:bg-blue-600 transition"
               >
-                {sections.vocabulary ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {sections.vocabulary ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
               </button>
             </div>
           </div>
 
           {sections.vocabulary && (
-            <div className="p-8">
-              <div className="bg-blue-100 border-2 border-blue-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-blue-800 mb-4">
+            <div className="p-4">
+              <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-4">
+                <h3 className="text-md font-semibold text-blue-800 mb-3">
                   Essential vocabulary for this lesson:
                 </h3>
                 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-3">
                   {vocabulary.map((item, index) => (
-                    <div key={index} className="bg-white p-4 rounded-lg border border-blue-200 flex justify-between items-center">
+                    <div key={index} className="bg-white/70 p-3 rounded-lg border border-blue-100 flex justify-between items-center">
                       <div>
-                        <p className="font-bold text-blue-700 text-lg">{item.word}</p>
-                        <p className="text-gray-600">{item.translation}</p>
+                        <p className="font-medium text-blue-700 text-sm">{item.word}</p>
+                        <p className="text-gray-600 text-xs">{item.translation}</p>
                       </div>
                       {item.audioSrc && <SimpleAudioPlayer src={item.audioSrc} />}
                     </div>

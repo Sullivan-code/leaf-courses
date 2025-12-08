@@ -13,6 +13,7 @@ export default function LessonLanguagesAndCountries() {
     usefulPhrases: false,
     grammar: false,
   });
+  const [showExplanation, setShowExplanation] = useState(false);
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills({
@@ -78,7 +79,35 @@ export default function LessonLanguagesAndCountries() {
       // Despedidas
       'bye_see_you': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/bye-see-you.mp3',
       'see_you_later': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/see-you-later.mp3',
-      'good_night': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/good-night.mp3'
+      'good_night': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/good-night.mp3',
+
+      // Alfabeto (A-Z)
+      'A': 'https://github.com/Sullivan-code/english-audios/blob/main/A.mp3?raw=true',
+      'B': 'https://github.com/Sullivan-code/english-audios/blob/main/B.mp3?raw=true',
+      'C': 'https://github.com/Sullivan-code/english-audios/blob/main/C.mp3?raw=true',
+      'D': 'https://github.com/Sullivan-code/english-audios/blob/main/D.mp3?raw=true',
+      'E': 'https://github.com/Sullivan-code/english-audios/blob/main/E.mp3?raw=true',
+      'F': 'https://github.com/Sullivan-code/english-audios/blob/main/F.mp3?raw=true',
+      'G': 'https://github.com/Sullivan-code/english-audios/blob/main/G.mp3?raw=true',
+      'H': 'https://github.com/Sullivan-code/english-audios/blob/main/H.mp3?raw=true',
+      'I': 'https://github.com/Sullivan-code/english-audios/blob/main/I.mp3?raw=true',
+      'J': 'https://github.com/Sullivan-code/english-audios/blob/main/J.mp3?raw=true',
+      'K': 'https://github.com/Sullivan-code/english-audios/blob/main/K.mp3?raw=true',
+      'L': 'https://github.com/Sullivan-code/english-audios/blob/main/L.mp3?raw=true',
+      'M': 'https://github.com/Sullivan-code/english-audios/blob/main/M.mp3?raw=true',
+      'N': 'https://github.com/Sullivan-code/english-audios/blob/main/N.mp3?raw=true',
+      'O': 'https://github.com/Sullivan-code/english-audios/blob/main/O.mp3?raw=true',
+      'P': 'https://github.com/Sullivan-code/english-audios/blob/main/P.mp3?raw=true',
+      'Q': 'https://github.com/Sullivan-code/english-audios/blob/main/Q.mp3?raw=true',
+      'R': 'https://github.com/Sullivan-code/english-audios/blob/main/R.mp3?raw=true',
+      'S': 'https://github.com/Sullivan-code/english-audios/blob/main/S.mp3?raw=true',
+      'T': 'https://github.com/Sullivan-code/english-audios/blob/main/T.mp3?raw=true',
+      'U': 'https://github.com/Sullivan-code/english-audios/blob/main/U.mp3?raw=true',
+      'V': 'https://github.com/Sullivan-code/english-audios/blob/main/V.mp3?raw=true',
+      'W': 'https://github.com/Sullivan-code/english-audios/blob/main/W.mp3?raw=true',
+      'X': 'https://github.com/Sullivan-code/english-audios/blob/main/X.mp3?raw=true',
+      'Y': 'https://github.com/Sullivan-code/english-audios/blob/main/Y.mp3?raw=true',
+      'Z': 'https://github.com/Sullivan-code/english-audios/blob/main/Z.mp3?raw=true'
     };
 
     // Verifica se existe áudio mapeado
@@ -595,7 +624,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -618,7 +647,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -641,7 +670,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -664,7 +693,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -687,7 +716,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -710,7 +739,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -733,7 +762,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -756,7 +785,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -779,7 +808,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -828,76 +857,151 @@ export default function LessonLanguagesAndCountries() {
           </div>
         </div>
 
-        {/* Seção 6 - Check It Out (estilo print) */}
+        {/* Seção 6 - Check It Out (nova versão) */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-3xl font-bold">CHECK IT OUT!</h2>
               <p className="mt-2 text-blue-100 italic">
-                Pratique estruturas essenciais para falar sobre idiomas e países.
+                Aprenda o alfabeto e pratique a soletração de palavras em inglês.
               </p>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row">
-            {/* Coluna esquerda - Expressões */}
-            <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
-              <p className="font-bold">I speak Portuguese...</p>
-              <p className="font-bold">We study English...</p>
-              <p className="font-bold">They want to learn...</p>
-              <p className="font-bold">Do you speak...?</p>
-            </div>
+          <div className="w-full mx-auto bg-white p-6 font-sans">
+            <div className="border-2 border-blue-300 p-6 mt-4 rounded-2xl bg-blue-50">
+              <div className="text-center font-bold mb-8 text-2xl text-blue-700 font-['Poppins']">THE ALPHABET</div>
 
-            {/* Coluna central - Imagem e balão */}
-            <div className="bg-white flex-1 p-6 flex flex-col items-center justify-center text-xl relative">
-              <img
-                src="https://i.ibb.co/B5pP4H6f/l7-checkitout-img.jpg"
-                alt="Pessoa falando idiomas"
-                className="rounded-full w-40 h-40 object-cover mb-4"
-              />
-              <div className="bg-yellow-200 text-black px-4 py-2 rounded-xl shadow-md text-center">
-                I speak 3 languages! <span className="font-bold">And you?</span>
+              {/* Alfabeto em 3 linhas horizontais */}
+              <div className="flex flex-col items-center justify-center space-y-8 mb-10">
+                {/* Linha 1: A a I */}
+                <div className="flex justify-center space-x-6">
+                  {["A", "B", "C", "D", "E", "F", "G", "H", "I"].map((letter) => (
+                    <div 
+                      key={letter} 
+                      className="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700 text-white text-3xl font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform cursor-pointer"
+                      onClick={() => playAudio(letter)}
+                    >
+                      {letter}
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Linha 2: J a R */}
+                <div className="flex justify-center space-x-6">
+                  {["J", "K", "L", "M", "N", "O", "P", "Q", "R"].map((letter) => (
+                    <div 
+                      key={letter} 
+                      className="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700 text-white text-3xl font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform cursor-pointer"
+                      onClick={() => playAudio(letter)}
+                    >
+                      {letter}
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Linha 3: S a Z */}
+                <div className="flex justify-center space-x-6">
+                  {["S", "T", "U", "V", "W", "X", "Y", "Z"].map((letter) => (
+                    <div 
+                      key={letter} 
+                      className="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700 text-white text-3xl font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 transform cursor-pointer"
+                      onClick={() => playAudio(letter)}
+                    >
+                      {letter}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Coluna direita - Despedidas */}
-            <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
-              <div className="flex items-center group">
-                <button 
-                  onClick={() => playAudio("bye_see_you")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
-                  aria-label="Play audio"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                </button>
-                <p>• Bye! See you.</p>
+              <div className="flex flex-col lg:flex-row mt-8 gap-6">
+                <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 flex-2 text-xl rounded-2xl shadow-md lg:w-2/3">
+                  <p className="font-bold mb-2 font-['Poppins']">– How do you spell your name?</p>
+                  <p className="font-bold font-['Poppins']">– A-N-A-P-A-U-L-A.</p>
+                  <p className="text-blue-100 text-lg mt-3 font-['Poppins']">(Como você soletra seu nome?)</p>
+                </div>
+
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-xl rounded-2xl shadow-md lg:w-1/3 flex flex-col items-center justify-center">
+                  <div className="text-white font-bold text-center mb-4 font-['Poppins']">
+                    <p className="text-2xl">with me</p>
+                    <p className="text-2xl">with you</p>
+                  </div>
+                  
+                  <button
+                    onClick={() => setShowExplanation(!showExplanation)}
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-['Poppins'] flex items-center space-x-2"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>EXPLICAÇÃO</span>
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center group">
-                <button 
-                  onClick={() => playAudio("see_you_later")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
-                  aria-label="Play audio"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                </button>
-                <p>• See you later.</p>
-              </div>
-              <div className="flex items-center group">
-                <button 
-                  onClick={() => playAudio("good_night")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
-                  aria-label="Play audio"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                </button>
-                <p>• Good night!</p>
-              </div>
+
+              {/* Explicação que aparece quando o botão é clicado */}
+              {showExplanation && (
+                <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300 rounded-2xl animate-fadeIn shadow-lg">
+                  <div className="flex justify-between items-start">
+                    <h3 className="text-2xl font-bold text-blue-800 mb-4 font-['Poppins']">📚 Sobre "me" e "you"</h3>
+                    <button 
+                      onClick={() => setShowExplanation(false)}
+                      className="text-blue-700 hover:text-blue-900 text-xl font-bold bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:shadow-lg transition-all"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4 text-gray-800">
+                    <p className="text-lg font-['Poppins']">
+                      <span className="font-bold text-blue-700">Depois de preposições como "with"</span>, sempre usamos <span className="font-bold text-purple-700">pronomes oblíquos</span> (pronomes objeto).
+                    </p>
+                    
+                    <div className="bg-white p-5 rounded-xl border-l-4 border-blue-500 shadow-sm">
+                      <p className="font-bold text-blue-700 mb-2 font-['Poppins'] flex items-center">
+                        <span className="mr-2">🎯</span> "Me" é a forma objeto de "I":
+                      </p>
+                      <ul className="list-disc pl-6 space-y-2 font-['Poppins']">
+                        <li>I speak English. (sujeito: <span className="font-bold text-blue-600">I</span>)</li>
+                        <li>You speak with <span className="font-bold text-blue-600">me</span>. (objeto: <span className="font-bold text-blue-600">me</span>)</li>
+                        <li>She studies with <span className="font-bold text-blue-600">me</span>.</li>
+                        <li>They want to talk to <span className="font-bold text-blue-600">me</span>.</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-white p-5 rounded-xl border-l-4 border-purple-500 shadow-sm">
+                      <p className="font-bold text-purple-700 mb-2 font-['Poppins'] flex items-center">
+                        <span className="mr-2">✨</span> "You" permanece igual tanto no sujeito quanto no objeto:
+                      </p>
+                      <ul className="list-disc pl-6 space-y-2 font-['Poppins']">
+                        <li><span className="font-bold text-purple-600">You</span> are my friend. (sujeito: <span className="font-bold text-purple-600">You</span>)</li>
+                        <li>I speak with <span className="font-bold text-purple-600">you</span>. (objeto: <span className="font-bold text-purple-600">you</span>)</li>
+                        <li>We study with <span className="font-bold text-purple-600">you</span>.</li>
+                        <li>She likes to talk to <span className="font-bold text-purple-600">you</span>.</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-5 rounded-xl border border-blue-300 shadow-sm">
+                      <p className="font-bold text-blue-800 mb-3 font-['Poppins'] flex items-center">
+                        <span className="mr-2">💡</span> Regra importante:
+                      </p>
+                      <p className="font-['Poppins']">Após preposições (with, to, for, about, etc.) sempre usamos os pronomes objeto: <span className="font-bold">me, you, him, her, it, us, them</span>.</p>
+                      <div className="mt-3 p-3 bg-white rounded-lg border border-blue-200">
+                        <p className="text-sm text-blue-600 font-['Poppins'] italic">Exemplo: "I study English with <span className="font-bold">him</span> and <span className="font-bold">her</span>."</p>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center mt-6">
+                      <button
+                        onClick={() => setShowExplanation(false)}
+                        className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg font-['Poppins']"
+                      >
+                        Fechar Explicação
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -905,13 +1009,13 @@ export default function LessonLanguagesAndCountries() {
         <div className="flex justify-center gap-4 mt-8">
           <button
             onClick={() => router.push("/cursos/lesson6")}
-            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors font-['Poppins']"
           >
             &larr; Lição Anterior
           </button>
           <button
             onClick={() => router.push("/cursos/lesson8")}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors font-['Poppins']"
           >
             Próxima Lição &rarr;
           </button>

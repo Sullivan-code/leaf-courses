@@ -121,7 +121,7 @@ export default function LessonFamilyAndOccupations() {
             Lesson 11 - Family & Occupations
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Revise frases sobre membros da família e ocupações. Aprenda verbos "go to" e "see". 👨‍👩‍👧‍👦💼
+            Revise frases sobre membros da família e ocupações. Aprenda verbos "to go" e "to see". 👨‍👩‍👧‍👦💼
           </p>
           <div className="w-64 h-64 mx-auto">
             <img
@@ -132,48 +132,6 @@ export default function LessonFamilyAndOccupations() {
           </div>
         </div>
 
-        {/* TEACHER'S GUIDE */}
-        <div className="bg-gradient-to-r from-blue-100 to-purple-100 border-2 border-blue-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">📘 TEACHER'S GUIDE — LESSON 11</h2>
-            <p className="mt-2 text-blue-100 italic">
-              Conteúdo exatamente como na imagem, digitado
-            </p>
-          </div>
-          
-          <div className="p-8 space-y-6">
-            <div>
-              <h3 className="text-xl font-bold text-blue-800 mb-2">🔹 LEARNING OBJECTIVES</h3>
-              <ul className="list-disc pl-6 text-gray-700 space-y-1">
-                <li>Review sentences about members of the family and occupations.</li>
-                <li>Introduce:
-                  <ul className="list-circle pl-6 mt-1">
-                    <li>verbs <span className="font-bold">go to / see</span></li>
-                    <li>new words</li>
-                    <li>useful phrases</li>
-                    <li>grammar:
-                      <ul className="list-none pl-4">
-                        <li>• subject pronouns <span className="font-bold">we</span> and <span className="font-bold">they</span> in the interrogative</li>
-                        <li>• preposition of direction <span className="font-bold">to</span></li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold text-blue-800 mb-2">🔹 ASSESSMENT – 2'</h3>
-              <ul className="list-disc pl-6 text-gray-700 space-y-1">
-                <li>Say five common occupations in English.</li>
-                <li>Who are the members of your family?</li>
-                <li>What language do you want to speak?</li>
-                <li>Where do you want to go?</li>
-                <li>What do you like to do in the evening?</li>
-              </ul>
-            </div>
-          </div>
-        </div>
 
         {/* Seção 1 - Verbos com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
@@ -199,7 +157,7 @@ export default function LessonFamilyAndOccupations() {
                   onClick={() => playAudio('to go to')} 
                   className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                 >
-                  to go to
+                  to go
                 </button> = ir para
               </li>
               <li>

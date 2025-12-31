@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X } from "lucide-react";
+import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCircle } from "lucide-react";
 
 const listenItems = [
   { 
@@ -164,6 +164,35 @@ interface VideoQuestion {
   vocabulary?: { english: string; portuguese: string }[];
 }
 
+// Sistema de avaliação de respostas
+const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
+  const normalize = (text: string) => 
+    text.toLowerCase().trim().replace(/[.,?!]/g, '');
+  
+  return normalize(userAnswer) === normalize(correctAnswer);
+};
+
+// Componente para mostrar resultado da avaliação
+const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correctAnswer: string }) => {
+  if (isCorrect) {
+    return (
+      <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md">
+        <Check size={16} className="text-green-600" />
+        <span className="text-sm text-green-700 font-medium">Correct!</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-md">
+      <XCircle size={16} className="text-red-600" />
+      <span className="text-sm text-red-700">
+        <span className="font-medium">Expected:</span> {correctAnswer}
+      </span>
+    </div>
+  );
+};
+
 export default function LessonFoodAndDrink() {
   const router = useRouter();
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -224,7 +253,11 @@ export default function LessonFoodAndDrink() {
     tuneIn: true
   });
 
-  // Exercícios de arrastar e soltar para negativas (CORRIGIDOS)
+  // Estados para resultados de respostas
+  const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
+  const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
+
+  // Exercícios de arrastar e soltar para negativas
   const negativeExercises: DragExercise[] = [
     {
       id: 1,
@@ -288,16 +321,125 @@ export default function LessonFoodAndDrink() {
     }
   ];
 
+  // ==============================
+  // SISTEMA DE PERSISTÊNCIA - CARREGAMENTO
+  // ==============================
   useEffect(() => {
-    // Inicializar exercícios de arrastar
-    setDragExercises([...negativeExercises, ...pronounExercises]);
+    const savedAnswers = localStorage.getItem("lesson2Answers");
+    if (savedAnswers) {
+      try {
+        const data = JSON.parse(savedAnswers);
+        
+        // Restaurar respostas de escuta
+        setNotes(data.notes || {});
+        setShowAnswers(data.showAnswers || {});
+        setAnswerResults(data.answerResults || {});
+        setShowAnswerResults(data.showAnswerResults || {});
+        
+        // Restaurar questões de vídeo
+        if (data.videoQuestions) setVideoQuestions(data.videoQuestions);
+        
+        // Restaurar exercícios de arrastar
+        if (data.dragExercises) {
+          setDragExercises(data.dragExercises);
+          // Restaurar opções usadas
+          const used = new Set<string>();
+          data.dragExercises.forEach((ex: DragExercise) => {
+            if (ex.userAnswer) used.add(ex.userAnswer);
+          });
+          setUsedOptions(used);
+        } else {
+          // Inicializar exercícios de arrastar
+          setDragExercises([...negativeExercises, ...pronounExercises]);
+        }
+        
+        // Restaurar estado das seções
+        if (data.sections) setSections(data.sections);
+        
+        console.log("Dados carregados do localStorage para Lesson 2");
+      } catch (error) {
+        console.error("Erro ao carregar respostas salvas:", error);
+        // Inicializar exercícios de arrastar se houver erro
+        setDragExercises([...negativeExercises, ...pronounExercises]);
+      }
+    } else {
+      // Inicializar exercícios de arrastar
+      setDragExercises([...negativeExercises, ...pronounExercises]);
+    }
   }, []);
 
+  // ==============================
+  // SISTEMA DE PERSISTÊNCIA - SALVAMENTO
+  // ==============================
+  const saveAllAnswers = async () => {
+    const data = {
+      // Respostas de escuta
+      notes,
+      showAnswers,
+      answerResults,
+      showAnswerResults,
+      
+      // Questões de vídeo
+      videoQuestions,
+      
+      // Exercícios de arrastar
+      dragExercises,
+      
+      // Estado das seções
+      sections,
+      
+      // Metadados
+      lastUpdated: new Date().toISOString(),
+      lessonName: "Lesson 2 - Food & Drink",
+      version: "1.0"
+    };
+    
+    try {
+      localStorage.setItem("lesson2Answers", JSON.stringify(data));
+      alert("✅ Todas as suas respostas foram salvas com sucesso!\nVocê pode voltar a qualquer momento e elas estarão aqui.");
+    } catch (error) {
+      console.error("Erro ao salvar respostas:", error);
+      alert("❌ Erro ao salvar as respostas. Por favor, tente novamente.");
+    }
+  };
+
+  // Função para limpar todas as respostas
+  const clearAllAnswers = () => {
+    if (confirm("Tem certeza que deseja limpar TODAS as suas respostas? Esta ação não pode ser desfeita.")) {
+      // Limpar respostas de escuta
+      setNotes({});
+      setShowAnswers({});
+      setAnswerResults({});
+      setShowAnswerResults({});
+      
+      // Limpar questões de vídeo
+      setVideoQuestions(videoQuestions.map(q => ({ ...q, userAnswer: "" })));
+      
+      // Limpar exercícios de arrastar
+      const resetExercises = dragExercises.map(ex => ({ ...ex, userAnswer: null }));
+      setDragExercises(resetExercises);
+      setUsedOptions(new Set());
+      
+      // Limpar seleções móveis
+      setMobileSelectedOption(null);
+      
+      // Limpar do localStorage também
+      localStorage.removeItem("lesson2Answers");
+      alert("Todas as respostas foram limpas.");
+    }
+  };
+
+  // ==============================
+  // FUNÇÕES DE MANIPULAÇÃO DE ESTADOS
+  // ==============================
   const handleChange = (key: string, value: string) => {
     setNotes((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleCheck = (key: string) => {
+    const isCorrect = checkAnswer(notes[key] || "", listenItems.find(item => item.key === key)?.correctAnswer || "");
+    setAnswerResults(prev => ({ ...prev, [key]: isCorrect }));
+    setShowAnswerResults(prev => ({ ...prev, [key]: true }));
     setShowAnswers((prev) => ({ ...prev, [key]: true }));
   };
 
@@ -309,15 +451,12 @@ export default function LessonFoodAndDrink() {
     );
   };
 
-  const saveVideoAnswers = async () => {
-    alert("Respostas salvas localmente!");
-  };
-
   const checkVideoAnswer = (id: number) => {
     const question = videoQuestions.find(q => q.id === id);
     if (question) {
-      const isCorrect = question.userAnswer.toLowerCase().includes(question.correctAnswer.toLowerCase());
-      alert(isCorrect ? '✅ Resposta correta!' : `❌ Resposta esperada: ${question.correctAnswer}`);
+      const isCorrect = checkAnswer(question.userAnswer, question.correctAnswer);
+      setShowAnswerResults(prev => ({ ...prev, [`video-${id}`]: true }));
+      setAnswerResults(prev => ({ ...prev, [`video-${id}`]: isCorrect }));
     }
   };
 
@@ -433,6 +572,14 @@ export default function LessonFoodAndDrink() {
     );
   };
 
+  // Verificar resposta de exercício de arrastar
+  const checkDragExerciseAnswer = (exercise: DragExercise) => {
+    if (exercise.userAnswer) {
+      return exercise.correctAnswers.includes(exercise.userAnswer);
+    }
+    return false;
+  };
+
   return (
     <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/lesson1-86.jpg')` }}>
       <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
@@ -492,6 +639,7 @@ export default function LessonFoodAndDrink() {
                       onClick={() => {
                         handleChange(item.key, "");
                         setShowAnswers(prev => ({ ...prev, [item.key]: false }));
+                        setShowAnswerResults(prev => ({ ...prev, [item.key]: false }));
                       }}
                       className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
                     >
@@ -499,12 +647,11 @@ export default function LessonFoodAndDrink() {
                     </button>
                   </div>
 
-                  {showAnswers[item.key] && (
-                    <div className="mt-3 w-full p-3 bg-green-50 border border-green-200 rounded-md">
-                      <p className="text-sm text-green-700">
-                        ✅ <span className="font-medium">Resposta correta:</span> {item.correctAnswer}
-                      </p>
-                    </div>
+                  {showAnswerResults[item.key] && (
+                    <AnswerResult 
+                      isCorrect={answerResults[item.key]} 
+                      correctAnswer={item.correctAnswer}
+                    />
                   )}
                 </div>
               ))}
@@ -583,7 +730,7 @@ export default function LessonFoodAndDrink() {
           )}
         </div>
 
-        {/* NEGATIVE SENTENCES DRILLS (CORRIGIDO) */}
+        {/* NEGATIVE SENTENCES DRILLS */}
         <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
           <div className="bg-purple-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -674,15 +821,12 @@ export default function LessonFoodAndDrink() {
                             </button>
                           )}
                         </div>
-                        <div className="mt-2 text-sm text-gray-500">
+                        <div className="mt-2">
                           {exercise.userAnswer && (
-                            <span>
-                              {exercise.correctAnswers.includes(exercise.userAnswer) ? (
-                                <span className="text-green-600">✅ Correto!</span>
-                              ) : (
-                                <span className="text-red-600">❌ Respostas corretas: {exercise.correctAnswers.join(' ou ')}</span>
-                              )}
-                            </span>
+                            <AnswerResult 
+                              isCorrect={checkDragExerciseAnswer(exercise)} 
+                              correctAnswer={exercise.correctAnswers.join(' ou ')}
+                            />
                           )}
                         </div>
                       </div>
@@ -785,15 +929,12 @@ export default function LessonFoodAndDrink() {
                             </button>
                           )}
                         </div>
-                        <div className="mt-2 text-sm text-gray-500">
+                        <div className="mt-2">
                           {exercise.userAnswer && (
-                            <span>
-                              {exercise.correctAnswers.includes(exercise.userAnswer) ? (
-                                <span className="text-green-600">✅ Correto!</span>
-                              ) : (
-                                <span className="text-red-600">❌ Respostas possíveis: {exercise.correctAnswers.join(', ')}</span>
-                              )}
-                            </span>
+                            <AnswerResult 
+                              isCorrect={checkDragExerciseAnswer(exercise)} 
+                              correctAnswer={exercise.correctAnswers.join(', ')}
+                            />
                           )}
                         </div>
                       </div>
@@ -805,7 +946,7 @@ export default function LessonFoodAndDrink() {
           )}
         </div>
 
-        {/* TUNE IN YOUR EARS - NOVA SEÇÃO NO FINAL COM VÍDEO */}
+        {/* TUNE IN YOUR EARS */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden">
           <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -938,6 +1079,15 @@ export default function LessonFoodAndDrink() {
                         Clear
                       </button>
                     </div>
+
+                    {showAnswerResults[`video-${question.id}`] && (
+                      <div className="mt-3">
+                        <AnswerResult 
+                          isCorrect={answerResults[`video-${question.id}`]} 
+                          correctAnswer={question.correctAnswer}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -952,32 +1102,41 @@ export default function LessonFoodAndDrink() {
                   <li>Você pode assistir ao vídeo várias vezes, se necessário</li>
                 </ul>
               </div>
-
-              <div className="mt-6 text-center">
-                <button 
-                  onClick={saveVideoAnswers}
-                  className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300"
-                >
-                  Save My Answers
-                </button>
-              </div>
             </div>
           )}
         </div>
 
-        <div className="flex justify-center gap-4 mt-8">
-          <button
-            onClick={() => router.push("/cursos")}
-            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
-          >
-            &larr; Voltar aos Cursos
-          </button>
-          <button
-            onClick={() => router.push("/cursos/lesson3")}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
-          >
-            Próxima Lição &rarr;
-          </button>
+        {/* Save Button and Navigation */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-8">
+          <div className="flex gap-4">
+            <button
+              onClick={saveAllAnswers}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 flex items-center gap-2"
+            >
+              <span>💾</span> Save All My Answers
+            </button>
+            <button
+              onClick={clearAllAnswers}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full text-sm transition duration-300"
+            >
+              Clear All
+            </button>
+          </div>
+
+          <div className="flex gap-4">
+            <button
+              onClick={() => router.push("/cursos")}
+              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            >
+              &larr; Voltar aos Cursos
+            </button>
+            <button
+              onClick={() => router.push("/cursos/lesson3")}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            >
+              Próxima Lição &rarr;
+            </button>
+          </div>
         </div>
       </div>
     </div>

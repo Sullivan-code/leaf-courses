@@ -224,6 +224,89 @@ const personalQuestions = [
   }
 ];
 
+// Perguntas para a seção "TUNE IN YOUR EARS"
+const videoQuestions = [
+  {
+    id: 1,
+    question: "What is the importance of listening when learning a second language?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "", portuguese: "" },
+      { english: "", portuguese: "" }
+    ]
+  },
+  {
+    id: 2,
+    question: "How did you learn your first language?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "", portuguese: "" },
+      { english: "", portuguese: "" },
+      { english: "", portuguese: "" }
+    ]
+  },
+  {
+    id: 3,
+    question: "How can you use listening to improve your English?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "", portuguese: "" },
+      { english: "", portuguese: "" },
+      { english: "", portuguese: "" }
+    ]
+  },
+  {
+    id: 4,
+    question: "What are the advantages of listening?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "", portuguese: "" },
+      { english: "", portuguese: "" },
+      { english: " ", portuguese: "" }
+    ]
+  },
+  {
+    id: 5,
+    question: "Learning English can be all about words, but it has a lot to do with feeling. What are you doing to know more about slangs, idioms and so on? ",
+    isPersonal: false,
+    vocabulary: [
+      { english: "", portuguese: "" },
+      { english: "", portuguese: "" },
+      { english: "", portuguese: "" }
+    ]
+  },
+  {
+    id: 6,
+    question: "Do you think to understand all the words is important when you are watching something or catching the main idea is what really matters?",
+    isPersonal: true,
+    vocabulary: [
+      { english: "pre-made food", portuguese: "comida pré-feita" },
+      { english: "thoughts", portuguese: "pensamentos" },
+      { english: "to nap", portuguese: "tirar um cochilo" }
+    ]
+  },
+  {
+    id: 7,
+    question: "Why is learning english with subtitles so important? ",
+    isPersonal: true,
+    vocabulary: [
+      { english: "pre-made food", portuguese: "comida pré-feita" },
+      { english: "thoughts", portuguese: "pensamentos" },
+      { english: "to nap", portuguese: "tirar um cochilo" }
+    ]
+  },
+  {
+    id: 8,
+    question: "What do you need to do to be ready for real life situations like restaurants, ordering food, asking for directions in an-english speaking country?",
+    isPersonal: true,
+    vocabulary: [
+      { english: "pre-made food", portuguese: "comida pré-feita" },
+      { english: "thoughts", portuguese: "pensamentos" },
+      { english: "to nap", portuguese: "tirar um cochilo" }
+    ]
+  }
+];
+
 // Sistema de avaliação de respostas
 const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
   const normalize = (text: string) => 
@@ -524,7 +607,8 @@ export default function LessonLanguagesAndCountries() {
     substitution2: true,
     affirmative: true,
     interrogative: true,
-    questions: true
+    questions: true,
+    tuneIn: true
   });
 
   // Estados para as imagens selecionadas
@@ -542,6 +626,11 @@ export default function LessonLanguagesAndCountries() {
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
 
+  // Estado para respostas do vídeo
+  const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
+  const [videoAnswerResults, setVideoAnswerResults] = useState<Record<number, boolean>>({});
+  const [showVideoAnswerResults, setShowVideoAnswerResults] = useState<Record<number, boolean>>({});
+
   // Estado para diálogos dinâmicos baseados na seleção
   const [practiceDialogs, setPracticeDialogs] = useState([
     {
@@ -555,6 +644,39 @@ export default function LessonLanguagesAndCountries() {
       highlighted: ["yogurt", "Y", "O", "G", "U", "R", "T"]
     }
   ]);
+
+  // ==============================
+  // SISTEMA DE PERSISTÊNCIA - CARREGAMENTO
+  // ==============================
+  useEffect(() => {
+    const savedAnswers = localStorage.getItem("lesson8Answers");
+    if (savedAnswers) {
+      try {
+        const data = JSON.parse(savedAnswers);
+        
+        // Restaurar todos os estados
+        setSubs1Exercises(data.subs1Exercises || substitutionPractice1);
+        setSubs2Exercises(data.subs2Exercises || substitutionPractice2);
+        setWrittenAnswers(data.writtenAnswers || {});
+        setVideoAnswers(data.videoAnswers || {});
+        setAnswerResults(data.answerResults || {});
+        setShowAnswerResults(data.showAnswerResults || {});
+        setVideoAnswerResults(data.videoAnswerResults || {});
+        setShowVideoAnswerResults(data.showVideoAnswerResults || {});
+        
+        // Restaurar seleções de imagens
+        if (data.selectedFlag) setSelectedFlag(data.selectedFlag);
+        if (data.selectedFood) setSelectedFood(data.selectedFood);
+        
+        // Restaurar estado das seções
+        if (data.sections) setSections(data.sections);
+        
+        console.log("Dados carregados do localStorage para Lesson 8");
+      } catch (error) {
+        console.error("Erro ao carregar respostas salvas:", error);
+      }
+    }
+  }, []);
 
   // Atualizar diálogos quando a bandeira for selecionada
   useEffect(() => {
@@ -579,30 +701,70 @@ export default function LessonLanguagesAndCountries() {
     }
   }, [selectedFlag, selectedFood]);
 
-  // Função auxiliar para obter o nome do país baseado no idioma
-  const getCountryName = (language: string): string => {
-    const countryMap: Record<string, string> = {
-      "German": "Germany",
-      "Portuguese": "Brazil", 
-      "Spanish": "Spain",
-      "Italian": "Italy",
-      "English": "United States",
-      "French": "France"
-    };
-    return countryMap[language] || language;
-  };
-
+  // ==============================
+  // SISTEMA DE PERSISTÊNCIA - SALVAMENTO
+  // ==============================
   const saveAllAnswers = async () => {
-    // Esta função pode ser implementada posteriormente para salvar as respostas
-    console.log("Salvando todas as respostas:", {
+    const data = {
+      // Dados das práticas de substituição
       subs1Exercises,
       subs2Exercises,
-      writtenAnswers
-    });
-    alert("Função de salvar será implementada posteriormente. Dados prontos para salvamento.");
+      
+      // Respostas escritas
+      writtenAnswers,
+      videoAnswers,
+      
+      // Resultados de avaliação
+      answerResults,
+      showAnswerResults,
+      videoAnswerResults,
+      showVideoAnswerResults,
+      
+      // Seleções atuais
+      selectedFlag,
+      selectedFood,
+      
+      // Estado das seções
+      sections,
+      
+      // Metadados
+      lastUpdated: new Date().toISOString(),
+      lessonName: "Lesson 8 - Languages and Countries",
+      version: "1.0"
+    };
+    
+    try {
+      localStorage.setItem("lesson8Answers", JSON.stringify(data));
+      alert("✅ Todas as suas respostas foram salvas com sucesso!\nVocê pode voltar a qualquer momento e elas estarão aqui.");
+    } catch (error) {
+      console.error("Erro ao salvar respostas:", error);
+      alert("❌ Erro ao salvar as respostas. Por favor, tente novamente.");
+    }
   };
 
-  // Funções para manipular as práticas de substituição
+  // Função para limpar todas as respostas
+  const clearAllAnswers = () => {
+    if (confirm("Tem certeza que deseja limpar TODAS as suas respostas? Esta ação não pode ser desfeita.")) {
+      setSubs1Exercises(substitutionPractice1);
+      setSubs2Exercises(substitutionPractice2);
+      setWrittenAnswers({});
+      setVideoAnswers({});
+      setAnswerResults({});
+      setShowAnswerResults({});
+      setVideoAnswerResults({});
+      setShowVideoAnswerResults({});
+      setSelectedFlag("https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg");
+      setSelectedFood("https://i.ibb.co/8LF0pHjv/yogurt.jpg");
+      
+      // Limpar do localStorage também
+      localStorage.removeItem("lesson8Answers");
+      alert("Todas as respostas foram limpas.");
+    }
+  };
+
+  // ==============================
+  // FUNÇÕES DE MANIPULAÇÃO DE ESTADOS
+  // ==============================
   const handleSubs1OptionClick = (exerciseKey: string, optionIndex: number) => {
     setSubs1Exercises(prev => 
       prev.map(exercise => 
@@ -636,7 +798,6 @@ export default function LessonLanguagesAndCountries() {
 
   // Função para tocar áudio quando palavras são clicadas
   const handleWordClick = (word: string) => {
-    // Buscar o áudio correspondente à palavra
     const audioSrc = getAudioForWord(word);
     if (audioSrc) {
       const audio = new Audio(audioSrc);
@@ -682,7 +843,22 @@ export default function LessonLanguagesAndCountries() {
     }));
   };
 
-  // Array de bandeiras para a galeria - URLs ATUALIZADAS
+  // Funções para a seção TUNE IN YOUR EARS
+  const handleVideoAnswerChange = (questionId: number, answer: string) => {
+    setVideoAnswers(prev => ({ ...prev, [questionId]: answer }));
+  };
+
+  const checkVideoAnswer = (questionId: number) => {
+    const question = videoQuestions.find(q => q.id === questionId);
+    if (question?.isPersonal) {
+      setShowVideoAnswerResults(prev => ({ ...prev, [questionId]: true }));
+      return;
+    }
+    
+    setShowVideoAnswerResults(prev => ({ ...prev, [questionId]: true }));
+  };
+
+  // Array de bandeiras para a galeria
   const flagImages = [
     "https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg",
     "https://i.ibb.co/7xnjGkDN/italian-flag.jpg",
@@ -692,7 +868,7 @@ export default function LessonLanguagesAndCountries() {
     "https://i.ibb.co/dwjk9s3S/france-flag.jpg"
   ];
 
-  // Array de comidas para a galeria - MANTIDO COMO ESTAVA
+  // Array de comidas para a galeria
   const foodImages = [
     "https://i.ibb.co/8LF0pHjv/yogurt.jpg",
     "https://i.ibb.co/99zBTC4q/sandwich.jpg",
@@ -712,7 +888,7 @@ export default function LessonLanguagesAndCountries() {
           </p>
         </div>
 
-        {/* SPEAK RIGHT NOW - ATUALIZADO COM NOVAS IMAGENS */}
+        {/* SPEAK RIGHT NOW */}
         <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -728,7 +904,7 @@ export default function LessonLanguagesAndCountries() {
 
           {sections.speakNow && (
             <div className="p-8">
-              {/* Galeria de Bandeiras - ATUALIZADA COM NOVAS IMAGENS */}
+              {/* Galeria de Bandeiras */}
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-blue-800 mb-4">🌍 Countries and Flags - Click to select and change language</h3>
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
@@ -874,7 +1050,7 @@ export default function LessonLanguagesAndCountries() {
                 </div>
               </div>
 
-              {/* Galeria de Comidas - MANTIDA COMO ESTAVA */}
+              {/* Galeria de Comidas */}
               <div>
                 <h3 className="text-xl font-bold text-blue-800 mb-4">🍽️ International Foods - Click to select and spell food names</h3>
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -1273,14 +1449,237 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
+        {/* TUNE IN YOUR EARS */}
+        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
+          <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
+              <button
+                onClick={() => toggleSection('tuneIn')}
+                className="ml-4 p-2 rounded-full hover:bg-teal-600 transition"
+              >
+                {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.tuneIn && (
+            <div className="p-8">
+              <div className="mb-8 text-center">
+                <h3 className="text-2xl font-bold text-teal-700 mb-4">
+                  Watch the video and answer the questions below:
+                </h3>
+               
+                {/* Container do vídeo do YouTube */}
+                <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <iframe
+                      src="https://www.youtube.com/embed/2FdrSYbwbXM"
+                      title="English Listening Practice"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-[400px] md:h-[500px]"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 text-sm text-teal-600">
+                  <p>Video: English Listening Practice - Daily Routines & Conversations</p>
+                </div>
+              </div>
+
+              {/* Vocabulary Help */}
+              <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-teal-800 mb-4">📖 Key Vocabulary from the Video:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Trick</span>
+                      <span className="text-teal-600">Truque / Técnica</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">The easiest way</span>
+                      <span className="text-teal-600">O jeito mais fácil</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Have you ever heard?</span>
+                      <span className="text-teal-600">Você já ouviu?</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">over time</span>
+                      <span className="text-teal-600">ao passar do tempo</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Habit</span>
+                      <span className="text-teal-600">Hábito</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">To have fun</span>
+                      <span className="text-teal-600">Se divertir</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Accents</span>
+                      <span className="text-teal-600">Sotaques</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">A mix of accents</span>
+                      <span className="text-teal-600">Uma mistura de sotaques</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Slangs</span>
+                      <span className="text-teal-600">Gírias</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Kind</span>
+                      <span className="text-teal-600">Tipo</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">It's a piece of cake</span>
+                      <span className="text-teal-600">Isso é muito fácil</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">tone and emotion</span>
+                      <span className="text-teal-600">tom e emoção</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Sarcastic</span>
+                      <span className="text-teal-600">Sarcástico</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">It depends on</span>
+                      <span className="text-teal-600">Depende de</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">You'll be / You will be</span>
+                      <span className="text-teal-600">Você vai estar / Você estará</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Probably not</span>
+                      <span className="text-teal-600">Provavelmente não</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">To turn on</span>
+                      <span className="text-teal-600">Ligar (um aparelho)</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">To procrastinate</span>
+                      <span className="text-teal-600">Procrastinar</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">A must</span>
+                      <span className="text-teal-600">algo que você deve fazer</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">maybe you're ordering food</span>
+                      <span className="text-teal-600">Talvez você esteja pedindo comida</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">So, let's sum it all up</span>
+                      <span className="text-teal-600">Então, para resumir ...</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">The more you listen, the better you'll get</span>
+                      <span className="text-teal-600">Quanto mais você ouve, melhor você vai ficar.</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Daily routine</span>
+                      <span className="text-teal-600">Rotina diária.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Questions Section */}
+              <div className="space-y-6 mb-8">
+                {videoQuestions.map((question) => (
+                  <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-teal-200 shadow-md">
+                    <h4 className="text-lg font-bold text-teal-700 mb-3">
+                      {question.question}
+                      {question.isPersonal && (
+                        <span className="ml-2 text-sm font-normal text-teal-500">(Personal answer)</span>
+                      )}
+                    </h4>
+                   
+                    {question.vocabulary && (
+                      <div className="mb-3 p-3 bg-teal-50 rounded-lg">
+                        <p className="text-sm font-medium text-teal-600 mb-1">Vocabulary hints:</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {question.vocabulary.map((word, idx) => (
+                            <div key={idx} className="flex justify-between text-sm">
+                              <span className="text-teal-700 font-medium">{word.english}</span>
+                              <span className="text-teal-600">- {word.portuguese}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <textarea
+                      value={videoAnswers[question.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)}
+                      placeholder="Write your answer here..."
+                      className="w-full h-24 p-3 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                    />
+
+                    <div className="flex gap-3 mt-3">
+                      <button
+                        onClick={() => checkVideoAnswer(question.id)}
+                        className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition font-medium"
+                      >
+                        Check Answer
+                      </button>
+                      <button
+                        onClick={() => handleVideoAnswerChange(question.id, "")}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md transition"
+                      >
+                        Clear
+                      </button>
+                    </div>
+
+                    {showVideoAnswerResults[question.id] && question.isPersonal && (
+                      <div className="mt-3 p-3 bg-teal-50 border border-teal-200 rounded-md">
+                        <p className="text-sm text-teal-700">
+                          <span className="font-medium">Note:</span> This is a personal question. Your answer has been saved for practice.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-teal-800 mb-4">🎯 Listening Practice Tips:</h3>
+                <ul className="list-disc pl-5 space-y-2 text-teal-700 text-sm">
+                  <li>Watch the video at least twice - first for general understanding, then for details</li>
+                  <li>Pause the video to repeat phrases you hear</li>
+                  <li>Pay attention to pronunciation and intonation patterns</li>
+                  <li>Note down new vocabulary while watching</li>
+                  <li>Try to answer the questions without looking at the subtitles first</li>
+                  <li>Practice speaking your answers out loud to improve fluency</li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Save Button and Navigation */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-8">
-          <button
-            onClick={saveAllAnswers}
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300"
-          >
-            💾 Save All My Answers
-          </button>
+          <div className="flex gap-4">
+            <button
+              onClick={saveAllAnswers}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 flex items-center gap-2"
+            >
+              <span>💾</span> Save All My Answers
+            </button>
+            <button
+              onClick={clearAllAnswers}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full text-sm transition duration-300"
+            >
+              Clear All
+            </button>
+          </div>
 
           <div className="flex gap-4">
             <button

@@ -2,7 +2,48 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle } from "lucide-react";
+import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle, CheckCircle, X } from "lucide-react";
+import Image from "next/image";
+
+// LISTENING EXERCISE DATA
+interface ListenItem {
+  id: number;
+  image: string;
+  correctAnswer: string;
+}
+
+const listenItems: ListenItem[] = [
+  {
+    id: 1,
+    image: "/images/lesson12/workers.jpg",
+    correctAnswer: "Do you speak German with your co-worker?"
+  },
+  {
+    id: 2,
+    image: "/images/lesson12/usa.jpg",
+    correctAnswer: "I want to go to the U.S.A."
+  },
+  {
+    id: 3,
+    image: "/images/lesson12/france.jpg",
+    correctAnswer: "My husband and I want to live in France."
+  },
+  {
+    id: 4,
+    image: "/images/lesson12/family.jpg",
+    correctAnswer: "I see my children at home in the evening."
+  },
+  {
+    id: 5,
+    image: "/images/lesson12/friends.jpg",
+    correctAnswer: "Do you speak English with your friends at school?"
+  },
+  {
+    id: 6,
+    image: "/images/lesson12/uk.jpg",
+    correctAnswer: "They want to study in the U.K."
+  }
+];
 
 // Dados da Lição 12 - Atualizados com o conteúdo fornecido
 const substitutionPractice1 = [
@@ -174,32 +215,32 @@ const listenPracticeSentences = [
   { 
     key: "listen-1", 
     sentence: "Do you speak German with your co-worker?",
-    audioSrc: ""
+    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
   },
   { 
     key: "listen-2", 
     sentence: "I want to go to the U.S.A.",
-    audioSrc: ""
+    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
   },
   { 
     key: "listen-3", 
     sentence: "My husband and I want to live in France.",
-    audioSrc: ""
+    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
   },
   { 
     key: "listen-4", 
     sentence: "I see my children at home in the evening.",
-    audioSrc: ""
+    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
   },
   { 
     key: "listen-5", 
     sentence: "Do you speak English with your friends at school?",
-    audioSrc: ""
+    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
   },
   { 
     key: "listen-6", 
     sentence: "They want to study in the U.K.",
-    audioSrc: ""
+    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
   }
 ];
 
@@ -256,6 +297,71 @@ const unlockQuestions = [
   }
 ];
 
+// Video questions para TUNE IN YOUR EARS
+const videoQuestions = [
+  {
+    id: 1,
+    question: "What is the easiest way to practice listening according to the video?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "easiest way", portuguese: "jeito mais fácil" },
+      { english: "practice listening", portuguese: "praticar escuta" },
+      { english: "according to", portuguese: "de acordo com" }
+    ]
+  },
+  {
+    id: 2,
+    question: "What habit does the speaker suggest to improve listening skills?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "habit", portuguese: "hábito" },
+      { english: "suggest", portuguese: "sugerir" },
+      { english: "improve", portuguese: "melhorar" },
+      { english: "skills", portuguese: "habilidades" }
+    ]
+  },
+  {
+    id: 3,
+    question: "Why is it important to listen to different accents?",
+    isPersonal: true,
+    vocabulary: [
+      { english: "important", portuguese: "importante" },
+      { english: "different accents", portuguese: "diferentes sotaques" },
+      { english: "understand", portuguese: "entender" }
+    ]
+  },
+  {
+    id: 4,
+    question: "How can listening help with speaking skills?",
+    isPersonal: true,
+    vocabulary: [
+      { english: "help with", portuguese: "ajudar com" },
+      { english: "speaking skills", portuguese: "habilidades de fala" },
+      { english: "pronunciation", portuguese: "pronúncia" },
+      { english: "intonation", portuguese: "entonação" }
+    ]
+  },
+  {
+    id: 5,
+    question: "What's your daily routine for practicing English listening?",
+    isPersonal: true,
+    vocabulary: [
+      { english: "daily routine", portuguese: "rotina diária" },
+      { english: "practicing", portuguese: "praticando" },
+      { english: "specific time", portuguese: "horário específico" }
+    ]
+  }
+];
+
+const thereAndAroundDialogue = [
+  { speaker: "A", text: "I want to book a flight, please.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
+  { speaker: "B", text: "Sure! Please, take a seat.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
+  { speaker: "A", text: "Do you want a round-trip ticket or a one-way ticket?", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
+  { speaker: "B", text: "A one-way ticket, please.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
+  { speaker: "A", text: "Thank you very much.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
+  { speaker: "B", text: "It's my pleasure.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" }
+];
+
 // Sistema de avaliação de respostas
 const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
   const normalize = (text: string) => 
@@ -264,105 +370,98 @@ const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
   return normalize(userAnswer) === normalize(correctAnswer);
 };
 
-interface AudioPlayerProps {
-  src: string;
-  compact?: boolean;
-}
-
-const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+const AdvancedAudioPlayer = ({ src, startTime = 0 }: { src: string; startTime?: number }) => {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressBarRef = useRef<HTMLDivElement>(null);
+  const [currentTime, setCurrentTime] = useState(startTime);
+  const [duration, setDuration] = useState(0);
 
   useEffect(() => {
-    const audio = audioRef.current || new Audio(src);
-    if (!audioRef.current) audioRef.current = audio;
-    else audio.src = src;
-
-    const updateProgress = () => {
-      if (audio.duration) {
-        setProgress((audio.currentTime / audio.duration) * 100);
-      }
-    };
-
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setProgress(100);
-    };
-
-    audio.addEventListener("timeupdate", updateProgress);
-    audio.addEventListener("ended", handleEnded);
-
-    return () => {
-      audio.removeEventListener("timeupdate", updateProgress);
-      audio.removeEventListener("ended", handleEnded);
-      audio.pause();
-    };
-  }, [src]);
+    if (audioRef.current) {
+      audioRef.current.currentTime = startTime;
+      
+      audioRef.current.addEventListener("loadedmetadata", () => {
+        setDuration(audioRef.current?.duration || 0);
+      });
+      
+      audioRef.current.addEventListener("timeupdate", () => {
+        setCurrentTime(audioRef.current?.currentTime || 0);
+      });
+      
+      audioRef.current.addEventListener("ended", () => {
+        setIsPlaying(false);
+      });
+    }
+  }, [startTime]);
 
   const togglePlayPause = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    if (!audioRef.current) return;
+    
     if (isPlaying) {
-      audio.pause();
+      audioRef.current.pause();
     } else {
-      audio.play().catch((err) => console.error("Audio error:", err));
+      audioRef.current.play().catch((err) => console.error("Audio error:", err));
     }
     setIsPlaying(!isPlaying);
   };
 
   const resetAudio = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = startTime;
+      setCurrentTime(startTime);
       setIsPlaying(false);
-      setProgress(0);
     }
   };
 
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || !progressBarRef.current) return;
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = parseFloat(e.target.value);
+    setCurrentTime(newTime);
     
-    const rect = progressBarRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const width = rect.width;
-    const percent = offsetX / width;
-    audio.currentTime = percent * audio.duration;
-    setProgress(percent * 100);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
+  };
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   return (
-    <div className={`flex items-center gap-2 ${compact ? "ml-2" : ""}`}>
-      <button 
-        onClick={togglePlayPause} 
-        className={`${compact ? "p-1" : "p-2"} bg-blue-500 text-white rounded-full hover:bg-blue-600`}
-      >
-        {isPlaying ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
-      </button>
-      <button 
-        onClick={resetAudio} 
-        className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600`}
-      >
-        <RotateCcw size={compact ? 12 : 16} />
-      </button>
-      
-      {!compact && (
-        <div 
-          ref={progressBarRef}
-          className="w-20 h-1 bg-gray-300 rounded-full overflow-hidden cursor-pointer"
-          onClick={handleProgressClick}
+    <div className="flex flex-col items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div className="flex items-center gap-4 w-full">
+        <button 
+          onClick={togglePlayPause}
+          className={`p-2 rounded-full ${isPlaying ? 'bg-red-500' : 'bg-green-500'} text-white hover:opacity-90`}
         >
-          <div 
-            className="h-full bg-blue-500 transition-all duration-200" 
-            style={{ width: `${progress}%` }} 
+          {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+        </button>
+        
+        <button 
+          onClick={resetAudio}
+          className="p-2 bg-gray-500 text-white rounded-full hover:bg-gray-600"
+        >
+          <RotateCcw size={16} />
+        </button>
+        
+        <div className="flex-1">
+          <input
+            type="range"
+            min="0"
+            max={duration || 0}
+            value={currentTime}
+            onChange={handleSeek}
+            className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500"
           />
+          <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
         </div>
-      )}
-      
-      <audio ref={audioRef} src={src} preload="auto" />
+      </div>
+      <audio ref={audioRef} src={src} preload="metadata" />
     </div>
   );
 };
@@ -380,9 +479,10 @@ const SimpleAudioPlayer = ({ src }: { src: string }) => {
     <div className="flex items-center gap-2">
       <button 
         onClick={playAudio}
-        className="p-1 bg-green-500 text-white rounded-full hover:bg-green-600"
+        className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 flex items-center gap-1"
       >
         <Volume2 size={14} />
+        <span className="text-xs">Play</span>
       </button>
       <audio ref={audioRef} src={src} preload="none" />
     </div>
@@ -390,12 +490,17 @@ const SimpleAudioPlayer = ({ src }: { src: string }) => {
 };
 
 // Componente para mostrar resultado da avaliação
-const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correctAnswer: string }) => {
+const AnswerResult = ({ isCorrect, correctAnswer, onClose }: { isCorrect: boolean; correctAnswer: string; onClose?: () => void }) => {
   if (isCorrect) {
     return (
       <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md">
         <Check size={16} className="text-green-600" />
         <span className="text-sm text-green-700 font-medium">Correct!</span>
+        {onClose && (
+          <button onClick={onClose} className="ml-auto text-gray-500 hover:text-gray-700">
+            <X size={16} />
+          </button>
+        )}
       </div>
     );
   }
@@ -406,25 +511,21 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
       <span className="text-sm text-red-700">
         <span className="font-medium">Expected:</span> {correctAnswer}
       </span>
+      {onClose && (
+        <button onClick={onClose} className="ml-auto text-gray-500 hover:text-gray-700">
+          <X size={16} />
+        </button>
+      )}
     </div>
   );
 };
-
-// Diálogo "There and Around"
-const thereAndAroundDialogue = [
-  { speaker: "A", text: "I want to book a flight, please.", audioSrc: "" },
-  { speaker: "B", text: "Sure! Please, take a seat.", audioSrc: "" },
-  { speaker: "A", text: "Do you want a round-trip ticket or a one-way ticket?", audioSrc: "" },
-  { speaker: "B", text: "A one-way ticket, please.", audioSrc: "" },
-  { speaker: "A", text: "Thank you very much.", audioSrc: "" },
-  { speaker: "B", text: "It's my pleasure.", audioSrc: "" }
-];
 
 export default function Lesson12LanguagesAndCountries() {
   const router = useRouter();
   
   // Estados para controle de expansão/recolhimento das seções
   const [sections, setSections] = useState({
+    listeningExercise: true,
     listenAndPractice: true,
     substitution1: true,
     negative: true,
@@ -432,6 +533,7 @@ export default function Lesson12LanguagesAndCountries() {
     affirmative: true,
     interrogative: true,
     thereAndAround: true,
+    tuneIn: true,
     unlock: true
   });
   
@@ -441,10 +543,100 @@ export default function Lesson12LanguagesAndCountries() {
   
   // Estados para as respostas escritas
   const [writtenAnswers, setWrittenAnswers] = useState<Record<string, string>>({});
+  const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
   
   // Estados para avaliação de respostas
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
+  const [showVideoAnswerResults, setShowVideoAnswerResults] = useState<Record<number, boolean>>({});
+
+  // Estados para o Listening Exercise
+  const [listeningAnswers, setListeningAnswers] = useState<Record<number, string>>({});
+  const [listeningResults, setListeningResults] = useState<Record<number, boolean | null>>({});
+  
+  // Estados para o player de áudio principal
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  const normalize = (text: string) =>
+    text.toLowerCase().trim().replace(/[?.!,]/g, "");
+
+  const checkListeningAnswer = (id: number, correct: string) => {
+    const userAnswer = listeningAnswers[id] || "";
+    const isCorrect = normalize(userAnswer) === normalize(correct);
+    setListeningResults(prev => ({ ...prev, [id]: isCorrect }));
+  };
+
+  const clearListeningResult = (id: number) => {
+    setListeningResults(prev => ({ ...prev, [id]: null }));
+  };
+
+  const checkVideoAnswer = (id: number) => {
+    setShowVideoAnswerResults(prev => ({ ...prev, [id]: true }));
+  };
+
+  const handleVideoAnswerChange = (id: number, value: string) => {
+    setVideoAnswers(prev => ({ ...prev, [id]: value }));
+  };
+
+  // Formatar tempo em minutos:segundos
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  // Inicializar áudio principal
+  useEffect(() => {
+    if (!audioRef.current) {
+      const audio = new Audio("https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3");
+      audioRef.current = audio;
+      
+      audio.addEventListener("loadedmetadata", () => {
+        setDuration(audio.duration);
+      });
+      
+      audio.addEventListener("timeupdate", () => {
+        setCurrentTime(audio.currentTime);
+      });
+      
+      audio.addEventListener("ended", () => {
+        setIsPlaying(false);
+      });
+    }
+  }, []);
+
+  const togglePlayPause = () => {
+    if (!audioRef.current) return;
+    
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch((err) => console.error("Audio error:", err));
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const resetAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setCurrentTime(0);
+      setIsPlaying(false);
+    }
+  };
+
+  // Função para arrastar o áudio
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = parseFloat(e.target.value);
+    setCurrentTime(newTime);
+    
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
+  };
 
   useEffect(() => {
     // Carregar respostas salvas do localStorage
@@ -455,6 +647,7 @@ export default function Lesson12LanguagesAndCountries() {
         setSubs1Exercises(data.subs1Exercises || substitutionPractice1);
         setSubs2Exercises(data.subs2Exercises || substitutionPractice2);
         setWrittenAnswers(data.writtenAnswers || {});
+        setVideoAnswers(data.videoAnswers || {});
       } catch (error) {
         console.error("Error loading saved answers:", error);
       }
@@ -466,11 +659,25 @@ export default function Lesson12LanguagesAndCountries() {
       subs1Exercises,
       subs2Exercises,
       writtenAnswers,
+      videoAnswers,
       lastUpdated: new Date().toISOString()
     };
     
     localStorage.setItem("lesson12Answers", JSON.stringify(data));
     alert("All answers saved successfully to your browser!");
+  };
+
+  const clearAllAnswers = () => {
+    if (confirm("Are you sure you want to clear all answers? This cannot be undone.")) {
+      localStorage.removeItem("lesson12Answers");
+      setSubs1Exercises(substitutionPractice1);
+      setSubs2Exercises(substitutionPractice2);
+      setWrittenAnswers({});
+      setVideoAnswers({});
+      setListeningAnswers({});
+      setListeningResults({});
+      alert("All answers cleared!");
+    }
   };
 
   // Funções para manipular as práticas de substituição
@@ -505,6 +712,11 @@ export default function Lesson12LanguagesAndCountries() {
     setShowAnswerResults(prev => ({ ...prev, [exerciseKey]: true }));
   };
 
+  // Função para fechar resultado
+  const handleCloseResult = (exerciseKey: string) => {
+    setShowAnswerResults(prev => ({ ...prev, [exerciseKey]: false }));
+  };
+
   // Função para alternar expansão de seções
   const toggleSection = (section: keyof typeof sections) => {
     setSections(prev => ({
@@ -521,6 +733,177 @@ export default function Lesson12LanguagesAndCountries() {
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
             Listen and Practice conversations about travel, family, and daily activities. Improve your communication skills.
           </p>
+        </div>
+
+        {/* LISTENING EXERCISE - INTEGRADO NO COMEÇO */}
+        <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-orange-500 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🎧 LISTENING EXERCISE</h2>
+              <button 
+                onClick={() => toggleSection('listeningExercise')}
+                className="ml-4 p-2 rounded-full hover:bg-orange-600 transition"
+              >
+                {sections.listeningExercise ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.listeningExercise && (
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-orange-800 mb-2">
+                  Let's Practice Our Listening
+                </h3>
+                <p className="text-gray-600">
+                  Listen to the audio and write what you hear for each image below.
+                </p>
+              </div>
+
+              {/* CONTROLES DE ÁUDIO - COM SLIDER */}
+              <div className="flex flex-col items-center justify-center mb-8 p-6 bg-white border-2 border-orange-300 rounded-2xl shadow-md">
+                <div className="flex items-center gap-4 mb-4">
+                  <button
+                    onClick={togglePlayPause}
+                    className="flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition"
+                  >
+                    {isPlaying ? (
+                      <>
+                        <Pause size={20} />
+                        <span className="font-semibold">Pause Audio</span>
+                      </>
+                    ) : (
+                      <>
+                        <Play size={20} />
+                        <span className="font-semibold">Play Full Audio</span>
+                      </>
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={resetAudio}
+                    className="flex items-center gap-2 bg-gray-500 text-white px-6 py-3 rounded-full hover:bg-gray-600 transition"
+                  >
+                    <RotateCcw size={20} />
+                    <span className="font-semibold">Reset Audio</span>
+                  </button>
+                </div>
+                
+                {/* SLIDER DO ÁUDIO */}
+                <div className="w-full max-w-md mb-4">
+                  <div className="flex items-center gap-3 mb-1">
+                    <span className="text-xs font-medium text-gray-600">{formatTime(currentTime)}</span>
+                    <input
+                      type="range"
+                      min="0"
+                      max={duration || 0}
+                      value={currentTime}
+                      onChange={handleSeek}
+                      className="w-full h-2 bg-orange-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-500 [&::-webkit-slider-thumb]:cursor-pointer"
+                    />
+                    <span className="text-xs font-medium text-gray-600">{formatTime(duration)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>Drag to seek</span>
+                    <span>Total: {formatTime(duration)}</span>
+                  </div>
+                </div>
+                
+                <p className="text-center text-gray-600 text-sm max-w-md">
+                  <span className="font-medium">Note:</span> This audio contains all 6 sentences. Listen carefully and write what you hear for each corresponding image.
+                </p>
+              </div>
+
+              {/* EXERCÍCIOS */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {listenItems.map(item => (
+                  <div
+                    key={item.id}
+                    className="border-2 border-orange-200 rounded-2xl p-6 shadow-md bg-white"
+                  >
+                    <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
+                      <Image
+                        src={item.image}
+                        alt="Listening image"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+
+                    {/* INPUT */}
+                    <textarea
+                      placeholder="Write what you hear for this image..."
+                      value={listeningAnswers[item.id] || ""}
+                      onChange={e =>
+                        setListeningAnswers(prev => ({
+                          ...prev,
+                          [item.id]: e.target.value
+                        }))
+                      }
+                      className="w-full h-32 border border-orange-300 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    />
+
+                    {/* CHECK */}
+                    <button
+                      onClick={() => checkListeningAnswer(item.id, item.correctAnswer)}
+                      className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors mb-3"
+                    >
+                      Check Answer
+                    </button>
+
+                    {/* FEEDBACK COM BOTÃO X */}
+                    {listeningResults[item.id] !== undefined && listeningResults[item.id] !== null && (
+                      <div
+                        className={`p-3 rounded-lg flex items-center gap-2 ${
+                          listeningResults[item.id]
+                            ? "bg-green-100 text-green-700 border border-green-200"
+                            : "bg-red-100 text-red-700 border border-red-200"
+                        }`}
+                      >
+                        <div className="flex-1 flex items-center gap-2">
+                          {listeningResults[item.id] ? (
+                            <>
+                              <CheckCircle className="text-green-600" size={20} />
+                              <span className="font-medium">Correct! Great listening 🎉</span>
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="text-red-600" size={20} />
+                              <div>
+                                <span className="font-medium">Incorrect. </span>
+                                <span>The correct answer is: </span>
+                                <span className="font-medium">{item.correctAnswer}</span>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => clearListeningResult(item.id)}
+                          className="text-gray-500 hover:text-gray-700 ml-2"
+                        >
+                          <X size={18} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Instructions */}
+              <div className="mt-8 bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-orange-800 mb-3">🎯 How to practice:</h3>
+                <ol className="list-decimal pl-5 space-y-2 text-orange-700">
+                  <li>Click <span className="font-semibold">"Play Full Audio"</span> to listen to all 6 sentences</li>
+                  <li>Use the slider to drag left/right and seek specific parts of the audio</li>
+                  <li>Listen carefully and identify which sentence corresponds to each image</li>
+                  <li>Write what you hear for each image in the text box below it</li>
+                  <li>Click <span className="font-semibold">"Check Answer"</span> to see if you're correct</li>
+                  <li>Click the <span className="font-semibold">X</span> button to close the answer feedback</li>
+                  <li>Use <span className="font-semibold">"Reset Audio"</span> to replay the audio from the beginning</li>
+                </ol>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* LISTEN AND PRACTICE */}
@@ -541,14 +924,19 @@ export default function Lesson12LanguagesAndCountries() {
             <div className="p-8">
               <div className="bg-blue-100 border-2 border-blue-300 rounded-xl p-6 mb-6">
                 <h3 className="text-xl font-bold text-blue-800 mb-4">
-                  Practice these sentences:
+                  Practice these sentences with audio controls:
                 </h3>
                 
                 <div className="space-y-4 bg-white p-6 rounded-lg border border-blue-200">
                   {listenPracticeSentences.map((item) => (
-                    <div key={item.key} className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                      <p className="text-gray-800 font-medium">{item.sentence}</p>
-                      {item.audioSrc && <SimpleAudioPlayer src={item.audioSrc} />}
+                    <div key={item.key} className="flex flex-col p-3 bg-blue-50 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-gray-800 font-medium">{item.sentence}</p>
+                        <div className="text-sm text-gray-500">
+                          <span className="font-medium">Audio:</span> L12-listening.mp3
+                        </div>
+                      </div>
+                      <AdvancedAudioPlayer src={item.audioSrc} />
                     </div>
                   ))}
                 </div>
@@ -668,6 +1056,7 @@ export default function Lesson12LanguagesAndCountries() {
                         <AnswerResult 
                           isCorrect={answerResults[exercise.key]} 
                           correctAnswer={exercise.answer}
+                          onClose={() => handleCloseResult(exercise.key)}
                         />
                       )}
                     </div>
@@ -789,6 +1178,7 @@ export default function Lesson12LanguagesAndCountries() {
                         <AnswerResult 
                           isCorrect={answerResults[`aff-${exercise.key}`]} 
                           correctAnswer={exercise.answer}
+                          onClose={() => handleCloseResult(`aff-${exercise.key}`)}
                         />
                       )}
                     </div>
@@ -849,6 +1239,7 @@ export default function Lesson12LanguagesAndCountries() {
                         <AnswerResult 
                           isCorrect={answerResults[`int-${exercise.key}`]} 
                           correctAnswer={exercise.answer}
+                          onClose={() => handleCloseResult(`int-${exercise.key}`)}
                         />
                       )}
                     </div>
@@ -877,24 +1268,243 @@ export default function Lesson12LanguagesAndCountries() {
             <div className="p-8">
               <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-purple-800 mb-4">
-                  Practice this dialogue about booking a flight:
+                  Practice this dialogue about booking a flight with audio:
                 </h3>
                 
                 <div className="space-y-4 bg-white p-6 rounded-lg border border-purple-200">
                   {thereAndAroundDialogue.map((line, index) => (
-                    <div key={index} className="flex items-start gap-4">
-                      <div className={`min-w-8 font-bold ${
-                        line.speaker === "A" ? "text-blue-600" : "text-green-600"
-                      }`}>
-                        {line.speaker}:
+                    <div key={index} className="flex flex-col p-3 bg-purple-50 rounded-lg">
+                      <div className="flex items-start gap-4 mb-2">
+                        <div className={`min-w-8 font-bold ${
+                          line.speaker === "A" ? "text-blue-600" : "text-green-600"
+                        }`}>
+                          {line.speaker}:
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-800">{line.text}</p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <p className="text-gray-800">{line.text}</p>
-                        {line.audioSrc && <SimpleAudioPlayer src={line.audioSrc} />}
+                      <div className="ml-12">
+                        <AdvancedAudioPlayer src={line.audioSrc} />
                       </div>
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* TUNE IN YOUR EARS */}
+        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
+          <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
+              <button
+                onClick={() => toggleSection('tuneIn')}
+                className="ml-4 p-2 rounded-full hover:bg-teal-600 transition"
+              >
+                {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.tuneIn && (
+            <div className="p-8">
+              <div className="mb-8 text-center">
+                <h3 className="text-2xl font-bold text-teal-700 mb-4">
+                  Watch the video and answer the questions below:
+                </h3>
+               
+                {/* Container do vídeo do YouTube */}
+                <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <iframe
+                      src="https://www.youtube.com/embed/2FdrSYbwbXM"
+                      title="English Listening Practice"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-[400px] md:h-[500px]"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 text-sm text-teal-600">
+                  <p>Video: English Listening Practice - Daily Routines & Conversations</p>
+                </div>
+              </div>
+
+              {/* Vocabulary Help */}
+              <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-teal-800 mb-4">📖 Key Vocabulary from the Video:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Trick</span>
+                      <span className="text-teal-600">Truque / Técnica</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">The easiest way</span>
+                      <span className="text-teal-600">O jeito mais fácil</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Have you ever heard?</span>
+                      <span className="text-teal-600">Você já ouviu?</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">over time</span>
+                      <span className="text-teal-600">ao passar do tempo</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Habit</span>
+                      <span className="text-teal-600">Hábito</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">To have fun</span>
+                      <span className="text-teal-600">Se divertir</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Accents</span>
+                      <span className="text-teal-600">Sotaques</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">A mix of accents</span>
+                      <span className="text-teal-600">Uma mistura de sotaques</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Slangs</span>
+                      <span className="text-teal-600">Gírias</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Kind</span>
+                      <span className="text-teal-600">Tipo</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">It's a piece of cake</span>
+                      <span className="text-teal-600">Isso é muito fácil</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">tone and emotion</span>
+                      <span className="text-teal-600">tom e emoção</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Sarcastic</span>
+                      <span className="text-teal-600">Sarcástico</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">It depends on</span>
+                      <span className="text-teal-600">Depende de</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">You'll be / You will be</span>
+                      <span className="text-teal-600">Você vai estar / Você estará</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Probably not</span>
+                      <span className="text-teal-600">Provavelmente não</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">To turn on</span>
+                      <span className="text-teal-600">Ligar (um aparelho)</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">To procrastinate</span>
+                      <span className="text-teal-600">Procrastinar</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">A must</span>
+                      <span className="text-teal-600">algo que você deve fazer</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">maybe you're ordering food</span>
+                      <span className="text-teal-600">Talvez você esteja pedindo comida</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">So, let's sum it all up</span>
+                      <span className="text-teal-600">Então, para resumir ...</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">The more you listen, the better you'll get</span>
+                      <span className="text-teal-600">Quanto mais você ouve, melhor você vai ficar.</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Daily routine</span>
+                      <span className="text-teal-600">Rotina diária.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Questions Section */}
+              <div className="space-y-6 mb-8">
+                {videoQuestions.map((question) => (
+                  <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-teal-200 shadow-md">
+                    <h4 className="text-lg font-bold text-teal-700 mb-3">
+                      {question.question}
+                      {question.isPersonal && (
+                        <span className="ml-2 text-sm font-normal text-teal-500">(Personal answer)</span>
+                      )}
+                    </h4>
+                   
+                    {question.vocabulary && (
+                      <div className="mb-3 p-3 bg-teal-50 rounded-lg">
+                        <p className="text-sm font-medium text-teal-600 mb-1">Vocabulary hints:</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {question.vocabulary.map((word, idx) => (
+                            <div key={idx} className="flex justify-between text-sm">
+                              <span className="text-teal-700 font-medium">{word.english}</span>
+                              <span className="text-teal-600">- {word.portuguese}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <textarea
+                      value={videoAnswers[question.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)}
+                      placeholder="Write your answer here..."
+                      className="w-full h-24 p-3 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                    />
+
+                    <div className="flex gap-3 mt-3">
+                      <button
+                        onClick={() => checkVideoAnswer(question.id)}
+                        className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition font-medium"
+                      >
+                        Check Answer
+                      </button>
+                      <button
+                        onClick={() => handleVideoAnswerChange(question.id, "")}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md transition"
+                      >
+                        Clear
+                      </button>
+                    </div>
+
+                    {showVideoAnswerResults[question.id] && question.isPersonal && (
+                      <div className="mt-3 p-3 bg-teal-50 border border-teal-200 rounded-md">
+                        <p className="text-sm text-teal-700">
+                          <span className="font-medium">Note:</span> This is a personal question. Your answer has been saved for practice.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-teal-800 mb-4">🎯 Listening Practice Tips:</h3>
+                <ul className="list-disc pl-5 space-y-2 text-teal-700 text-sm">
+                  <li>Watch the video at least twice - first for general understanding, then for details</li>
+                  <li>Pause the video to repeat phrases you hear</li>
+                  <li>Pay attention to pronunciation and intonation patterns</li>
+                  <li>Note down new vocabulary while watching</li>
+                  <li>Try to answer the questions without looking at the subtitles first</li>
+                  <li>Practice speaking your answers out loud to improve fluency</li>
+                </ul>
               </div>
             </div>
           )}
@@ -959,12 +1569,20 @@ export default function Lesson12LanguagesAndCountries() {
 
         {/* Save Button and Navigation */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-8">
-          <button
-            onClick={saveAllAnswers}
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300"
-          >
-            💾 Save All My Answers
-          </button>
+          <div className="flex gap-4">
+            <button
+              onClick={saveAllAnswers}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 flex items-center gap-2"
+            >
+              <span>💾</span> Save All My Answers
+            </button>
+            <button
+              onClick={clearAllAnswers}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full text-sm transition duration-300"
+            >
+              Clear All
+            </button>
+          </div>
 
           <div className="flex gap-4">
             <button

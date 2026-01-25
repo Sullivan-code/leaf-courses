@@ -498,10 +498,10 @@ export default function Lesson14PersonalInformationRoutine() {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  // Inicializar áudio principal
+  // Inicializar áudio principal (ALTERADO: Agora usa L-14-express.mp3)
   useEffect(() => {
     if (!audioRef.current) {
-      const audio = new Audio("https://github.com/Sullivan-code/english-audios/raw/main/L14-dialogue.mp3");
+      const audio = new Audio("https://raw.githubusercontent.com/Sullivan-code/english-audios/main/L-14-express.mp3");
       audioRef.current = audio;
       
       audio.addEventListener("loadedmetadata", () => {
@@ -659,7 +659,7 @@ export default function Lesson14PersonalInformationRoutine() {
           </p>
         </div>
 
-        {/* EXPRESS YOURSELF - DIALOGUE (ATUALIZADO - Sem botões individuais de áudio) */}
+        {/* EXPRESS YOURSELF - DIALOGUE (ATUALIZADO - Com áudio L-14-express.mp3) */}
         <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -680,7 +680,7 @@ export default function Lesson14PersonalInformationRoutine() {
                   Dialogue - Listen and practice the conversation
                 </h3>
                 
-                {/* CONTROLES DE ÁUDIO DO DIÁLOGO */}
+                {/* CONTROLES DE ÁUDIO DO DIÁLOGO - COM ÁUDIO L-14-express.mp3 */}
                 <div className="flex flex-col items-center justify-center mb-8 p-6 bg-white border-2 border-blue-300 rounded-2xl shadow-md">
                   <div className="flex items-center gap-4 mb-4">
                     <button
@@ -728,6 +728,11 @@ export default function Lesson14PersonalInformationRoutine() {
                       <span>Total: {formatTime(duration)}</span>
                     </div>
                   </div>
+                  
+                  {/* Informação sobre o áudio */}
+                  <div className="text-sm text-blue-600 bg-blue-50 px-4 py-2 rounded-lg">
+                    <span className="font-medium">Audio:</span> Lesson 14 - Express Yourself Dialogue (L-14-express.mp3)
+                  </div>
                 </div>
 
                 {/* TRANSCRIÇÃO DO DIÁLOGO (SEM BOTÕES INDIVIDUAIS) */}
@@ -742,7 +747,6 @@ export default function Lesson14PersonalInformationRoutine() {
                         <div className="flex-1">
                           <p className="text-gray-800">{line.text}</p>
                         </div>
-                        {/* REMOVIDO: SimpleAudioPlayer individual */}
                       </div>
                     ))}
                   </div>
@@ -1006,11 +1010,11 @@ export default function Lesson14PersonalInformationRoutine() {
           )}
         </div>
 
-        {/* TUNE IN YOUR EARS - NOVA SEÇÃO ADICIONADA */}
+        {/* TUNE IN YOUR EARS - COM NOVO LINK DO YOUTUBE */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS - How English Helps You Thrive</h2>
+              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS - English Conversation Practice</h2>
               <button
                 onClick={() => toggleSection('tuneIn')}
                 className="ml-4 p-2 rounded-full hover:bg-teal-600 transition"
@@ -1024,15 +1028,15 @@ export default function Lesson14PersonalInformationRoutine() {
             <div className="p-8">
               <div className="mb-8 text-center">
                 <h3 className="text-2xl font-bold text-teal-700 mb-4">
-                  Watch the video "How can English help you thrive in life?" and answer the questions below:
+                  Watch the video "English Conversation Practice - Listening & Speaking Skills" and answer the questions below:
                 </h3>
                
-                {/* Container do vídeo do YouTube - NOVO VÍDEO */}
+                {/* Container do vídeo do YouTube - COM NOVO LINK */}
                 <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
                   <div className="aspect-w-16 aspect-h-9">
                     <iframe
-                      src="https://www.youtube.com/embed/Pt-2Q0Dwm5g"
-                      title="How can English help you thrive in life?"
+                      src="https://www.youtube.com/embed/s6x3WwIfbvY"
+                      title="English Conversation Practice - Listening & Speaking Skills"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       className="w-full h-[400px] md:h-[500px]"
@@ -1041,118 +1045,78 @@ export default function Lesson14PersonalInformationRoutine() {
                 </div>
 
                 <div className="mt-4 text-sm text-teal-600">
-                  <p>Video: How can English help you thrive in life? - The importance of English in personal and professional life</p>
+                  <p>Video: English Conversation Practice - Listening & Speaking Skills (30 Minutes)</p>
                 </div>
               </div>
 
-              {/* Vocabulary Help - ATUALIZADO COM NOVO VOCABULÁRIO */}
+              {/* Vocabulary Help - ATUALIZADO PARA O NOVO VÍDEO */}
               <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-teal-800 mb-4">📖 Key Vocabulary from the Video:</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To achieve</span>
-                      <span className="text-teal-600">Alcançar</span>
+                      <span className="font-medium text-teal-700">Listening skills</span>
+                      <span className="text-teal-600">Habilidades de audição</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To be proud of</span>
-                      <span className="text-teal-600">Ficar orgulhoso de</span>
+                      <span className="font-medium text-teal-700">Speaking skills</span>
+                      <span className="text-teal-600">Habilidades de fala</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Pride</span>
-                      <span className="text-teal-600">Orgulho</span>
+                      <span className="font-medium text-teal-700">Conversation</span>
+                      <span className="text-teal-600">Conversa</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Self-confidence</span>
-                      <span className="text-teal-600">Autoconfiança</span>
+                      <span className="font-medium text-teal-700">Daily routines</span>
+                      <span className="text-teal-600">Rotinas diárias</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Assured</span>
-                      <span className="text-teal-600">Confiante / Seguro</span>
+                      <span className="font-medium text-teal-700">Practice</span>
+                      <span className="text-teal-600">Prática</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Career growth</span>
-                      <span className="text-teal-600">Crescimento profissional</span>
+                      <span className="font-medium text-teal-700">Dialogue</span>
+                      <span className="text-teal-600">Diálogo</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Presentations</span>
-                      <span className="text-teal-600">Apresentações</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Job market</span>
-                      <span className="text-teal-600">Mercado de trabalho</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Asset</span>
-                      <span className="text-teal-600">Algo valioso / Diferencial</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To interact</span>
-                      <span className="text-teal-600">Interagir</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Background</span>
-                      <span className="text-teal-600">História de vida</span>
+                      <span className="font-medium text-teal-700">Comprehension</span>
+                      <span className="text-teal-600">Compreensão</span>
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Opportunity</span>
-                      <span className="text-teal-600">Oportunidade</span>
+                      <span className="font-medium text-teal-700">Pronunciation</span>
+                      <span className="text-teal-600">Pronúncia</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Meeting</span>
-                      <span className="text-teal-600">Reunião</span>
+                      <span className="font-medium text-teal-700">Fluency</span>
+                      <span className="text-teal-600">Fluência</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Experience</span>
-                      <span className="text-teal-600">Experiência</span>
+                      <span className="font-medium text-teal-700">Communication</span>
+                      <span className="text-teal-600">Comunicação</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Repeat</span>
+                      <span className="text-teal-600">Repetir</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Shadowing</span>
+                      <span className="text-teal-600">Repetição simultânea</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Improvement</span>
+                      <span className="text-teal-600">Melhoria</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">Confidence</span>
                       <span className="text-teal-600">Confiança</span>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Global</span>
-                      <span className="text-teal-600">Global / Mundial</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To thrive</span>
-                      <span className="text-teal-600">Prosperar</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To open doors</span>
-                      <span className="text-teal-600">Abrir portas</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Promotions</span>
-                      <span className="text-teal-600">Promoções</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To participate</span>
-                      <span className="text-teal-600">Participar</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To share ideas</span>
-                      <span className="text-teal-600">Compartilhar ideias</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To deepen relationships</span>
-                      <span className="text-teal-600">Aprofundar relacionamentos</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Across borders</span>
-                      <span className="text-teal-600">Através das fronteiras</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To build confidence</span>
-                      <span className="text-teal-600">Construir confiança</span>
-                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Questions Section - ATUALIZADO COM AS NOVAS PERGUNTAS */}
+              {/* Questions Section - ATUALIZADO PARA O NOVO VÍDEO */}
               <div className="space-y-6 mb-8">
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-teal-200 shadow-md">
@@ -1223,16 +1187,16 @@ export default function Lesson14PersonalInformationRoutine() {
               </div>
 
               <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4">🎯 How English Helps You Thrive:</h3>
+                <h3 className="text-xl font-bold text-teal-800 mb-4">🎯 Listening Practice Tips:</h3>
                 <ul className="list-disc pl-5 space-y-2 text-teal-700 text-sm">
-                  <li><span className="font-medium">Career Advancement:</span> English opens doors to international job opportunities and promotions</li>
-                  <li><span className="font-medium">Global Connections:</span> Connect with people from different countries and cultures</li>
-                  <li><span className="font-medium">Personal Growth:</span> Builds self-confidence and expands your worldview</li>
-                  <li><span className="font-medium">Education:</span> Access to global educational resources and study abroad programs</li>
-                  <li><span className="font-medium">Travel:</span> Communicate effectively when traveling internationally</li>
-                  <li><span className="font-medium">Cultural Exchange:</span> Share your ideas and learn from others worldwide</li>
-                  <li><span className="font-medium">Problem Solving:</span> Develop critical thinking skills through language learning</li>
-                  <li><span className="font-medium">Digital Literacy:</span> Navigate the global internet and digital resources</li>
+                  <li><span className="font-medium">Active Listening:</span> Focus on understanding the main ideas and key details</li>
+                  <li><span className="font-medium">Repeat & Shadow:</span> Try to repeat phrases immediately after hearing them</li>
+                  <li><span className="font-medium">Take Notes:</span> Write down new vocabulary and expressions</li>
+                  <li><span className="font-medium">Watch Multiple Times:</span> First for general understanding, then for details</li>
+                  <li><span className="font-medium">Practice Speaking:</span> Try to answer questions out loud</li>
+                  <li><span className="font-medium">Use Subtitles:</span> Start with subtitles, then try without</li>
+                  <li><span className="font-medium">Imitate Pronunciation:</span> Copy the speakers' intonation and rhythm</li>
+                  <li><span className="font-medium">Daily Practice:</span> Even 15-20 minutes daily makes a big difference</li>
                 </ul>
               </div>
             </div>

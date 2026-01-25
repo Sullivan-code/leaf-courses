@@ -113,28 +113,28 @@ export default function LessonFoodAndDrink() {
                   <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600">comer</span> / Eu como. / Você come.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. Eu <span className="text-blue-600">como</span> pão. / bebo / quero</p>
+                  <p className="text-lg font-medium text-gray-800">3. Eu <span className="text-blue-600">como</span> pão. / gosto de / quero</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Você <span className="text-blue-600">bebe</span> café? / come / prefere</p>
+                  <p className="text-lg font-medium text-gray-800">4. Você <span className="text-blue-600">bebe</span> café? / gosta de / prefere</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Nós <span className="text-blue-600">comemos</span> queijo. / bebemos / gostamos</p>
+                  <p className="text-lg font-medium text-gray-800">5. Nós <span className="text-blue-600">comemos</span> queijo. / preferimos / gostamos</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. Eles <span className="text-blue-600">bebem</span> água. / comem / precisam</p>
+                  <p className="text-lg font-medium text-gray-800">6. Eles <span className="text-blue-600">bebem</span> água. / preferem / precisam</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. Ela <span className="text-blue-600">come</span> biscoitos. / bebe / quer</p>
+                  <p className="text-lg font-medium text-gray-800">7. Ela <span className="text-blue-600">come</span> biscoitos. / biscoitos salgados / quer</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. Eu <span className="text-blue-600">bebo</span> leite. / como / gosto</p>
+                  <p className="text-lg font-medium text-gray-800">8. Eu <span className="text-blue-600">bebo</span> leite. / preciso / gosto</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. Você <span className="text-blue-600">come</span> frutas? / bebe / prefere</p>
+                  <p className="text-lg font-medium text-gray-800">9. Você <span className="text-blue-600">come</span> frutas? / gosta / prefere</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. Nós <span className="text-blue-600">bebemos</span> chá. / comemos / gostamos</p>
+                  <p className="text-lg font-medium text-gray-800">10. Nós <span className="text-blue-600">bebemos</span> chá. / preferimos / gostamos</p>
                 </div>
               </div>
             )}

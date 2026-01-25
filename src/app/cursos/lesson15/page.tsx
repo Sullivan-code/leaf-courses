@@ -13,7 +13,8 @@ export default function Lesson15PersonalInfoRoutine() {
     usefulPhrases: false,
     grammar: false,
   });
-  const [showAssessment, setShowAssessment] = useState(false);
+  const [showPluralExplanation, setShowPluralExplanation] = useState(false);
+  const [showSpecialCharsExplanation, setShowSpecialCharsExplanation] = useState(false);
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills({
@@ -122,47 +123,6 @@ export default function Lesson15PersonalInfoRoutine() {
               className="w-full h-full object-cover rounded-2xl shadow-md"
             />
           </div>
-        </div>
-
-        {/* Assessment Section */}
-        <div className="bg-white border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-yellow-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold">🔹 Assessment (2 minutes)</h2>
-              <p className="mt-2 text-yellow-100 italic">
-                Quick review questions to start the lesson
-              </p>
-            </div>
-            <button 
-              onClick={() => setShowAssessment(!showAssessment)}
-              className="text-sm bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 rounded-full transition-colors"
-            >
-              {showAssessment ? 'Hide Questions' : 'Show Questions'}
-            </button>
-          </div>
-          
-          {showAssessment && (
-            <div className="p-8 bg-yellow-50">
-              <div className="space-y-4">
-                <div className="p-4 bg-white rounded-xl border border-yellow-200">
-                  <h3 className="font-bold text-lg text-gray-800 mb-2">1. Give examples of some electronic gadgets you have.</h3>
-                  <p className="text-gray-600">Example: I have a cell phone, a tablet, and a computer.</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-200">
-                  <h3 className="font-bold text-lg text-gray-800 mb-2">2. What's the opposite of new?</h3>
-                  <p className="text-gray-600">Answer: old</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-200">
-                  <h3 className="font-bold text-lg text-gray-800 mb-2">3. Give examples of nationalities.</h3>
-                  <p className="text-gray-600">Example: American, British, Brazilian, Canadian, etc.</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-200">
-                  <h3 className="font-bold text-lg text-gray-800 mb-2">4. What can you say to express surprise?</h3>
-                  <p className="text-gray-600">Example: Really? / Wow! / That's amazing!</p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Section 1 - Verbs with Drill */}
@@ -471,19 +431,19 @@ export default function Lesson15PersonalInfoRoutine() {
           </div>
         </div>
 
-        {/* Section 6 - Check It Out (print style) */}
+        {/* Section 6 - Check It Out (print style) - ATUALIZADO */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-3xl font-bold">🔹 CHECK IT OUT!</h2>
               <p className="mt-2 text-blue-100 italic">
-                Common phrases for technology and communication
+                Common phrases, email format, and important English rules
               </p>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row">
-            {/* Left column - Phrases */}
+            {/* Left column - Phrases and Plural Rules */}
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-lg">
               <div className="mb-4">
                 <h3 className="font-bold text-lg mb-4 text-yellow-300">COMMON PHRASES</h3>
@@ -520,9 +480,50 @@ export default function Lesson15PersonalInfoRoutine() {
                   <p className="text-blue-200 text-sm">no seu tablet</p>
                 </div>
               </div>
+
+              {/* Plural Formation Section */}
+              <div className="mt-8 pt-6 border-t border-blue-700">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-bold text-lg text-yellow-300">PLURAL FORMATION RULES</h4>
+                  <button 
+                    onClick={() => setShowPluralExplanation(!showPluralExplanation)}
+                    className="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded-full transition-colors"
+                  >
+                    {showPluralExplanation ? 'Hide Explanation' : 'Show Explanation'}
+                  </button>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center p-2 bg-blue-800 rounded-lg">
+                    <span className="font-medium">address → addresses</span>
+                    <span className="text-blue-200 text-sm">endereços</span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 bg-blue-800 rounded-lg">
+                    <span className="font-medium">story → stories</span>
+                    <span className="text-blue-200 text-sm">histórias</span>
+                  </div>
+                  
+                  {showPluralExplanation && (
+                    <div className="mt-4 p-3 bg-blue-800 rounded-lg border border-blue-700">
+                      <h5 className="font-bold text-yellow-200 mb-2">📚 Why does this happen?</h5>
+                      <ul className="list-disc pl-5 text-blue-200 text-sm space-y-1">
+                        <li>Words ending in <span className="font-bold">-ss</span> (address) add <span className="font-bold">-es</span> in plural: address → addresses</li>
+                        <li>Words ending in <span className="font-bold">-y</span> after a consonant (story) change <span className="font-bold">-y</span> to <span className="font-bold">-ies</span>: story → stories</li>
+                        <li>Words ending in <span className="font-bold">-y</span> after a vowel just add <span className="font-bold">-s</span>: day → days</li>
+                        <li>Most regular nouns just add <span className="font-bold">-s</span>: book → books</li>
+                      </ul>
+                      <div className="mt-3 p-2 bg-blue-900 rounded-md">
+                        <p className="text-yellow-100 text-sm font-medium">Examples:</p>
+                        <p className="text-blue-200 text-sm">class → classes (same rule as address)</p>
+                        <p className="text-blue-200 text-sm">city → cities (same rule as story)</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
-            {/* Right column - Email */}
+            {/* Right column - Email and Special Characters */}
             <div className="bg-blue-800 text-white flex-1 p-6 space-y-4 text-lg">
               <div className="space-y-6">
                 <div>
@@ -559,6 +560,77 @@ export default function Lesson15PersonalInfoRoutine() {
                     <p className="text-yellow-300 font-mono">elisasullivan@leaf.com</p>
                     <p className="text-blue-200 text-sm mt-1">Format: name@domain.com</p>
                   </div>
+                </div>
+
+                {/* Special Characters Section */}
+                <div className="mt-8 pt-6 border-t border-blue-700">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-bold text-lg text-yellow-300">SPECIAL CHARACTERS IN ENGLISH</h4>
+                    <button 
+                      onClick={() => setShowSpecialCharsExplanation(!showSpecialCharsExplanation)}
+                      className="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded-full transition-colors"
+                    >
+                      {showSpecialCharsExplanation ? 'Hide Explanation' : 'Show Explanation'}
+                    </button>
+                  </div>
+                  
+                  {showSpecialCharsExplanation && (
+                    <div className="space-y-4">
+                      <div className="p-3 bg-blue-900 rounded-lg">
+                        <div className="flex items-center mb-2">
+                          <span className="font-bold text-yellow-200 text-lg mr-3">@</span>
+                          <div>
+                            <p className="font-bold">At</p>
+                            <p className="text-blue-200 text-sm">Pronounced "at" in emails: user@domain.com</p>
+                            <p className="text-blue-200 text-sm">Used in: email addresses, social media handles</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="p-3 bg-blue-900 rounded-lg">
+                        <div className="flex items-center mb-2">
+                          <span className="font-bold text-yellow-200 text-lg mr-3">.</span>
+                          <div>
+                            <p className="font-bold">Dot</p>
+                            <p className="text-blue-200 text-sm">Pronounced "dot" in web addresses and emails</p>
+                            <p className="text-blue-200 text-sm">Examples: google.com = "google dot com"</p>
+                            <p className="text-blue-200 text-sm">name@gmail.com = "name at gmail dot com"</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="p-3 bg-blue-900 rounded-lg">
+                        <div className="flex items-center mb-2">
+                          <span className="font-bold text-yellow-200 text-lg mr-3">_</span>
+                          <div>
+                            <p className="font-bold">Underscore</p>
+                            <p className="text-blue-200 text-sm">Pronounced "underscore" or "underline"</p>
+                            <p className="text-blue-200 text-sm">Used in: usernames, file names, programming</p>
+                            <p className="text-blue-200 text-sm">Example: user_name = "user underscore name"</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="p-3 bg-blue-900 rounded-lg">
+                        <div className="flex items-center mb-2">
+                          <span className="font-bold text-yellow-200 text-lg mr-3">-</span>
+                          <div>
+                            <p className="font-bold">Dash / Hyphen</p>
+                            <p className="text-blue-200 text-sm">Pronounced "dash" or "hyphen"</p>
+                            <p className="text-blue-200 text-sm">Used in: compound words, phone numbers, dates</p>
+                            <p className="text-blue-200 text-sm">Example: well-known = "well dash known"</p>
+                            <p className="text-blue-200 text-sm">555-1234 = "five five five dash one two three four"</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-3 p-3 bg-blue-700 rounded-md">
+                        <p className="text-yellow-100 text-sm font-medium">💡 How to say an email address:</p>
+                        <p className="text-blue-200 text-sm">john_doe-2024@gmail.com =</p>
+                        <p className="text-blue-200 text-sm font-mono">"john underscore doe dash twenty twenty four at gmail dot com"</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

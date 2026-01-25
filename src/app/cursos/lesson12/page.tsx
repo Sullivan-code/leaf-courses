@@ -110,7 +110,7 @@ const substitutionPractice2 = [
     original: "O que você quer aprender? (estudar / comer)",
     base: "What do you want to learn?",
     options: ["to study", "to eat"],
-    transform: (option) => `What do you want ${option}?`,
+    transform: (option: string) => `What do you want ${option}?`,
     currentIndex: 0
   }
 ];
@@ -1144,7 +1144,12 @@ export default function Lesson12LanguagesAndCountries() {
                 
                 <div className="space-y-6">
                   {subs2Exercises.map((exercise) => {
-                    const currentSentence = exercise.base.replace('{0}', exercise.options[exercise.currentIndex]);
+                    let currentSentence;
+                    if (exercise.transform) {
+                      currentSentence = exercise.transform(exercise.options[exercise.currentIndex]);
+                    } else {
+                      currentSentence = exercise.base.replace('{0}', exercise.options[exercise.currentIndex]);
+                    }
                     
                     return (
                       <div key={exercise.key} className="bg-white p-4 rounded-lg border border-orange-200">

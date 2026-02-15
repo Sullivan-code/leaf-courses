@@ -11,7 +11,7 @@ export default function Home() {
       {/* Header Section */}
       <div className="relative z-10 pt-24 pb-16 px-4 text-center">
         <h1 className="text-5xl font-bold mb-8 text-[#000000]">
-          Eric Sullivan - Inglês para Profissionais.
+          Eric Sullivan - Inglês para Profissionais!.!
         </h1>
         <p className="text-2xl text-[#333] max-w-3xl mx-auto mb-8">
           Bem-vindo ao curso que vai transformar sua relação com o inglês!

@@ -6,12 +6,18 @@ import { redirect } from "next/navigation";
 
 export const checkoutAction = async (formData: FormData): Promise<void> => {
   const itemsJson = formData.get("items") as string;
-  const items = JSON.parse(itemsJson);
-  const line_items = items.map((item: CartItem) => ({
+  const items: CartItem[] = JSON.parse(itemsJson);
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+  const line_items = items.map((item) => ({
     price_data: {
-      currency: "BRL",
-      product_data: { name: item.name },
-      unit_amount: item.price,
+      currency: "brl",
+      product_data: {
+        name: item.name,
+      },
+      unit_amount: item.price, // precisa estar em centavos
     },
     quantity: item.quantity,
   }));
@@ -20,8 +26,8 @@ export const checkoutAction = async (formData: FormData): Promise<void> => {
     payment_method_types: ["card"],
     line_items,
     mode: "payment",
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
-    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout`,
+    success_url: `${baseUrl}/success`,
+    cancel_url: `${baseUrl}/checkout`,
   });
 
   redirect(session.url!);

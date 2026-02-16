@@ -9,7 +9,7 @@ export const checkoutAction = async (formData: FormData): Promise<void> => {
   const items: CartItem[] = JSON.parse(itemsJson);
 
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    process.env.NEXT_PUBLIC_BASE_URL || "https://leaf-courses.vercel.app";
 
   const line_items = items.map((item) => ({
     price_data: {

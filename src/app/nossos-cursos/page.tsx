@@ -19,14 +19,14 @@ export default async function Courses() {
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
           <div>
             <h2 className="text-4xl font-bold text-[#111827] mb-6">
-              Welcome to My Ecommerce
+              Bem-vindo aos cursos da LEAF.
             </h2>
             <p className="text-lg text-gray-600 mb-6">
-              Discover the latest products at the best prices.
+              Descubra os melhores cursos nos melhores preços!
             </p>
 
             <Button asChild>
-              <Link href="/products">Browse All Products</Link>
+              <Link href="/products">Pesquise Todos os Cursos</Link>
             </Button>
           </div>
 

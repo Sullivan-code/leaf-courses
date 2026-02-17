@@ -39,7 +39,47 @@ export const ProductCard = ({ product }: Props) => {
               ${(price.unit_amount / 100).toFixed(2)}
             </p>
           )}
-          <Button className="mt-4 bg-black text-white">View Details</Button>
+          <Button
+  className="
+    mt-4
+    w-full
+    flex items-center justify-center
+    px-8 py-3
+    bg-gradient-to-r from-blue-500 to-purple-600
+    text-white
+    text-lg
+    rounded-xl
+    shadow-lg
+    transition-all duration-300
+    hover:from-purple-600 hover:to-purple-800
+    hover:scale-105
+    active:scale-95
+  "
+>
+  Comprar
+</Button>
+
+          <Button
+  className="
+    mt-4
+    w-full
+    flex items-center justify-center
+    px-8 py-3
+    bg-gradient-to-r from-blue-500 to-purple-600
+    text-white
+    text-lg
+    rounded-xl
+    shadow-lg
+    transition-all duration-300
+    hover:from-purple-600 hover:to-purple-800
+    hover:scale-105
+    active:scale-95
+  "
+>
+  Aula Experiemental
+</Button>
+
+
         </CardContent>
       </Card>
     </Link>

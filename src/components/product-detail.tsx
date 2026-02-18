@@ -54,7 +54,7 @@ export const ProductDetail = ({ product }: Props) => {
 
         {price && price.unit_amount && (
           <p className="text-lg font-semibold text-gray-900 mt-2">
-            ${(price.unit_amount / 100).toFixed(2)}
+            R${(price.unit_amount / 100).toFixed(2)}
           </p>
         )}
 

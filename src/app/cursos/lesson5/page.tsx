@@ -113,19 +113,19 @@ export default function LessonFoodAndDrink() {
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('prefer')}>prefer</span> juice. / soda</p>
+                  <p className="text-lg font-medium text-gray-800">1. I prefer <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('prefer')}>juice</span>. / soda</p>
                   <p className="text-sm text-gray-600 mt-1">Eu prefiro suco. / refrigerante</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you prefer')}>Do you prefer</span> rice or beans? / meat or fish / chicken or salad</p>
+                  <p className="text-lg font-medium text-gray-800">2. Do you prefer <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you prefer')}>rice or beans</span>? / meat or fish / chicken or salad</p>
                   <p className="text-sm text-gray-600 mt-1">Você prefere arroz ou feijão? / carne ou peixe / frango ou salada</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('they prefer')}>They prefer</span> bread with butter. / eggs / French fries</p>
+                  <p className="text-lg font-medium text-gray-800">3. They prefer <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('they prefer')}>bread with butter</span>. / eggs / French fries</p>
                   <p className="text-sm text-gray-600 mt-1">Eles preferem pão com manteiga. / ovos / batata frita</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('we prefer')}>We prefer</span> salad. / vegetables / greens</p>
+                  <p className="text-lg font-medium text-gray-800">4. We prefer <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('we prefer')}>salad</span>. / vegetables / greens</p>
                   <p className="text-sm text-gray-600 mt-1">Nós preferimos salada. / legumes / verduras</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">

@@ -532,7 +532,7 @@ export default function Lesson10LanguagesAndCountries() {
     { speaker: "Zoey", text: "I don't understand this word. Queso?", audioSrc: "" },
     { speaker: "Mike", text: "Ah, queso is cheese.", audioSrc: "" },
     { speaker: "Zoey", text: "Got it! Thank you. Where do you study Spanish?", audioSrc: "" },
-    { speaker: "Mike", text: "I study Spanish at Wizard. What about you?", audioSrc: "" },
+    { speaker: "Mike", text: "I study Spanish at LEAF. What about you?", audioSrc: "" },
     { speaker: "Zoey", text: "I study alone. I want to live in Spain.", audioSrc: "" },
     { speaker: "Mike", text: "Do you want to study Spanish with me?", audioSrc: "" },
     { speaker: "Zoey", text: "Yes!", audioSrc: "" },

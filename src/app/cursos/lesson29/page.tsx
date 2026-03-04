@@ -793,7 +793,7 @@ export default function LessonGettingAround() {
         
         <div className="flex justify-center gap-4 mt-8">
           <button
-            onClick={() => router.push("https://website-english-course.vercel.app/cursos/lesson28")}
+            onClick={() => router.push("/cursos/lesson28")}
             className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
           >
             &larr; Lição Anterior

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check } from "lucide-react";
+import { Pause, Play, RotateCcw, ChevronDown, ChevronUp, Save } from "lucide-react";
 
 const listenItems = [
   {
@@ -158,10 +158,21 @@ interface VideoQuestion {
   isPersonal?: boolean;
 }
 
+interface Dialogue {
+  speaker: string;
+  text: string;
+  fixed: boolean;
+}
+
 export default function Lesson6FoodDrink() {
   const router = useRouter();
+  const [showSaveNotification, setShowSaveNotification] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Estado inicial completo
   const [notes, setNotes] = useState<Record<string, string>>({});
-  const [dialogues, setDialogues] = useState([
+  const [dialogues, setDialogues] = useState<Dialogue[]>([
     { speaker: "Customer", text: "", fixed: false },
     { speaker: "Waiter", text: "", fixed: false },
     { speaker: "Customer", text: "", fixed: false },
@@ -193,13 +204,13 @@ export default function Lesson6FoodDrink() {
     { id: 10, sentence: "I want to eat tomatoes.", options: [], correctAnswer: "I don't want to eat tomatoes.", userAnswer: "", isNegative: true },
     { id: 11, sentence: "I want to drink a glass of water.", options: [], correctAnswer: "I don't want to drink a glass of water.", userAnswer: "", isNegative: true },
    
-    // Substitution Practice II - CORRIGIDAS
+    // Substitution Practice II
     { id: 12, sentence: "Do you drink coffee?", options: ["juice", "tea", "milk", "coke"], correctAnswer: "juice", userAnswer: "" },
     { id: 13, sentence: "Do you eat bread?", options: ["rice", "pasta", "pancakes"], correctAnswer: "rice", userAnswer: "" },
     { id: 14, sentence: "Do you like eggs?", options: ["yogurt", "soup", "salad"], correctAnswer: "yogurt", userAnswer: "" },
     { id: 15, sentence: "Do you prefer pizza?", options: ["spaghetti", "burger", "hotdog", "soup"], correctAnswer: "spaghetti", userAnswer: "" },
    
-    // Substitution Practice III - Third Person (He/She)
+    // Substitution Practice III - Third Person
     { id: 16, sentence: "She drinks coffee for breakfast.", options: ["tea", "milk", "juice"], correctAnswer: "tea", userAnswer: "", usesThirdPerson: true },
     { id: 17, sentence: "He eats bread with butter.", options: ["jam", "honey", "cheese"], correctAnswer: "jam", userAnswer: "", usesThirdPerson: true },
     { id: 18, sentence: "She likes to eat pizza.", options: ["pasta", "salad", "soup"], correctAnswer: "pasta", userAnswer: "", usesThirdPerson: true },
@@ -226,7 +237,7 @@ export default function Lesson6FoodDrink() {
     { id: 33, sentence: "You like to eat eggs for lunch.", options: [], correctAnswer: "Do you like to eat eggs for lunch?", userAnswer: "", isInterrogative: true },
     { id: 34, sentence: "You eat beans for dinner.", options: [], correctAnswer: "Do you eat beans for dinner?", userAnswer: "", isInterrogative: true },
     { id: 35, sentence: "You drink orange juice for breakfast.", options: [], correctAnswer: "Do you drink orange juice for breakfast?", userAnswer: "", isInterrogative: true },
-    { id: 36, sentence: "You drink a slice of chocolate pie.", options: [], correctAnswer: "Do you drink a slice of chocolate pie?", userAnswer: "", isInterrogative: true },
+    { id: 36, sentence: "You eat a slice of chocolate pie.", options: [], correctAnswer: "Do you eat a slice of chocolate pie?", userAnswer: "", isInterrogative: true },
    
     // Change into Interrogative - Third Person
     { id: 37, sentence: "She drinks coffee.", options: [], correctAnswer: "Does she drink coffee?", userAnswer: "", isInterrogative: true, usesThirdPerson: true },
@@ -348,6 +359,143 @@ export default function Lesson6FoodDrink() {
     tuneIn: true
   });
 
+  const [lastSaved, setLastSaved] = useState<string | null>(null);
+
+  // Função para salvar todos os dados - SEM Auto-save
+  const saveAllData = () => {
+    try {
+      const lessonData = {
+        notes,
+        dialogues,
+        numberingAnswers,
+        practiceItems,
+        questions,
+        videoQuestions,
+        sections,
+        lastSaved: new Date().toLocaleString()
+      };
+      
+      localStorage.setItem('lesson6FoodDrink', JSON.stringify(lessonData));
+      setLastSaved(new Date().toLocaleString());
+      setSaveMessage("✅ Progresso salvo com sucesso!");
+      setShowSaveNotification(true);
+      setTimeout(() => setShowSaveNotification(false), 3000);
+      
+      console.log("Dados salvos:", lessonData);
+    } catch (error) {
+      console.error("Erro ao salvar:", error);
+      setSaveMessage("❌ Erro ao salvar progresso");
+      setShowSaveNotification(true);
+      setTimeout(() => setShowSaveNotification(false), 3000);
+    }
+  };
+
+  // Função para carregar todos os dados
+  const loadAllData = () => {
+    try {
+      setIsLoading(true);
+      const savedData = localStorage.getItem('lesson6FoodDrink');
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        
+        setNotes(parsedData.notes || {});
+        setDialogues(parsedData.dialogues || dialogues);
+        setNumberingAnswers(parsedData.numberingAnswers || numberingAnswers);
+        
+        // Carregar practice items
+        if (parsedData.practiceItems) {
+          const mergedPracticeItems = practiceItems.map(item => {
+            const loadedItem = parsedData.practiceItems.find((li: PracticeItem) => li.id === item.id);
+            return {
+              ...item,
+              userAnswer: loadedItem?.userAnswer || ""
+            };
+          });
+          setPracticeItems(mergedPracticeItems);
+        }
+        
+        // Carregar questions
+        if (parsedData.questions) {
+          const mergedQuestions = questions.map(q => {
+            const loadedQ = parsedData.questions.find((lq: any) => lq.id === q.id);
+            return {
+              ...q,
+              userAnswer: loadedQ?.userAnswer || ""
+            };
+          });
+          setQuestions(mergedQuestions);
+        }
+        
+        // Carregar video questions
+        if (parsedData.videoQuestions) {
+          const mergedVideoQuestions = videoQuestions.map(vq => {
+            const loadedVQ = parsedData.videoQuestions.find((lvq: VideoQuestion) => lvq.id === vq.id);
+            return {
+              ...vq,
+              userAnswer: loadedVQ?.userAnswer || ""
+            };
+          });
+          setVideoQuestions(mergedVideoQuestions);
+        }
+        
+        setSections(parsedData.sections || sections);
+        setLastSaved(parsedData.lastSaved || null);
+        
+        setSaveMessage("✅ Progresso carregado com sucesso!");
+        setShowSaveNotification(true);
+        setTimeout(() => setShowSaveNotification(false), 3000);
+        
+        console.log("Dados carregados:", parsedData);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Erro ao carregar:", error);
+      setSaveMessage("❌ Erro ao carregar progresso");
+      setShowSaveNotification(true);
+      setTimeout(() => setShowSaveNotification(false), 3000);
+      setIsLoading(false);
+    }
+  };
+
+  // Função para limpar todos os dados
+  const clearAllData = () => {
+    if (window.confirm("Tem certeza que deseja limpar todo o progresso?")) {
+      localStorage.removeItem('lesson6FoodDrink');
+      
+      // Resetar todos os estados
+      setNotes({});
+      setDialogues([
+        { speaker: "Customer", text: "", fixed: false },
+        { speaker: "Waiter", text: "", fixed: false },
+        { speaker: "Customer", text: "", fixed: false },
+        { speaker: "Waiter", text: "", fixed: false }
+      ]);
+      setNumberingAnswers({ dish1: null, dish2: null, dish3: null });
+      setIsNumberingChecked(false);
+      setIsNumberingCorrect(false);
+      
+      // Reset practice items
+      setPracticeItems(prev => prev.map(item => ({ ...item, userAnswer: "" })));
+      
+      // Reset questions
+      setQuestions(prev => prev.map(q => ({ ...q, userAnswer: "" })));
+      
+      // Reset video questions
+      setVideoQuestions(prev => prev.map(vq => ({ ...vq, userAnswer: "" })));
+      
+      setLastSaved(null);
+      
+      setSaveMessage("✅ Progresso limpo com sucesso!");
+      setShowSaveNotification(true);
+      setTimeout(() => setShowSaveNotification(false), 3000);
+    }
+  };
+
+  // Carregar dados apenas uma vez ao iniciar
+  useEffect(() => {
+    loadAllData();
+  }, []); // Array vazio = executa apenas uma vez
+
   const toggleSection = (section: keyof typeof sections) => {
     setSections(prev => ({
       ...prev,
@@ -359,20 +507,12 @@ export default function Lesson6FoodDrink() {
     setNotes(prev => ({ ...prev, [key]: value }));
   };
 
-  const saveNotes = async () => {
-    alert("Notas salvas localmente!");
-    // Função para salvar localmente pode ser implementada posteriormente
-  };
-
-  const saveVideoAnswers = async () => {
-    alert("Respostas do vídeo salvas localmente!");
-    // Função para salvar localmente pode ser implementada posteriormente
-  };
-
   const handleDialogueChange = (index: number, value: string) => {
-    const newDialogues = [...dialogues];
-    newDialogues[index] = { ...newDialogues[index], text: value };
-    setDialogues(newDialogues);
+    setDialogues(prev => {
+      const newDialogues = [...prev];
+      newDialogues[index] = { ...newDialogues[index], text: value };
+      return newDialogues;
+    });
   };
 
   const handlePracticeAnswer = (id: number, answer: string) => {
@@ -426,13 +566,11 @@ export default function Lesson6FoodDrink() {
     const question = videoQuestions.find(q => q.id === id);
     if (!question) return;
 
-    // For personal questions, just acknowledge
     if (question.isPersonal) {
       alert("Ótima resposta pessoal! Continue praticando.");
       return;
     }
 
-    // For factual questions, provide guidance
     const correctAnswers: Record<number, string> = {
       2: "She likes to run about 40 minutes.",
       3: "At the salon.",
@@ -458,9 +596,60 @@ export default function Lesson6FoodDrink() {
     setIsNumberingCorrect(false);
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Carregando lição...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/l5-orange-juice.jpg')` }}>
+      {/* Notificação de salvamento */}
+      {showSaveNotification && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
+          {saveMessage}
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
+        {/* Barra de controle de progresso */}
+        <div className="mb-8 flex justify-between items-center bg-gray-100 p-4 rounded-xl">
+          <div className="flex items-center gap-4">
+            <h3 className="font-semibold text-gray-700">💾 Progresso:</h3>
+            {lastSaved ? (
+              <span className="text-sm text-gray-600">Último save: {lastSaved}</span>
+            ) : (
+              <span className="text-sm text-gray-600">Nenhum progresso salvo</span>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={saveAllData}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+            >
+              <Save size={18} />
+              Salvar Agora
+            </button>
+            <button
+              onClick={loadAllData}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
+            >
+              Carregar
+            </button>
+            <button
+              onClick={clearAllData}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+            >
+              Limpar
+            </button>
+          </div>
+        </div>
+
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">Lesson 6 – Food & Drink</h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
@@ -633,12 +822,6 @@ export default function Lesson6FoodDrink() {
                     </div>
                   ))}
                 </div>
-                <button
-                  onClick={saveNotes}
-                  className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
-                >
-                  Salvar Diálogo
-                </button>
               </div>
             </div>
           )}
@@ -713,7 +896,7 @@ export default function Lesson6FoodDrink() {
                         <div className="mt-2">
                           <button
                             onClick={() => {
-                              const isCorrect = item.userAnswer.toLowerCase() === item.correctAnswer.toLowerCase();
+                              const isCorrect = item.userAnswer.toLowerCase().trim() === item.correctAnswer.toLowerCase().trim();
                               alert(isCorrect ? '✅ Correto!' : `❌ Resposta correta: ${item.correctAnswer}`);
                             }}
                             className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
@@ -727,7 +910,7 @@ export default function Lesson6FoodDrink() {
                 </div>
               </div>
 
-              {/* Substitution Practice II - CORRIGIDAS */}
+              {/* Substitution Practice II */}
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-green-700 mb-4">👉 Substitution Practice II</h3>
                 <p className="text-green-600 mb-4 italic">Repita substituindo pelas palavras entre parênteses.</p>
@@ -930,7 +1113,7 @@ export default function Lesson6FoodDrink() {
           )}
         </div>
 
-        {/* TUNE IN YOUR EARS - SEÇÃO COMPLETAMENTE ATUALIZADA */}
+        {/* TUNE IN YOUR EARS */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
           <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -951,7 +1134,7 @@ export default function Lesson6FoodDrink() {
                   Watch the video and answer the questions below:
                 </h3>
                
-                {/* Container do vídeo do YouTube ATUALIZADO */}
+                {/* Container do vídeo do YouTube */}
                 <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
                   <div className="aspect-w-16 aspect-h-9">
                     <iframe
@@ -969,7 +1152,7 @@ export default function Lesson6FoodDrink() {
                 </div>
               </div>
 
-              {/* Vocabulary Help - ATUALIZADO */}
+              {/* Vocabulary Help */}
               <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-teal-800 mb-4">📖 Key Vocabulary from the Video:</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1004,7 +1187,7 @@ export default function Lesson6FoodDrink() {
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">To wake up</span>
-                      <span className="text-teal-600">acordar cedo</span>
+                      <span className="text-teal-600">acordar</span>
                     </div>
                   </div>
                   <div className="space-y-3">
@@ -1052,7 +1235,7 @@ export default function Lesson6FoodDrink() {
                 </div>
               </div>
 
-              {/* Questions Section - ATUALIZADA */}
+              {/* Questions Section */}
               <div className="space-y-6 mb-8">
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-teal-200 shadow-md">
@@ -1113,15 +1296,6 @@ export default function Lesson6FoodDrink() {
                   <li><strong>Assista várias vezes, se necessário:</strong> Pause e volte o vídeo para captar todos os detalhes.</li>
                 </ul>
               </div>
-
-              <div className="mt-6 text-center">
-                <button
-                  onClick={saveVideoAnswers}
-                  className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300"
-                >
-                  Save My Answers
-                </button>
-              </div>
             </div>
           )}
         </div>
@@ -1129,25 +1303,51 @@ export default function Lesson6FoodDrink() {
         {/* Navigation Buttons */}
         <div className="flex justify-between gap-4 mt-8">
           <button
-            onClick={() => router.push("/cursos/lesson5")}
+            onClick={() => {
+              router.push("/cursos/lesson5");
+            }}
             className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
           >
             &larr; Lição Anterior
           </button>
           <button
-            onClick={saveNotes}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            onClick={saveAllData}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full transition-colors flex items-center gap-2"
           >
+            <Save size={18} />
             Salvar Progresso
           </button>
           <button
-            onClick={() => router.push("/cursos/review1")}
+            onClick={() => {
+              router.push("/cursos/review1");
+            }}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
           >
             Próxima Lição &rarr;
           </button>
         </div>
+
+        {/* Indicador de último save */}
+        <div className="mt-4 text-center text-sm text-gray-500">
+          <p>{lastSaved ? `📅 Último save: ${lastSaved}` : '💾 Clique em "Salvar Progresso" para guardar suas respostas'}</p>
+        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
+        }
+      `}</style>
     </div>
-  ); 
+  );
 }

@@ -1,15 +1,100 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Save } from "lucide-react";
 
 type SectionKey = 'pinpoint' | 'assessment';
 
+interface ReviewLessonData {
+  ratings: number[];
+  activeSection: SectionKey;
+  lastSaved: string | null;
+}
+
 export default function ReviewLessonFoodDrink() {
   const router = useRouter();
+  const [showSaveNotification, setShowSaveNotification] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  
   const [activeSection, setActiveSection] = useState<SectionKey>('pinpoint');
   const [ratings, setRatings] = useState<number[]>([2, 2, 2, 2, 2, 2, 2, 2, 2]);
+  const [lastSaved, setLastSaved] = useState<string | null>(null);
+
+  // Função para salvar todos os dados
+  const saveAllData = () => {
+    try {
+      const lessonData: ReviewLessonData = {
+        ratings,
+        activeSection,
+        lastSaved: new Date().toLocaleString()
+      };
+      
+      localStorage.setItem('reviewLessonFoodDrink', JSON.stringify(lessonData));
+      setLastSaved(new Date().toLocaleString());
+      setSaveMessage("✅ Progresso salvo com sucesso!");
+      setShowSaveNotification(true);
+      setTimeout(() => setShowSaveNotification(false), 3000);
+      
+      console.log("Dados salvos:", lessonData);
+    } catch (error) {
+      console.error("Erro ao salvar:", error);
+      setSaveMessage("❌ Erro ao salvar progresso");
+      setShowSaveNotification(true);
+      setTimeout(() => setShowSaveNotification(false), 3000);
+    }
+  };
+
+  // Função para carregar todos os dados
+  const loadAllData = () => {
+    try {
+      setIsLoading(true);
+      const savedData = localStorage.getItem('reviewLessonFoodDrink');
+      if (savedData) {
+        const parsedData: ReviewLessonData = JSON.parse(savedData);
+        
+        setRatings(parsedData.ratings || [2, 2, 2, 2, 2, 2, 2, 2, 2]);
+        setActiveSection(parsedData.activeSection || 'pinpoint');
+        setLastSaved(parsedData.lastSaved || null);
+        
+        setSaveMessage("✅ Progresso carregado com sucesso!");
+        setShowSaveNotification(true);
+        setTimeout(() => setShowSaveNotification(false), 3000);
+        
+        console.log("Dados carregados:", parsedData);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Erro ao carregar:", error);
+      setSaveMessage("❌ Erro ao carregar progresso");
+      setShowSaveNotification(true);
+      setTimeout(() => setShowSaveNotification(false), 3000);
+      setIsLoading(false);
+    }
+  };
+
+  // Função para limpar todos os dados
+  const clearAllData = () => {
+    if (window.confirm("Tem certeza que deseja limpar todo o progresso?")) {
+      localStorage.removeItem('reviewLessonFoodDrink');
+      
+      // Resetar todos os estados
+      setRatings([2, 2, 2, 2, 2, 2, 2, 2, 2]);
+      setActiveSection('pinpoint');
+      setLastSaved(null);
+      
+      setSaveMessage("✅ Progresso limpo com sucesso!");
+      setShowSaveNotification(true);
+      setTimeout(() => setShowSaveNotification(false), 3000);
+    }
+  };
+
+  // Carregar dados ao iniciar
+  useEffect(() => {
+    loadAllData();
+  }, []);
 
   const playAudio = (word: string) => {
     console.log("Tentando reproduzir áudio para:", word);
@@ -81,6 +166,10 @@ export default function ReviewLessonFoodDrink() {
     setRatings(newRatings);
   };
 
+  const handleSectionChange = (section: SectionKey) => {
+    setActiveSection(section);
+  };
+
   const getRatingColor = (rating: number) => {
     switch (rating) {
       case 1: return 'bg-red-400';
@@ -146,10 +235,61 @@ export default function ReviewLessonFoodDrink() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Carregando lição...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-8 px-4">
+      {/* Notificação de salvamento */}
+      {showSaveNotification && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
+          {saveMessage}
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto">
         
+        {/* Barra de controle de progresso */}
+        <div className="mb-8 flex justify-between items-center bg-white p-4 rounded-xl shadow-lg">
+          <div className="flex items-center gap-4">
+            <h3 className="font-semibold text-gray-700">💾 Progresso:</h3>
+            {lastSaved ? (
+              <span className="text-sm text-gray-600">Último save: {lastSaved}</span>
+            ) : (
+              <span className="text-sm text-gray-600">Nenhum progresso salvo</span>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={saveAllData}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+            >
+              <Save size={18} />
+              Salvar Agora
+            </button>
+            <button
+              onClick={loadAllData}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
+            >
+              Carregar
+            </button>
+            <button
+              onClick={clearAllData}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+            >
+              Limpar
+            </button>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-12">
           <div className="bg-white rounded-3xl p-8 shadow-2xl border-4 border-yellow-400 mb-6">
@@ -176,7 +316,7 @@ export default function ReviewLessonFoodDrink() {
           {Object.entries(sections).map(([key, section]) => (
             <button
               key={key}
-              onClick={() => setActiveSection(key as SectionKey)}
+              onClick={() => handleSectionChange(key as SectionKey)}
               className={`py-4 px-2 rounded-2xl font-bold text-lg transition-all duration-300 ${
                 activeSection === key
                   ? 'bg-blue-500 text-white shadow-lg transform scale-105'
@@ -309,42 +449,67 @@ export default function ReviewLessonFoodDrink() {
             <div className="text-4xl mb-2">📊</div>
             <h3 className="text-xl font-bold text-gray-800 mb-2">Progress</h3>
             <div className="w-full bg-gray-200 rounded-full h-4 mb-2">
-              <div className="bg-green-500 h-4 rounded-full" style={{ width: '85%' }}></div>
+              <div 
+                className="bg-green-500 h-4 rounded-full" 
+                style={{ width: `${(ratings.filter(r => r > 1).length / ratings.length) * 100}%` }}
+              ></div>
             </div>
-            <p className="text-gray-600">85% Complete</p>
+            <p className="text-gray-600">
+              {Math.round((ratings.filter(r => r > 1).length / ratings.length) * 100)}% Complete
+            </p>
           </div>
 
           <div className="bg-white rounded-3xl p-6 shadow-lg border-4 border-blue-300 text-center">
             <div className="text-4xl mb-2">⭐</div>
             <h3 className="text-xl font-bold text-gray-800 mb-2">Mastery Level</h3>
-            <div className="text-3xl font-bold text-blue-600">Advanced</div>
-            <p className="text-gray-600">Great progress!</p>
+            <div className="text-3xl font-bold text-blue-600">
+              {ratings.filter(r => r === 3).length > 6 ? 'Advanced' : 
+               ratings.filter(r => r === 2).length > 4 ? 'Intermediate' : 'Beginner'}
+            </div>
+            <p className="text-gray-600">Keep practicing!</p>
           </div>
 
           <div className="bg-white rounded-3xl p-6 shadow-lg border-4 border-green-300 text-center">
             <div className="text-4xl mb-2">🎯</div>
             <h3 className="text-xl font-bold text-gray-800 mb-2">Next Steps</h3>
-            <p className="text-gray-600">Practice daily conversations</p>
+            <p className="text-gray-600">
+              {ratings.filter(r => r === 1).length > 0 
+                ? 'Practice what needs work' 
+                : 'Ready for next lesson!'}
+            </p>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <button
-            onClick={() => router.push("/cursos/lesson6")}
+            onClick={() => {
+              router.push("/cursos/lesson6");
+            }}
             className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-8 rounded-2xl transition-colors text-lg"
           >
             ↞ Previous Lesson
           </button>
           <button
-            onClick={() => router.push("/cursos/lesson7")}
+            onClick={saveAllData}
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-2xl transition-colors text-lg flex items-center gap-2"
+          >
+            <Save size={20} />
+            Save Progress
+          </button>
+          <button
+            onClick={() => {
+              router.push("/cursos/lesson7");
+            }}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-2xl transition-colors text-lg"
           >
             Next Lesson ↠
           </button>
-          <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-2xl transition-colors text-lg">
-            Save Progress 💾
-          </button>
+        </div>
+
+        {/* Indicador de último save */}
+        <div className="text-center text-sm text-gray-500 mb-4">
+          <p>{lastSaved ? `📅 Último save: ${lastSaved}` : '💾 Clique em "Save Progress" para guardar suas respostas'}</p>
         </div>
 
         {/* Celebration Message */}
@@ -356,6 +521,22 @@ export default function ReviewLessonFoodDrink() {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 }

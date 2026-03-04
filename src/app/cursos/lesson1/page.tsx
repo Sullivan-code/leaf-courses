@@ -368,19 +368,19 @@ export default function LessonFoodAndDrink() {
                   <p className="text-lg font-medium text-gray-800">3. Você quer <span className="text-blue-600">café</span> ou chá? / leite / suco</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Eu gosto de <span className="text-blue-600">pão</span> com queijo. / manteiga / presunto</p>
+                  <p className="text-lg font-medium text-gray-800">4. Eu gosto de pão com <span className="text-blue-600">queijo</span>. / manteiga / presunto</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">5. Nós comemos <span className="text-blue-600">arroz</span> no almoço. / feijão / batata-frita</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. Você bebe <span className="text-blue-600">leite</span> com chocolate? / café / chá</p>
+                  <p className="text-lg font-medium text-gray-800">6. Você bebe <span className="text-blue-600">leite com chocolate?</span> / café / chá</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">7. Eu prefiro <span className="text-blue-600">suco</span> de laranja. / maçã / uva</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. Eles bebem <span className="text-blue-600">chá</span> de camomila. / hortelã / erva-doce</p>
+                  <p className="text-lg font-medium text-gray-800">8. Eles bebem chá de <span className="text-blue-600">camomila</span>. / hortelã / erva-doce</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">9. Eu como <span className="text-blue-600">queijo</span> com pão. / presunto / manteiga</p>
@@ -471,7 +471,7 @@ export default function LessonFoodAndDrink() {
                   <p className="text-lg font-medium text-gray-800">1. Eu como pão com <span className="text-blue-600">manteiga</span>. / presunto / queijo</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. Você bebe suco e eu bebo <span className="text-blue-600">água</span>. / leite - café / chá - suco</p>
+                  <p className="text-lg font-medium text-gray-800">2. Você bebe <span className="text-blue-600">suco</span> e eu bebo <span className="text-blue-600">água</span>. / leite - café / chá - suco</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">3. Eu bebo <span className="text-blue-600">café</span>. E você? / leite / suco</p>
@@ -492,10 +492,10 @@ export default function LessonFoodAndDrink() {
                   <p className="text-lg font-medium text-gray-800">8. Eles <span className="text-blue-600">comem</span> pão com manteiga. / bebem / precisam</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. Eu <span className="text-blue-600">gosto</span> de café. / bebo / como</p>
+                  <p className="text-lg font-medium text-gray-800">9. Eu <span className="text-blue-600">gosto</span> de café. / bebo / tomo</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. Você <span className="text-blue-600">prefere</span> chá ou café? / bebe / come</p>
+                  <p className="text-lg font-medium text-gray-800">10. Você <span className="text-blue-600">prefere</span> chá ou café? / bebe / toma</p>
                 </div>
               </div>
             )}

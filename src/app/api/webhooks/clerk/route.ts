@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { WebhookEvent } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
   try {
@@ -16,11 +15,13 @@ export async function POST(req: Request) {
       );
     }
 
+    // Obter headers
     const headerPayload = await headers();
     const svixId = headerPayload.get("svix-id");
     const svixTimestamp = headerPayload.get("svix-timestamp");
     const svixSignature = headerPayload.get("svix-signature");
 
+    // Verificar se headers existem
     if (!svixId || !svixTimestamp || !svixSignature) {
       return NextResponse.json(
         { error: "Missing svix headers" }, 
@@ -28,18 +29,20 @@ export async function POST(req: Request) {
       );
     }
 
+    // Obter body
     const payload = await req.json();
     const body = JSON.stringify(payload);
 
+    // Verificar webhook
     const wh = new Webhook(WEBHOOK_SECRET);
-    let evt: WebhookEvent;
+    let evt: any;
 
     try {
       evt = wh.verify(body, {
         "svix-id": svixId,
         "svix-timestamp": svixTimestamp,
         "svix-signature": svixSignature,
-      }) as WebhookEvent;
+      });
     } catch (err) {
       console.error("Webhook verification failed:", err);
       return NextResponse.json(
@@ -50,9 +53,11 @@ export async function POST(req: Request) {
 
     const eventType = evt.type;
 
+    // Processar evento user.created
     if (eventType === "user.created") {
       const { id, email_addresses, username, first_name, last_name, image_url } = evt.data;
       
+      // Pegar primeiro email
       const email = email_addresses?.[0]?.email_address;
       
       if (!email) {
@@ -60,6 +65,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ received: true });
       }
 
+      // Criar usuário no banco
       await prisma.user.upsert({
         where: { clerkId: id },
         update: {

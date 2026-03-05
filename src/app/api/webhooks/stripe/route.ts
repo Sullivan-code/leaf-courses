@@ -54,7 +54,6 @@ export async function POST(req: Request) {
         return NextResponse.json({ received: true });
       }
 
-      // Atualizar usuário com todos os campos
       await prisma.user.update({
         where: { clerkId },
         data: {

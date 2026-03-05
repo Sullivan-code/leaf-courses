@@ -52,6 +52,7 @@ function MobileNavbar() {
 
           <nav className="flex flex-col space-y-4 mt-6">
 
+            {/* HOME */}
             <Link href="/">
               <Button className="flex items-center gap-3 justify-start w-full text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-purple-800 transition-all duration-300">
                 <HomeIcon className="w-4 h-4" />
@@ -59,6 +60,7 @@ function MobileNavbar() {
               </Button>
             </Link>
 
+            {/* NOSSOS CURSOS */}
             <Link href="/nossos-cursos">
               <Button className="flex items-center gap-3 justify-start w-full text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-purple-800 transition-all duration-300">
                 <BookOpenIcon className="w-4 h-4" />
@@ -66,6 +68,17 @@ function MobileNavbar() {
               </Button>
             </Link>
 
+            {/* 🔥 MEUS CURSOS (SÓ SE ESTIVER LOGADO) */}
+            {isSignedIn && (
+              <Link href="/meus-cursos">
+                <Button className="flex items-center gap-3 justify-start w-full text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-emerald-600 hover:to-green-800 transition-all duration-300">
+                  <BookOpenIcon className="w-4 h-4" />
+                  Meus Cursos
+                </Button>
+              </Link>
+            )}
+
+            {/* QUEM SOMOS */}
             <Link href="/quem-somos">
               <Button className="flex items-center gap-3 justify-start w-full text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-purple-800 transition-all duration-300">
                 <InfoIcon className="w-4 h-4" />
@@ -73,6 +86,7 @@ function MobileNavbar() {
               </Button>
             </Link>
 
+            {/* DEPOIMENTOS */}
             <Link href="/depoimentos">
               <Button className="flex items-center gap-3 justify-start w-full text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-purple-800 transition-all duration-300">
                 <CalendarIcon className="w-4 h-4" />
@@ -80,6 +94,7 @@ function MobileNavbar() {
               </Button>
             </Link>
 
+            {/* FALE CONOSCO */}
             <Link href="/fale-conosco">
               <Button className="flex items-center gap-3 justify-start w-full text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-purple-800 transition-all duration-300">
                 <MessageCircleIcon className="w-4 h-4" />
@@ -89,6 +104,7 @@ function MobileNavbar() {
 
             {isSignedIn ? (
               <>
+                {/* NOTIFICAÇÕES */}
                 <Link href="/notifications">
                   <Button className="flex items-center gap-3 justify-start w-full text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-purple-800 transition-all duration-300">
                     <BellIcon className="w-4 h-4" />
@@ -96,10 +112,9 @@ function MobileNavbar() {
                   </Button>
                 </Link>
 
-                {/* Checkout */}
+                {/* CHECKOUT */}
                 <Link href="/checkout">
                   <Button className="relative flex items-center gap-3 justify-start w-full text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-purple-800 transition-all duration-300">
-                    
                     <ShoppingCartIcon className="w-4 h-4" />
                     Checkout
 
@@ -111,6 +126,7 @@ function MobileNavbar() {
                   </Button>
                 </Link>
 
+                {/* PERFIL */}
                 <Link
                   href={`/profile/${
                     user?.username ??
@@ -123,6 +139,7 @@ function MobileNavbar() {
                   </Button>
                 </Link>
 
+                {/* LOGOUT */}
                 <SignOutButton>
                   <Button className="flex items-center gap-3 justify-start w-full text-white bg-gradient-to-r from-red-400 to-pink-500 hover:from-pink-500 hover:to-red-600 transition-all duration-300">
                     <LogOutIcon className="w-4 h-4" />

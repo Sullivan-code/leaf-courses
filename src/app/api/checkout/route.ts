@@ -4,42 +4,68 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 
 export async function POST() {
-  const { userId } = auth();
+  try {
+    const { userId } = await auth();
 
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized" }, 
+        { status: 401 }
+      );
+    }
 
-  const user = await prisma.user.findUnique({
-    where: { clerkId: userId },
-  });
+    if (!process.env.STRIPE_PRICE_ID) {
+      console.error("STRIPE_PRICE_ID is not configured");
+      return NextResponse.json(
+        { error: "Payment configuration error" }, 
+        { status: 500 }
+      );
+    }
 
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
+    if (!process.env.NEXT_PUBLIC_APP_URL) {
+      console.error("NEXT_PUBLIC_APP_URL is not configured");
+      return NextResponse.json(
+        { error: "App URL configuration error" }, 
+        { status: 500 }
+      );
+    }
 
-  const checkoutSession = await stripe.checkout.sessions.create({
-    mode: "subscription",
+    const user = await prisma.user.findUnique({
+      where: { clerkId: userId },
+    });
 
-    // Se já existir customer, reutiliza
-    customer: user.stripeCustomerId ?? undefined,
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" }, 
+        { status: 404 }
+      );
+    }
 
-    customer_email: user.email,
-
-    metadata: {
-      clerkId: user.clerkId,
-    },
-
-    line_items: [
-      {
-        price: process.env.STRIPE_PRICE_ID!,
-        quantity: 1,
+    // Criar sessão de checkout
+    const checkoutSession = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      payment_method_types: ["card"],
+      customer: user.stripeCustomerId || undefined,
+      customer_email: user.stripeCustomerId ? undefined : user.email,
+      metadata: {
+        clerkId: user.clerkId,
       },
-    ],
+      line_items: [
+        {
+          price: process.env.STRIPE_PRICE_ID,
+          quantity: 1,
+        },
+      ],
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/meus-cursos?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/nossos-cursos?canceled=true`,
+    });
 
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout`,
-  });
-
-  return NextResponse.json({ url: checkoutSession.url });
+    return NextResponse.json({ url: checkoutSession.url });
+  } catch (error) {
+    console.error("Checkout error:", error);
+    return NextResponse.json(
+      { error: "Failed to create checkout session" }, 
+      { status: 500 }
+    );
+  }
 }

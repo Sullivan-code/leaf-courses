@@ -1,9 +1,10 @@
-import Stripe from "stripe";
+import Stripe from 'stripe';
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-
-if (!stripeSecretKey) {
-  throw new Error("STRIPE_SECRET_KEY is not defined");
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('STRIPE_SECRET_KEY is missing');
 }
 
-export const stripe = new Stripe(stripeSecretKey);
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  typescript: true,
+  // Sem apiVersion - usa a versão padrão da sua conta Stripe
+});

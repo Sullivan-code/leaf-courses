@@ -5,6 +5,6 @@ if (!process.env.STRIPE_SECRET_KEY) {
 }
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2026-01-28.clover', // A versão que seu Stripe espera
   typescript: true,
-  // Sem apiVersion - usa a versão padrão da sua conta Stripe
 });

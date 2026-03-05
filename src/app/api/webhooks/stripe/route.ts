@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ received: true });
       }
 
-      // Atualizar usuário
+      // Atualizar usuário com todos os campos
       await prisma.user.update({
         where: { clerkId },
         data: {
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
         },
       });
 
-      console.log(`Subscription ${subscription.status} for user ${clerkId}`);
+      console.log(`✅ Subscription ${subscription.status} for user ${clerkId}`);
     }
 
     // Assinatura cancelada
@@ -80,12 +80,12 @@ export async function POST(req: Request) {
         },
       });
 
-      console.log(`Subscription ${subscription.id} canceled`);
+      console.log(`✅ Subscription ${subscription.id} canceled`);
     }
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error("Webhook error:", error);
+    console.error("❌ Webhook error:", error);
     return NextResponse.json(
       { error: "Webhook handler failed" }, 
       { status: 500 }

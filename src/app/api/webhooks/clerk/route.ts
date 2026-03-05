@@ -2,13 +2,18 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Webhook } from "svix";
 import { headers } from "next/headers";
+import { WebhookEvent } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
   try {
     const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
     
     if (!WEBHOOK_SECRET) {
-      throw new Error("CLERK_WEBHOOK_SECRET is not configured");
+      console.error("CLERK_WEBHOOK_SECRET is not configured");
+      return NextResponse.json(
+        { error: "Webhook secret not configured" }, 
+        { status: 500 }
+      );
     }
 
     const headerPayload = await headers();
@@ -27,14 +32,14 @@ export async function POST(req: Request) {
     const body = JSON.stringify(payload);
 
     const wh = new Webhook(WEBHOOK_SECRET);
-    let evt: any;
+    let evt: WebhookEvent;
 
     try {
       evt = wh.verify(body, {
         "svix-id": svixId,
         "svix-timestamp": svixTimestamp,
         "svix-signature": svixSignature,
-      });
+      }) as WebhookEvent;
     } catch (err) {
       console.error("Webhook verification failed:", err);
       return NextResponse.json(
@@ -48,21 +53,32 @@ export async function POST(req: Request) {
     if (eventType === "user.created") {
       const { id, email_addresses, username, first_name, last_name, image_url } = evt.data;
       
-      // Criar usuário no banco
+      const email = email_addresses?.[0]?.email_address;
+      
+      if (!email) {
+        console.error("No email found for user:", id);
+        return NextResponse.json({ received: true });
+      }
+
       await prisma.user.upsert({
         where: { clerkId: id },
-        update: {},
+        update: {
+          email: email,
+          username: username || email.split('@')[0],
+          name: `${first_name || ''} ${last_name || ''}`.trim() || null,
+          image: image_url,
+        },
         create: {
           clerkId: id,
-          email: email_addresses[0]?.email_address,
-          username: username || email_addresses[0]?.email_address.split('@')[0],
+          email: email,
+          username: username || email.split('@')[0],
           name: `${first_name || ''} ${last_name || ''}`.trim() || null,
           image: image_url,
           subscriptionStatus: "inactive",
         },
       });
 
-      console.log(`✅ User created: ${id}`);
+      console.log(`✅ User created: ${id} (${email})`);
     }
 
     return NextResponse.json({ received: true });

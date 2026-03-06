@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ProductList } from "@/components/product-list";
 import { stripe } from "@/lib/stripe";
 import { currentUser } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma"; // Esta importação deve funcionar agora
 
 const STRIPE_BUY_LINK = "https://buy.stripe.com/8x2eVeadW6Qq86RcCBcQU01";
 
@@ -23,13 +23,18 @@ export default async function Courses() {
   let authorized = false;
 
   if (user) {
-    const dbUser = await prisma.user.findUnique({
-      where: { clerkId: user.id },
-      select: { subscriptionStatus: true },
-    });
+    try {
+      const dbUser = await prisma.user.findUnique({
+        where: { clerkId: user.id },
+        select: { subscriptionStatus: true },
+      });
 
-    if (dbUser?.subscriptionStatus === "active") {
-      authorized = true;
+      if (dbUser?.subscriptionStatus === "active") {
+        authorized = true;
+      }
+    } catch (error) {
+      console.error("Error checking subscription:", error);
+      // Trate o erro adequadamente
     }
   }
 

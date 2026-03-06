@@ -1,17 +1,23 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-const isProtectedRoute = createRouteMatcher([
-  "/cursos(.*)",
-]);
+// Define protected routes
+const isProtectedRoute = (req: any) => {
+  const protectedPaths = ['/meus-cursos', '/profile', '/checkout', '/dashboard'];
+  return protectedPaths.some(path => req.nextUrl.pathname.startsWith(path));
+};
 
-export default clerkMiddleware((auth, req) => {
+export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {
-    auth().protect();
+    // Fix: await the auth() promise
+    const authObj = await auth();
+    authObj.protect();
   }
 });
 
 export const config = {
   matcher: [
-    "/((?!_next|.*\\..*).*)",
+    // Skip Next.js internals and all static files
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
   ],
 };

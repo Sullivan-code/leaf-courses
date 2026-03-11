@@ -55,8 +55,8 @@ const substitutionPractice2 = [
   { 
     key: "subs2-2", 
     original: "Qual é o seu nome? / sobrenome / nome completo",
-    correctAnswer: "What is your name?",
-    options: ["name", "last name", "full name"],
+    correctAnswer: "What's {0}?",
+    options: ["your name", "your last name", "your full name"],
     currentIndex: 0
   },
   { 
@@ -69,14 +69,14 @@ const substitutionPractice2 = [
   { 
     key: "subs2-4", 
     original: "Onde você mora? / estuda / quer estudar",
-    correctAnswer: "Where do you live?",
+    correctAnswer: "Where do you {0}?",
     options: ["live", "study", "want to study"],
     currentIndex: 0
   },
   { 
     key: "subs2-5", 
     original: "Você gosta de estudar nos Estados Unidos? / na Alemanha / no Brasil",
-    correctAnswer: "Do you like to study in the United States?",
+    correctAnswer: "Do you like to study {0}?",
     options: ["in the United States", "in Germany", "in Brazil"],
     currentIndex: 0
   }
@@ -118,56 +118,66 @@ const negativeExercises = [
 const affirmativeExercises = [
   { 
     key: "aff-1", 
-    sentence: "I don't understand that word.",
-    answer: "I understand that word."
+    sentence: "She doesn't understand that word.",
+    answer: "She understands that word."
   },
   { 
     key: "aff-2", 
-    sentence: "They don't study Italian in the afternoon.",
-    answer: "They study Italian in the afternoon."
+    sentence: "He doesn't study Italian in the afternoon.",
+    answer: "He studies Italian in the afternoon."
   },
   { 
     key: "aff-3", 
-    sentence: "I don't eat chicken sandwiches.",
-    answer: "I eat chicken sandwiches."
+    sentence: "They don't eat chicken sandwiches.",
+    answer: "They eat chicken sandwiches."
   },
   { 
     key: "aff-4", 
-    sentence: "I don't speak Spanish with my classmates.",
-    answer: "I speak Spanish with my classmates."
+    sentence: "We don't speak Spanish with our classmates.",
+    answer: "We speak Spanish with our classmates."
   },
   { 
     key: "aff-5", 
-    sentence: "I don't study German with your teacher.",
-    answer: "I study German with your teacher."
+    sentence: "It doesn't work properly.",
+    answer: "It works properly."
+  },
+  { 
+    key: "aff-6", 
+    sentence: "You don't study German with your teacher.",
+    answer: "You study German with your teacher."
   }
 ];
 
 const interrogativeExercises = [
   { 
     key: "int-1", 
-    sentence: "I live in Brazil with my friend.",
-    answer: "Do I live in Brazil with my friend?"
+    sentence: "She lives in Brazil with her friend.",
+    answer: "Does she live in Brazil with her friend?"
   },
   { 
     key: "int-2", 
-    sentence: "I understand Spanish and Italian.",
-    answer: "Do I understand Spanish and Italian?"
+    sentence: "They understand Spanish and Italian.",
+    answer: "Do they understand Spanish and Italian?"
   },
   { 
     key: "int-3", 
-    sentence: "I prefer to study in the morning.",
-    answer: "Do I prefer to study in the morning?"
+    sentence: "He prefers to study in the morning.",
+    answer: "Does he prefer to study in the morning?"
   },
   { 
     key: "int-4", 
-    sentence: "I like to eat vegetables for lunch.",
-    answer: "Do I like to eat vegetables for lunch?"
+    sentence: "You like to eat vegetables for lunch.",
+    answer: "Do you like to eat vegetables for lunch?"
   },
   { 
     key: "int-5", 
-    sentence: "I want to speak with your teacher.",
-    answer: "Do I want to speak with your teacher?"
+    sentence: "We want to speak with your teacher.",
+    answer: "Do we want to speak with your teacher?"
+  },
+  { 
+    key: "int-6", 
+    sentence: "It works very well.",
+    answer: "Does it work very well?"
   }
 ];
 
@@ -191,6 +201,79 @@ const unlockQuestions = [
     id: 4,
     question: "What do you like to eat for lunch and dinner?",
     placeholder: "Describe your favorite lunch and dinner foods..."
+  }
+];
+
+// Video questions for Tune In Your Ears section
+const videoQuestions = [
+  {
+    id: "video-1",
+    question: "What is the 'easiest way' to practice English according to the video?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "easiest way", portuguese: "jeito mais fácil" },
+      { english: "according to", portuguese: "de acordo com" },
+      { english: "practice", portuguese: "praticar" }
+    ]
+  },
+  {
+    id: "video-2",
+    question: "What are some tips mentioned to improve your listening skills?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "tips", portuguese: "dicas" },
+      { english: "mentioned", portuguese: "mencionadas" },
+      { english: "improve", portuguese: "melhorar" },
+      { english: "listening skills", portuguese: "habilidades de compreensão auditiva" }
+    ]
+  },
+  {
+    id: "video-3",
+    question: "What does the speaker say about 'accents' and 'slangs'?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "accents", portuguese: "sotaques" },
+      { english: "slangs", portuguese: "gírias" },
+      { english: "a mix of", portuguese: "uma mistura de" }
+    ]
+  },
+  {
+    id: "video-4",
+    question: "What is your daily routine for practicing English?",
+    isPersonal: true,
+    vocabulary: [
+      { english: "daily routine", portuguese: "rotina diária" },
+      { english: "to have fun", portuguese: "se divertir" },
+      { english: "habit", portuguese: "hábito" }
+    ]
+  },
+  {
+    id: "video-5",
+    question: "What does 'it's a piece of cake' mean? Can you use it in a sentence?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "it's a piece of cake", portuguese: "é muito fácil" },
+      { english: "meaning", portuguese: "significado" }
+    ]
+  },
+  {
+    id: "video-6",
+    question: "How can watching movies and series help with your English?",
+    isPersonal: true,
+    vocabulary: [
+      { english: "movies", portuguese: "filmes" },
+      { english: "series", portuguese: "séries" },
+      { english: "tone and emotion", portuguese: "tom e emoção" }
+    ]
+  },
+  {
+    id: "video-7",
+    question: "What does the speaker mean by 'the more you listen, the better you'll get'?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "the more you listen", portuguese: "quanto mais você ouve" },
+      { english: "the better you'll get", portuguese: "melhor você vai ficar" }
+    ]
   }
 ];
 
@@ -495,7 +578,8 @@ export default function Lesson10LanguagesAndCountries() {
     substitution2: true,
     affirmative: true,
     interrogative: true,
-    unlock: true
+    unlock: true,
+    tuneIn: true
   });
   
   // Estados para as práticas de substituição
@@ -508,6 +592,10 @@ export default function Lesson10LanguagesAndCountries() {
   // Estados para avaliação de respostas
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
+
+  // Estados para as respostas do vídeo
+  const [videoAnswers, setVideoAnswers] = useState<Record<string, string>>({});
+  const [showVideoAnswerResults, setShowVideoAnswerResults] = useState<Record<string, boolean>>({});
 
   // Estado para diálogos dinâmicos baseados na seleção
   const [practiceDialogs] = useState([
@@ -555,6 +643,7 @@ export default function Lesson10LanguagesAndCountries() {
         setSubs1Exercises(data.subs1Exercises || substitutionPractice1);
         setSubs2Exercises(data.subs2Exercises || substitutionPractice2);
         setWrittenAnswers(data.writtenAnswers || {});
+        setVideoAnswers(data.videoAnswers || {});
       } catch (error) {
         console.error("Error loading saved answers:", error);
       }
@@ -566,11 +655,24 @@ export default function Lesson10LanguagesAndCountries() {
       subs1Exercises,
       subs2Exercises,
       writtenAnswers,
+      videoAnswers,
       lastUpdated: new Date().toISOString()
     };
     
     localStorage.setItem("lesson10Answers", JSON.stringify(data));
     alert("All answers saved successfully to your browser!");
+  };
+
+  const clearAllAnswers = () => {
+    if (confirm("Are you sure you want to clear all your answers?")) {
+      setWrittenAnswers({});
+      setVideoAnswers({});
+      setAnswerResults({});
+      setShowAnswerResults({});
+      setShowVideoAnswerResults({});
+      localStorage.removeItem("lesson10Answers");
+      alert("All answers cleared!");
+    }
   };
 
   // Funções para manipular as práticas de substituição
@@ -598,11 +700,19 @@ export default function Lesson10LanguagesAndCountries() {
     setWrittenAnswers(prev => ({ ...prev, [key]: value }));
   };
 
+  const handleVideoAnswerChange = (key: string, value: string) => {
+    setVideoAnswers(prev => ({ ...prev, [key]: value }));
+  };
+
   // Função para verificar respostas
   const handleCheckAnswer = (exerciseKey: string, userAnswer: string, correctAnswer: string) => {
     const isCorrect = checkAnswer(userAnswer, correctAnswer);
     setAnswerResults(prev => ({ ...prev, [exerciseKey]: isCorrect }));
     setShowAnswerResults(prev => ({ ...prev, [exerciseKey]: true }));
+  };
+
+  const checkVideoAnswer = (questionId: string) => {
+    setShowVideoAnswerResults(prev => ({ ...prev, [questionId]: true }));
   };
 
   // Função para tocar áudio quando palavras são clicadas
@@ -654,20 +764,30 @@ export default function Lesson10LanguagesAndCountries() {
   };
 
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/world-map-bg.jpg')` }}>
-      <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">🌍 Lesson 10 – Languages & Countries</h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+    <div className="min-h-screen py-16 px-4 sm:px-6 relative overflow-hidden">
+      {/* Background Image com overlay */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat z-0"
+        style={{ 
+          backgroundImage: `url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2833&q=80')`,
+        }}
+      />
+      {/* Overlay escuro para melhor legibilidade */}
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-0" />
+      
+      <div className="relative z-10 max-w-5xl mx-auto bg-white bg-opacity-95 backdrop-blur-sm rounded-[40px] p-6 md:p-10 shadow-2xl">
+        <div className="text-center mb-12 md:mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#0c4a6e] mb-4 md:mb-6">🌍 Lesson 10 – Languages & Countries</h1>
+          <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto px-4">
             Talk to your friend and practice conversations about languages, countries, and daily life. Improve your communication skills.
           </p>
         </div>
 
         {/* TALK TO YOUR FRIEND */}
-        <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-purple-500 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-purple-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">💬 TALK TO YOUR FRIEND</h2>
+              <h2 className="text-xl md:text-2xl font-bold">💬 TALK TO YOUR FRIEND</h2>
               <button 
                 onClick={() => toggleSection('talkToFriend')}
                 className="ml-4 p-2 rounded-full hover:bg-purple-600 transition"
@@ -678,16 +798,16 @@ export default function Lesson10LanguagesAndCountries() {
           </div>
 
           {sections.talkToFriend && (
-            <div className="p-8">
-              <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-6 mb-6">
-                <h3 className="text-xl font-bold text-purple-800 mb-4">
+            <div className="p-6 md:p-8">
+              <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-4 md:p-6 mb-6">
+                <h3 className="text-lg md:text-xl font-bold text-purple-800 mb-4">
                   Practice this conversation between Zoey and Mike:
                 </h3>
                 
-                <div className="space-y-4 bg-white p-6 rounded-lg border border-purple-200">
+                <div className="space-y-4 bg-white p-4 md:p-6 rounded-lg border border-purple-200">
                   {mainDialogue.map((line, index) => (
-                    <div key={index} className="flex items-start gap-4">
-                      <div className={`min-w-20 font-bold ${
+                    <div key={index} className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
+                      <div className={`font-bold ${
                         line.speaker === "Zoey" ? "text-pink-600" : "text-blue-600"
                       }`}>
                         {line.speaker}:
@@ -705,7 +825,7 @@ export default function Lesson10LanguagesAndCountries() {
         </div>
 
         {/* TAKE A LOOK - VOCABULARY */}
-        <div className="bg-blue-50/80 border-2 border-blue-200 rounded-xl shadow-sm mb-10 overflow-hidden">
+        <div className="bg-blue-50/80 border-2 border-blue-200 rounded-xl shadow-sm mb-8 md:mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-3 px-6 flex items-center justify-between">
             <div className="flex items-center">
               <h2 className="text-lg font-bold">📘 VOCABULARY</h2>
@@ -742,10 +862,10 @@ export default function Lesson10LanguagesAndCountries() {
         </div>
 
         {/* DRILLING PRACTICE - SUBSTITUTION PRACTICE I */}
-        <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-green-500 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-green-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔄 SUBSTITUTION PRACTICE I</h2>
+              <h2 className="text-xl md:text-2xl font-bold">🔄 SUBSTITUTION PRACTICE I</h2>
               <button 
                 onClick={() => toggleSection('substitution1')}
                 className="ml-4 p-2 rounded-full hover:bg-green-600 transition"
@@ -756,9 +876,9 @@ export default function Lesson10LanguagesAndCountries() {
           </div>
 
           {sections.substitution1 && (
-            <div className="p-8">
-              <div className="bg-green-100 border-2 border-green-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-green-800 mb-4">
+            <div className="p-6 md:p-8">
+              <div className="bg-green-100 border-2 border-green-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-green-800 mb-4">
                   ✍️ Substitution Practice I – 3' - Click on the options to change the sentences:
                 </h3>
                 
@@ -803,10 +923,10 @@ export default function Lesson10LanguagesAndCountries() {
         </div>
 
         {/* CHANGE INTO NEGATIVE */}
-        <div className="bg-red-50 border-2 border-red-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-red-500 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-red-50 border-2 border-red-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-red-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">➖ CHANGE INTO NEGATIVE</h2>
+              <h2 className="text-xl md:text-2xl font-bold">➖ CHANGE INTO NEGATIVE</h2>
               <button 
                 onClick={() => toggleSection('negative')}
                 className="ml-4 p-2 rounded-full hover:bg-red-600 transition"
@@ -817,9 +937,9 @@ export default function Lesson10LanguagesAndCountries() {
           </div>
 
           {sections.negative && (
-            <div className="p-8">
-              <div className="bg-red-100 border-2 border-red-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-red-800 mb-4">
+            <div className="p-6 md:p-8">
+              <div className="bg-red-100 border-2 border-red-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-red-800 mb-4">
                   ⛔ Change into Negative – 2' - Transform to negative:
                 </h3>
                 
@@ -832,7 +952,7 @@ export default function Lesson10LanguagesAndCountries() {
                         </p>
                       </div>
                       
-                      <div className="flex gap-2 mb-2">
+                      <div className="flex flex-col sm:flex-row gap-2 mb-2">
                         <input
                           type="text"
                           placeholder="Write negative form..."
@@ -863,10 +983,10 @@ export default function Lesson10LanguagesAndCountries() {
         </div>
 
         {/* DRILLING PRACTICE - SUBSTITUTION PRACTICE II */}
-        <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-orange-500 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-orange-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔄 SUBSTITUTION PRACTICE II</h2>
+              <h2 className="text-xl md:text-2xl font-bold">🔄 SUBSTITUTION PRACTICE II</h2>
               <button 
                 onClick={() => toggleSection('substitution2')}
                 className="ml-4 p-2 rounded-full hover:bg-orange-600 transition"
@@ -877,9 +997,9 @@ export default function Lesson10LanguagesAndCountries() {
           </div>
 
           {sections.substitution2 && (
-            <div className="p-8">
-              <div className="bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-orange-800 mb-4">
+            <div className="p-6 md:p-8">
+              <div className="bg-orange-100 border-2 border-orange-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-orange-800 mb-4">
                   🔄 Substitution Practice II – 3' - Click to substitute:
                 </h3>
                 
@@ -929,10 +1049,10 @@ export default function Lesson10LanguagesAndCountries() {
         </div>
 
         {/* CHANGE INTO AFFIRMATIVE */}
-        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-teal-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">➕ CHANGE INTO AFFIRMATIVE</h2>
+              <h2 className="text-xl md:text-2xl font-bold">➕ CHANGE INTO AFFIRMATIVE</h2>
               <button 
                 onClick={() => toggleSection('affirmative')}
                 className="ml-4 p-2 rounded-full hover:bg-teal-600 transition"
@@ -943,9 +1063,9 @@ export default function Lesson10LanguagesAndCountries() {
           </div>
 
           {sections.affirmative && (
-            <div className="p-8">
-              <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4">
+            <div className="p-6 md:p-8">
+              <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">
                   Change into Affirmative - 2' - Transform to affirmative:
                 </h3>
                 
@@ -958,25 +1078,25 @@ export default function Lesson10LanguagesAndCountries() {
                         </p>
                       </div>
                       
-                      <div className="flex gap-2 mb-2">
+                      <div className="flex flex-col sm:flex-row gap-2 mb-2">
                         <input
                           type="text"
                           placeholder="Write affirmative form..."
-                          value={writtenAnswers[`aff-${exercise.key}`] || ""}
-                          onChange={(e) => handleWrittenAnswerChange(`aff-${exercise.key}`, e.target.value)}
+                          value={writtenAnswers[exercise.key] || ""}
+                          onChange={(e) => handleWrittenAnswerChange(exercise.key, e.target.value)}
                           className="flex-1 px-3 py-2 border border-teal-300 rounded-md text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                         />
                         <button
-                          onClick={() => handleCheckAnswer(`aff-${exercise.key}`, writtenAnswers[`aff-${exercise.key}`] || "", exercise.answer)}
+                          onClick={() => handleCheckAnswer(exercise.key, writtenAnswers[exercise.key] || "", exercise.answer)}
                           className="bg-teal-500 text-white py-2 px-3 rounded-md hover:bg-teal-600 transition text-sm"
                         >
                           Check
                         </button>
                       </div>
                       
-                      {showAnswerResults[`aff-${exercise.key}`] && (
+                      {showAnswerResults[exercise.key] && (
                         <AnswerResult 
-                          isCorrect={answerResults[`aff-${exercise.key}`]} 
+                          isCorrect={answerResults[exercise.key]} 
                           correctAnswer={exercise.answer}
                         />
                       )}
@@ -989,10 +1109,10 @@ export default function Lesson10LanguagesAndCountries() {
         </div>
 
         {/* CHANGE INTO INTERROGATIVE */}
-        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-indigo-500 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-indigo-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">❓ CHANGE INTO INTERROGATIVE</h2>
+              <h2 className="text-xl md:text-2xl font-bold">❓ CHANGE INTO INTERROGATIVE</h2>
               <button 
                 onClick={() => toggleSection('interrogative')}
                 className="ml-4 p-2 rounded-full hover:bg-indigo-600 transition"
@@ -1003,9 +1123,9 @@ export default function Lesson10LanguagesAndCountries() {
           </div>
 
           {sections.interrogative && (
-            <div className="p-8">
-              <div className="bg-indigo-100 border-2 border-indigo-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-indigo-800 mb-4">
+            <div className="p-6 md:p-8">
+              <div className="bg-indigo-100 border-2 border-indigo-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-indigo-800 mb-4">
                   Change into Interrogative - 2' - Transform to questions:
                 </h3>
                 
@@ -1018,25 +1138,25 @@ export default function Lesson10LanguagesAndCountries() {
                         </p>
                       </div>
                       
-                      <div className="flex gap-2 mb-2">
+                      <div className="flex flex-col sm:flex-row gap-2 mb-2">
                         <input
                           type="text"
                           placeholder="Write question form..."
-                          value={writtenAnswers[`int-${exercise.key}`] || ""}
-                          onChange={(e) => handleWrittenAnswerChange(`int-${exercise.key}`, e.target.value)}
+                          value={writtenAnswers[exercise.key] || ""}
+                          onChange={(e) => handleWrittenAnswerChange(exercise.key, e.target.value)}
                           className="flex-1 px-3 py-2 border border-indigo-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                         />
                         <button
-                          onClick={() => handleCheckAnswer(`int-${exercise.key}`, writtenAnswers[`int-${exercise.key}`] || "", exercise.answer)}
+                          onClick={() => handleCheckAnswer(exercise.key, writtenAnswers[exercise.key] || "", exercise.answer)}
                           className="bg-indigo-500 text-white py-2 px-3 rounded-md hover:bg-indigo-600 transition text-sm"
                         >
                           Check
                         </button>
                       </div>
                       
-                      {showAnswerResults[`int-${exercise.key}`] && (
+                      {showAnswerResults[exercise.key] && (
                         <AnswerResult 
-                          isCorrect={answerResults[`int-${exercise.key}`]} 
+                          isCorrect={answerResults[exercise.key]} 
                           correctAnswer={exercise.answer}
                         />
                       )}
@@ -1049,10 +1169,10 @@ export default function Lesson10LanguagesAndCountries() {
         </div>
 
         {/* UNLOCK */}
-        <div className="bg-pink-50 border-2 border-pink-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
-          <div className="bg-pink-500 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-pink-50 border-2 border-pink-200 rounded-[30px] shadow-lg overflow-hidden mb-8 md:mb-10">
+          <div className="bg-pink-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔓 UNLOCK</h2>
+              <h2 className="text-xl md:text-2xl font-bold">🔓 UNLOCK</h2>
               <button 
                 onClick={() => toggleSection('unlock')}
                 className="ml-4 p-2 rounded-full hover:bg-pink-600 transition"
@@ -1063,9 +1183,9 @@ export default function Lesson10LanguagesAndCountries() {
           </div>
 
           {sections.unlock && (
-            <div className="p-8">
+            <div className="p-6 md:p-8">
               <div className="mb-6">
-                <h3 className="text-xl font-bold text-pink-800 mb-4">
+                <h3 className="text-lg md:text-xl font-bold text-pink-800 mb-4">
                   Unlock - 3' - Give examples of:
                 </h3>
                 <p className="text-pink-600 mb-6">
@@ -1075,8 +1195,8 @@ export default function Lesson10LanguagesAndCountries() {
 
               <div className="space-y-6">
                 {unlockQuestions.map((question) => (
-                  <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-pink-200 shadow-md">
-                    <h4 className="text-lg font-bold text-pink-700 mb-3">
+                  <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-pink-200 shadow-md">
+                    <h4 className="text-base md:text-lg font-bold text-pink-700 mb-3">
                       {question.question}
                     </h4>
                     
@@ -1090,8 +1210,8 @@ export default function Lesson10LanguagesAndCountries() {
                 ))}
               </div>
 
-              <div className="mt-8 bg-pink-100 border-2 border-pink-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-pink-800 mb-4">💡 Writing Tips for Communication:</h3>
+              <div className="mt-8 bg-pink-100 border-2 border-pink-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-pink-800 mb-4">💡 Writing Tips for Communication:</h3>
                 <ul className="list-disc pl-5 space-y-2 text-pink-700 text-sm">
                   <li>Be specific about places, languages, and foods</li>
                   <li>Use complete sentences to practice grammar</li>
@@ -1105,25 +1225,248 @@ export default function Lesson10LanguagesAndCountries() {
           )}
         </div>
 
+        {/* TUNE IN YOUR EARS - NOVA SEÇÃO COM VÍDEO */}
+        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden mb-8 md:mb-10">
+          <div className="bg-teal-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-xl md:text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
+              <button
+                onClick={() => toggleSection('tuneIn')}
+                className="ml-4 p-2 rounded-full hover:bg-teal-600 transition"
+              >
+                {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.tuneIn && (
+            <div className="p-6 md:p-8">
+              <div className="mb-8 text-center">
+                <h3 className="text-xl md:text-2xl font-bold text-teal-700 mb-4">
+                  Watch the video and answer the questions below:
+                </h3>
+               
+                {/* Container do vídeo do YouTube */}
+                <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
+                  <div className="relative w-full pt-[56.25%]">
+                    <iframe
+                      src="https://www.youtube.com/embed/q5JxLYzO5k4?list=PLc0_DKGuWp_2GK_ZyY81hiV_vdMaUmezE&index=40"
+                      title="English Listening Practice - Daily Routines & Conversations"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute top-0 left-0 w-full h-full"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 text-sm text-teal-600">
+                  <p>Video: English Listening Practice - Daily Routines & Conversations</p>
+                </div>
+              </div>
+
+              {/* Vocabulary Help */}
+              <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">📖 Key Vocabulary from the Video:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Trick</span>
+                      <span className="text-teal-600">Truque / Técnica</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">The easiest way</span>
+                      <span className="text-teal-600">O jeito mais fácil</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Have you ever heard?</span>
+                      <span className="text-teal-600">Você já ouviu?</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">over time</span>
+                      <span className="text-teal-600">ao passar do tempo</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Habit</span>
+                      <span className="text-teal-600">Hábito</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">To have fun</span>
+                      <span className="text-teal-600">Se divertir</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Accents</span>
+                      <span className="text-teal-600">Sotaques</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">A mix of accents</span>
+                      <span className="text-teal-600">Uma mistura de sotaques</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Slangs</span>
+                      <span className="text-teal-600">Gírias</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Kind</span>
+                      <span className="text-teal-600">Tipo</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">It's a piece of cake</span>
+                      <span className="text-teal-600">Isso é muito fácil</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">tone and emotion</span>
+                      <span className="text-teal-600">tom e emoção</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Sarcastic</span>
+                      <span className="text-teal-600">Sarcástico</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">It depends on</span>
+                      <span className="text-teal-600">Depende de</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">You'll be / You will be</span>
+                      <span className="text-teal-600">Você vai estar / Você estará</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Probably not</span>
+                      <span className="text-teal-600">Provavelmente não</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">To turn on</span>
+                      <span className="text-teal-600">Ligar (um aparelho)</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">To procrastinate</span>
+                      <span className="text-teal-600">Procrastinar</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">A must</span>
+                      <span className="text-teal-600">algo que você deve fazer</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">maybe you're ordering food</span>
+                      <span className="text-teal-600">Talvez você esteja pedindo comida</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">So, let's sum it all up</span>
+                      <span className="text-teal-600">Então, para resumir ...</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">The more you listen, the better you'll get</span>
+                      <span className="text-teal-600">Quanto mais você ouve, melhor você vai ficar.</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                      <span className="font-medium text-teal-700">Daily routine</span>
+                      <span className="text-teal-600">Rotina diária.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Questions Section */}
+              <div className="space-y-6 mb-8">
+                {videoQuestions.map((question) => (
+                  <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-teal-200 shadow-md">
+                    <h4 className="text-base md:text-lg font-bold text-teal-700 mb-3">
+                      {question.question}
+                      {question.isPersonal && (
+                        <span className="ml-2 text-sm font-normal text-teal-500">(Personal answer)</span>
+                      )}
+                    </h4>
+                   
+                    {question.vocabulary && (
+                      <div className="mb-3 p-3 bg-teal-50 rounded-lg">
+                        <p className="text-sm font-medium text-teal-600 mb-1">Vocabulary hints:</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {question.vocabulary.map((word, idx) => (
+                            <div key={idx} className="flex justify-between text-sm">
+                              <span className="text-teal-700 font-medium">{word.english}</span>
+                              <span className="text-teal-600">- {word.portuguese}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <textarea
+                      value={videoAnswers[question.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)}
+                      placeholder="Write your answer here..."
+                      className="w-full h-24 p-3 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                    />
+
+                    <div className="flex flex-col sm:flex-row gap-3 mt-3">
+                      <button
+                        onClick={() => checkVideoAnswer(question.id)}
+                        className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition font-medium"
+                      >
+                        Check Answer
+                      </button>
+                      <button
+                        onClick={() => handleVideoAnswerChange(question.id, "")}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md transition"
+                      >
+                        Clear
+                      </button>
+                    </div>
+
+                    {showVideoAnswerResults[question.id] && question.isPersonal && (
+                      <div className="mt-3 p-3 bg-teal-50 border border-teal-200 rounded-md">
+                        <p className="text-sm text-teal-700">
+                          <span className="font-medium">Note:</span> This is a personal question. Your answer has been saved for practice.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">🎯 Listening Practice Tips:</h3>
+                <ul className="list-disc pl-5 space-y-2 text-teal-700 text-sm">
+                  <li>Watch the video at least twice - first for general understanding, then for details</li>
+                  <li>Pause the video to repeat phrases you hear</li>
+                  <li>Pay attention to pronunciation and intonation patterns</li>
+                  <li>Note down new vocabulary while watching</li>
+                  <li>Try to answer the questions without looking at the subtitles first</li>
+                  <li>Practice speaking your answers out loud to improve fluency</li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Save Button and Navigation */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-8">
-          <button
-            onClick={saveAllAnswers}
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300"
-          >
-            💾 Save All My Answers
-          </button>
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <button
+              onClick={saveAllAnswers}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 md:px-8 rounded-full text-base md:text-lg transition duration-300 flex items-center justify-center gap-2"
+            >
+              <span>💾</span> Save All My Answers
+            </button>
+            <button
+              onClick={clearAllAnswers}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full text-sm transition duration-300"
+            >
+              Clear All
+            </button>
+          </div>
 
           <div className="flex gap-4">
             <button
               onClick={() => router.push("/cursos/lesson9")}
-              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 md:px-8 rounded-full transition-colors text-sm md:text-base"
             >
               &larr; Previous Lesson
             </button>
             <button
               onClick={() => router.push("/cursos/lesson11")}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 md:px-8 rounded-full transition-colors text-sm md:text-base"
             >
               Next Lesson &rarr;
             </button>

@@ -44,41 +44,60 @@ const substitutionPractice1 = [
   }
 ];
 
+// CORRIGIDO: Substituição com as frases corretas
 const substitutionPractice2 = [
   { 
     key: "subs2-1", 
-    original: "Ele não quer beber suco no café da manhã. /água/leite",
+    original: "Ele não quer beber suco no café da manhã. / água / leite",
     correctAnswer: "He doesn't want to drink juice for breakfast.",
     options: ["juice", "water", "milk"],
     currentIndex: 0
   },
   { 
     key: "subs2-2", 
-    original: "Eles preferem comer salada. /Eu/Nós",
+    original: "Eles preferem comer salada. / Eu / Nós",
     correctAnswer: "They prefer to eat salad.",
     options: ["They", "I", "We"],
     currentIndex: 0
   },
   { 
     key: "subs2-3", 
-    original: "Nós queremos comer uma fatia de torta. /queijo/pão",
+    original: "Nós queremos comer uma fatia de torta. / queijo / pão",
     correctAnswer: "We want to eat a slice of pie.",
     options: ["pie", "cheese", "bread"],
-    currentIndex: 0
+    currentIndex: 0,
+    // CORRIGIDO: Frases específicas para cada opção
+    specificSentences: {
+      "pie": "We want to eat a slice of pie.",
+      "cheese": "We want to eat a slice of cheese.",
+      "bread": "We want to eat a slice of bread."
+    }
   },
   { 
     key: "subs2-4", 
-    original: "Ela ama comer batatas fritas. E você?/torradas/geleia",
+    original: "Ela ama comer batatas fritas. E você? / torradas / geléia",
     correctAnswer: "She loves to eat french fries. And you?",
     options: ["french fries", "toast", "jam"],
-    currentIndex: 0
+    currentIndex: 0,
+    // CORRIGIDO: Frases específicas com "And you?" no final
+    specificSentences: {
+      "french fries": "She loves to eat french fries. And you?",
+      "toast": "She loves to eat toast. And you?",
+      "jam": "She loves to eat jam. And you?"
+    }
   },
   { 
     key: "subs2-5", 
-    original: "Eu não estudo português aqui. / lá/na escola",
+    original: "Eu não estudo português aqui. / lá / na escola",
     correctAnswer: "I don't study Portuguese here.",
     options: ["here", "there", "at school"],
-    currentIndex: 0
+    currentIndex: 0,
+    // CORRIGIDO: Frases específicas para cada opção
+    specificSentences: {
+      "here": "I don't study Portuguese here.",
+      "there": "I don't study Portuguese there.",
+      "at school": "I don't study Portuguese at school."
+    }
   }
 ];
 
@@ -455,7 +474,7 @@ const HighlightedText = ({
   return (
     <p className="text-gray-800">
       {words.map((word, index) => {
-        const cleanWord = word.replace('?', '').replace('!', '').replace('.', '').replace('"', '');
+        const cleanWord = word.replace('?', '').replace('!', '').replace('.', '').replace(',', '').replace('"', '');
         const isHighlighted = highlightedWords.includes(cleanWord);
         
         return (
@@ -634,9 +653,9 @@ export default function LessonLanguagesAndCountries() {
   // Estado para diálogos dinâmicos baseados na seleção
   const [practiceDialogs, setPracticeDialogs] = useState([
     {
-      question: "Do you want to speak Portuguese or French with me?",
+      question: "Do you want to speak Portuguese or Spanish with me?",
       response: "I want to speak Portuguese with you.",
-      highlighted: ["Portuguese", "French", "Portuguese"]
+      highlighted: ["Portuguese", "Spanish", "Portuguese"]
     },
     {
       question: "How do you spell 'yogurt'?",
@@ -682,12 +701,23 @@ export default function LessonLanguagesAndCountries() {
   useEffect(() => {
     const countryInfo = countryLanguageMap[selectedFlag];
     const foodInfo = foodSpellingMap[selectedFood];
+    
+    // Lista de idiomas disponíveis (exceto o selecionado atualmente)
+    const availableLanguages = Object.values(countryLanguageMap)
+      .map(info => info.language)
+      .filter(lang => lang !== countryInfo?.language);
+    
+    // Escolher um idioma aleatório diferente do atual
+    const randomLanguage = availableLanguages.length > 0 
+      ? availableLanguages[Math.floor(Math.random() * availableLanguages.length)]
+      : "Spanish";
+    
     if (countryInfo && foodInfo) {
       setPracticeDialogs([
         {
-          question: `Do you want to speak ${countryInfo.language} or French with me?`,
+          question: `Do you want to speak ${countryInfo.language} or ${randomLanguage} with me?`,
           response: `I want to speak ${countryInfo.language} with you.`,
-          highlighted: [countryInfo.language, "French", countryInfo.language]
+          highlighted: [countryInfo.language, randomLanguage, countryInfo.language]
         },
         {
           question: `How do you spell '${foodInfo.food}'?`,
@@ -877,6 +907,28 @@ export default function LessonLanguagesAndCountries() {
     "https://i.ibb.co/jvg8bfKY/orange-juice.jpg",
     "https://i.ibb.co/HfCPk3qD/friends.jpg"
   ];
+
+  // Função para obter a frase atual do exercício de substituição 2
+  const getCurrentSubs2Sentence = (exercise: typeof substitutionPractice2[0]) => {
+    const currentOption = exercise.options[exercise.currentIndex];
+    
+    // Se o exercício tem frases específicas definidas, use-as
+    if (exercise.specificSentences && exercise.specificSentences[currentOption as keyof typeof exercise.specificSentences]) {
+      return exercise.specificSentences[currentOption as keyof typeof exercise.specificSentences];
+    }
+    
+    // Fallback para o método antigo
+    const words = exercise.correctAnswer.split(' ');
+    const baseWords = words.map(word => {
+      const cleanWord = word.replace('.', '').replace(',', '').replace('?', '').replace('!', '');
+      const matchingOption = exercise.options.find(opt => 
+        opt.toLowerCase() === cleanWord.toLowerCase()
+      );
+      return matchingOption ? '{0}' : word;
+    });
+    const baseSentence = baseWords.join(' ');
+    return baseSentence.replace('{0}', currentOption);
+  };
 
   return (
     <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/world-map-bg.jpg')` }}>
@@ -1206,7 +1258,7 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* SUBSTITUTION PRACTICE 2 */}
+        {/* SUBSTITUTION PRACTICE 2 - CORRIGIDO */}
         <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-purple-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -1229,12 +1281,8 @@ export default function LessonLanguagesAndCountries() {
                 
                 <div className="space-y-6">
                   {subs2Exercises.map((exercise) => {
-                    const baseSentence = exercise.correctAnswer.split(' ').map(word => {
-                      const cleanWord = word.replace('.', '').replace('?', '');
-                      return exercise.options.includes(cleanWord) ? '{0}' : word;
-                    }).join(' ');
-                    
-                    const currentSentence = baseSentence.replace('{0}', exercise.options[exercise.currentIndex]);
+                    // CORRIGIDO: Usar a função para obter a frase atual
+                    const currentSentence = getCurrentSubs2Sentence(exercise);
                     
                     return (
                       <div key={exercise.key} className="bg-white p-4 rounded-lg border border-purple-200">

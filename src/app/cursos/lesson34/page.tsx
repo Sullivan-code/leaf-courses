@@ -15,8 +15,8 @@ import {
 const LESSON_NUMBER = 34;
 const LESSON_TITLE = "Improve Your Pronunciation";
 const LESSON_THEME_COLOR = "#0ea5e9"; // Sky-500
-const BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1516979187457-637abb4f9353?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"; // Background de estudo
-const PRONUNCIATION_IMAGE = "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"; // Imagem com livros e café
+const BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1516979187457-637abb4f9353?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80";
+const PRONUNCIATION_IMAGE = "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80";
 
 // ==============================
 // DADOS DA LIÇÃO - PRONÚNCIA
@@ -328,6 +328,38 @@ const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
 };
 
 // ==============================
+// COMPONENTE: ANSWER RESULT
+// ==============================
+interface AnswerResultProps {
+  isCorrect: boolean;
+  correctAnswer: string;
+}
+
+const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
+  return (
+    <div className={`p-4 rounded-lg ${isCorrect ? 'bg-green-100 border-green-300' : 'bg-red-100 border-red-300'} border-2`}>
+      <div className="flex items-start gap-3">
+        {isCorrect ? (
+          <Check className="text-green-600 flex-shrink-0" size={24} />
+        ) : (
+          <XCircle className="text-red-600 flex-shrink-0" size={24} />
+        )}
+        <div>
+          <p className={`font-bold mb-1 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+            {isCorrect ? 'Correct!' : 'Not quite right'}
+          </p>
+          {!isCorrect && (
+            <p className="text-gray-700">
+              <span className="font-medium">Suggested answer:</span> {correctAnswer}
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ==============================
 // COMPONENTE DE SUBSTITUIÇÃO INTERATIVA
 // ==============================
 interface SubstitutionExerciseProps {
@@ -429,6 +461,14 @@ interface InteractiveQuestionProps {
 }
 
 const InteractiveQuestion = ({ id, question, icon: Icon, value, onChange, onClear }: InteractiveQuestionProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.borderColor = `${LESSON_THEME_COLOR}30`;
+    }
+  }, []);
+
   return (
     <div className="bg-white p-6 rounded-xl border-2 border-opacity-50 shadow-md hover:shadow-lg transition-all"
          style={{ borderColor: `${LESSON_THEME_COLOR}40` }}>
@@ -442,11 +482,22 @@ const InteractiveQuestion = ({ id, question, icon: Icon, value, onChange, onClea
       </div>
 
       <textarea
+        ref={textareaRef}
         value={value}
         onChange={(e) => onChange(id, e.target.value)}
         placeholder="Type your answer here..."
-        className="w-full h-24 p-4 border-2 rounded-lg focus:ring-2 focus:border-transparent transition resize-none"
-        style={{ borderColor: `${LESSON_THEME_COLOR}30`, focusRing: LESSON_THEME_COLOR }}
+        className="w-full h-24 p-4 border-2 rounded-lg focus:ring-2 focus:outline-none transition resize-none"
+        style={{ 
+          borderColor: `${LESSON_THEME_COLOR}30`
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = LESSON_THEME_COLOR;
+          e.currentTarget.style.boxShadow = `0 0 0 2px ${LESSON_THEME_COLOR}20`;
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = `${LESSON_THEME_COLOR}30`;
+          e.currentTarget.style.boxShadow = 'none';
+        }}
       />
 
       <div className="flex justify-end mt-3">
@@ -901,8 +952,16 @@ export default function Lesson34Pronunciation() {
                       value={videoAnswers[q.id] || ""}
                       onChange={(e) => handleVideoAnswerChange(q.id, e.target.value)}
                       placeholder="Write your answer based on what you heard..."
-                      className="w-full h-32 p-4 border-2 rounded-lg focus:ring-2 focus:border-transparent transition resize-none"
-                      style={{ borderColor: `${LESSON_THEME_COLOR}30`, focusRing: LESSON_THEME_COLOR }}
+                      className="w-full h-32 p-4 border-2 rounded-lg focus:ring-2 focus:outline-none transition resize-none"
+                      style={{ borderColor: `${LESSON_THEME_COLOR}30` }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = LESSON_THEME_COLOR;
+                        e.currentTarget.style.boxShadow = `0 0 0 2px ${LESSON_THEME_COLOR}20`;
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = `${LESSON_THEME_COLOR}30`;
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
                     />
 
                     <div className="flex gap-3 mt-4">

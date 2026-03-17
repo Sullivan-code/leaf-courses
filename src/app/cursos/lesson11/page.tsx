@@ -567,7 +567,7 @@ export default function LessonFamilyAndOccupations() {
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('do you work')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você estuda em casa?</span> / trabalha / mora</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você estuda em casa?</span> / trabalha / de noite</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('i see my parents in the morning')}>
@@ -746,7 +746,7 @@ export default function LessonFamilyAndOccupations() {
           </div>
         </div>
 
-        {/* Seção 5 - Real Life Practice */}
+        {/* Seção 5 - Real Life Practice - MODIFICADO: apenas palavras-chave em azul */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8">
             <h2 className="text-2xl font-bold">🔹 REAL LIFE</h2>
@@ -775,7 +775,9 @@ export default function LessonFamilyAndOccupations() {
                         <p className="text-lg font-medium">
                           1. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('go to work')}
-                          >go to work</span> in the morning.
+                          >go</span> to <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('work')}
+                          >work</span> in the morning.
                         </p>
                         <p className="text-sm text-gray-600">Vou para o trabalho de manhã.</p>
                       </div>
@@ -796,8 +798,10 @@ export default function LessonFamilyAndOccupations() {
                       <div>
                         <p className="text-lg font-medium">
                           2. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('go to college')}
-                          >go to college</span> in the afternoon.
+                            onClick={() => playAudio('go')}
+                          >go</span> to <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('college')}
+                          >college</span> in the afternoon.
                         </p>
                         <p className="text-sm text-gray-600">Vou para a faculdade à tarde.</p>
                       </div>
@@ -818,8 +822,12 @@ export default function LessonFamilyAndOccupations() {
                       <div>
                         <p className="text-lg font-medium">
                           3. They <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('go to school')}
-                          >go to school</span> in France.
+                            onClick={() => playAudio('go')}
+                          >go</span> to <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('school')}
+                          >school</span> in <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('france')}
+                          >France</span>.
                         </p>
                         <p className="text-sm text-gray-600">Eles vão para a escola na França.</p>
                       </div>
@@ -840,8 +848,10 @@ export default function LessonFamilyAndOccupations() {
                       <div>
                         <p className="text-lg font-medium">
                           4. He doesn't like to <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('go to class')}
-                          >go to class</span> in the evening.
+                            onClick={() => playAudio('go')}
+                          >go</span> to <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('class')}
+                          >class</span> in the evening.
                         </p>
                         <p className="text-sm text-gray-600">Ele não gosta de ir para a aula à noite.</p>
                       </div>
@@ -862,8 +872,10 @@ export default function LessonFamilyAndOccupations() {
                       <div>
                         <p className="text-lg font-medium">
                           5. I want to <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('go to the u.s.a.')}
-                          >go to the U.S.A.</span>
+                            onClick={() => playAudio('go')}
+                          >go</span> to the <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('u.s.a.')}
+                          >U.S.A.</span>
                         </p>
                         <p className="text-sm text-gray-600">Quero ir para os EUA.</p>
                       </div>
@@ -884,8 +896,10 @@ export default function LessonFamilyAndOccupations() {
                       <div>
                         <p className="text-lg font-medium">
                           6. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('see my husband')}
-                          >see my husband</span> at 6 a.m.
+                            onClick={() => playAudio('see')}
+                          >see</span> my <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('husband')}
+                          >husband</span> at 6 a.m.
                         </p>
                         <p className="text-sm text-gray-600">Vejo meu esposo às 6 da manhã.</p>
                       </div>
@@ -905,9 +919,11 @@ export default function LessonFamilyAndOccupations() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('do they speak english')}
-                          >Do they speak English</span> at work?
+                          7. Do they speak <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('english')}
+                          >English</span> at <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('work')}
+                          >work</span>?
                         </p>
                         <p className="text-sm text-gray-600">Eles falam inglês no trabalho?</p>
                       </div>
@@ -927,9 +943,9 @@ export default function LessonFamilyAndOccupations() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('do they speak french')}
-                          >Do they speak French</span>?
+                          8. Do they speak <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('french')}
+                          >French</span>?
                         </p>
                         <p className="text-sm text-gray-600">Eles falam francês?</p>
                       </div>
@@ -949,9 +965,11 @@ export default function LessonFamilyAndOccupations() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          9. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('do you see your teacher')}
-                          >Do you see your teacher</span>?
+                          9. Do you <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('see')}
+                          >see</span> your <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('teacher')}
+                          >teacher</span>?
                         </p>
                         <p className="text-sm text-gray-600">Você vê o seu professor?</p>
                       </div>
@@ -971,9 +989,11 @@ export default function LessonFamilyAndOccupations() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          10. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('do you live with your family')}
-                          >Do you live with your family</span>?
+                          10. Do you <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('live')}
+                          >live</span> with your <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                            onClick={() => playAudio('family')}
+                          >family</span>?
                         </p>
                         <p className="text-sm text-gray-600">Você mora com sua família?</p>
                       </div>

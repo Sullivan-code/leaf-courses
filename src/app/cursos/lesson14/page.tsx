@@ -30,14 +30,14 @@ const substitutionPractice1 = [
     key: "subs-1", 
     original: "Eu preciso estudar com você. / falar com você / falar com seu chefe",
     base: "I need to {0}.",
-    options: ["study with you", "talk to you", "talk with your boss"],
+    options: ["study with you", "talk to you", "talk to your boss"],
     currentIndex: 0
   },
   { 
     key: "subs-2", 
     original: "Nós temos um amigo brasileiro. / britânico / americano",
-    base: "We have a {0} friend.",
-    options: ["Brazilian", "British", "American"],
+    base: "We have {0} friend.",
+    options: ["a Brazilian", "a British", "an American"],
     currentIndex: 0
   },
   { 
@@ -228,17 +228,17 @@ const unlockQuestions = [
 const videoQuestions = [
   {
     id: 1,
-    question: "What is the main topic of the video?",
+    question: "What is the key to learning a language?",
     isPersonal: false,
     vocabulary: [
-      { english: "To achieve", portuguese: "Alcançar" },
+      { english: "Patience", portuguese: "Paciência" },
       { english: "Pride", portuguese: "Orgulho" },
       { english: "Career growth", portuguese: "Crescimento profissional" }
     ]
   },
   {
     id: 2,
-    question: "According to the video, how can English help you in your career?",
+    question: "Where did she find challenging to use English in everyday situations?",
     isPersonal: false,
     vocabulary: [
       { english: "Job market", portuguese: "Mercado de trabalho" },
@@ -248,7 +248,7 @@ const videoQuestions = [
   },
   {
     id: 3,
-    question: "How does the video suggest English can improve your personal life?",
+    question: "Do you think that taking a deep breath can help when you're nervous?",
     isPersonal: false,
     vocabulary: [
       { english: "To interact", portuguese: "Interagir" },
@@ -258,7 +258,7 @@ const videoQuestions = [
   },
   {
     id: 4,
-    question: "What is one way English can help you travel?",
+    question: "Can you simply keep going when you have bad days?",
     isPersonal: false,
     vocabulary: [
       { english: "Global", portuguese: "Global" },
@@ -268,7 +268,7 @@ const videoQuestions = [
   },
   {
     id: 5,
-    question: "How can English help you in education?",
+    question: "Is it better to break your goals down in small parts? Give examples",
     isPersonal: false,
     vocabulary: [
       { english: "Background", portuguese: "História de vida" },
@@ -278,7 +278,7 @@ const videoQuestions = [
   },
   {
     id: 6,
-    question: "How do you think learning English can help you in your life? (Personal answer)",
+    question: "Do you feel comfortable giving presentations? Give examples",
     isPersonal: true,
     vocabulary: [
       { english: "To build confidence", portuguese: "Construir confiança" },
@@ -288,7 +288,7 @@ const videoQuestions = [
   },
   {
     id: 7,
-    question: "What is one goal you have for learning English? (Personal answer)",
+    question: "Do you think challenging yourself can make you better? Give examples",
     isPersonal: true,
     vocabulary: [
       { english: "To be proud of", portuguese: "Ficar orgulhoso de" },
@@ -1055,28 +1055,28 @@ export default function Lesson14PersonalInformationRoutine() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Listening skills</span>
-                      <span className="text-teal-600">Habilidades de audição</span>
+                      <span className="font-medium text-teal-700">struggled a lot</span>
+                      <span className="text-teal-600">lutei muito</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Speaking skills</span>
-                      <span className="text-teal-600">Habilidades de fala</span>
+                      <span className="font-medium text-teal-700">over time</span>
+                      <span className="text-teal-600">ao passar do tempo</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Conversation</span>
-                      <span className="text-teal-600">Conversa</span>
+                      <span className="font-medium text-teal-700">grammar</span>
+                      <span className="text-teal-600">regras gramaticais</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Daily routines</span>
-                      <span className="text-teal-600">Rotinas diárias</span>
+                      <span className="font-medium text-teal-700">overwhelmed</span>
+                      <span className="text-teal-600">preocupado / cheateado</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Practice</span>
-                      <span className="text-teal-600">Prática</span>
+                      <span className="font-medium text-teal-700">overnight</span>
+                      <span className="text-teal-600">do dia para a noite</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Dialogue</span>
-                      <span className="text-teal-600">Diálogo</span>
+                      <span className="font-medium text-teal-700">to take a deep breath</span>
+                      <span className="text-teal-600">respirar fundo</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">Comprehension</span>
@@ -1085,32 +1085,32 @@ export default function Lesson14PersonalInformationRoutine() {
                   </div>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Pronunciation</span>
-                      <span className="text-teal-600">Pronúncia</span>
+                      <span className="font-medium text-teal-700">advice</span>
+                      <span className="text-teal-600">conselho</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">Fluency</span>
                       <span className="text-teal-600">Fluência</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Communication</span>
-                      <span className="text-teal-600">Comunicação</span>
+                      <span className="font-medium text-teal-700">To set a goal</span>
+                      <span className="text-teal-600">Estabelecer um objetivo</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Repeat</span>
-                      <span className="text-teal-600">Repetir</span>
+                      <span className="font-medium text-teal-700">To break down</span>
+                      <span className="text-teal-600">Dividir / Partir / Quebrar</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Shadowing</span>
-                      <span className="text-teal-600">Repetição simultânea</span>
+                      <span className="font-medium text-teal-700">Speaking of ... </span>
+                      <span className="text-teal-600">Falando nisso ... </span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Improvement</span>
-                      <span className="text-teal-600">Melhoria</span>
+                      <span className="font-medium text-teal-700">Presentation</span>
+                      <span className="text-teal-600">Apresentação</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Confidence</span>
-                      <span className="text-teal-600">Confiança</span>
+                      <span className="font-medium text-teal-700">shaking</span>
+                      <span className="text-teal-600">tremendo</span>
                     </div>
                   </div>
                 </div>

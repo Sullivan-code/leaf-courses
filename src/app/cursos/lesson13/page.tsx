@@ -36,10 +36,11 @@ export default function Lesson13PersonalInfoRoutine() {
     audio.play().catch(e => console.error("Error playing audio:", e));
   };
 
-  // Image URLs (placeholders - replace with real images)
-  const mainImage = "https://i.ibb.co/tTpRLxNr/l5-main.jpg";
-  const electronicsImage = "https://i.ibb.co/N6P2sn5P/beef-and-fish.jpg";
-  const personalItemsImage = "https://i.ibb.co/5xwfgP0Y/drink-and-sandwich.jpg";
+  // Image URLs
+  const mainImage = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80";
+  const electronicsImage = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80";
+  const personalItemsImage = "https://images.unsplash.com/photo-1560343090-f0409e92791a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80";
+  const backgroundImage = "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80";
 
   // Lesson 13 adapted data
   const verbs = [
@@ -62,7 +63,7 @@ export default function Lesson13PersonalInfoRoutine() {
     { english: "Brazilian", portuguese: "brasileiro(a)" },
     { english: "really", portuguese: "realmente / muito" },
     { english: "a", portuguese: "um / uma" },
-    { english: "an", portuguese: "um / uma (before vowel sound)" }
+    { english: "an", portuguese: "um / uma (antes de som de vogal)" }
   ];
 
   const usefulPhrases = [
@@ -100,7 +101,7 @@ export default function Lesson13PersonalInfoRoutine() {
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
       style={{
-        backgroundImage: `url("/images/l7-bgg.jpg")`,
+        backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -160,52 +161,52 @@ export default function Lesson13PersonalInfoRoutine() {
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('need')}>need</span> to study. / work / go</p>
-                  <p className="text-sm text-gray-600 mt-1">I need to study. / work / go</p>
+                  <p className="text-lg font-medium text-gray-800">1. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('need')}>need</span> to study. / to work / to go</p>
+                  <p className="text-sm text-gray-600 mt-1">Eu preciso estudar. / trabalhar / ir</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you need')}>Do you need</span> a car? / a computer / new shoes</p>
-                  <p className="text-sm text-gray-600 mt-1">Do you need a car? / a computer / new shoes</p>
+                  <p className="text-sm text-gray-600 mt-1">Você precisa de um carro? / um computador / sapatos novos</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('they need')}>They need</span> to eat. / drink / sleep</p>
-                  <p className="text-sm text-gray-600 mt-1">They need to eat. / drink / sleep</p>
+                  <p className="text-lg font-medium text-gray-800">3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('they need')}>They need</span> to eat. / to drink / to sleep</p>
+                  <p className="text-sm text-gray-600 mt-1">Eles precisam comer. / beber / dormir</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('we need')}>We need</span> a new house. / a car / a cell phone</p>
-                  <p className="text-sm text-gray-600 mt-1">We need a new house. / a car / a cell phone</p>
+                  <p className="text-sm text-gray-600 mt-1">Nós precisamos de uma casa nova. / um carro / um celular</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">5. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('she needs')}>She needs</span> glasses. / a tablet / a computer</p>
-                  <p className="text-sm text-gray-600 mt-1">She needs glasses. / a tablet / a computer</p>
+                  <p className="text-sm text-gray-600 mt-1">Ela precisa de óculos. / um tablet / um computador</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">6. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('have')}>have</span> a car. / a house / a cell phone</p>
-                  <p className="text-sm text-gray-600 mt-1">I have a car. / a house / a cell phone</p>
+                  <p className="text-sm text-gray-600 mt-1">Eu tenho um carro. / uma casa / um celular</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you have')}>Do you have</span> a tablet? / a computer / new shoes</p>
-                  <p className="text-sm text-gray-600 mt-1">Do you have a tablet? / a computer / new shoes</p>
+                  <p className="text-sm text-gray-600 mt-1">Você tem um tablet? / um computador / sapatos novos</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('they have')}>They have</span> an old car. / a new house / American friends</p>
-                  <p className="text-sm text-gray-600 mt-1">They have an old car. / a new house / American friends</p>
+                  <p className="text-sm text-gray-600 mt-1">Eles têm um carro velho. / uma casa nova / amigos americanos</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('we have')}>We have</span> to study. / work / go</p>
-                  <p className="text-sm text-gray-600 mt-1">We have to study. / work / go</p>
+                  <p className="text-lg font-medium text-gray-800">9. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('we have')}>We have</span> to study. / to work / to go</p>
+                  <p className="text-sm text-gray-600 mt-1">Nós temos que estudar. / trabalhar / ir</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">10. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('she has')}>She has</span> Brazilian shoes. / American glasses / a British boss</p>
-                  <p className="text-sm text-gray-600 mt-1">She has Brazilian shoes. / American glasses / a British boss</p>
+                  <p className="text-sm text-gray-600 mt-1">Ela tem sapatos brasileiros. / óculos americanos / um chefe britânico</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">11. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('need to have')}>need to have</span> a cell phone. / a computer / new glasses</p>
-                  <p className="text-sm text-gray-600 mt-1">I need to have a cell phone. / a computer / new glasses</p>
+                  <p className="text-sm text-gray-600 mt-1">Eu preciso ter um celular. / um computador / óculos novos</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">12. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you have to go')}>Do you have to go</span> to work today? / to school / to the doctor</p>
-                  <p className="text-sm text-gray-600 mt-1">Do you have to go to work today? / to school / to the doctor</p>
+                  <p className="text-lg font-medium text-gray-800">12. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you have to go')}>Do you have to go</span> to work? / to school / to the doctor</p>
+                  <p className="text-sm text-gray-600 mt-1">Você tem que ir ao trabalho? / à escola / ao médico</p>
                 </div>
               </div>
             )}
@@ -247,33 +248,43 @@ export default function Lesson13PersonalInfoRoutine() {
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">1. I need a new <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('cell phone')}>cell phone</span>. / tablet / computer</p>
+                  <p className="text-sm text-gray-600 mt-1">Eu preciso de um celular novo. / tablet / computador</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">2. Do you have a <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('car')}>car</span>? / house / cell phone</p>
+                  <p className="text-sm text-gray-600 mt-1">Você tem um carro? / uma casa / um celular</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">3. We need <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('new shoes')}>new shoes</span>. / new glasses / a new house</p>
+                  <p className="text-sm text-gray-600 mt-1">Nós precisamos de sapatos novos. / óculos novos / uma casa nova</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">4. I want a <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('tablet')}>tablet</span>. / computer / car</p>
+                  <p className="text-sm text-gray-600 mt-1">Eu quero um tablet. / computador / carro</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Do you <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('really')}>really</span> need to study? / work / go</p>
+                  <p className="text-lg font-medium text-gray-800">5. Do you <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('really')}>really</span> need to study? / to work / to go</p>
+                  <p className="text-sm text-gray-600 mt-1">Você realmente precisa estudar? / trabalhar / ir</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">6. The car is in the <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('garage')}>garage</span>. / house / school</p>
+                  <p className="text-sm text-gray-600 mt-1">O carro está na garagem. / na casa / na escola</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. Do you want an <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('old')}>old</span> or <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('new')}>new</span> car?</p>
+                  <p className="text-lg font-medium text-gray-800">7. Do you want an <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('old')}>old</span> or <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('new')}>new</span> car? / house / computer</p>
+                  <p className="text-sm text-gray-600 mt-1">Você quer um carro velho ou novo? / uma casa / um computador</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('what')}>What</span> do you need to buy? / study / do</p>
+                  <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('what')}>What</span> do you need to buy? / to study / to do</p>
+                  <p className="text-sm text-gray-600 mt-1">O que você precisa comprar? / estudar / fazer</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">9. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('have')}>have</span> a Brazilian friend. / American / British</p>
+                  <p className="text-sm text-gray-600 mt-1">Eu tenho um amigo brasileiro. / americano / britânico</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">10. They <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('need')}>need</span> glasses. / shoes / a house</p>
+                  <p className="text-sm text-gray-600 mt-1">Eles precisam de óculos. / sapatos / uma casa</p>
                 </div>
               </div>
             )}
@@ -314,34 +325,44 @@ export default function Lesson13PersonalInfoRoutine() {
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. I don't need to go to <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('school')}>school</span> today. / work / doctor</p>
+                  <p className="text-lg font-medium text-gray-800">1. I don't need to go to <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('school')}>school</span> today. / work / the doctor's</p>
+                  <p className="text-sm text-gray-600 mt-1">Eu não preciso ir à escola hoje. / ao trabalho / ao médico</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">2. I need to speak with a <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('teacher')}>teacher</span> at school. / doctor / boss</p>
+                  <p className="text-sm text-gray-600 mt-1">Eu preciso falar com um professor na escola. / médico / chefe</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">3. You speak <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('English')}>English</span> very well. / Portuguese / Spanish</p>
+                  <p className="text-sm text-gray-600 mt-1">Você fala inglês muito bem. / português / espanhol</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">4. I need <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('help')}>help</span> today. / money / time</p>
+                  <p className="text-sm text-gray-600 mt-1">Eu preciso de ajuda hoje. / dinheiro / tempo</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. You <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('needs')}>need</span> to study English. / work / rest</p>
+                  <p className="text-lg font-medium text-gray-800">5. You need <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('to study')}>to study</span> English. / to speak / to listen to</p>
+                  <p className="text-sm text-gray-600 mt-1">Você precisa estudar inglês. / falar / ouvir</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. The cell phone is on the <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('table')}>table</span>. / bag / car</p>
+                  <p className="text-lg font-medium text-gray-800">6. The cell phone is on the <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('table')}>table</span>. / in the bag / in the car</p>
+                  <p className="text-sm text-gray-600 mt-1">O celular está na mesa. / na bolsa / no carro</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">7. Do you want to speak with <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('me')}>me</span>? / him / her</p>
+                  <p className="text-sm text-gray-600 mt-1">Você quer falar comigo? / com ele / com ela</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('when')}>When</span> do you need to go? / study / work</p>
+                  <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('when')}>When</span> do you need to go? / to study / to work</p>
+                  <p className="text-sm text-gray-600 mt-1">Quando você precisa ir? / estudar / trabalhar</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('have')}>have</span> to work today. / study / go</p>
+                  <p className="text-lg font-medium text-gray-800">9. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('have')}>have</span> to work today. / to study / to go</p>
+                  <p className="text-sm text-gray-600 mt-1">Eu tenho que trabalhar hoje. / estudar / ir</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">10. We <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('really')}>really</span> like English. / Portuguese / Spanish</p>
+                  <p className="text-sm text-gray-600 mt-1">Nós gostamos muito de inglês. / português / espanhol</p>
                 </div>
               </div>
             )}
@@ -383,45 +404,59 @@ export default function Lesson13PersonalInfoRoutine() {
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you need')}>Do you need</span> a tablet? / a computer / a car</p>
+                  <p className="text-sm text-gray-600 mt-1">Você precisa de um tablet? / um computador / um carro</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you have')}>Do you have</span> glasses? / shoes / a house</p>
+                  <p className="text-sm text-gray-600 mt-1">Você tem óculos? / sapatos / uma casa</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you want')}>Do you want</span> an apple? / an egg / an orange</p>
+                  <p className="text-sm text-gray-600 mt-1">Você quer uma maçã? / um ovo / uma laranja</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you like')}>Do you like</span> your new shoes? / your old car / your house</p>
+                  <p className="text-sm text-gray-600 mt-1">Você gosta dos seus sapatos novos? / do seu carro velho / da sua casa</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">5. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do they have')}>Do they have</span> an old car? / a new house / American friends</p>
+                  <p className="text-sm text-gray-600 mt-1">Eles têm um carro velho? / uma casa nova / amigos americanos</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do we need')}>Do we need</span> a new computer? / a cell phone / glasses</p>
+                  <p className="text-sm text-gray-600 mt-1">Nós precisamos de um computador novo? / um celular / óculos</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you have')}>Do you have</span> a Brazilian friend? / an American co-worker / a British boss</p>
+                  <p className="text-sm text-gray-600 mt-1">Você tem um amigo brasileiro? / um colega americano / um chefe britânico</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you want')}>Do you want</span> soda? / juice / water</p>
+                  <p className="text-sm text-gray-600 mt-1">Você quer refrigerante? / suco / água</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">9. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you prefer')}>Do you prefer</span> rice? / beans / salad</p>
+                  <p className="text-sm text-gray-600 mt-1">Você prefere arroz? / feijão / salada</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">10. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you need to study')}>Do you need to study</span> English? / Portuguese / Spanish</p>
+                  <p className="text-sm text-gray-600 mt-1">Você precisa estudar inglês? / português / espanhol</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">11. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you love')}>Do you love</span> pizza? / chocolate / ice cream</p>
+                  <p className="text-sm text-gray-600 mt-1">Você ama pizza? / chocolate / sorvete</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">12. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you prefer')}>Do you prefer</span> coffee or tea? / juice or soda / water or milk</p>
+                  <p className="text-sm text-gray-600 mt-1">Você prefere café ou chá? / suco ou refrigerante / água ou leite</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">13. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('what do you need to study')}>What do you need to study</span> today? / tomorrow / this week</p>
+                  <p className="text-sm text-gray-600 mt-1">O que você precisa estudar hoje? / amanhã / esta semana</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">14. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('what do you have to do')}>What do you have to do</span> today? / tomorrow / this week</p>
+                  <p className="text-sm text-gray-600 mt-1">O que você tem que fazer hoje? / amanhã / esta semana</p>
                 </div>
               </div>
             )}
@@ -471,7 +506,7 @@ export default function Lesson13PersonalInfoRoutine() {
                     <div className="relative h-64 w-full">
                       <img
                         src={electronicsImage}
-                        alt="Electronics and technology"
+                        alt="Cell phones, tablets and computers"
                         className="rounded-xl object-cover w-full h-full"
                       />
                     </div>
@@ -484,7 +519,7 @@ export default function Lesson13PersonalInfoRoutine() {
                     <div className="relative h-64 w-full">
                       <img
                         src={personalItemsImage}
-                        alt="Personal items"
+                        alt="Cars, shoes and glasses"
                         className="rounded-xl object-cover w-full h-full"
                       />
                     </div>
@@ -517,11 +552,11 @@ export default function Lesson13PersonalInfoRoutine() {
 
           {showAanExplanation && (
             <div className="bg-blue-50 p-6 border-b border-blue-200">
-              <h3 className="font-bold text-blue-800 text-lg mb-2">When to use "a" vs "an":</h3>
+              <h3 className="font-bold text-blue-800 text-lg mb-2">Quando usar "a" vs "an":</h3>
               <ul className="list-disc pl-5 text-blue-700 space-y-1">
-                <li>Use <strong>"a"</strong> before words that begin with a consonant sound (a car, a house, a friend)</li>
-                <li>Use <strong>"an"</strong> before words that begin with a vowel sound (an apple, an egg, an old car)</li>
-                <li>Remember: It's about the SOUND, not the letter. Example: "an hour" (h is silent), "a university" (u sounds like "you")</li>
+                <li>Use <strong>"a"</strong> antes de palavras que começam com som de consoante (a car, a house, a friend)</li>
+                <li>Use <strong>"an"</strong> antes de palavras que começam com som de vogal (an apple, an egg, an old car)</li>
+                <li>Lembre-se: É sobre o SOM, não a letra. Exemplo: "an hour" (h é mudo), "a university" (u soa como "you")</li>
               </ul>
             </div>
           )}

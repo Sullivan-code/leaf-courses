@@ -204,75 +204,89 @@ const unlockQuestions = [
   }
 ];
 
-// Video questions for Tune In Your Ears section
+// Video questions for Tune In Your Ears section - REFORMULADAS com base no Key Vocabulary
 const videoQuestions = [
   {
     id: "video-1",
-    question: "What is the 'easiest way' to practice English according to the video?",
-    isPersonal: false,
-    vocabulary: [
-      { english: "easiest way", portuguese: "jeito mais fácil" },
-      { english: "according to", portuguese: "de acordo com" },
-      { english: "practice", portuguese: "praticar" }
-    ]
-  },
-  {
-    id: "video-2",
-    question: "What are some tips mentioned to improve your listening skills?",
+    question: "According to the video, what are some practical TIPS to improve your English listening skills?",
     isPersonal: false,
     vocabulary: [
       { english: "tips", portuguese: "dicas" },
-      { english: "mentioned", portuguese: "mencionadas" },
       { english: "improve", portuguese: "melhorar" },
       { english: "listening skills", portuguese: "habilidades de compreensão auditiva" }
     ]
   },
   {
-    id: "video-3",
-    question: "What does the speaker say about 'accents' and 'slangs'?",
+    id: "video-2",
+    question: "The speaker mentions that even NATIVE SPEAKERS make mistakes. Why is it important not to focus on PERFECTION when learning English?",
     isPersonal: false,
     vocabulary: [
-      { english: "accents", portuguese: "sotaques" },
-      { english: "slangs", portuguese: "gírias" },
-      { english: "a mix of", portuguese: "uma mistura de" }
+      { english: "native speakers", portuguese: "falantes nativos" },
+      { english: "perfection", portuguese: "perfeição" }
+    ]
+  },
+  {
+    id: "video-3",
+    question: "What GOALS and HABITS does the speaker suggest for creating a daily English practice routine?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "goals", portuguese: "objetivos" },
+      { english: "habits", portuguese: "hábitos" }
     ]
   },
   {
     id: "video-4",
-    question: "What is your daily routine for practicing English?",
+    question: "How can you practice English in YOUR OWN WORDS and join an ENGLISH-SPEAKING GROUP to improve your CONFIDENCE?",
     isPersonal: true,
     vocabulary: [
-      { english: "daily routine", portuguese: "rotina diária" },
-      { english: "to have fun", portuguese: "se divertir" },
-      { english: "habit", portuguese: "hábito" }
+      { english: "your own words", portuguese: "suas próprias palavras" },
+      { english: "english-speaking group", portuguese: "grupo falante de inglês" },
+      { english: "confidence", portuguese: "confiança" }
     ]
   },
   {
     id: "video-5",
-    question: "What does 'it's a piece of cake' mean? Can you use it in a sentence?",
+    question: "How can we be exposed to different accents to improve our listening skills?",
     isPersonal: false,
     vocabulary: [
-      { english: "it's a piece of cake", portuguese: "é muito fácil" },
-      { english: "meaning", portuguese: "significado" }
+      { english: "a mix of accents", portuguese: "uma mistura de sotaques" },
+      { english: "slangs", portuguese: "gírias" }
     ]
   },
   {
     id: "video-6",
-    question: "How can watching movies and series help with your English?",
-    isPersonal: true,
+    question: "How can learning expressions like piece of cake help you sound more natural?",
+    isPersonal: false,
     vocabulary: [
-      { english: "movies", portuguese: "filmes" },
-      { english: "series", portuguese: "séries" },
-      { english: "tone and emotion", portuguese: "tom e emoção" }
+      { english: "it's a piece of cake", portuguese: "é muito fácil" }
     ]
   },
   {
     id: "video-7",
-    question: "What does the speaker mean by 'the more you listen, the better you'll get'?",
+    question: "How does TONE AND EMOTION in conversations affect meaning? Give an example of how a SARCASTIC tone can change a phrase.",
     isPersonal: false,
     vocabulary: [
-      { english: "the more you listen", portuguese: "quanto mais você ouve" },
-      { english: "the better you'll get", portuguese: "melhor você vai ficar" }
+      { english: "tone and emotion", portuguese: "tom e emoção" },
+      { english: "sarcastic", portuguese: "sarcástico" },
+      { english: "it depends on", portuguese: "depende de" }
+    ]
+  },
+  {
+    id: "video-9",
+    question: "According to the video, what are some situations where you might need English, like ORDERING FOOD or having conversations? How can ROLE-SWITCHING help you prepare for these situations?",
+    isPersonal: true,
+    vocabulary: [
+      { english: "maybe you're ordering food", portuguese: "talvez você esteja pedindo comida" },
+      { english: "role-switching", portuguese: "troca de papéis" }
+    ]
+  },
+  {
+    id: "video-10",
+    question: "Why is it important to CELEBRATE YOUR PROGRESS and use POSITIVE AFFIRMATIONS when learning English? How do these practices affect your motivation?",
+    isPersonal: true,
+    vocabulary: [
+      { english: "celebrate your progress", portuguese: "celebre o seu progresso" },
+      { english: "positive affirmations", portuguese: "afirmações positivas" }
     ]
   }
 ];
@@ -1270,32 +1284,32 @@ export default function Lesson10LanguagesAndCountries() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Trick</span>
-                      <span className="text-teal-600">Truque / Técnica</span>
+                      <span className="font-medium text-teal-700">Tips</span>
+                      <span className="text-teal-600">Dicas / conselhos</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">The easiest way</span>
-                      <span className="text-teal-600">O jeito mais fácil</span>
+                      <span className="font-medium text-teal-700">Perfection</span>
+                      <span className="text-teal-600">Perfeição</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Have you ever heard?</span>
-                      <span className="text-teal-600">Você já ouviu?</span>
+                      <span className="font-medium text-teal-700">even native speakers</span>
+                      <span className="text-teal-600">até mesmo os nativos</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">over time</span>
-                      <span className="text-teal-600">ao passar do tempo</span>
+                      <span className="font-medium text-teal-700">goal</span>
+                      <span className="text-teal-600">Objetivo</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">Habit</span>
                       <span className="text-teal-600">Hábito</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To have fun</span>
-                      <span className="text-teal-600">Se divertir</span>
+                      <span className="font-medium text-teal-700">your own words</span>
+                      <span className="text-teal-600">suas próprias palavras</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Accents</span>
-                      <span className="text-teal-600">Sotaques</span>
+                      <span className="font-medium text-teal-700">English-speaking group</span>
+                      <span className="text-teal-600">Grupo falante de Inglês</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">A mix of accents</span>
@@ -1308,8 +1322,8 @@ export default function Lesson10LanguagesAndCountries() {
                   </div>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Kind</span>
-                      <span className="text-teal-600">Tipo</span>
+                      <span className="font-medium text-teal-700">celebrate your progress</span>
+                      <span className="text-teal-600">Celebre o seu progresso</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">It's a piece of cake</span>
@@ -1332,8 +1346,8 @@ export default function Lesson10LanguagesAndCountries() {
                       <span className="text-teal-600">Você vai estar / Você estará</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Probably not</span>
-                      <span className="text-teal-600">Provavelmente não</span>
+                      <span className="font-medium text-teal-700">faster</span>
+                      <span className="text-teal-600">Mais rápido</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">To turn on</span>
@@ -1352,22 +1366,22 @@ export default function Lesson10LanguagesAndCountries() {
                       <span className="text-teal-600">Talvez você esteja pedindo comida</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">So, let's sum it all up</span>
-                      <span className="text-teal-600">Então, para resumir ...</span>
+                      <span className="font-medium text-teal-700">Role-switching</span>
+                      <span className="text-teal-600">Troca de papeis (numa conversa)</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">The more you listen, the better you'll get</span>
-                      <span className="text-teal-600">Quanto mais você ouve, melhor você vai ficar.</span>
+                      <span className="font-medium text-teal-700">Confidence</span>
+                      <span className="text-teal-600">Confiança</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Daily routine</span>
-                      <span className="text-teal-600">Rotina diária.</span>
+                      <span className="font-medium text-teal-700">Positive affirmations</span>
+                      <span className="text-teal-600">Afirmações positivas</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Questions Section */}
+              {/* Questions Section - REFORMULADAS com base no Key Vocabulary */}
               <div className="space-y-6 mb-8">
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-teal-200 shadow-md">

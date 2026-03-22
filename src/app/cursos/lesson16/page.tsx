@@ -201,8 +201,8 @@ const substitutionPractice1 = [
   { 
     key: "subs-1", 
     original: "I read the news in the morning. / every day / at night",
-    base: "{0} read the news in the morning.",
-    options: ["I", "She", "We"],
+    base: "{0} the news in the morning.",
+    options: ["I read", "She reads", "We read"],
     currentIndex: 0
   },
   { 

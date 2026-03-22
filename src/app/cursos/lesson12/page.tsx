@@ -76,12 +76,14 @@ const substitutionPractice1 = [
   }
 ];
 
+// --- UPDATED SUBSTITUTION PRACTICE II DATA ---
 const substitutionPractice2 = [
   { 
     key: "subs2-1", 
-    original: "O que você quer preferir? (ler / beber)",
-    base: "What do you prefer to {0}?",
-    options: ["read", "drink"],
+    original: "O que você prefere? (prefere ler / prefere beber)",
+    base: "What do you prefer?",
+    options: ["To read", "To drink"],
+    transform: (option: string) => `What do you prefer? ${option}`,
     currentIndex: 0
   },
   { 
@@ -93,16 +95,16 @@ const substitutionPractice2 = [
   },
   { 
     key: "subs2-3", 
-    original: "O que você quer estudar? (gostar / preferir / morar)",
+    original: "O que você quer estudar? (gosta / prefere)",
     base: "What do you want to {0}?",
-    options: ["like", "prefer", "live"],
+    options: ["to study","like", "prefer"],
     currentIndex: 0
   },
-  { 
-    key: "subs2-4", 
-    original: "Você gosta de falar com (minha professora / meu primo / minha avó)",
+  {
+    key: "subs2-4",
+    original: "Você gosta de falar com (sua professora / meu primo / minha avó)",
     base: "Do you like to talk to {0}?",
-    options: ["my teacher", "my cousin", "my grandmother"],
+    options: ["your teacher", "my cousin", "my grandmother"],
     currentIndex: 0
   },
   {
@@ -114,6 +116,7 @@ const substitutionPractice2 = [
     currentIndex: 0
   }
 ];
+// --- END OF UPDATED SUBSTITUTION PRACTICE II DATA ---
 
 const negativeExercises = [
   { 
@@ -960,11 +963,11 @@ export default function Lesson12LanguagesAndCountries() {
           )}
         </div>
 
-        {/* LISTEN AND PRACTICE */}
+        {/* LISTEN AND PRACTICE - Renamed to "Try to say slower!" */}
         <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">👂 LISTEN AND PRACTICE</h2>
+              <h2 className="text-2xl font-bold">👂 Try to say slower!</h2>
               <button 
                 onClick={() => toggleSection('listenAndPractice')}
                 className="ml-4 p-2 rounded-full hover:bg-blue-600 transition"
@@ -1121,7 +1124,7 @@ export default function Lesson12LanguagesAndCountries() {
           )}
         </div>
 
-        {/* DRILLING PRACTICE - SUBSTITUTION PRACTICE II */}
+        {/* DRILLING PRACTICE - SUBSTITUTION PRACTICE II - UPDATED */}
         <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-orange-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -1187,7 +1190,7 @@ export default function Lesson12LanguagesAndCountries() {
           )}
         </div>
 
-        {/* CHANGE INTO AFFIRMATIVE */}
+        {/* CHANGE INTO AFFIRMATIVE - Updated Header Text */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">

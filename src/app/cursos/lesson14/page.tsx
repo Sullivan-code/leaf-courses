@@ -4,7 +4,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle, CheckCircle, X } from "lucide-react";
 
+// ============================================================
 // Dados da Lição 14 - Personal Information & Routine
+// ============================================================
 
 // Dados do diálogo EXPRESS YOURSELF
 const expressYourselfDialogue = [
@@ -24,7 +26,7 @@ const expressYourselfDialogue = [
   { speaker: "Angela", text: "You're welcome." }
 ];
 
-// DRILLING PRACTICE - SUBSTITUTION PRACTICE I (ATUALIZADO)
+// DRILLING PRACTICE - SUBSTITUTION PRACTICE I (VERSÃO FINAL ATUALIZADA)
 const substitutionPractice1 = [
   { 
     key: "subs-1", 
@@ -547,18 +549,51 @@ export default function Lesson14PersonalInformationRoutine() {
     }
   };
 
+  // FORÇAR LIMPEZA DO LOCALSTORAGE E RECARREGAR DADOS FRESCOS
   useEffect(() => {
-    // Carregar respostas salvas do localStorage
-    const savedAnswers = localStorage.getItem("lesson14Answers");
-    if (savedAnswers) {
-      try {
-        const data = JSON.parse(savedAnswers);
-        setSubs1Exercises(data.subs1Exercises || substitutionPractice1);
-        setSubs2Exercises(data.subs2Exercises || substitutionPractice2);
-        setWrittenAnswers(data.writtenAnswers || {});
-        setVideoAnswers(data.videoAnswers || {});
-      } catch (error) {
-        console.error("Error loading saved answers:", error);
+    // Verifica se existe uma flag de versão para forçar recarga dos dados
+    const currentVersion = "lesson14_v2"; // Incrementar versão sempre que os dados forem alterados
+    const storedVersion = localStorage.getItem("lesson14_version");
+    
+    if (storedVersion !== currentVersion) {
+      // Limpa dados antigos e define nova versão
+      localStorage.removeItem("lesson14Answers");
+      localStorage.setItem("lesson14_version", currentVersion);
+      console.log("🔄 Versão da lição atualizada. Dados antigos limpos.");
+      
+      // Reseta os estados para os dados padrão (já estão com os textos atualizados)
+      setSubs1Exercises(substitutionPractice1);
+      setSubs2Exercises(substitutionPractice2);
+      setWrittenAnswers({});
+      setVideoAnswers({});
+      setAnswerResults({});
+      setShowAnswerResults({});
+      setShowVideoAnswerResults({});
+    } else {
+      // Se versão está correta, carrega dados salvos normalmente
+      const savedAnswers = localStorage.getItem("lesson14Answers");
+      if (savedAnswers) {
+        try {
+          const data = JSON.parse(savedAnswers);
+          // Garante que os exercícios de substituição estejam com a estrutura correta
+          if (data.subs1Exercises && data.subs1Exercises.length === substitutionPractice1.length) {
+            setSubs1Exercises(data.subs1Exercises);
+          } else {
+            setSubs1Exercises(substitutionPractice1);
+          }
+          if (data.subs2Exercises && data.subs2Exercises.length === substitutionPractice2.length) {
+            setSubs2Exercises(data.subs2Exercises);
+          } else {
+            setSubs2Exercises(substitutionPractice2);
+          }
+          setWrittenAnswers(data.writtenAnswers || {});
+          setVideoAnswers(data.videoAnswers || {});
+        } catch (error) {
+          console.error("Error loading saved answers:", error);
+          // Em caso de erro, usa dados padrão
+          setSubs1Exercises(substitutionPractice1);
+          setSubs2Exercises(substitutionPractice2);
+        }
       }
     }
   }, []);
@@ -579,11 +614,15 @@ export default function Lesson14PersonalInformationRoutine() {
   const clearAllAnswers = () => {
     if (confirm("Are you sure you want to clear all answers? This cannot be undone.")) {
       localStorage.removeItem("lesson14Answers");
+      // Reseta para os dados padrão ATUALIZADOS
       setSubs1Exercises(substitutionPractice1);
       setSubs2Exercises(substitutionPractice2);
       setWrittenAnswers({});
       setVideoAnswers({});
-      alert("All answers cleared!");
+      setAnswerResults({});
+      setShowAnswerResults({});
+      setShowVideoAnswerResults({});
+      alert("All answers cleared! The page will now show the latest content.");
     }
   };
 

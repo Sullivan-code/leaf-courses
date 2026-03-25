@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCircle, RefreshCw } from "lucide-react";
 
-// Dados para SPEAK RIGHT NOW - Fontes de informação
+// Dados para SPEAK RIGHT NOW - Fontes de informação (TODAS DO UNSPLASH)
 const infoSources = [
   {
     id: 1,
@@ -41,7 +41,7 @@ const infoSources = [
   },
   {
     id: 3,
-    name: "Newspaper",
+    name: "Newspadper",
     description: "Traditional newspaper reading",
     image: "https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     questions: [
@@ -89,7 +89,7 @@ const infoSources = [
   }
 ];
 
-// Dados para WHERE DO YOU WANT TO GO?
+// Dados para WHERE DO YOU WANT TO GO? - TODAS DO UNSPLASH
 const places = [
   {
     id: 1,
@@ -102,7 +102,7 @@ const places = [
       { question: "like to go to", response: "like to go to" },
       { question: "need to go to", response: "need to go to" }
     ],
-    questions: [ // Adicionando propriedade questions para consistência
+    questions: [
       "Do you want to go to the movies?",
       "Do you like to go to the movies?",
       "Do you need to go to the movies?"
@@ -195,7 +195,6 @@ const places = [
   }
 ];
 
-// Restante das variáveis permanecem iguais...
 // SUBSTITUTION PRACTICE I - Verbos da lição
 const substitutionPractice1 = [
   { 
@@ -816,8 +815,8 @@ export default function LessonPersonalInfoRoutine() {
       // Diálogo para fonte de informação
       const infoQuestion = selectedInfoSource.questions[0];
       const infoResponse = responseTypes.info === 'affirmative' 
-        ? `Yes, I do. I ${infoVerbPair.response} the news on my ${selectedInfoSource.name.toLowerCase()}.`
-        : `No, I don't. I ${infoVerbPair.response} the news on my computer.`;
+        ? `Yes, I do. I ${infoVerbPair.response} my computer for work ${selectedInfoSource.name.toLowerCase()}.`
+        : `No, I don't. I ${infoVerbPair.response} my computer for fun.`;
       
       const infoHighlighted = [
         responseTypes.info === 'affirmative' ? 'Yes' : 'No',
@@ -826,8 +825,8 @@ export default function LessonPersonalInfoRoutine() {
         responseTypes.info === 'affirmative' ? selectedInfoSource.name.toLowerCase() : 'computer'
       ];
 
-      // Diálogo para lugar - CORRIGIDO para usar "go to" para lugares
-      const placeQuestion = selectedPlace.questions[0]; // Usando a propriedade questions agora
+      // Diálogo para lugar
+      const placeQuestion = selectedPlace.questions[0];
       const alternativePlace = places.find(p => p.id !== selectedPlace.id);
       const placeResponse = responseTypes.place === 'affirmative'
         ? `Yes, I do. I ${placeVerbPair.response} the ${selectedPlace.name.toLowerCase()}.`
@@ -988,7 +987,7 @@ export default function LessonPersonalInfoRoutine() {
     }));
   };
 
-  // Função para mudar o par de verbos - CORRIGIDA
+  // Função para mudar o par de verbos
   const changeVerbPair = (dialogId: number) => {
     setPracticeDialogs(prev => prev.map(dialog => {
       if (dialog.id === dialogId) {
@@ -1001,13 +1000,11 @@ export default function LessonPersonalInfoRoutine() {
         let newQuestion = '';
         
         if (dialog.type === 'info') {
-          // Para fontes de informação, use selectedInfoSource.questions
           newQuestion = selectedInfoSource.questions[nextIndex];
           newResponse = dialog.responseType === 'affirmative'
             ? `Yes, I do. I ${verbPair.response} the news on my ${selectedInfoSource.name.toLowerCase()}.`
             : `No, I don't. I ${verbPair.response} the news on my computer.`;
         } else {
-          // Para lugares, use selectedPlace.questions
           newQuestion = selectedPlace.questions[nextIndex];
           const alternativePlace = places.find(p => p.id !== selectedPlace.id);
           newResponse = dialog.responseType === 'affirmative'
@@ -1172,92 +1169,7 @@ export default function LessonPersonalInfoRoutine() {
 
               {/* Diálogos de Prática - Grid de 2 colunas */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Diálogo 1: Fonte de Informação */}
-                <div className="bg-white rounded-2xl border-2 border-blue-200 shadow-xl overflow-hidden">
-                  <div className="bg-gradient-to-r from-blue-100 to-blue-50 p-4 border-b border-blue-200">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-blue-500 p-2 rounded-full">
-                          <Image 
-                            src={selectedInfoSource.image} 
-                            alt={selectedInfoSource.name}
-                            width={40}
-                            height={40}
-                            className="rounded-full object-cover"
-                          />
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-blue-800">{selectedInfoSource.name}</h4>
-                          <p className="text-sm text-blue-600">{selectedInfoSource.description}</p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => changeVerbPair(2)}
-                          className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition"
-                          title="Change verbs"
-                        >
-                          <RefreshCw size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="space-y-6">
-                      {/* Pergunta */}
-                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="bg-blue-500 text-white p-1 rounded-full">
-                            <Volume2 size={12} />
-                          </div>
-                          <span className="text-sm font-semibold text-blue-700">QUESTION</span>
-                        </div>
-                        <p className="text-gray-800 text-lg font-medium">
-                          "{practiceDialogs.find(d => d.id === 2)?.question}"
-                        </p>
-                      </div>
-
-                      {/* Resposta */}
-                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <div className={`p-1 rounded-full ${responseTypes.info === 'affirmative' ? 'bg-green-500' : 'bg-red-500'}`}>
-                              {responseTypes.info === 'affirmative' ? 
-                                <Check size={12} className="text-white" /> : 
-                                <X size={12} className="text-white" />
-                              }
-                            </div>
-                            <span className="text-sm font-semibold text-green-700">RESPONSE</span>
-                          </div>
-                          <button
-                            onClick={() => toggleResponseType('info')}
-                            className={`px-3 py-1 text-xs font-medium rounded-full transition ${
-                              responseTypes.info === 'affirmative'
-                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                : 'bg-red-100 text-red-700 hover:bg-red-200'
-                            }`}
-                          >
-                            Switch to {responseTypes.info === 'affirmative' ? 'Negative' : 'Affirmative'}
-                          </button>
-                        </div>
-                        <div className="min-h-[60px]">
-                          <HighlightedText 
-                            text={practiceDialogs.find(d => d.id === 2)?.response || ""} 
-                            highlightedWords={practiceDialogs.find(d => d.id === 2)?.highlighted || []}
-                            onWordClick={handleWordClick}
-                          />
-                        </div>
-                        <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
-                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                          <span>Click on <span className="font-semibold">red words</span> to hear pronunciation</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Diálogo 2: Lugar */}
+                {/* Diálogo 1: Lugar */}
                 <div className="bg-white rounded-2xl border-2 border-indigo-200 shadow-xl overflow-hidden">
                   <div className="bg-gradient-to-r from-indigo-100 to-purple-50 p-4 border-b border-indigo-200">
                     <div className="flex items-center justify-between">
@@ -1330,6 +1242,91 @@ export default function LessonPersonalInfoRoutine() {
                           <HighlightedText 
                             text={practiceDialogs.find(d => d.id === 1)?.response || ""} 
                             highlightedWords={practiceDialogs.find(d => d.id === 1)?.highlighted || []}
+                            onWordClick={handleWordClick}
+                          />
+                        </div>
+                        <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
+                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                          <span>Click on <span className="font-semibold">red words</span> to hear pronunciation</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Diálogo 2: Fonte de Informação */}
+                <div className="bg-white rounded-2xl border-2 border-blue-200 shadow-xl overflow-hidden">
+                  <div className="bg-gradient-to-r from-blue-100 to-blue-50 p-4 border-b border-blue-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-blue-500 p-2 rounded-full">
+                          <Image 
+                            src={selectedInfoSource.image} 
+                            alt={selectedInfoSource.name}
+                            width={40}
+                            height={40}
+                            className="rounded-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-blue-800">{selectedInfoSource.name}</h4>
+                          <p className="text-sm text-blue-600">{selectedInfoSource.description}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => changeVerbPair(2)}
+                          className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition"
+                          title="Change verbs"
+                        >
+                          <RefreshCw size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-6">
+                    <div className="space-y-6">
+                      {/* Pergunta */}
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="bg-blue-500 text-white p-1 rounded-full">
+                            <Volume2 size={12} />
+                          </div>
+                          <span className="text-sm font-semibold text-blue-700">QUESTION</span>
+                        </div>
+                        <p className="text-gray-800 text-lg font-medium">
+                          "{practiceDialogs.find(d => d.id === 2)?.question}"
+                        </p>
+                      </div>
+
+                      {/* Resposta */}
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <div className={`p-1 rounded-full ${responseTypes.info === 'affirmative' ? 'bg-green-500' : 'bg-red-500'}`}>
+                              {responseTypes.info === 'affirmative' ? 
+                                <Check size={12} className="text-white" /> : 
+                                <X size={12} className="text-white" />
+                              }
+                            </div>
+                            <span className="text-sm font-semibold text-green-700">RESPONSE</span>
+                          </div>
+                          <button
+                            onClick={() => toggleResponseType('info')}
+                            className={`px-3 py-1 text-xs font-medium rounded-full transition ${
+                              responseTypes.info === 'affirmative'
+                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                : 'bg-red-100 text-red-700 hover:bg-red-200'
+                            }`}
+                          >
+                            Switch to {responseTypes.info === 'affirmative' ? 'Negative' : 'Affirmative'}
+                          </button>
+                        </div>
+                        <div className="min-h-[60px]">
+                          <HighlightedText 
+                            text={practiceDialogs.find(d => d.id === 2)?.response || ""} 
+                            highlightedWords={practiceDialogs.find(d => d.id === 2)?.highlighted || []}
                             onWordClick={handleWordClick}
                           />
                         </div>
@@ -1767,7 +1764,7 @@ export default function LessonPersonalInfoRoutine() {
                   Watch the video about daily routines and answer the questions below:
                 </h3>
                
-                {/* Container do vídeo do YouTube - ATUALIZADO */}
+                {/* Container do vídeo do YouTube */}
                 <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
                   <div className="aspect-w-16 aspect-h-9">
                     <iframe

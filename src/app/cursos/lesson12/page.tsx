@@ -4,7 +4,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle, CheckCircle, X } from "lucide-react";
 
-// LISTENING EXERCISE DATA - Atualizado com as novas imagens
+// --- VERSÃO DO COMPONENTE (PARA FORÇAR ATUALIZAÇÃO) ---
+const COMPONENT_VERSION = "2.1.0";
+const BUILD_TIMESTAMP = "2026-03-22"; // Atualize esta data quando modificar
+
+// LISTENING EXERCISE DATA
 interface ListenItem {
   id: number;
   image: string;
@@ -44,60 +48,59 @@ const listenItems: ListenItem[] = [
   }
 ];
 
-// Dados da Lição 12 - Atualizados com o conteúdo fornecido
+// SUBSTITUTION PRACTICE I
 const substitutionPractice1 = [
   { 
     key: "subs-1", 
-    original: "Eu moro com minha mãe. ( irmã / meus irmãos)",
+    original: "Eu moro com minha mãe. (irmã / meus irmãos)",
     base: "I live {0}.",
     options: ["with my mom", "with my sister", "with my siblings"],
     currentIndex: 0
   },
   { 
     key: "subs-2", 
-    original: "Eu como comida com meu irmão (chefe / meus filhos)",
+    original: "Eu como comida com meu irmão. (chefe / meus filhos)",
     base: "I eat food with {0}.",
     options: ["my brother", "my boss", "my children"],
     currentIndex: 0
   },
   { 
     key: "subs-3", 
-    original: "Eu quero ir para os Estados Unidos com minha esposa (meu marido / minha família)",
+    original: "Eu quero ir para os Estados Unidos com minha esposa. (meu marido / minha família)",
     base: "I want to go to the U.S.A. with {0}.",
     options: ["my wife", "my husband", "my family"],
     currentIndex: 0
   },
   { 
     key: "subs-4", 
-    original: "O que você quer comer? (beber/agora)",
+    original: "O que você quer comer? (beber / fazer agora)",
     base: "What do you want to {0}?",
-    options: ["eat", "drink", "drink now"],
+    options: ["eat", "drink", "do now"],
     currentIndex: 0
   }
 ];
 
-// --- UPDATED SUBSTITUTION PRACTICE II DATA ---
+// SUBSTITUTION PRACTICE II
 const substitutionPractice2 = [
   { 
     key: "subs2-1", 
-    original: "O que você prefere? (prefere ler / prefere beber)",
-    base: "What do you prefer?",
-    options: ["To read", "To drink"],
-    transform: (option: string) => `What do you prefer? ${option}`,
+    original: "O que ela prefere comer? (beber)",
+    base: "What does she prefer {0}?",
+    options: ["to eat", "to drink"],
     currentIndex: 0
   },
   { 
     key: "subs2-2", 
-    original: "O que você quer comer amanhã? (arroz / salada / batata)",
-    base: "What do you want to eat tomorrow? {0}",
-    options: ["rice", "salad", "potatoes"],
+    original: "O que você quer comer amanhã? (no sábado / no domingo)",
+    base: "What do you want to eat {0}?",
+    options: ["tomorrow", "on Saturday", "on Sunday"],
     currentIndex: 0
   },
   { 
     key: "subs2-3", 
-    original: "O que você quer estudar? (gosta / prefere)",
-    base: "What do you want to {0}?",
-    options: ["to study","like", "prefer"],
+    original: "O que você quer estudar? (gosta de estudar / prefere estudar)",
+    base: "What do you {0}?",
+    options: ["want to study", "like to study", "prefer to study"],
     currentIndex: 0
   },
   {
@@ -110,14 +113,13 @@ const substitutionPractice2 = [
   {
     key: "subs2-5",
     original: "O que você quer aprender? (estudar / comer)",
-    base: "What do you want to learn?",
-    options: ["to study", "to eat"],
-    transform: (option: string) => `What do you want ${option}?`,
+    base: "What do you want to {0}?",
+    options: ["learn", "study", "eat"],
     currentIndex: 0
   }
 ];
-// --- END OF UPDATED SUBSTITUTION PRACTICE II DATA ---
 
+// NEGATIVE EXERCISES
 const negativeExercises = [
   { 
     key: "neg-1", 
@@ -148,9 +150,20 @@ const negativeExercises = [
     key: "neg-6", 
     sentence: "I understand my children.",
     answer: "I don't understand my children."
+  },
+  { 
+    key: "neg-7", 
+    sentence: "He wants to live in France.",
+    answer: "He doesn't want to live in France."
+  },
+  { 
+    key: "neg-8", 
+    sentence: "She likes to study English.",
+    answer: "She doesn't like to study English."
   }
 ];
 
+// AFFIRMATIVE EXERCISES
 const affirmativeExercises = [
   { 
     key: "aff-1", 
@@ -176,9 +189,15 @@ const affirmativeExercises = [
     key: "aff-5", 
     sentence: "I don't want to live in Brazil.",
     answer: "I want to live in Brazil."
+  },
+  { 
+    key: "aff-6", 
+    sentence: "He doesn't speak German.",
+    answer: "He speaks German."
   }
 ];
 
+// INTERROGATIVE EXERCISES
 const interrogativeExercises = [
   { 
     key: "int-1", 
@@ -204,42 +223,15 @@ const interrogativeExercises = [
     key: "int-5", 
     sentence: "I see my children at home in the evening.",
     answer: "Do I see my children at home in the evening?"
+  },
+  { 
+    key: "int-6", 
+    sentence: "She works with her co-workers.",
+    answer: "Does she work with her co-workers?"
   }
 ];
 
-const listenPracticeSentences = [
-  { 
-    key: "listen-1", 
-    sentence: "Do you speak German with your co-worker?",
-    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
-  },
-  { 
-    key: "listen-2", 
-    sentence: "I want to go to the U.S.A.",
-    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
-  },
-  { 
-    key: "listen-3", 
-    sentence: "My husband and I want to live in France.",
-    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
-  },
-  { 
-    key: "listen-4", 
-    sentence: "I see my children at home in the evening.",
-    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
-  },
-  { 
-    key: "listen-5", 
-    sentence: "Do you speak English with your friends at school?",
-    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
-  },
-  { 
-    key: "listen-6", 
-    sentence: "They want to study in the U.K.",
-    audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3"
-  }
-];
-
+// UNLOCK QUESTIONS
 const unlockQuestions = [
   {
     id: 1,
@@ -248,7 +240,7 @@ const unlockQuestions = [
   },
   {
     id: 2,
-    question: "Do you speak English at home, too?",
+    question: "Do you speak English at home?",
     placeholder: "Answer yes or no and explain..."
   },
   {
@@ -258,7 +250,7 @@ const unlockQuestions = [
   },
   {
     id: 4,
-    question: "What's your first and last name?",
+    question: "What is your first and last name?",
     placeholder: "Write your full name..."
   },
   {
@@ -293,7 +285,7 @@ const unlockQuestions = [
   }
 ];
 
-// Video questions para TUNE IN YOUR EARS - ATUALIZADO COM O NOVO CONTEÚDO
+// VIDEO QUESTIONS
 const videoQuestions = [
   {
     id: 1,
@@ -305,8 +297,7 @@ const videoQuestions = [
       { english: "thrive", portuguese: "prosperar" },
       { english: "open doors", portuguese: "abrir portas" },
       { english: "promotions", portuguese: "promoções" }
-    ],
-    sampleAnswer: "English can open doors to travel, meetings, international experiences, and promotions at work."
+    ]
   },
   {
     id: 2,
@@ -317,8 +308,7 @@ const videoQuestions = [
       { english: "conversations", portuguese: "conversas" },
       { english: "gatherings", portuguese: "encontros" },
       { english: "share ideas", portuguese: "compartilhar ideias" }
-    ],
-    sampleAnswer: "Yes. English helps you talk to people from different countries and share your ideas."
+    ]
   },
   {
     id: 3,
@@ -328,8 +318,7 @@ const videoQuestions = [
       { english: "deepen", portuguese: "aprofundar" },
       { english: "relationships", portuguese: "relacionamentos" },
       { english: "stronger", portuguese: "mais fortes" }
-    ],
-    sampleAnswer: "Yes. English can open doors to better and stronger relationships."
+    ]
   },
   {
     id: 4,
@@ -338,8 +327,7 @@ const videoQuestions = [
     vocabulary: [
       { english: "global friends", portuguese: "amigos globais" },
       { english: "different countries", portuguese: "diferentes países" }
-    ],
-    sampleAnswer: "Yes. I would like to have friends from different countries."
+    ]
   },
   {
     id: 5,
@@ -349,8 +337,7 @@ const videoQuestions = [
       { english: "across borders", portuguese: "através das fronteiras" },
       { english: "connected", portuguese: "conectado" },
       { english: "confident", portuguese: "confiante" }
-    ],
-    sampleAnswer: "I would feel happy, confident, and connected to the world."
+    ]
   },
   {
     id: 6,
@@ -360,8 +347,7 @@ const videoQuestions = [
       { english: "self-confidence", portuguese: "autoconfiança" },
       { english: "assured", portuguese: "seguro" },
       { english: "build", portuguese: "construir" }
-    ],
-    sampleAnswer: "Speaking English helps build self-confidence and makes you feel more assured."
+    ]
   },
   {
     id: 7,
@@ -370,8 +356,7 @@ const videoQuestions = [
     vocabulary: [
       { english: "career growth", portuguese: "crescimento profissional" },
       { english: "opportunities", portuguese: "oportunidades" }
-    ],
-    sampleAnswer: "Yes. English helps with career growth and new opportunities."
+    ]
   },
   {
     id: 8,
@@ -380,8 +365,7 @@ const videoQuestions = [
     vocabulary: [
       { english: "asset", portuguese: "vantagem" },
       { english: "job market", portuguese: "mercado de trabalho" }
-    ],
-    sampleAnswer: "Yes. English is an important asset in the job market."
+    ]
   },
   {
     id: 9,
@@ -391,8 +375,7 @@ const videoQuestions = [
       { english: "grammar", portuguese: "gramática" },
       { english: "second language", portuguese: "segunda língua" },
       { english: "communication", portuguese: "comunicação" }
-    ],
-    sampleAnswer: "Yes. Grammar is important, but communication comes first."
+    ]
   },
   {
     id: 10,
@@ -402,28 +385,53 @@ const videoQuestions = [
       { english: "important", portuguese: "importante" },
       { english: "connects", portuguese: "conecta" },
       { english: "around the world", portuguese: "ao redor do mundo" }
-    ],
-    sampleAnswer: "English is important because it connects people around the world."
+    ]
   }
 ];
 
+// DIALOGUE
 const thereAndAroundDialogue = [
   { speaker: "A", text: "I want to book a flight, please.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
   { speaker: "B", text: "Sure! Please, take a seat.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
   { speaker: "A", text: "Do you want a round-trip ticket or a one-way ticket?", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
   { speaker: "B", text: "A one-way ticket, please.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
   { speaker: "A", text: "Thank you very much.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
-  { speaker: "B", text: "It's my pleasure.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" }
+  { speaker: "B", text: "You're welcome.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" }
 ];
 
-// Sistema de avaliação de respostas
+// SISTEMA DE AVALIAÇÃO DE RESPOSTAS
 const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
   const normalize = (text: string) => 
-    text.toLowerCase().trim().replace(/[.,?!]/g, '');
+    text.toLowerCase().trim().replace(/[.,?!]/g, '').replace(/\s+/g, ' ');
   
   return normalize(userAnswer) === normalize(correctAnswer);
 };
 
+// COMPONENTE SIMPLE AUDIO PLAYER
+const SimpleAudioPlayer = ({ src }: { src: string }) => {
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const playAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(err => console.error("Error playing audio:", err));
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <button 
+        onClick={playAudio}
+        className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 flex items-center gap-1 transition"
+      >
+        <Volume2 size={14} />
+        <span className="text-xs">Play</span>
+      </button>
+      <audio ref={audioRef} src={src} preload="none" />
+    </div>
+  );
+};
+
+// COMPONENTE ADVANCED AUDIO PLAYER
 const AdvancedAudioPlayer = ({ src, startTime = 0 }: { src: string; startTime?: number }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -488,14 +496,14 @@ const AdvancedAudioPlayer = ({ src, startTime = 0 }: { src: string; startTime?: 
       <div className="flex items-center gap-4 w-full">
         <button 
           onClick={togglePlayPause}
-          className={`p-2 rounded-full ${isPlaying ? 'bg-red-500' : 'bg-green-500'} text-white hover:opacity-90`}
+          className={`p-2 rounded-full ${isPlaying ? 'bg-red-500' : 'bg-green-500'} text-white hover:opacity-90 transition`}
         >
           {isPlaying ? <Pause size={16} /> : <Play size={16} />}
         </button>
         
         <button 
           onClick={resetAudio}
-          className="p-2 bg-gray-500 text-white rounded-full hover:bg-gray-600"
+          className="p-2 bg-gray-500 text-white rounded-full hover:bg-gray-600 transition"
         >
           <RotateCcw size={16} />
         </button>
@@ -507,7 +515,7 @@ const AdvancedAudioPlayer = ({ src, startTime = 0 }: { src: string; startTime?: 
             max={duration || 0}
             value={currentTime}
             onChange={handleSeek}
-            className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500"
+            className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
           />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>{formatTime(currentTime)}</span>
@@ -520,36 +528,13 @@ const AdvancedAudioPlayer = ({ src, startTime = 0 }: { src: string; startTime?: 
   );
 };
 
-const SimpleAudioPlayer = ({ src }: { src: string }) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  const playAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(err => console.error("Error playing audio:", err));
-    }
-  };
-
-  return (
-    <div className="flex items-center gap-2">
-      <button 
-        onClick={playAudio}
-        className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 flex items-center gap-1"
-      >
-        <Volume2 size={14} />
-        <span className="text-xs">Play</span>
-      </button>
-      <audio ref={audioRef} src={src} preload="none" />
-    </div>
-  );
-};
-
-// Componente para mostrar resultado da avaliação
+// COMPONENTE ANSWER RESULT
 const AnswerResult = ({ isCorrect, correctAnswer, onClose }: { isCorrect: boolean; correctAnswer: string; onClose?: () => void }) => {
   if (isCorrect) {
     return (
       <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md">
         <Check size={16} className="text-green-600" />
-        <span className="text-sm text-green-700 font-medium">Correct!</span>
+        <span className="text-sm text-green-700 font-medium">Correct! ✓</span>
         {onClose && (
           <button onClick={onClose} className="ml-auto text-gray-500 hover:text-gray-700">
             <X size={16} />
@@ -574,48 +559,41 @@ const AnswerResult = ({ isCorrect, correctAnswer, onClose }: { isCorrect: boolea
   );
 };
 
+// COMPONENTE PRINCIPAL
 export default function Lesson12LanguagesAndCountries() {
   const router = useRouter();
   
-  // Estados para controle de expansão/recolhimento das seções
+  const [isInitialized, setIsInitialized] = useState(false);
+  
   const [sections, setSections] = useState({
     listeningExercise: true,
-    listenAndPractice: true,
     substitution1: true,
     negative: true,
     substitution2: true,
     affirmative: true,
     interrogative: true,
-    thereAndAround: true,
+    listenToDialog: true,
     tuneIn: true,
     unlock: true
   });
   
-  // Estados para as práticas de substituição
   const [subs1Exercises, setSubs1Exercises] = useState(substitutionPractice1);
   const [subs2Exercises, setSubs2Exercises] = useState(substitutionPractice2);
-  
-  // Estados para as respostas escritas
   const [writtenAnswers, setWrittenAnswers] = useState<Record<string, string>>({});
   const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
-  
-  // Estados para avaliação de respostas
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
   const [showVideoAnswerResults, setShowVideoAnswerResults] = useState<Record<number, boolean>>({});
-
-  // Estados para o Listening Exercise
   const [listeningAnswers, setListeningAnswers] = useState<Record<number, string>>({});
   const [listeningResults, setListeningResults] = useState<Record<number, boolean | null>>({});
   
-  // Estados para o player de áudio principal
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
   const normalize = (text: string) =>
-    text.toLowerCase().trim().replace(/[?.!,]/g, "");
+    text.toLowerCase().trim().replace(/[?.!,]/g, "").replace(/\s+/g, " ");
 
   const checkListeningAnswer = (id: number, correct: string) => {
     const userAnswer = listeningAnswers[id] || "";
@@ -635,14 +613,12 @@ export default function Lesson12LanguagesAndCountries() {
     setVideoAnswers(prev => ({ ...prev, [id]: value }));
   };
 
-  // Formatar tempo em minutos:segundos
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  // Inicializar áudio principal
   useEffect(() => {
     if (!audioRef.current) {
       const audio = new Audio("https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3");
@@ -682,7 +658,6 @@ export default function Lesson12LanguagesAndCountries() {
     }
   };
 
-  // Função para arrastar o áudio
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = parseFloat(e.target.value);
     setCurrentTime(newTime);
@@ -693,19 +668,39 @@ export default function Lesson12LanguagesAndCountries() {
   };
 
   useEffect(() => {
-    // Carregar respostas salvas do localStorage
-    const savedAnswers = localStorage.getItem("lesson12Answers");
-    if (savedAnswers) {
-      try {
-        const data = JSON.parse(savedAnswers);
-        setSubs1Exercises(data.subs1Exercises || substitutionPractice1);
-        setSubs2Exercises(data.subs2Exercises || substitutionPractice2);
-        setWrittenAnswers(data.writtenAnswers || {});
-        setVideoAnswers(data.videoAnswers || {});
-      } catch (error) {
-        console.error("Error loading saved answers:", error);
+    const savedVersion = localStorage.getItem("lesson12_version");
+    const currentVersion = `${COMPONENT_VERSION}-${BUILD_TIMESTAMP}`;
+    
+    if (savedVersion !== currentVersion) {
+      console.log("Versão atualizada! Limpando cache antigo...");
+      localStorage.removeItem("lesson12Answers");
+      localStorage.setItem("lesson12_version", currentVersion);
+      
+      setSubs1Exercises(substitutionPractice1);
+      setSubs2Exercises(substitutionPractice2);
+      setWrittenAnswers({});
+      setVideoAnswers({});
+      setListeningAnswers({});
+      setListeningResults({});
+      setAnswerResults({});
+      setShowAnswerResults({});
+      setShowVideoAnswerResults({});
+    } else {
+      const savedAnswers = localStorage.getItem("lesson12Answers");
+      if (savedAnswers) {
+        try {
+          const data = JSON.parse(savedAnswers);
+          setSubs1Exercises(data.subs1Exercises || substitutionPractice1);
+          setSubs2Exercises(data.subs2Exercises || substitutionPractice2);
+          setWrittenAnswers(data.writtenAnswers || {});
+          setVideoAnswers(data.videoAnswers || {});
+        } catch (error) {
+          console.error("Error loading saved answers:", error);
+        }
       }
     }
+    
+    setIsInitialized(true);
   }, []);
 
   const saveAllAnswers = async () => {
@@ -714,11 +709,12 @@ export default function Lesson12LanguagesAndCountries() {
       subs2Exercises,
       writtenAnswers,
       videoAnswers,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
+      version: `${COMPONENT_VERSION}-${BUILD_TIMESTAMP}`
     };
     
     localStorage.setItem("lesson12Answers", JSON.stringify(data));
-    alert("All answers saved successfully to your browser!");
+    alert("All answers saved successfully!");
   };
 
   const clearAllAnswers = () => {
@@ -734,7 +730,6 @@ export default function Lesson12LanguagesAndCountries() {
     }
   };
 
-  // Funções para manipular as práticas de substituição
   const handleSubs1OptionClick = (exerciseKey: string, optionIndex: number) => {
     setSubs1Exercises(prev => 
       prev.map(exercise => 
@@ -759,19 +754,16 @@ export default function Lesson12LanguagesAndCountries() {
     setWrittenAnswers(prev => ({ ...prev, [key]: value }));
   };
 
-  // Função para verificar respostas
   const handleCheckAnswer = (exerciseKey: string, userAnswer: string, correctAnswer: string) => {
     const isCorrect = checkAnswer(userAnswer, correctAnswer);
     setAnswerResults(prev => ({ ...prev, [exerciseKey]: isCorrect }));
     setShowAnswerResults(prev => ({ ...prev, [exerciseKey]: true }));
   };
 
-  // Função para fechar resultado
   const handleCloseResult = (exerciseKey: string) => {
     setShowAnswerResults(prev => ({ ...prev, [exerciseKey]: false }));
   };
 
-  // Função para alternar expansão de seções
   const toggleSection = (section: keyof typeof sections) => {
     setSections(prev => ({
       ...prev,
@@ -779,8 +771,21 @@ export default function Lesson12LanguagesAndCountries() {
     }));
   };
 
+  if (!isInitialized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading lesson...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/world-map-bg.jpg')` }}>
+    <div className="min-h-screen py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/world-map-bg.jpg')` }}>
+      <div className="hidden" data-version={`${COMPONENT_VERSION}-${BUILD_TIMESTAMP}`} />
+      
       <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">🌍 LESSON 12 – Languages & Countries</h1>
@@ -789,7 +794,7 @@ export default function Lesson12LanguagesAndCountries() {
           </p>
         </div>
 
-        {/* LISTENING EXERCISE - INTEGRADO NO COMEÇO */}
+        {/* LISTENING EXERCISE */}
         <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-orange-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -814,7 +819,6 @@ export default function Lesson12LanguagesAndCountries() {
                 </p>
               </div>
 
-              {/* CONTROLES DE ÁUDIO - COM SLIDER */}
               <div className="flex flex-col items-center justify-center mb-8 p-6 bg-white border-2 border-orange-300 rounded-2xl shadow-md">
                 <div className="flex items-center gap-4 mb-4">
                   <button
@@ -843,7 +847,6 @@ export default function Lesson12LanguagesAndCountries() {
                   </button>
                 </div>
                 
-                {/* SLIDER DO ÁUDIO */}
                 <div className="w-full max-w-md mb-4">
                   <div className="flex items-center gap-3 mb-1">
                     <span className="text-xs font-medium text-gray-600">{formatTime(currentTime)}</span>
@@ -853,7 +856,7 @@ export default function Lesson12LanguagesAndCountries() {
                       max={duration || 0}
                       value={currentTime}
                       onChange={handleSeek}
-                      className="w-full h-2 bg-orange-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-500 [&::-webkit-slider-thumb]:cursor-pointer"
+                      className="w-full h-2 bg-orange-200 rounded-lg appearance-none cursor-pointer"
                     />
                     <span className="text-xs font-medium text-gray-600">{formatTime(duration)}</span>
                   </div>
@@ -868,13 +871,9 @@ export default function Lesson12LanguagesAndCountries() {
                 </p>
               </div>
 
-              {/* EXERCÍCIOS */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {listenItems.map(item => (
-                  <div
-                    key={item.id}
-                    className="border-2 border-orange-200 rounded-2xl p-6 shadow-md bg-white"
-                  >
+                  <div key={item.id} className="border-2 border-orange-200 rounded-2xl p-6 shadow-md bg-white">
                     <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
                       <img
                         src={item.image}
@@ -887,7 +886,6 @@ export default function Lesson12LanguagesAndCountries() {
                       />
                     </div>
 
-                    {/* INPUT */}
                     <textarea
                       placeholder="Write what you hear for this image..."
                       value={listeningAnswers[item.id] || ""}
@@ -900,7 +898,6 @@ export default function Lesson12LanguagesAndCountries() {
                       className="w-full h-32 border border-orange-300 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
 
-                    {/* CHECK */}
                     <button
                       onClick={() => checkListeningAnswer(item.id, item.correctAnswer)}
                       className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors mb-3"
@@ -908,7 +905,6 @@ export default function Lesson12LanguagesAndCountries() {
                       Check Answer
                     </button>
 
-                    {/* FEEDBACK COM BOTÃO X */}
                     {listeningResults[item.id] !== undefined && listeningResults[item.id] !== null && (
                       <div
                         className={`p-3 rounded-lg flex items-center gap-2 ${
@@ -946,7 +942,6 @@ export default function Lesson12LanguagesAndCountries() {
                 ))}
               </div>
 
-              {/* Instructions */}
               <div className="mt-8 bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-orange-800 mb-3">🎯 How to practice:</h3>
                 <ol className="list-decimal pl-5 space-y-2 text-orange-700">
@@ -963,46 +958,7 @@ export default function Lesson12LanguagesAndCountries() {
           )}
         </div>
 
-        {/* LISTEN AND PRACTICE - Renamed to "Try to say slower!" */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">👂 Try to say slower!</h2>
-              <button 
-                onClick={() => toggleSection('listenAndPractice')}
-                className="ml-4 p-2 rounded-full hover:bg-blue-600 transition"
-              >
-                {sections.listenAndPractice ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.listenAndPractice && (
-            <div className="p-8">
-              <div className="bg-blue-100 border-2 border-blue-300 rounded-xl p-6 mb-6">
-                <h3 className="text-xl font-bold text-blue-800 mb-4">
-                  Practice these sentences with audio controls:
-                </h3>
-                
-                <div className="space-y-4 bg-white p-6 rounded-lg border border-blue-200">
-                  {listenPracticeSentences.map((item) => (
-                    <div key={item.key} className="flex flex-col p-3 bg-blue-50 rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-gray-800 font-medium">{item.sentence}</p>
-                        <div className="text-sm text-gray-500">
-                          <span className="font-medium">Audio:</span> L12-listening.mp3
-                        </div>
-                      </div>
-                      <AdvancedAudioPlayer src={item.audioSrc} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* DRILLING PRACTICE - SUBSTITUTION PRACTICE I */}
+        {/* SUBSTITUTION PRACTICE I */}
         <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-green-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -1124,7 +1080,7 @@ export default function Lesson12LanguagesAndCountries() {
           )}
         </div>
 
-        {/* DRILLING PRACTICE - SUBSTITUTION PRACTICE II - UPDATED */}
+        {/* SUBSTITUTION PRACTICE II */}
         <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-orange-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -1147,12 +1103,7 @@ export default function Lesson12LanguagesAndCountries() {
                 
                 <div className="space-y-6">
                   {subs2Exercises.map((exercise) => {
-                    let currentSentence;
-                    if (exercise.transform) {
-                      currentSentence = exercise.transform(exercise.options[exercise.currentIndex]);
-                    } else {
-                      currentSentence = exercise.base.replace('{0}', exercise.options[exercise.currentIndex]);
-                    }
+                    const currentSentence = exercise.base.replace('{0}', exercise.options[exercise.currentIndex]);
                     
                     return (
                       <div key={exercise.key} className="bg-white p-4 rounded-lg border border-orange-200">
@@ -1190,7 +1141,7 @@ export default function Lesson12LanguagesAndCountries() {
           )}
         </div>
 
-        {/* CHANGE INTO AFFIRMATIVE - Updated Header Text */}
+        {/* CHANGE INTO AFFIRMATIVE */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -1312,25 +1263,25 @@ export default function Lesson12LanguagesAndCountries() {
           )}
         </div>
 
-        {/* THERE AND AROUND */}
+        {/* LISTEN TO THE DIALOG */}
         <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-purple-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🛫 THERE AND AROUND</h2>
+              <h2 className="text-2xl font-bold">🎧 LISTEN TO THE DIALOG</h2>
               <button 
-                onClick={() => toggleSection('thereAndAround')}
+                onClick={() => toggleSection('listenToDialog')}
                 className="ml-4 p-2 rounded-full hover:bg-purple-600 transition"
               >
-                {sections.thereAndAround ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {sections.listenToDialog ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.thereAndAround && (
+          {sections.listenToDialog && (
             <div className="p-8">
               <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-purple-800 mb-4">
-                  Practice this dialogue about booking a flight with audio:
+                  Listen to the dialogue about booking a flight:
                 </h3>
                 
                 <div className="space-y-4 bg-white p-6 rounded-lg border border-purple-200">
@@ -1345,9 +1296,7 @@ export default function Lesson12LanguagesAndCountries() {
                         <div className="flex-1">
                           <p className="text-gray-800">{line.text}</p>
                         </div>
-                      </div>
-                      <div className="ml-12">
-                        <AdvancedAudioPlayer src={line.audioSrc} />
+                        <SimpleAudioPlayer src={line.audioSrc} />
                       </div>
                     </div>
                   ))}
@@ -1357,7 +1306,7 @@ export default function Lesson12LanguagesAndCountries() {
           )}
         </div>
 
-        {/* TUNE IN YOUR EARS - ATUALIZADO COM O NOVO CONTEÚDO */}
+        {/* TUNE IN YOUR EARS */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
           <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -1375,30 +1324,24 @@ export default function Lesson12LanguagesAndCountries() {
             <div className="p-8">
               <div className="mb-8 text-center">
                 <h3 className="text-2xl font-bold text-teal-700 mb-4">
-                  Watch the video "How can English help you thrive in life?" and answer the questions below:
+                  Watch the video and answer the questions below:
                 </h3>
                
-                {/* Container do vídeo do YouTube - NOVO VÍDEO */}
                 <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
-                  <div className="aspect-w-16 aspect-h-9">
+                  <div className="relative pb-[56.25%] h-0">
                     <iframe
                       src="https://www.youtube.com/embed/Pt-2Q0Dwm5g"
                       title="How can English help you thrive in life?"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      className="w-full h-[400px] md:h-[500px]"
+                      className="absolute top-0 left-0 w-full h-full"
                     />
                   </div>
                 </div>
-
-                <div className="mt-4 text-sm text-teal-600">
-                  <p>Video: How can English help you thrive in life? - The importance of English in personal and professional life</p>
-                </div>
               </div>
 
-              {/* Vocabulary Help - ATUALIZADO COM NOVO VOCABULÁRIO */}
               <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4">📖 Key Vocabulary from the Video:</h3>
+                <h3 className="text-xl font-bold text-teal-800 mb-4">📖 Key Vocabulary:</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
@@ -1410,40 +1353,20 @@ export default function Lesson12LanguagesAndCountries() {
                       <span className="text-teal-600">Ficar orgulhoso de</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Pride</span>
-                      <span className="text-teal-600">Orgulho</span>
+                      <span className="font-medium text-teal-700">Thrive</span>
+                      <span className="text-teal-600">Prosperar</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">Self-confidence</span>
                       <span className="text-teal-600">Autoconfiança</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Assured</span>
-                      <span className="text-teal-600">Confiante / Seguro</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">Career growth</span>
                       <span className="text-teal-600">Crescimento profissional</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Presentations</span>
-                      <span className="text-teal-600">Apresentações</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">Job market</span>
                       <span className="text-teal-600">Mercado de trabalho</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Asset</span>
-                      <span className="text-teal-600">Algo valioso / Diferencial</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To interact</span>
-                      <span className="text-teal-600">Interagir</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Background</span>
-                      <span className="text-teal-600">História de vida</span>
                     </div>
                   </div>
                   <div className="space-y-3">
@@ -1452,27 +1375,11 @@ export default function Lesson12LanguagesAndCountries() {
                       <span className="text-teal-600">Oportunidade</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Meeting</span>
-                      <span className="text-teal-600">Reunião</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Experience</span>
-                      <span className="text-teal-600">Experiência</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Confidence</span>
-                      <span className="text-teal-600">Confiança</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
                       <span className="font-medium text-teal-700">Global</span>
-                      <span className="text-teal-600">Global / Mundial</span>
+                      <span className="text-teal-600">Global</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To thrive</span>
-                      <span className="text-teal-600">Prosperar</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To open doors</span>
+                      <span className="font-medium text-teal-700">Open doors</span>
                       <span className="text-teal-600">Abrir portas</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
@@ -1487,23 +1394,10 @@ export default function Lesson12LanguagesAndCountries() {
                       <span className="font-medium text-teal-700">To share ideas</span>
                       <span className="text-teal-600">Compartilhar ideias</span>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To deepen relationships</span>
-                      <span className="text-teal-600">Aprofundar relacionamentos</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Across borders</span>
-                      <span className="text-teal-600">Através das fronteiras</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To build confidence</span>
-                      <span className="text-teal-600">Construir confiança</span>
-                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Questions Section - ATUALIZADO COM AS NOVAS PERGUNTAS */}
               <div className="space-y-6 mb-8">
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-teal-200 shadow-md">
@@ -1582,8 +1476,6 @@ export default function Lesson12LanguagesAndCountries() {
                   <li><span className="font-medium">Education:</span> Access to global educational resources and study abroad programs</li>
                   <li><span className="font-medium">Travel:</span> Communicate effectively when traveling internationally</li>
                   <li><span className="font-medium">Cultural Exchange:</span> Share your ideas and learn from others worldwide</li>
-                  <li><span className="font-medium">Problem Solving:</span> Develop critical thinking skills through language learning</li>
-                  <li><span className="font-medium">Digital Literacy:</span> Navigate the global internet and digital resources</li>
                 </ul>
               </div>
             </div>

@@ -266,9 +266,9 @@ const substitutionPractice2 = [
   },
   { 
     key: "subs2-5", 
-    original: "I understand this word. / that / these",
-    correctAnswer: "I understand this word.",
-    options: ["this", "that", "these"],
+    original: "I understand these words. / a few / some",
+    correctAnswer: "I understand these words.",
+    options: ["these", "a few", "some"],
     currentIndex: 0
   }
 ];

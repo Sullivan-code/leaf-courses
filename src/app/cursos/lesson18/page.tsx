@@ -940,7 +940,7 @@ export default function Lesson18() {
                 {sections.listen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
-            <AudioPlayer src="/audios/lesson18_listenandpractice.mp3" />
+            <AudioPlayer src="https://github.com/Sullivan-code/english-audios/raw/main/LISTEN%20AND%20PRACTICE-lesson18.mp3" />
           </div>
 
           {sections.listen && (

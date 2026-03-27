@@ -309,6 +309,69 @@ const speakingQuestions = [
   "Do you work in an office?"
 ];
 
+// Questions for Tune In Your Ears section
+const videoQuestions = [
+  {
+    id: "video1",
+    question: "How visualizing videos and actions can help to learn a language.",
+    isPersonal: false,
+    vocabulary: [
+      { english: "Process", portuguese: "Processo" },
+      { english: "Alarm clock", portuguese: "Despertador" },
+    ],
+  },
+  {
+    id: "video2",
+    question: "What can we do to think more in English?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "Breakfast", portuguese: "Café da manhã" },
+      { english: "Toast", portuguese: "Torrada" },
+      { english: "Coffee", portuguese: "Café" },
+    ],
+  },
+  {
+    id: "video3",
+    question: "When would you like to become fluent for real?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "for real", portuguese: "Pra valer" },
+      { english: "Office", portuguese: "Escritório" },
+      { english: "Commute", portuguese: "Deslocamento" },
+    ],
+  },
+  {
+    id: "video4",
+    question: "What does she/he do in the evening?",
+    isPersonal: false,
+    vocabulary: [
+      { english: "Turkey", portuguese: "Turquia" },
+      { english: "Watch TV", portuguese: "Assistir TV" },
+      { english: "Read a book", portuguese: "Ler um livro" },
+    ],
+  },
+  {
+    id: "video5",
+    question: "How are you going to think more in English, and stop translating?",
+    isPersonal: true,
+    vocabulary: [
+      { english: "Routine", portuguese: "Rotina" },
+      { english: "Ways", portuguese: "Meios/Formas" },
+      { english: "Sometimes", portuguese: "Às vezes" },
+    ],
+  },
+  {
+    id: "video6",
+    question: "Talk about whan you're consuming in English to become fluent.",
+    isPersonal: true,
+    vocabulary: [
+      { english: "Free time", portuguese: "Tempo livre" },
+      { english: "Hobbies", portuguese: "Hobbies" },
+      { english: "Spend time", portuguese: "Passar tempo" },
+    ],
+  },
+];
+
 interface AudioPlayerProps {
   src: string;
   compact?: boolean;
@@ -509,13 +572,17 @@ export default function Lesson18() {
   // Estados para respostas das questões
   const [questionAnswers, setQuestionAnswers] = useState<Record<string, string>>({});
   
+  // Estados para respostas do Tune In Your Ears
+  const [videoAnswers, setVideoAnswers] = useState<Record<string, string>>({});
+  
   // Estados para controle de expansão/recolhimento das seções
   const [sections, setSections] = useState({
     listen: true,
     verbs: true,
     newWords: true,
     usefulPhrases: true,
-    speaking: true
+    speaking: true,
+    tuneIn: true
   });
 
   // Estado para salvar todas as respostas
@@ -568,6 +635,9 @@ export default function Lesson18() {
         
         // Restaurar questões de fala
         if (data.questionAnswers) setQuestionAnswers(data.questionAnswers);
+        
+        // Restaurar respostas do Tune In Your Ears
+        if (data.videoAnswers) setVideoAnswers(data.videoAnswers);
         
         // Restaurar estado das seções
         if (data.sections) setSections(data.sections);
@@ -626,6 +696,9 @@ export default function Lesson18() {
       // Speaking Questions
       questionAnswers,
       
+      // Tune In Your Ears
+      videoAnswers,
+      
       // Seções
       sections,
       
@@ -639,6 +712,7 @@ export default function Lesson18() {
         affirmativeExercises: affirmativeAnswers,
         interrogativeExercises: interrogativeAnswers,
         speakingQuestions: questionAnswers,
+        tuneInYourEars: videoAnswers,
         timestamp: new Date().toISOString()
       },
       
@@ -700,6 +774,9 @@ export default function Lesson18() {
       // Limpar questões de fala
       setQuestionAnswers({});
       
+      // Limpar respostas do Tune In Your Ears
+      setVideoAnswers({});
+      
       // Limpar do localStorage
       localStorage.removeItem("lesson18Answers");
       alert("Todas as respostas foram limpas.");
@@ -722,6 +799,7 @@ export default function Lesson18() {
         if (data.affirmativeAnswers) setAffirmativeAnswers(data.affirmativeAnswers);
         if (data.interrogativeAnswers) setInterrogativeAnswers(data.interrogativeAnswers);
         if (data.questionAnswers) setQuestionAnswers(data.questionAnswers);
+        if (data.videoAnswers) setVideoAnswers(data.videoAnswers);
         
         // Carregar dados salvos
         if (data.savedAnswers) setSavedAnswers(data.savedAnswers);
@@ -765,6 +843,10 @@ export default function Lesson18() {
 
   const handleQuestionChange = (index: number, value: string) => {
     setQuestionAnswers(prev => ({ ...prev, [`q${index}`]: value }));
+  };
+
+  const handleVideoAnswerChange = (id: string, value: string) => {
+    setVideoAnswers(prev => ({ ...prev, [id]: value }));
   };
 
   const handleCheck = (key: string) => {
@@ -1469,6 +1551,156 @@ export default function Lesson18() {
                   <li>Focus on correct pronunciation</li>
                   <li>Use complete sentences when possible</li>
                 </ul>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* TUNE IN YOUR EARS */}
+        <div className="bg-gradient-to-br from-teal-50 to-white border border-teal-200 rounded-2xl shadow-xl overflow-hidden mb-10">
+          {/* HEADER */}
+          <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl font-bold tracking-wide">🎧 TUNE IN YOUR EARS</h2>
+
+              <button
+                onClick={() => toggleSection('tuneIn')}
+                className="p-2 rounded-full hover:bg-white/20 transition"
+              >
+                {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.tuneIn && (
+            <div className="p-8 space-y-10">
+              {/* VIDEO */}
+              <div className="text-center space-y-4">
+                <h3 className="text-2xl font-bold text-teal-700">
+                  Watch the video and answer the questions:
+                </h3>
+
+                <div className="relative mx-auto max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-black/10">
+                  <div className="aspect-video">
+                    <iframe
+                      src="https://www.youtube.com/embed/vcyCO1lvPkk?list=PLc0_DKGuWp_2GK_ZyY81hiV_vdMaUmezE&index=37"
+                      title="English Listening Practice - Daily Routines"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
+                  </div>
+                </div>
+
+                <p className="text-sm text-teal-600">
+                  Daily Routines & Conversations
+                </p>
+              </div>
+
+              {/* VOCAB */}
+              <div className="bg-white/70 backdrop-blur-md border border-teal-200 rounded-2xl p-6 shadow-md">
+                <h3 className="text-xl font-bold text-teal-800 mb-4">
+                  📖 Key Vocabulary
+                </h3>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  {[
+                    ["Mistakes", "Erros"],
+                    ["To skip", "Pular"],
+                    ["You won't miss", "Você não perderá / Você não vai perder."],
+                    ["Everywhere", "Por todo lugar"],
+                    ["To feed", "Alimentar"],
+                    ["Pigeons", "Pombos"],
+                    ["Picnic", "piquenique"],
+                    ["Longer", "maior / mais longo(a)"],
+                    ["Go to bed", "Dormir"],
+                    ["Weekend", "Fim de semana"],
+                    ["Free time", "Tempo livre"],
+                    ["Hobbies", "Hobbies"],
+                  ].map(([en, pt], i) => (
+                    <div
+                      key={i}
+                      className="bg-white rounded-xl px-4 py-2 shadow-sm hover:shadow-md transition flex items-center gap-2 text-sm"
+                    >
+                      <span className="font-medium text-teal-700">{en}</span>
+                      <span className="text-teal-400">→</span>
+                      <span className="text-teal-600">{pt}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* QUESTIONS */}
+              <div className="space-y-6">
+                {videoQuestions.map((question) => (
+                  <div
+                    key={question.id}
+                    className="bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-teal-200 shadow-sm hover:shadow-md transition"
+                  >
+                    <h4 className="text-lg font-semibold text-teal-700 mb-3">
+                      {question.question}
+                      {question.isPersonal && (
+                        <span className="ml-2 text-sm text-teal-500">(Personal)</span>
+                      )}
+                    </h4>
+
+                    {question.vocabulary && (
+                      <div className="mb-3 bg-teal-50 p-3 rounded-xl">
+                        <p className="text-sm text-teal-600 mb-2 font-medium">
+                          Vocabulary hints:
+                        </p>
+
+                        <div className="grid md:grid-cols-2 gap-2">
+                          {question.vocabulary.map((word, idx) => (
+                            <div key={idx} className="text-sm flex gap-2">
+                              <span className="font-medium text-teal-700">
+                                {word.english}
+                              </span>
+                              <span className="text-teal-400">→</span>
+                              <span className="text-teal-600">
+                                {word.portuguese}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <textarea
+                      value={videoAnswers[question.id] || ""}
+                      onChange={(e) =>
+                        handleVideoAnswerChange(question.id, e.target.value)
+                      }
+                      placeholder="Write your answer..."
+                      className="w-full h-24 p-3 border border-teal-200 rounded-xl focus:ring-2 focus:ring-teal-400 outline-none resize-none"
+                    />
+
+                    <div className="flex gap-3 mt-3">
+                      <button
+                        onClick={() => {
+                          if (videoAnswers[question.id]?.trim()) {
+                            const utterance = new SpeechSynthesisUtterance(videoAnswers[question.id]);
+                            utterance.lang = 'en-US';
+                            window.speechSynthesis.speak(utterance);
+                          } else {
+                            alert('Please write your answer first before listening.');
+                          }
+                        }}
+                        className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-xl transition"
+                      >
+                        Listen to your answer
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          handleVideoAnswerChange(question.id, "");
+                        }}
+                        className="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl transition"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}

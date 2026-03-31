@@ -199,34 +199,34 @@ export default function LessonPersonalInfoRoutine() {
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">trabalha</span> / Ele <span className="text-blue-600 font-bold">trabalha</span> / Eles <span className="text-blue-600 font-bold">trabalham</span></p>
+                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">trabalha</span> / Ele <span className="text-blue-600 font-bold">trabalha</span> / Eles <span className="text-blue-600 font-bold">trabalham</span> / Nós <span className="text-blue-600 font-bold">trabalhamos</span> / Eu <span className="text-blue-600 font-bold">trabalho</span> / Você <span className="text-blue-600 font-bold">trabalha</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Nós <span className="text-blue-600 font-bold">trabalhamos</span> aqui / Eu <span className="text-blue-600 font-bold">trabalho</span> aqui</p>
+                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">dorme</span> / Ele <span className="text-blue-600 font-bold">dorme</span> / Eles <span className="text-blue-600 font-bold">dormem</span> / Nós <span className="text-blue-600 font-bold">dormimos</span> / Eu <span className="text-blue-600 font-bold">durmo</span> / Você <span className="text-blue-600 font-bold">dorme</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Você <span className="text-blue-600 font-bold">trabalha</span> aqui?</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela trabalha</span> no escritório? / <span className="text-blue-600 font-bold">Ele trabalha</span> no banco? / <span className="text-blue-600 font-bold">Você trabalha</span> em casa?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">dorme</span> / Ele <span className="text-blue-600 font-bold">dorme</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela dorme</span> cedo? / <span className="text-blue-600 font-bold">Ele dorme</span> tarde? / <span className="text-blue-600 font-bold">Você dorme</span> bem?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Nós não <span className="text-blue-600 font-bold">dormimos</span> tarde</p>
+                  <p className="text-lg font-medium text-gray-800">Onde <span className="text-blue-600 font-bold">ele trabalha</span>? / Onde <span className="text-blue-600 font-bold">ela trabalha</span>? / Onde <span className="text-blue-600 font-bold">você trabalha</span>?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">dorme</span> cedo?</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eu trabalho</span> todos os dias / <span className="text-blue-600 font-bold">Ela trabalha</span> de segunda a sexta / <span className="text-blue-600 font-bold">Eles trabalham</span> apenas pela manhã</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">trabalha</span> no escritório</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Nós dormimos</span> oito horas por noite / <span className="text-blue-600 font-bold">Ela dorme</span> seis horas / <span className="text-blue-600 font-bold">Ele dorme</span> pouco</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Você <span className="text-blue-600 font-bold">trabalha</span> todo dia?</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Você trabalha</span> aos finais de semana? / <span className="text-blue-600 font-bold">Eles trabalham</span> em feriados?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">trabalha</span> de casa?</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eu não trabalho</span> aos domingos / <span className="text-blue-600 font-bold">Ela não dorme</span> durante o dia / <span className="text-blue-600 font-bold">Eles não trabalham</span> à noite</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Onde ele <span className="text-blue-600 font-bold">trabalha</span>?</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela trabalha</span> como médica? / <span className="text-blue-600 font-bold">Ele trabalha</span> como professor? / <span className="text-blue-600 font-bold">Você trabalha</span> como engenheiro?</p>
                 </div>
               </div>
             )}
@@ -299,6 +299,22 @@ export default function LessonPersonalInfoRoutine() {
                 >
                   grocery store
                 </button> = supermercado
+              </li>
+                            <li>
+                <button 
+                  onClick={() => playAudio('grocery store')} 
+                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                >
+                  remotely
+                </button> = remotamente, de casa
+              </li>
+                                         <li>
+                <button 
+                  onClick={() => playAudio('grocery store')} 
+                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                >
+                  part-time job
+                </button> = Emprego de meio período, Trabalho parcial
               </li>
               <li>
                 <button 
@@ -420,34 +436,37 @@ export default function LessonPersonalInfoRoutine() {
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Onde você <span className="text-blue-600 font-bold">trabalha</span>? / Onde ela <span className="text-blue-600 font-bold">trabalha</span>? / Onde ele <span className="text-blue-600 font-bold">trabalha</span>?</p>
+                  <p className="text-lg font-medium text-gray-800">Onde <span className="text-blue-600 font-bold">você trabalha</span>? / Onde <span className="text-blue-600 font-bold">ela trabalha</span>? / Onde <span className="text-blue-600 font-bold">ele trabalha</span>? / Onde <span className="text-blue-600 font-bold">eles trabalham</span>?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">normalmente acorda</span> cedo? / Ele <span className="text-blue-600 font-bold">normalmente acorda</span> cedo?</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela normalmente acorda</span> cedo? / <span className="text-blue-600 font-bold">Ele normalmente acorda</span> cedo? / <span className="text-blue-600 font-bold">Você normalmente acorda</span> cedo?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eles <span className="text-blue-600 font-bold">vão ao banco frequentemente</span>? / <span className="text-blue-600 font-bold">frequentemente</span> / <span className="text-blue-600 font-bold">sempre</span></p>
+                  <p className="text-lg font-medium text-gray-800">Eles <span className="text-blue-600 font-bold">vão ao banco frequentemente</span>? / <span className="text-blue-600 font-bold">raramente</span> / <span className="text-blue-600 font-bold">sempre</span> / <span className="text-blue-600 font-bold">às vezes</span> / <span className="text-blue-600 font-bold">nunca</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">trabalha em um escritório ou em casa</span>? / <span className="text-blue-600 font-bold">em casa</span> / <span className="text-blue-600 font-bold">remotamente</span></p>
+                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">trabalha em um escritório ou em casa</span>? / <span className="text-blue-600 font-bold">em casa</span> / <span className="text-blue-600 font-bold">remotamente</span> / <span className="text-blue-600 font-bold">em um hospital</span> / <span className="text-blue-600 font-bold">em uma escola</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">trabalho no hospital / no banco / na empresa</span></p>
+                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">trabalho no hospital / no banco / na empresa / na escola / no escritório / no supermercado</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">vai à igreja aos domingos / ao banco / ao supermercado</span></p>
+                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">vai à igreja aos domingos / ao banco / ao supermercado / à farmácia / ao posto de gasolina / ao hospital</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">precisa ir à farmácia / ao posto de gasolina / ao hospital</span></p>
+                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">precisa ir à farmácia / ao posto de gasolina / ao hospital / ao banco / ao supermercado / à escola</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">tenho um novo emprego / um bom emprego / um emprego em tempo parcial</span></p>
+                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">tenho um novo emprego / um bom emprego / um emprego em tempo parcial / um emprego em tempo integral / um emprego interessante</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">acorda cedo / levanta cedo / vai dormir tarde</span></p>
+                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">acorda cedo / levanta cedo / vai dormir tarde / acorda tarde / levanta tarde</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">chega tarde ao trabalho / à escola / à aula</span></p>
+                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">chega tarde ao trabalho / à escola / à aula / à reunião / em casa</span></p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                  <p className="text-lg font-medium text-gray-800">Nós <span className="text-blue-600 font-bold">geralmente vamos ao cinema / ao parque / ao shopping / ao restaurante / à praia</span></p>
                 </div>
               </div>
             )}
@@ -518,34 +537,37 @@ export default function LessonPersonalInfoRoutine() {
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Você <span className="text-blue-600 font-bold">acorda cedo todo dia</span>? / Ela <span className="text-blue-600 font-bold">acorda cedo todo dia</span>? / Ele <span className="text-blue-600 font-bold">acorda cedo todo dia</span>?</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Você acorda cedo todo dia</span>? / <span className="text-blue-600 font-bold">Ela acorda cedo todo dia</span>? / <span className="text-blue-600 font-bold">Ele acorda cedo todo dia</span>? / <span className="text-blue-600 font-bold">Eles acordam cedo todo dia</span>?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">vai dormir tarde</span>? / Ele <span className="text-blue-600 font-bold">vai dormir tarde</span>? / Eles <span className="text-blue-600 font-bold">vão dormir tarde</span>?</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela vai dormir tarde</span>? / <span className="text-blue-600 font-bold">Ele vai dormir tarde</span>? / <span className="text-blue-600 font-bold">Eles vão dormir tarde</span>? / <span className="text-blue-600 font-bold">Você vai dormir tarde</span>?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Quando você <span className="text-blue-600 font-bold">toma banho</span>? / <span className="text-blue-600 font-bold">de manhã</span> / <span className="text-blue-600 font-bold">à noite</span> / <span className="text-blue-600 font-bold">à tarde</span></p>
+                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">você toma banho</span>? / <span className="text-blue-600 font-bold">ela toma banho</span>? / <span className="text-blue-600 font-bold">ele toma banho</span>? / <span className="text-blue-600 font-bold">eles tomam banho</span>? <span className="text-blue-600 font-bold">de manhã</span> / <span className="text-blue-600 font-bold">à noite</span> / <span className="text-blue-600 font-bold">à tarde</span> / <span className="text-blue-600 font-bold">de madrugada</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eu preciso <span className="text-blue-600 font-bold">ir trabalhar / à escola / ao banco</span></p>
+                  <p className="text-lg font-medium text-gray-800">Eu preciso <span className="text-blue-600 font-bold">ir trabalhar / à escola / ao banco / ao supermercado / à farmácia / ao hospital</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">acorda às 6 da manhã / às 7 da manhã / às 8 da manhã</span></p>
+                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">acorda às 6 da manhã / às 7 da manhã / às 8 da manhã / ao meio-dia / às 5 da manhã</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eles <span className="text-blue-600 font-bold">vão dormir à meia-noite / às 22h / às 23h</span></p>
+                  <p className="text-lg font-medium text-gray-800">Eles <span className="text-blue-600 font-bold">vão dormir à meia-noite / às 22h / às 23h / à 1h da manhã / cedo / tarde</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">toma banho de manhã / à noite / à tarde</span></p>
+                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">toma banho de manhã / à noite / à tarde / após o trabalho / antes de dormir</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Nós <span className="text-blue-600 font-bold">acordamos tarde nos finais de semana / aos sábados / aos domingos</span></p>
+                  <p className="text-lg font-medium text-gray-800">Nós <span className="text-blue-600 font-bold">acordamos tarde nos finais de semana / aos sábados / aos domingos / durante as férias / nos feriados</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">vai dormir cedo durante a semana / nos dias úteis</span></p>
+                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">vai dormir cedo durante a semana / nos dias úteis / de segunda a sexta</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Você <span className="text-blue-600 font-bold">precisa tomar banho agora? / mais tarde / amanhã</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Você precisa tomar banho agora?</span> / <span className="text-blue-600 font-bold">mais tarde</span> / <span className="text-blue-600 font-bold">amanhã</span> / <span className="text-blue-600 font-bold">antes do jantar</span> / <span className="text-blue-600 font-bold">após o café</span></p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">preciso acordar cedo amanhã / tenho que levantar cedo / vou dormir cedo hoje</span></p>
                 </div>
               </div>
             )}
@@ -648,43 +670,43 @@ export default function LessonPersonalInfoRoutine() {
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Onde <span className="text-blue-600 font-bold">ela trabalha</span>? / Onde <span className="text-blue-600 font-bold">ele trabalha</span>? / Onde <span className="text-blue-600 font-bold">eles trabalham</span>?</p>
+                  <p className="text-lg font-medium text-gray-800">Onde <span className="text-blue-600 font-bold">ela trabalha</span>? / Onde <span className="text-blue-600 font-bold">ele trabalha</span>? / Onde <span className="text-blue-600 font-bold">eles trabalham</span>? / Onde <span className="text-blue-600 font-bold">você trabalha</span>?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ele trabalha</span> no hospital? / no banco / na empresa</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ele trabalha</span> no hospital? / no banco / na empresa / na escola / no escritório / no supermercado</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eles trabalham</span> no banco? / no escritório / no supermercado</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eles trabalham</span> no banco? / no escritório / no supermercado / na igreja / na farmácia / no hospital</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela trabalha em um escritório ou em casa</span>? / <span className="text-blue-600 font-bold">em casa</span> / <span className="text-blue-600 font-bold">remotamente</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela trabalha em um escritório ou em casa</span>? / <span className="text-blue-600 font-bold">em casa</span> / <span className="text-blue-600 font-bold">remotamente</span> / <span className="text-blue-600 font-bold">em um hospital</span> / <span className="text-blue-600 font-bold">em uma escola</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ele vai ao cinema</span>? / <span className="text-blue-600 font-bold">à academia</span> / <span className="text-blue-600 font-bold">ao parque</span></p>
+                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ele vai ao cinema</span>? / <span className="text-blue-600 font-bold">à academia</span> / <span className="text-blue-600 font-bold">ao parque</span> / <span className="text-blue-600 font-bold">ao restaurante</span> / <span className="text-blue-600 font-bold">ao shopping</span> / <span className="text-blue-600 font-bold">à praia</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ela vê seus emails</span>? / <span className="text-blue-600 font-bold">suas mensagens</span> / <span className="text-blue-600 font-bold">seus amigos</span></p>
+                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ela vê seus emails</span>? / <span className="text-blue-600 font-bold">suas mensagens</span> / <span className="text-blue-600 font-bold">seus amigos</span> / <span className="text-blue-600 font-bold">sua família</span> / <span className="text-blue-600 font-bold">seus colegas</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ele quer ir para a Itália</span>? / <span className="text-blue-600 font-bold">para a Espanha</span> / <span className="text-blue-600 font-bold">para os EUA</span></p>
+                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ele quer ir para a Itália</span>? / <span className="text-blue-600 font-bold">para a Espanha</span> / <span className="text-blue-600 font-bold">para os EUA</span> / <span className="text-blue-600 font-bold">para o Japão</span> / <span className="text-blue-600 font-bold">para a França</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ela tem que ir ao hospital</span>? / <span className="text-blue-600 font-bold">ao médico</span> / <span className="text-blue-600 font-bold">ao dentista</span></p>
+                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ela tem que ir ao hospital</span>? / <span className="text-blue-600 font-bold">ao médico</span> / <span className="text-blue-600 font-bold">ao dentista</span> / <span className="text-blue-600 font-bold">ao oftalmologista</span> / <span className="text-blue-600 font-bold">à farmácia</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">tenho que ir à farmácia de manhã / à tarde / à noite</span></p>
+                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">tenho que ir à farmácia de manhã / à tarde / à noite / amanhã / hoje</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ele trabalha no banco ou no posto de gasolina</span>?</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ele trabalha no banco ou no posto de gasolina</span>? / <span className="text-blue-600 font-bold">na empresa ou na escola</span>? / <span className="text-blue-600 font-bold">no hospital ou na clínica</span>?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eles trabalham em um restaurante? / em um hotel / em uma escola</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eles trabalham em um restaurante? / em um hotel / em uma escola / em uma loja / em uma empresa</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela também trabalha no hospital? / também / igualmente</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela também trabalha no hospital? / também / igualmente / da mesma forma</span></p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eles não trabalham na escola ou na igreja</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eles não trabalham na escola ou na igreja</span> / <span className="text-blue-600 font-bold">nem no banco nem no hospital</span></p>
                 </div>
               </div>
             )}

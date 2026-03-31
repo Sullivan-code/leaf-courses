@@ -37,10 +37,10 @@ export default function Lesson15PersonalInfoRoutine() {
     audio.play().catch(e => console.error("Error playing audio:", e));
   };
 
-  // Image URLs
-  const mainImage = "https://i.ibb.co/tTpRLxNr/l5-main.jpg";
-  const readingImage = "https://i.ibb.co/N6P2sn5P/beef-and-fish.jpg";
-  const placesImage = "https://i.ibb.co/5xwfgP0Y/drink-and-sandwich.jpg";
+  // Updated Image URLs - Routine, Work, Information theme
+  const mainImage = "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+  const readingImage = "https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+  const placesImage = "https://images.pexels.com/photos/3182746/pexels-photo-3182746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
 
   // Lesson 15 data
   const verbs = [
@@ -99,7 +99,7 @@ export default function Lesson15PersonalInfoRoutine() {
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
       style={{
-        backgroundImage: `url("/images/l7-bgg.jpg")`,
+        backgroundImage: `url("https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1920&q=80")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -108,7 +108,7 @@ export default function Lesson15PersonalInfoRoutine() {
     >
       <div className="max-w-5xl mx-auto bg-[#f0f8ff] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         
-        {/* Centered title with image below */}
+        {/* Centered title with image below - Updated with routine/work theme */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-[#0c4a6e] mb-6">
             📘 Lesson 15 - Personal Information & Routine
@@ -119,7 +119,7 @@ export default function Lesson15PersonalInfoRoutine() {
           <div className="w-64 h-64 mx-auto">
             <img
               src={mainImage}
-              alt="Daily activities and routine"
+              alt="Daily routine and work schedule"
               className="w-full h-full object-cover rounded-2xl shadow-md"
             />
           </div>
@@ -404,12 +404,12 @@ export default function Lesson15PersonalInfoRoutine() {
                     <div className="relative h-64 w-full">
                       <img
                         src={readingImage}
-                        alt="Reading books and magazines"
+                        alt="Reading books and digital content"
                         className="rounded-xl object-cover w-full h-full"
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
-                      Reading books, magazines and stories
+                      Reading books, magazines and digital content
                     </p>
                   </div>
                   
@@ -417,12 +417,12 @@ export default function Lesson15PersonalInfoRoutine() {
                     <div className="relative h-64 w-full">
                       <img
                         src={placesImage}
-                        alt="Coffee shop, restaurant and mall"
+                        alt="Work and daily routine"
                         className="rounded-xl object-cover w-full h-full"
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
-                      Coffee shop, restaurant and mall
+                      Daily routine, work and personal information
                     </p>
                   </div>
                 </div>
@@ -431,7 +431,7 @@ export default function Lesson15PersonalInfoRoutine() {
           </div>
         </div>
 
-        {/* Section 6 - Check It Out (print style) - ATUALIZADO */}
+        {/* Section 6 - Check It Out (print style) */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
             <div>

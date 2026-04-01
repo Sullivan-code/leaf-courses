@@ -491,7 +491,7 @@ export default function Lesson20Lifestyle() {
                 {sections.listen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
-            <AudioPlayer src="/audios/l20-listen-number-audio.mp3" />
+            <AudioPlayer src="https://github.com/Sullivan-code/english-audios/blob/main/lesson20-listen%2Cnumberandroleplay.mp3?raw=true" />
           </div>
 
           {sections.listen && (

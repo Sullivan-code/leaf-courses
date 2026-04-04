@@ -6,7 +6,8 @@ import { useEffect, useState, useRef } from "react";
 import { 
   Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, 
   X, Check, XCircle, Download, MessageCircle, Coffee, 
-  BookOpen, Briefcase, Utensils, Home, Tv, Smartphone, Users
+  BookOpen, Briefcase, Utensils, Home, Tv, Smartphone, Users,
+  Heart, Sun, Car, Music
 } from "lucide-react";
 
 // ==============================
@@ -19,7 +20,7 @@ const BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1516979187457-637abb
 const PRONUNCIATION_IMAGE = "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80";
 
 // ==============================
-// DADOS DA LIÇÃO - PRONÚNCIA
+// DADOS DA LIÇÃO - PRONÚNCIA (ATUALIZADO COM MAIS EXEMPLOS E ÁUDIOS)
 // ==============================
 const pronunciationItems = [
   { word: "milk", phrase: "I drink coffee with milk.", example: "I drink coffee with milk every morning.", audio: "/audios/lesson34/milk.mp3", icon: Coffee },
@@ -37,10 +38,16 @@ const pronunciationItems = [
   { word: "bad", phrase: "It's bad.", example: "The weather is bad today.", audio: "/audios/lesson34/bad.mp3", icon: null },
   { word: "everything", phrase: "I know everything about the project.", example: "I know everything about the project details.", audio: "/audios/lesson34/everything.mp3", icon: null },
   { word: "thing", phrase: "I have to buy one more thing.", example: "I have to buy one more thing at the store.", audio: "/audios/lesson34/thing.mp3", icon: null },
+  // NOVAS PALAVRAS COM HE, SHE, IT
+  { word: "he", phrase: "He works every day.", example: "He works at the hospital.", audio: "/audios/lesson34/he.mp3", icon: Users },
+  { word: "she", phrase: "She likes music.", example: "She likes classical music.", audio: "/audios/lesson34/she.mp3", icon: Music },
+  { word: "it", phrase: "It is sunny today.", example: "It is sunny and hot.", audio: "/audios/lesson34/it.mp3", icon: Sun },
+  { word: "car", phrase: "He drives a car.", example: "He drives a red car.", audio: "/audios/lesson34/car.mp3", icon: Car },
+  { word: "loves", phrase: "She loves coffee.", example: "She loves coffee in the morning.", audio: "/audios/lesson34/loves.mp3", icon: Heart },
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - SUBSTITUTION PRACTICE I
+// DADOS DA LIÇÃO - SUBSTITUTION PRACTICE I (COM HE/SHE/IT)
 // ==============================
 const substitutionPracticeI = [
   {
@@ -67,7 +74,8 @@ const substitutionPracticeI = [
     english: "She works here every day.",
     portuguese: "Ela trabalha aqui todos os dias.",
     substitutions: [
-      { word: "every day", options: ["every day", "during the week", "all day"] }
+      { word: "every day", options: ["every day", "during the week", "all day"] },
+      { word: "She", options: ["She", "He"] }
     ],
     currentText: "She works here every day."
   },
@@ -76,7 +84,8 @@ const substitutionPracticeI = [
     english: "She wants to know more about this subject.",
     portuguese: "Ela quer saber mais sobre este assunto.",
     substitutions: [
-      { word: "know", options: ["know", "learn", "understand"] }
+      { word: "know", options: ["know", "learn", "understand"] },
+      { word: "She", options: ["She", "He", "It"] }
     ],
     currentText: "She wants to know more about this subject."
   },
@@ -85,14 +94,25 @@ const substitutionPracticeI = [
     english: "He likes to talk about religion.",
     portuguese: "Ele gosta de falar sobre religião.",
     substitutions: [
-      { word: "religion", options: ["religion", "music", "business"] }
+      { word: "religion", options: ["religion", "music", "business"] },
+      { word: "He", options: ["He", "She"] }
     ],
     currentText: "He likes to talk about religion."
+  },
+  {
+    id: 6,
+    english: "It is a good idea.",
+    portuguese: "É uma boa ideia.",
+    substitutions: [
+      { word: "good", options: ["good", "great", "excellent"] },
+      { word: "It", options: ["It", "This", "That"] }
+    ],
+    currentText: "It is a good idea."
   }
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - SUBSTITUTION PRACTICE II
+// DADOS DA LIÇÃO - SUBSTITUTION PRACTICE II (COM HE/SHE/IT)
 // ==============================
 const substitutionPracticeII = [
   {
@@ -109,7 +129,8 @@ const substitutionPracticeII = [
     english: "He talks with his father about politics.",
     portuguese: "Ele conversa com o pai dele sobre política.",
     substitutions: [
-      { word: "politics", options: ["politics", "business", "movies"] }
+      { word: "politics", options: ["politics", "business", "movies"] },
+      { word: "He", options: ["He", "She"] }
     ],
     currentText: "He talks with his father about politics."
   },
@@ -139,11 +160,31 @@ const substitutionPracticeII = [
       { word: "on TV", options: ["on TV", "on your cell phone", "on your tablet"] }
     ],
     currentText: "What do you watch on TV?"
+  },
+  {
+    id: 6,
+    english: "She loves to read books.",
+    portuguese: "Ela ama ler livros.",
+    substitutions: [
+      { word: "She", options: ["She", "He"] },
+      { word: "books", options: ["books", "magazines", "novels"] }
+    ],
+    currentText: "She loves to read books."
+  },
+  {
+    id: 7,
+    english: "It rains a lot here.",
+    portuguese: "Chove muito aqui.",
+    substitutions: [
+      { word: "rains", options: ["rains", "snows", "is sunny"] },
+      { word: "here", options: ["here", "in winter", "in spring"] }
+    ],
+    currentText: "It rains a lot here."
   }
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - AFFIRMATIVE PRACTICE
+// DADOS DA LIÇÃO - AFFIRMATIVE PRACTICE (COM HE/SHE/IT)
 // ==============================
 const affirmativePractice = [
   {
@@ -177,11 +218,31 @@ const affirmativePractice = [
       { word: "on weekends", options: ["on weekends", "on Mondays", "on Fridays"] }
     ],
     currentText: "They don't work on weekends."
+  },
+  {
+    id: 4,
+    english: "It doesn't work properly.",
+    portuguese: "Isso não funciona corretamente.",
+    affirmative: "It works properly.",
+    substitutions: [
+      { word: "properly", options: ["properly", "well", "fast"] }
+    ],
+    currentText: "It doesn't work properly."
+  },
+  {
+    id: 5,
+    english: "She doesn't have a car.",
+    portuguese: "Ela não tem carro.",
+    affirmative: "She has a car.",
+    substitutions: [
+      { word: "a car", options: ["a car", "a bike", "a motorcycle"] }
+    ],
+    currentText: "She doesn't have a car."
   }
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - QUESTIONS
+// DADOS DA LIÇÃO - QUESTIONS (COM HE/SHE/IT)
 // ==============================
 const conversationQuestions = [
   { id: "a", question: "Do you have a minute to talk to me?", icon: Users },
@@ -194,15 +255,19 @@ const conversationQuestions = [
   { id: "h", question: "Does your teacher like to talk about music?", icon: Users },
   { id: "i", question: "Does your father / mother usually meet his / her friends on weekends?", icon: Users },
   { id: "j", question: "Does your wife / husband have to speak English at work?", icon: Briefcase },
+  // NOVAS PERGUNTAS COM HE, SHE, IT
+  { id: "k", question: "Does he like to play soccer?", icon: Users },
+  { id: "l", question: "Does she enjoy cooking?", icon: Utensils },
+  { id: "m", question: "Is it going to rain today?", icon: Sun },
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - TUNE YOUR EARS (VÍDEO)
+// DADOS DA LIÇÃO - TUNE YOUR EARS (VÍDEO ATUALIZADO)
 // ==============================
 const tuneYourEarsVideo = {
-  title: "A1 English Listening Practice - Daily Routines",
-  youtubeId: "DWhiLOwb99Y",
-  description: "Watch this video to practice your listening skills and learn vocabulary about daily routines.",
+  title: "A1 English Listening Practice - Daily Routines and Pronouns",
+  youtubeId: "uo-Ds9H_mNs", // NOVO LINK: https://www.youtube.com/watch?v=uo-Ds9H_mNs
+  description: "Watch this video to practice your listening skills, learn vocabulary about daily routines, and hear examples of 'He', 'She', and 'It' in context.",
   questions: [
     {
       id: 1,
@@ -232,6 +297,26 @@ const tuneYourEarsVideo = {
         { english: "take the bus", portuguese: "pegar o ônibus" },
         { english: "commute", portuguese: "deslocamento" },
         { english: "arrive at", portuguese: "chegar em" }
+      ]
+    },
+    {
+      id: 4,
+      question: "What does 'he' do in the afternoon?",
+      correctAnswer: "He studies English.",
+      vocabulary: [
+        { english: "study", portuguese: "estudar" },
+        { english: "afternoon", portuguese: "tarde" },
+        { english: "pronoun", portuguese: "pronome" }
+      ]
+    },
+    {
+      id: 5,
+      question: "What does 'she' like to do?",
+      correctAnswer: "She likes to read books.",
+      vocabulary: [
+        { english: "like", portuguese: "gostar" },
+        { english: "read", portuguese: "ler" },
+        { english: "book", portuguese: "livro" }
       ]
     }
   ]
@@ -360,7 +445,7 @@ const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
 };
 
 // ==============================
-// COMPONENTE DE SUBSTITUIÇÃO INTERATIVA
+// COMPONENTE DE SUBSTITUIÇÃO INTERATIVA (CORRIGIDO)
 // ==============================
 interface SubstitutionExerciseProps {
   exercise: any;
@@ -368,38 +453,181 @@ interface SubstitutionExerciseProps {
 }
 
 const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps) => {
+  // Initialize state with the original English text from the exercise data
   const [currentText, setCurrentText] = useState(exercise.english);
   const [showPortuguese, setShowPortuguese] = useState(false);
+  // Track which word was last replaced to avoid multiple replacements of the same instance
+  const [lastReplaced, setLastReplaced] = useState<{ oldWord: string, newWord: string } | null>(null);
 
+  // Function to handle substitution with proper grammar adjustments (a/an)
   const handleSubstitution = (oldWord: string, newWord: string) => {
-    const newText = currentText.replace(oldWord, newWord);
+    let newText = currentText;
+    
+    // First, handle special case for "a car" -> "a bike" / "a motorcycle" (preserve article)
+    if (oldWord === "a car" && (newWord === "a bike" || newWord === "a motorcycle")) {
+      newText = newText.replace(/\ba car\b/i, newWord);
+    }
+    // Handle "a car" -> "a car" (no change, but we keep the logic)
+    else if (oldWord === "a car" && newWord === "a car") {
+      // Do nothing
+    }
+    // Handle "a car" -> other options that might need different article
+    else if (oldWord === "a car") {
+      // If new word starts with a vowel sound, use 'an'
+      const vowelSounds = ['a', 'e', 'i', 'o', 'u'];
+      const firstLetter = newWord.toLowerCase().charAt(0);
+      const article = vowelSounds.includes(firstLetter) ? 'an' : 'a';
+      newText = newText.replace(/\ba car\b/i, `${article} ${newWord.replace(/^(a|an)\s+/i, '')}`);
+    }
+    // Handle "on TV" -> "on your cell phone" / "on your tablet"
+    else if (oldWord === "on TV" && (newWord === "on your cell phone" || newWord === "on your tablet")) {
+      newText = newText.replace(/\bon TV\b/i, newWord);
+    }
+    // Handle "your" -> "his" / "her" (preserves case and context)
+    else if (oldWord === "your" && (newWord === "his" || newWord === "her")) {
+      // Replace 'your' with the new possessive while keeping the rest of the sentence
+      newText = newText.replace(/\byour\b/i, newWord);
+    }
+    // Handle "He" / "She" / "It" pronoun replacements (preserve capitalization)
+    else if (["He", "She", "It", "This", "That"].includes(oldWord) && ["He", "She", "It", "This", "That"].includes(newWord)) {
+      // Replace exactly the word, preserving punctuation after it
+      const regex = new RegExp(`\\b${oldWord}\\b`, 'gi');
+      newText = newText.replace(regex, (match) => {
+        // Preserve original capitalization pattern
+        if (match === match.toUpperCase()) return newWord.toUpperCase();
+        if (match === match.toLowerCase()) return newWord.toLowerCase();
+        if (match.charAt(0) === match.charAt(0).toUpperCase()) {
+          return newWord.charAt(0).toUpperCase() + newWord.slice(1).toLowerCase();
+        }
+        return newWord;
+      });
+    }
+    // Handle "know" -> "learn" / "understand"
+    else if (oldWord === "know" && (newWord === "learn" || newWord === "understand")) {
+      newText = newText.replace(/\bknow\b/i, newWord);
+    }
+    // Handle "religion" -> "music" / "business"
+    else if (oldWord === "religion" && (newWord === "music" || newWord === "business")) {
+      newText = newText.replace(/\breligion\b/i, newWord);
+    }
+    // Handle "good" -> "great" / "excellent"
+    else if (oldWord === "good" && (newWord === "great" || newWord === "excellent")) {
+      newText = newText.replace(/\bgood\b/i, newWord);
+    }
+    // Handle "books" -> "magazines" / "novels"
+    else if (oldWord === "books" && (newWord === "magazines" || newWord === "novels")) {
+      newText = newText.replace(/\bbooks\b/i, newWord);
+    }
+    // Handle "rains" -> "snows" / "is sunny"
+    else if (oldWord === "rains" && (newWord === "snows" || newWord === "is sunny")) {
+      newText = newText.replace(/\brains\b/i, newWord);
+    }
+    // Handle "here" -> "in winter" / "in spring"
+    else if (oldWord === "here" && (newWord === "in winter" || newWord === "in spring")) {
+      newText = newText.replace(/\bhere\b/i, newWord);
+    }
+    // Handle "properly" -> "well" / "fast"
+    else if (oldWord === "properly" && (newWord === "well" || newWord === "fast")) {
+      newText = newText.replace(/\bproperly\b/i, newWord);
+    }
+    // Handle "on weekends" -> "on Mondays" / "on Fridays"
+    else if (oldWord === "on weekends" && (newWord === "on Mondays" || newWord === "on Fridays")) {
+      newText = newText.replace(/\bon weekends\b/i, newWord);
+    }
+    // Handle "English" -> "Spanish" / "French"
+    else if (oldWord === "English" && (newWord === "Spanish" || newWord === "French")) {
+      newText = newText.replace(/\bEnglish\b/i, newWord);
+    }
+    // Handle "coffee" -> "tea" / "juice"
+    else if (oldWord === "coffee" && (newWord === "tea" || newWord === "juice")) {
+      newText = newText.replace(/\bcoffee\b/i, newWord);
+    }
+    // Handle "every day" -> "during the week" / "all day"
+    else if (oldWord === "every day" && (newWord === "during the week" || newWord === "all day")) {
+      newText = newText.replace(/\bevery day\b/i, newWord);
+    }
+    // Handle "now" -> "in a few minutes"
+    else if (oldWord === "now" && newWord === "in a few minutes") {
+      newText = newText.replace(/\bnow\b/i, newWord);
+    }
+    // Handle "next week" -> "next month" / "next year"
+    else if (oldWord === "next week" && (newWord === "next month" || newWord === "next year")) {
+      newText = newText.replace(/\bnext week\b/i, newWord);
+    }
+    // Handle "The test" -> "The movie" / "The meeting"
+    else if (oldWord === "The test" && (newWord === "The movie" || newWord === "The meeting")) {
+      newText = newText.replace(/\bThe test\b/i, newWord);
+    }
+    // Handle "it" -> "this problem" / "this subject"
+    else if (oldWord === "it" && (newWord === "this problem" || newWord === "this subject")) {
+      newText = newText.replace(/\bit\b/gi, newWord);
+    }
+    // Handle "fashion" -> "sports" / "music"
+    else if (oldWord === "fashion" && (newWord === "sports" || newWord === "music")) {
+      newText = newText.replace(/\bfashion\b/i, newWord);
+    }
+    // Handle "politics" -> "business" / "movies"
+    else if (oldWord === "politics" && (newWord === "business" || newWord === "movies")) {
+      newText = newText.replace(/\bpolitics\b/i, newWord);
+    }
+    // General replacement for any other word
+    else {
+      const regex = new RegExp(`\\b${oldWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      newText = newText.replace(regex, newWord);
+    }
+
     setCurrentText(newText);
+    setLastReplaced({ oldWord, newWord });
     onUpdate(exercise.id, newText);
   };
 
-  // Encontrar a palavra atual que pode ser substituída
+  // Helper to find which word from options is currently in the text
   const getCurrentWord = (subOption: any) => {
-    const words = currentText.split(' ');
+    const words = currentText.split(/\s+/);
+    // First try to find exact match with punctuation stripped
     for (const word of words) {
-      const cleanWord = word.replace(/[!?.]$/, '');
-      if (subOption.options.includes(cleanWord)) {
-        return cleanWord;
+      const cleanWord = word.replace(/[!?.,;:]$/, '');
+      // Check if the clean word matches any of the options (case insensitive for some)
+      for (const opt of subOption.options) {
+        if (cleanWord.toLowerCase() === opt.toLowerCase()) {
+          return opt;
+        }
+      }
+    }
+    // If not found, check for multi-word options
+    for (const opt of subOption.options) {
+      if (currentText.toLowerCase().includes(opt.toLowerCase())) {
+        return opt;
       }
     }
     return subOption.options[0];
+  };
+
+  // Reset to original English text
+  const resetToOriginal = () => {
+    setCurrentText(exercise.english);
+    onUpdate(exercise.id, exercise.english);
+    setLastReplaced(null);
   };
 
   return (
     <div className="bg-white p-6 rounded-xl border-2 border-opacity-50 shadow-md hover:shadow-lg transition-all"
          style={{ borderColor: `${LESSON_THEME_COLOR}40` }}>
       
-      {/* Cabeçalho com tradução */}
+      {/* Cabeçalho com tradução e reset */}
       <div className="flex justify-between items-start mb-3">
         <button
           onClick={() => setShowPortuguese(!showPortuguese)}
           className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full transition"
         >
           {showPortuguese ? "🇧🇷" : "🇺🇸"} {showPortuguese ? "Português" : "English"}
+        </button>
+        <button
+          onClick={resetToOriginal}
+          className="text-sm px-3 py-1 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition flex items-center gap-1"
+          title="Reset to original sentence"
+        >
+          <RotateCcw size={14} /> Reset
         </button>
       </div>
 
@@ -430,7 +658,7 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
                     onClick={() => handleSubstitution(currentWord, option)}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
                       currentWord === option 
-                        ? 'bg-opacity-20 text-white' 
+                        ? 'bg-opacity-20 text-white cursor-default' 
                         : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                     }`}
                     style={currentWord === option ? { backgroundColor: LESSON_THEME_COLOR, color: 'white' } : {}}
@@ -443,6 +671,11 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
             </div>
           );
         })}
+      </div>
+      
+      {/* Dica de gramática */}
+      <div className="mt-4 text-xs text-gray-400 border-t pt-2">
+        💡 Tip: Click on any option to replace the highlighted word in the sentence.
       </div>
     </div>
   );
@@ -623,6 +856,20 @@ export default function Lesson34Pronunciation() {
     const text = `I just completed Lesson ${LESSON_NUMBER}: ${LESSON_TITLE}! Check out my progress.`;
     const url = encodeURIComponent(window.location.href);
     window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+  };
+
+  // Função para limpar todas as respostas
+  const clearAllAnswers = () => {
+    if (confirm("Are you sure you want to clear all answers? This action cannot be undone.")) {
+      setSubstitution1Texts({});
+      setSubstitution2Texts({});
+      setAffirmativeTexts({});
+      setQuestionAnswers({});
+      setVideoAnswers({});
+      setShowResults({});
+      setAnswerCorrectness({});
+      alert("All answers have been cleared.");
+    }
   };
 
   // ==============================
@@ -821,7 +1068,7 @@ export default function Lesson34Pronunciation() {
           {expandedSections.affirmative && (
             <div className="p-8">
               <p className="text-amber-700 mb-6 italic font-medium">
-                Transform these negative sentences into affirmative sentences.
+                Transform these negative sentences into affirmative sentences by replacing words.
               </p>
               <div className="space-y-6">
                 {affirmativePractice.map((exercise) => (
@@ -886,7 +1133,7 @@ export default function Lesson34Pronunciation() {
           )}
         </div>
 
-        {/* SEÇÃO 6: TUNE YOUR EARS (VÍDEO) */}
+        {/* SEÇÃO 6: TUNE YOUR EARS (VÍDEO ATUALIZADO) */}
         <div className="mb-16 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 rounded-3xl shadow-lg overflow-hidden"
              style={{ borderColor: "#06b6d4" }}>
           <div className="py-5 px-8 flex justify-between items-center bg-gradient-to-r from-cyan-500 to-blue-500">
@@ -909,7 +1156,7 @@ export default function Lesson34Pronunciation() {
                 </h3>
                 <p className="text-cyan-600 mb-6">{tuneYourEarsVideo.description}</p>
                 
-                {/* VÍDEO DO YOUTUBE */}
+                {/* VÍDEO DO YOUTUBE ATUALIZADO */}
                 <div className="bg-black rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
                   <div className="aspect-w-16 aspect-h-9">
                     <iframe
@@ -1018,17 +1265,7 @@ export default function Lesson34Pronunciation() {
               <Check size={20} /> Save All Answers
             </button>
             <button
-              onClick={() => {
-                if (confirm("Are you sure you want to clear all answers?")) {
-                  setSubstitution1Texts({});
-                  setSubstitution2Texts({});
-                  setAffirmativeTexts({});
-                  setQuestionAnswers({});
-                  setVideoAnswers({});
-                  setShowResults({});
-                  setAnswerCorrectness({});
-                }
-              }}
+              onClick={clearAllAnswers}
               className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition font-medium shadow-md"
             >
               <X size={20} /> Clear All

@@ -5,87 +5,33 @@ import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCircle, RefreshCw } from "lucide-react";
 
-// Dados para SPEAK RIGHT NOW - Fontes de informação (TODAS DO UNSPLASH)
-const infoSources = [
+// ==============================================
+// STATIC EXAMPLES FOR SPEAK RIGHT NOW SECTION
+// ==============================================
+const speakNowExamples = [
   {
     id: 1,
     name: "Cell Phone",
     description: "Reading news on mobile device",
     image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-    questions: [
-      "Do you like to read the news on your cell phone?",
-      "Do you prefer to check news on your phone or computer?",
-      "Do you want to read articles on your mobile device?"
-    ],
-    verbPairs: [
-      { question: "like to read", response: "like to read" },
-      { question: "prefer to check", response: "prefer to check" },
-      { question: "want to read", response: "want to read" }
-    ]
+    question: "Do you like to read the news on your cell phone?",
+    answer: "Yes, I do. I like to read the news on my cell phone every morning."
   },
   {
     id: 2,
-    name: "Computer",
-    description: "Reading news on computer",
-    image: "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-    questions: [
-      "Do you need to use a computer for work?",
-      "Do you like to browse websites on your computer?",
-      "Do you want to study using your computer?"
-    ],
-    verbPairs: [
-      { question: "need to use", response: "need to use" },
-      { question: "like to browse", response: "like to browse" },
-      { question: "want to study", response: "want to study" }
-    ]
+    name: "Coffee Shop",
+    description: "Going to coffee shop",
+    image: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    question: "Do you want to go to the coffee shop?",
+    answer: "Yes, I do. I want to go to the coffee shop to meet my friends."
   },
   {
     id: 3,
-    name: "Newspadper",
-    description: "Traditional newspaper reading",
-    image: "https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-    questions: [
-      "Do you like to buy newspapers in the morning?",
-      "Do you want to read the newspaper with coffee?",
-      "Do you need to check the newspaper for local news?"
-    ],
-    verbPairs: [
-      { question: "like to buy", response: "like to buy" },
-      { question: "want to read", response: "want to read" },
-      { question: "need to check", response: "need to check" }
-    ]
-  },
-  {
-    id: 4,
-    name: "Magazine",
-    description: "Reading magazines for information",
-    image: "https://images.unsplash.com/photo-1543332576-7b58c6ee8c4d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-    questions: [
-      "Do you like to read magazines on weekends?",
-      "Do you want to subscribe to any magazines?",
-      "Do you prefer to read magazines or books?"
-    ],
-    verbPairs: [
-      { question: "like to read", response: "like to read" },
-      { question: "want to subscribe", response: "want to subscribe" },
-      { question: "prefer to read", response: "prefer to read" }
-    ]
-  },
-  {
-    id: 5,
-    name: "Book",
-    description: "Reading books for knowledge",
-    image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-    questions: [
-      "Do you want to read more books this year?",
-      "Do you like to buy books or borrow them?",
-      "Do you need to study from textbooks?"
-    ],
-    verbPairs: [
-      { question: "want to read", response: "want to read" },
-      { question: "like to buy", response: "like to buy" },
-      { question: "need to study", response: "need to study" }
-    ]
+    name: "Movies",
+    description: "Going to the movies",
+    image: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    question: "Do you need to go to the movies?",
+    answer: "No, I don't. I don't need to go to the movies today. I prefer to stay home."
   }
 ];
 
@@ -195,79 +141,69 @@ const places = [
   }
 ];
 
-// SUBSTITUTION PRACTICE I - Verbos da lição
+// SUBSTITUTION PRACTICE I - Verbos da lição (CORRECTED)
 const substitutionPractice1 = [
   { 
     key: "subs-1", 
-    original: "I read the news in the morning. / every day / at night",
     base: "{0} the news in the morning.",
     options: ["I read", "She reads", "We read"],
     currentIndex: 0
   },
   { 
     key: "subs-2", 
-    original: "They like to go to the coffee shop. / restaurant / movies",
     base: "They like to go to the {0}.",
     options: ["coffee shop", "restaurant", "movies"],
     currentIndex: 0
   },
   { 
     key: "subs-3", 
-    original: "I want to go to the movies today. / tomorrow / this weekend",
     base: "I want to go to the movies {0}.",
     options: ["today", "tomorrow", "this weekend"],
     currentIndex: 0
   },
   { 
     key: "subs-4", 
-    original: "We need to study English. / Portuguese / math",
     base: "We need to study {0}.",
     options: ["English", "Portuguese", "math"],
     currentIndex: 0
   },
   { 
     key: "subs-5", 
-    original: "She reads books every night. / morning / afternoon",
     base: "She reads books every {0}.",
     options: ["night", "morning", "afternoon"],
     currentIndex: 0
   }
 ];
 
-// SUBSTITUTION PRACTICE II - Pronúncia /θ/ e /ð/
+// SUBSTITUTION PRACTICE II - Pronúncia /θ/ e /ð/ (CORRECTED)
 const substitutionPractice2 = [
   { 
     key: "subs2-1", 
-    original: "Thank you for your help. / three / bathroom",
-    correctAnswer: "Thank you for your help.",
-    options: ["Thank", "Three", "Bathroom"],
+    base: "Thank you for {0}.",
+    options: ["your help", "the cake", "the glass of water"],
     currentIndex: 0
   },
   { 
     key: "subs2-2", 
-    original: "They need to go now. / that / this",
-    correctAnswer: "They need to go now.",
-    options: ["They", "That", "This"],
+    base: "They need to go {0}.",
+    options: ["now", "this way", "that way"],
     currentIndex: 0
   },
   { 
     key: "subs2-3", 
-    original: "I live with my mother. / father / brother",
-    correctAnswer: "I live with my mother.",
+    base: "I live with my {0}.",
     options: ["mother", "father", "brother"],
     currentIndex: 0
   },
   { 
     key: "subs2-4", 
-    original: "I have three sisters. / brothers / friends",
-    correctAnswer: "I have three sisters.",
+    base: "I have three {0}.",
     options: ["sisters", "brothers", "friends"],
     currentIndex: 0
   },
   { 
     key: "subs2-5", 
-    original: "I understand these words. / a few / some",
-    correctAnswer: "I understand these words.",
+    base: "I understand {0} words.",
     options: ["these", "a few", "some"],
     currentIndex: 0
   }
@@ -345,8 +281,8 @@ const interrogativeExercises = [
   },
   { 
     key: "int-2", 
-    sentence: "You want to go to the restaurant.",
-    answer: "Do you want to go to the restaurant?"
+    sentence: "She wants to go to the restaurant.",
+    answer: "Does she want to go to the restaurant?"
   },
   { 
     key: "int-3", 
@@ -355,8 +291,8 @@ const interrogativeExercises = [
   },
   { 
     key: "int-4", 
-    sentence: "You understand English well.",
-    answer: "Do you understand English well?"
+    sentence: "He understands English well.",
+    answer: "Does he understand English well?"
   },
   { 
     key: "int-5", 
@@ -727,10 +663,6 @@ export default function LessonPersonalInfoRoutine() {
     tuneIn: true
   });
 
-  // Estados para as imagens selecionadas
-  const [selectedInfoSource, setSelectedInfoSource] = useState(infoSources[0]);
-  const [selectedPlace, setSelectedPlace] = useState(places[0]);
-  
   // Estados para as práticas de substituição
   const [subs1Exercises, setSubs1Exercises] = useState(substitutionPractice1);
   const [subs2Exercises, setSubs2Exercises] = useState(substitutionPractice2);
@@ -746,23 +678,6 @@ export default function LessonPersonalInfoRoutine() {
   const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
   const [videoAnswerResults, setVideoAnswerResults] = useState<Record<number, boolean>>({});
   const [showVideoAnswerResults, setShowVideoAnswerResults] = useState<Record<number, boolean>>({});
-
-  // Estados para diálogos dinâmicos
-  const [practiceDialogs, setPracticeDialogs] = useState<Array<{
-    id: number;
-    type: 'info' | 'place';
-    question: string;
-    response: string;
-    highlighted: string[];
-    responseType: 'affirmative' | 'negative';
-    verbPairIndex: number;
-  }>>([]);
-
-  // Estado para controlar tipos de resposta
-  const [responseTypes, setResponseTypes] = useState({
-    info: 'affirmative' as 'affirmative' | 'negative',
-    place: 'affirmative' as 'affirmative' | 'negative'
-  });
 
   // ==============================
   // SISTEMA DE PERSISTÊNCIA - CARREGAMENTO
@@ -783,21 +698,8 @@ export default function LessonPersonalInfoRoutine() {
         setVideoAnswerResults(data.videoAnswerResults || {});
         setShowVideoAnswerResults(data.showVideoAnswerResults || {});
         
-        // Restaurar seleções de imagens
-        if (data.selectedInfoSourceId) {
-          const source = infoSources.find(s => s.id === data.selectedInfoSourceId);
-          if (source) setSelectedInfoSource(source);
-        }
-        if (data.selectedPlaceId) {
-          const place = places.find(p => p.id === data.selectedPlaceId);
-          if (place) setSelectedPlace(place);
-        }
-        
         // Restaurar estado das seções
         if (data.sections) setSections(data.sections);
-        
-        // Restaurar tipos de resposta
-        if (data.responseTypes) setResponseTypes(data.responseTypes);
         
         console.log("Dados carregados do localStorage para Lesson 16");
       } catch (error) {
@@ -805,63 +707,6 @@ export default function LessonPersonalInfoRoutine() {
       }
     }
   }, []);
-
-  // Inicializar diálogos
-  useEffect(() => {
-    const generateDialogs = () => {
-      const infoVerbPair = selectedInfoSource.verbPairs[0];
-      const placeVerbPair = selectedPlace.verbPairs[0];
-      
-      // Diálogo para fonte de informação
-      const infoQuestion = selectedInfoSource.questions[0];
-      const infoResponse = responseTypes.info === 'affirmative' 
-        ? `Yes, I do. I ${infoVerbPair.response} my computer for work ${selectedInfoSource.name.toLowerCase()}.`
-        : `No, I don't. I ${infoVerbPair.response} my computer for fun.`;
-      
-      const infoHighlighted = [
-        responseTypes.info === 'affirmative' ? 'Yes' : 'No',
-        ...infoVerbPair.response.split(' '),
-        'news',
-        responseTypes.info === 'affirmative' ? selectedInfoSource.name.toLowerCase() : 'computer'
-      ];
-
-      // Diálogo para lugar
-      const placeQuestion = selectedPlace.questions[0];
-      const alternativePlace = places.find(p => p.id !== selectedPlace.id);
-      const placeResponse = responseTypes.place === 'affirmative'
-        ? `Yes, I do. I ${placeVerbPair.response} the ${selectedPlace.name.toLowerCase()}.`
-        : `No, I don't. I ${placeVerbPair.response} the ${alternativePlace?.name.toLowerCase() || 'gym'}.`;
-      
-      const placeHighlighted = [
-        responseTypes.place === 'affirmative' ? 'Yes' : 'No',
-        ...placeVerbPair.response.split(' '),
-        responseTypes.place === 'affirmative' ? selectedPlace.name.toLowerCase() : alternativePlace?.name.toLowerCase() || 'gym'
-      ];
-
-      setPracticeDialogs([
-        {
-          id: 1,
-          type: 'place',
-          question: placeQuestion,
-          response: placeResponse,
-          highlighted: placeHighlighted,
-          responseType: responseTypes.place,
-          verbPairIndex: 0
-        },
-        {
-          id: 2,
-          type: 'info',
-          question: infoQuestion,
-          response: infoResponse,
-          highlighted: infoHighlighted,
-          responseType: responseTypes.info,
-          verbPairIndex: 0
-        }
-      ]);
-    };
-
-    generateDialogs();
-  }, [selectedInfoSource, selectedPlace, responseTypes]);
 
   // ==============================
   // SISTEMA DE PERSISTÊNCIA - SALVAMENTO
@@ -882,15 +727,8 @@ export default function LessonPersonalInfoRoutine() {
       videoAnswerResults,
       showVideoAnswerResults,
       
-      // Seleções atuais
-      selectedInfoSourceId: selectedInfoSource.id,
-      selectedPlaceId: selectedPlace.id,
-      
       // Estado das seções
       sections,
-      
-      // Tipos de resposta
-      responseTypes,
       
       // Metadados
       lastUpdated: new Date().toISOString(),
@@ -918,9 +756,6 @@ export default function LessonPersonalInfoRoutine() {
       setShowAnswerResults({});
       setVideoAnswerResults({});
       setShowVideoAnswerResults({});
-      setSelectedInfoSource(infoSources[0]);
-      setSelectedPlace(places[0]);
-      setResponseTypes({ info: 'affirmative', place: 'affirmative' });
       
       // Limpar do localStorage também
       localStorage.removeItem("lesson16Answers");
@@ -979,60 +814,6 @@ export default function LessonPersonalInfoRoutine() {
     }));
   };
 
-  // Funções para alternar tipos de resposta
-  const toggleResponseType = (type: 'info' | 'place') => {
-    setResponseTypes(prev => ({
-      ...prev,
-      [type]: prev[type] === 'affirmative' ? 'negative' : 'affirmative'
-    }));
-  };
-
-  // Função para mudar o par de verbos
-  const changeVerbPair = (dialogId: number) => {
-    setPracticeDialogs(prev => prev.map(dialog => {
-      if (dialog.id === dialogId) {
-        const source = dialog.type === 'info' ? selectedInfoSource : selectedPlace;
-        const currentIndex = dialog.verbPairIndex;
-        const nextIndex = (currentIndex + 1) % source.verbPairs.length;
-        const verbPair = source.verbPairs[nextIndex];
-        
-        let newResponse = '';
-        let newQuestion = '';
-        
-        if (dialog.type === 'info') {
-          newQuestion = selectedInfoSource.questions[nextIndex];
-          newResponse = dialog.responseType === 'affirmative'
-            ? `Yes, I do. I ${verbPair.response} the news on my ${selectedInfoSource.name.toLowerCase()}.`
-            : `No, I don't. I ${verbPair.response} the news on my computer.`;
-        } else {
-          newQuestion = selectedPlace.questions[nextIndex];
-          const alternativePlace = places.find(p => p.id !== selectedPlace.id);
-          newResponse = dialog.responseType === 'affirmative'
-            ? `Yes, I do. I ${verbPair.response} the ${selectedPlace.name.toLowerCase()}.`
-            : `No, I don't. I ${verbPair.response} the ${alternativePlace?.name.toLowerCase() || 'gym'}.`;
-        }
-        
-        const newHighlighted = [
-          dialog.responseType === 'affirmative' ? 'Yes' : 'No',
-          ...verbPair.response.split(' '),
-          dialog.type === 'info' ? 'news' : '',
-          dialog.responseType === 'affirmative' 
-            ? (dialog.type === 'info' ? selectedInfoSource.name.toLowerCase() : selectedPlace.name.toLowerCase())
-            : (dialog.type === 'info' ? 'computer' : places.find(p => p.id !== selectedPlace.id)?.name.toLowerCase() || 'gym')
-        ].filter(Boolean);
-
-        return {
-          ...dialog,
-          question: newQuestion,
-          response: newResponse,
-          highlighted: newHighlighted,
-          verbPairIndex: nextIndex
-        };
-      }
-      return dialog;
-    }));
-  };
-
   // Funções para a seção TUNE IN YOUR EARS
   const handleVideoAnswerChange = (questionId: number, answer: string) => {
     setVideoAnswers(prev => ({ ...prev, [questionId]: answer }));
@@ -1058,7 +839,7 @@ export default function LessonPersonalInfoRoutine() {
           </p>
         </div>
 
-        {/* SPEAK RIGHT NOW - DESIGN ATUALIZADO */}
+        {/* SPEAK RIGHT NOW - REDESIGNED WITH 3 STATIC EXAMPLES */}
         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-[30px] shadow-2xl mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-5 px-8 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -1067,7 +848,7 @@ export default function LessonPersonalInfoRoutine() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold">🗣️ SPEAK RIGHT NOW</h2>
-                <p className="text-blue-100 text-sm mt-1">Practice with two verbs in questions and responses</p>
+                <p className="text-blue-100 text-sm mt-1">Practice with real-life examples</p>
               </div>
             </div>
             <button 
@@ -1080,267 +861,47 @@ export default function LessonPersonalInfoRoutine() {
 
           {sections.speakNow && (
             <div className="p-8">
-              {/* Galeria de Fontes de Informação */}
-              <div className="mb-10">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-blue-800">📰 Where do you get information?</h3>
-                  <span className="text-sm text-blue-600 bg-blue-100 px-3 py-1 rounded-full">Click to select</span>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-                  {infoSources.map((source) => (
-                    <div 
-                      key={source.id} 
-                      className={`relative group w-full aspect-[3/2] bg-gray-100 rounded-xl overflow-hidden cursor-pointer border-3 transition-all duration-300 ${
-                        selectedInfoSource.id === source.id 
-                          ? 'border-blue-500 shadow-lg scale-105 ring-4 ring-blue-200' 
-                          : 'border-gray-300 hover:border-blue-400 hover:shadow-md'
-                      }`}
-                      onClick={() => setSelectedInfoSource(source)}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {speakNowExamples.map((example) => (
+                  <div key={example.id} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-blue-200 hover:shadow-xl transition-shadow duration-300">
+                    <div className="relative h-48 w-full">
                       <Image 
-                        src={source.image} 
-                        alt={source.name}
+                        src={example.image} 
+                        alt={example.name}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        quality={85}
-                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 20vw, 16vw"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iODAiIGZpbGw9IiNmM2YzZjMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5OTk5OTkiIGZvbnQtc2l6ZT0iMTIiPkltYWdlPC90ZXh0Pjwvc3ZnPg==';
-                        }}
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 33vw"
                       />
-                      <div className="absolute bottom-0 left-0 right-0 z-20 p-3">
-                        <p className="text-white font-bold text-sm">{source.name}</p>
-                        <p className="text-blue-100 text-xs">{source.description}</p>
-                      </div>
-                      {selectedInfoSource.id === source.id && (
-                        <div className="absolute top-2 right-2 z-20 bg-blue-500 text-white p-1 rounded-full">
-                          <Check size={16} />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Galeria de Lugares */}
-              <div className="mb-10">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-indigo-800">📍 Where do you want to go?</h3>
-                  <span className="text-sm text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">Click to select</span>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-                  {places.map((place) => (
-                    <div 
-                      key={place.id} 
-                      className={`relative group w-full aspect-[3/2] bg-gray-100 rounded-xl overflow-hidden cursor-pointer border-3 transition-all duration-300 ${
-                        selectedPlace.id === place.id 
-                          ? 'border-indigo-500 shadow-lg scale-105 ring-4 ring-indigo-200' 
-                          : 'border-gray-300 hover:border-indigo-400 hover:shadow-md'
-                      }`}
-                      onClick={() => setSelectedPlace(place)}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                      <Image 
-                        src={place.image} 
-                        alt={place.name}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        quality={85}
-                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 20vw, 16vw"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iODAiIGZpbGw9IiNmM2YzZjMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5OTk5OTkiIGZvbnQtc2l6ZT0iMTIiPlBsYWNlPC90ZXh0Pjwvc3ZnPg==';
-                        }}
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 z-20 p-2">
-                        <p className="text-white font-bold text-xs text-center">{place.name}</p>
-                      </div>
-                      {selectedPlace.id === place.id && (
-                        <div className="absolute top-2 right-2 z-20 bg-indigo-500 text-white p-1 rounded-full">
-                          <Check size={16} />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Diálogos de Prática - Grid de 2 colunas */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Diálogo 1: Lugar */}
-                <div className="bg-white rounded-2xl border-2 border-indigo-200 shadow-xl overflow-hidden">
-                  <div className="bg-gradient-to-r from-indigo-100 to-purple-50 p-4 border-b border-indigo-200">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-indigo-500 p-2 rounded-full">
-                          <Image 
-                            src={selectedPlace.image} 
-                            alt={selectedPlace.name}
-                            width={40}
-                            height={40}
-                            className="rounded-full object-cover"
-                          />
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-indigo-800">{selectedPlace.name}</h4>
-                          <p className="text-sm text-indigo-600">Practice going places</p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => changeVerbPair(1)}
-                          className="p-2 text-indigo-600 hover:bg-indigo-100 rounded-full transition"
-                          title="Change verbs"
-                        >
-                          <RefreshCw size={16} />
-                        </button>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                        <h3 className="text-white font-bold text-xl">{example.name}</h3>
+                        <p className="text-blue-100 text-sm">{example.description}</p>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="space-y-6">
-                      {/* Pergunta */}
-                      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-xl border border-indigo-200">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="bg-indigo-500 text-white p-1 rounded-full">
-                            <Volume2 size={12} />
-                          </div>
-                          <span className="text-sm font-semibold text-indigo-700">QUESTION</span>
-                        </div>
-                        <p className="text-gray-800 text-lg font-medium">
-                          "{practiceDialogs.find(d => d.id === 1)?.question}"
-                        </p>
+                    <div className="p-5 space-y-4">
+                      <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
+                        <p className="text-sm font-semibold text-blue-700 mb-1">Question:</p>
+                        <p className="text-gray-800 font-medium">"{example.question}"</p>
                       </div>
-
-                      {/* Resposta */}
-                      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-xl border border-emerald-200">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <div className={`p-1 rounded-full ${responseTypes.place === 'affirmative' ? 'bg-green-500' : 'bg-red-500'}`}>
-                              {responseTypes.place === 'affirmative' ? 
-                                <Check size={12} className="text-white" /> : 
-                                <X size={12} className="text-white" />
-                              }
-                            </div>
-                            <span className="text-sm font-semibold text-emerald-700">RESPONSE</span>
-                          </div>
-                          <button
-                            onClick={() => toggleResponseType('place')}
-                            className={`px-3 py-1 text-xs font-medium rounded-full transition ${
-                              responseTypes.place === 'affirmative'
-                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                : 'bg-red-100 text-red-700 hover:bg-red-200'
-                            }`}
-                          >
-                            Switch to {responseTypes.place === 'affirmative' ? 'Negative' : 'Affirmative'}
-                          </button>
-                        </div>
-                        <div className="min-h-[60px]">
-                          <HighlightedText 
-                            text={practiceDialogs.find(d => d.id === 1)?.response || ""} 
-                            highlightedWords={practiceDialogs.find(d => d.id === 1)?.highlighted || []}
-                            onWordClick={handleWordClick}
-                          />
-                        </div>
-                        <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
+                      <div className="bg-green-50 p-3 rounded-lg border-l-4 border-green-500">
+                        <p className="text-sm font-semibold text-green-700 mb-1">Answer:</p>
+                        <HighlightedText 
+                          text={example.answer} 
+                          highlightedWords={["Yes", "No", "like", "want", "need", "read", "go"]}
+                          onWordClick={handleWordClick}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <div className="flex items-center gap-1">
                           <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                          <span>Click on <span className="font-semibold">red words</span> to hear pronunciation</span>
+                          <span>Click red words to hear pronunciation</span>
                         </div>
+                        <SimpleAudioPlayer src={`https://raw.githubusercontent.com/your-repo/audio/main/${example.name.toLowerCase().replace(' ', '-')}.mp3`} />
                       </div>
                     </div>
                   </div>
-                </div>
-
-                {/* Diálogo 2: Fonte de Informação */}
-                <div className="bg-white rounded-2xl border-2 border-blue-200 shadow-xl overflow-hidden">
-                  <div className="bg-gradient-to-r from-blue-100 to-blue-50 p-4 border-b border-blue-200">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-blue-500 p-2 rounded-full">
-                          <Image 
-                            src={selectedInfoSource.image} 
-                            alt={selectedInfoSource.name}
-                            width={40}
-                            height={40}
-                            className="rounded-full object-cover"
-                          />
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-blue-800">{selectedInfoSource.name}</h4>
-                          <p className="text-sm text-blue-600">{selectedInfoSource.description}</p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => changeVerbPair(2)}
-                          className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition"
-                          title="Change verbs"
-                        >
-                          <RefreshCw size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="space-y-6">
-                      {/* Pergunta */}
-                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="bg-blue-500 text-white p-1 rounded-full">
-                            <Volume2 size={12} />
-                          </div>
-                          <span className="text-sm font-semibold text-blue-700">QUESTION</span>
-                        </div>
-                        <p className="text-gray-800 text-lg font-medium">
-                          "{practiceDialogs.find(d => d.id === 2)?.question}"
-                        </p>
-                      </div>
-
-                      {/* Resposta */}
-                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <div className={`p-1 rounded-full ${responseTypes.info === 'affirmative' ? 'bg-green-500' : 'bg-red-500'}`}>
-                              {responseTypes.info === 'affirmative' ? 
-                                <Check size={12} className="text-white" /> : 
-                                <X size={12} className="text-white" />
-                              }
-                            </div>
-                            <span className="text-sm font-semibold text-green-700">RESPONSE</span>
-                          </div>
-                          <button
-                            onClick={() => toggleResponseType('info')}
-                            className={`px-3 py-1 text-xs font-medium rounded-full transition ${
-                              responseTypes.info === 'affirmative'
-                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                : 'bg-red-100 text-red-700 hover:bg-red-200'
-                            }`}
-                          >
-                            Switch to {responseTypes.info === 'affirmative' ? 'Negative' : 'Affirmative'}
-                          </button>
-                        </div>
-                        <div className="min-h-[60px]">
-                          <HighlightedText 
-                            text={practiceDialogs.find(d => d.id === 2)?.response || ""} 
-                            highlightedWords={practiceDialogs.find(d => d.id === 2)?.highlighted || []}
-                            onWordClick={handleWordClick}
-                          />
-                        </div>
-                        <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
-                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                          <span>Click on <span className="font-semibold">red words</span> to hear pronunciation</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
-
-              {/* Instruções */}
+              
               <div className="mt-8 bg-gradient-to-r from-blue-100 to-indigo-100 border-2 border-blue-300 rounded-2xl p-6">
                 <h3 className="text-lg font-bold text-blue-800 mb-3 flex items-center gap-2">
                   <span className="bg-blue-500 text-white p-1 rounded-full">
@@ -1352,23 +913,23 @@ export default function LessonPersonalInfoRoutine() {
                   <div className="bg-white p-4 rounded-xl border border-blue-200">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      <h4 className="font-bold text-blue-700">1. Select Images</h4>
+                      <h4 className="font-bold text-blue-700">1. Read Aloud</h4>
                     </div>
-                    <p className="text-sm text-gray-600">Click on different information sources and places to change the conversation topics.</p>
+                    <p className="text-sm text-gray-600">Practice reading the questions and answers out loud to improve your speaking fluency.</p>
                   </div>
                   <div className="bg-white p-4 rounded-xl border border-green-200">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <h4 className="font-bold text-green-700">2. Toggle Responses</h4>
+                      <h4 className="font-bold text-green-700">2. Listen & Repeat</h4>
                     </div>
-                    <p className="text-sm text-gray-600">Switch between affirmative and negative responses to practice different sentence structures.</p>
+                    <p className="text-sm text-gray-600">Click the audio buttons to hear the correct pronunciation and repeat after.</p>
                   </div>
                   <div className="bg-white p-4 rounded-xl border border-red-200">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                       <h4 className="font-bold text-red-700">3. Click Words</h4>
                     </div>
-                    <p className="text-sm text-gray-600">Click on red words to hear their pronunciation and improve your speaking skills.</p>
+                    <p className="text-sm text-gray-600">Click on red words in the answers to hear their individual pronunciation.</p>
                   </div>
                 </div>
               </div>
@@ -1394,7 +955,7 @@ export default function LessonPersonalInfoRoutine() {
             <div className="p-8">
               <div className="bg-green-100 border-2 border-green-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-green-800 mb-4">
-                  ✍️ Substitution Practice – 3' - Click on the options to change the sentences:
+                  ✍️ Substitution Practice – Click on the options to change the sentences:
                 </h3>
                 
                 <div className="space-y-6">
@@ -1403,14 +964,8 @@ export default function LessonPersonalInfoRoutine() {
                     
                     return (
                       <div key={exercise.key} className="bg-white p-4 rounded-lg border border-green-200">
-                        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-3">
-                          <p className="font-medium text-gray-700 flex-1">
-                            <span className="text-green-600">{exercise.original}</span>
-                          </p>
-                        </div>
-                        
                         <div className="mb-3 p-3 bg-green-50 rounded-md">
-                          <p className="text-green-700 font-medium">{currentSentence}</p>
+                          <p className="text-green-700 font-medium text-lg">{currentSentence}</p>
                         </div>
                         
                         <div className="flex flex-wrap gap-2">
@@ -1455,7 +1010,7 @@ export default function LessonPersonalInfoRoutine() {
             <div className="p-8">
               <div className="bg-red-100 border-2 border-red-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-red-800 mb-4">
-                  ⛔ Change into Negative – 2' - Transform to negative:
+                  ⛔ Change into Negative – Transform to negative:
                 </h3>
                 
                 <div className="space-y-4">
@@ -1515,30 +1070,20 @@ export default function LessonPersonalInfoRoutine() {
             <div className="p-8">
               <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-purple-800 mb-4">
-                  🔊 Improve Your Pronunciation – /θ/ and /ð/ sounds – 3' - Click to substitute:
+                  🔊 Improve Your Pronunciation – /θ/ and /ð/ sounds – Click to substitute:
                 </h3>
                 
                 <div className="space-y-6">
                   {subs2Exercises.map((exercise) => {
-                    const baseSentence = exercise.correctAnswer.split(' ').map(word => {
-                      const cleanWord = word.replace('.', '').replace('?', '');
-                      return exercise.options.includes(cleanWord) ? '{0}' : word;
-                    }).join(' ');
-                    
-                    const currentSentence = baseSentence.replace('{0}', exercise.options[exercise.currentIndex]);
+                    const currentSentence = exercise.base.replace('{0}', exercise.options[exercise.currentIndex]);
+                    const audioKey = exercise.options[exercise.currentIndex].toLowerCase().replace(/ /g, '-');
                     
                     return (
                       <div key={exercise.key} className="bg-white p-4 rounded-lg border border-purple-200">
-                        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-3">
-                          <p className="font-medium text-gray-700 flex-1">
-                            <span className="text-purple-600">{exercise.original}</span>
-                          </p>
-                        </div>
-                        
                         <div className="mb-3 p-3 bg-purple-50 rounded-md">
-                          <p className="text-purple-700 font-medium">{currentSentence}</p>
-                          <div className="mt-1">
-                            <SimpleAudioPlayer src={wordAudioMap[exercise.options[exercise.currentIndex].toLowerCase()] || ""} />
+                          <p className="text-purple-700 font-medium text-lg">{currentSentence}</p>
+                          <div className="mt-2">
+                            <SimpleAudioPlayer src={wordAudioMap[exercise.options[exercise.currentIndex].toLowerCase().split(' ')[0]] || ""} />
                           </div>
                         </div>
                         
@@ -1584,7 +1129,7 @@ export default function LessonPersonalInfoRoutine() {
             <div className="p-8">
               <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-teal-800 mb-4">
-                  Change into Affirmative - 2' - Transform to affirmative:
+                  Change into Affirmative - Transform to affirmative:
                 </h3>
                 
                 <div className="space-y-4">
@@ -1644,7 +1189,7 @@ export default function LessonPersonalInfoRoutine() {
             <div className="p-8">
               <div className="bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-orange-800 mb-4">
-                  Change into Interrogative - 2' - Transform to questions:
+                  Change into Interrogative - Transform to questions:
                 </h3>
                 
                 <div className="space-y-4">

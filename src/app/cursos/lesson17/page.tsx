@@ -199,34 +199,74 @@ export default function LessonPersonalInfoRoutine() {
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">trabalha</span> / Ele <span className="text-blue-600 font-bold">trabalha</span> / Eles <span className="text-blue-600 font-bold">trabalham</span> / Nós <span className="text-blue-600 font-bold">trabalhamos</span> / Eu <span className="text-blue-600 font-bold">trabalho</span> / Você <span className="text-blue-600 font-bold">trabalha</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">She works</span> / <span className="text-blue-600 font-bold">He works</span> / <span className="text-blue-600 font-bold">They work</span> / <span className="text-blue-600 font-bold">We work</span> / <span className="text-blue-600 font-bold">I work</span> / <span className="text-blue-600 font-bold">You work</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela trabalha / Ele trabalha / Eles trabalham / Nós trabalhamos / Eu trabalho / Você trabalha</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button onClick={() => playAudio('she works')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🔊 She works</button>
+                    <button onClick={() => playAudio('he works')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🔊 He works</button>
+                    <button onClick={() => playAudio('they work')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🔊 They work</button>
+                  </div>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">dorme</span> / Ele <span className="text-blue-600 font-bold">dorme</span> / Eles <span className="text-blue-600 font-bold">dormem</span> / Nós <span className="text-blue-600 font-bold">dormimos</span> / Eu <span className="text-blue-600 font-bold">durmo</span> / Você <span className="text-blue-600 font-bold">dorme</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">She sleeps</span> / <span className="text-blue-600 font-bold">He sleeps</span> / <span className="text-blue-600 font-bold">They sleep</span> / <span className="text-blue-600 font-bold">We sleep</span> / <span className="text-blue-600 font-bold">I sleep</span> / <span className="text-blue-600 font-bold">You sleep</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela dorme / Ele dorme / Eles dormem / Nós dormimos / Eu durmo / Você dorme</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button onClick={() => playAudio('she sleeps')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🔊 She sleeps</button>
+                    <button onClick={() => playAudio('he sleeps')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🔊 He sleeps</button>
+                    <button onClick={() => playAudio('they sleep')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🔊 They sleep</button>
+                  </div>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela trabalha</span> no escritório? / <span className="text-blue-600 font-bold">Ele trabalha</span> no banco? / <span className="text-blue-600 font-bold">Você trabalha</span> em casa?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Does she work</span> at the office? / <span className="text-blue-600 font-bold">Does he work</span> at the bank? / <span className="text-blue-600 font-bold">Do you work</span> from home?
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela trabalha no escritório? / Ele trabalha no banco? / Você trabalha em casa?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela dorme</span> cedo? / <span className="text-blue-600 font-bold">Ele dorme</span> tarde? / <span className="text-blue-600 font-bold">Você dorme</span> bem?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Does she sleep</span> early? / <span className="text-blue-600 font-bold">Does he sleep</span> late? / <span className="text-blue-600 font-bold">Do you sleep</span> well?
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela dorme cedo? / Ele dorme tarde? / Você dorme bem?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Onde <span className="text-blue-600 font-bold">ele trabalha</span>? / Onde <span className="text-blue-600 font-bold">ela trabalha</span>? / Onde <span className="text-blue-600 font-bold">você trabalha</span>?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Where does he work</span>? / <span className="text-blue-600 font-bold">Where does she work</span>? / <span className="text-blue-600 font-bold">Where do you work</span>?
+                  </p>
+                  <p className="text-gray-500 mt-1">Onde ele trabalha? / Onde ela trabalha? / Onde você trabalha?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eu trabalho</span> todos os dias / <span className="text-blue-600 font-bold">Ela trabalha</span> de segunda a sexta / <span className="text-blue-600 font-bold">Eles trabalham</span> apenas pela manhã</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">I work</span> every day / <span className="text-blue-600 font-bold">She works</span> from Monday to Friday / <span className="text-blue-600 font-bold">They work</span> only in the morning
+                  </p>
+                  <p className="text-gray-500 mt-1">Eu trabalho todos os dias / Ela trabalha de segunda a sexta / Eles trabalham apenas pela manhã</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Nós dormimos</span> oito horas por noite / <span className="text-blue-600 font-bold">Ela dorme</span> seis horas / <span className="text-blue-600 font-bold">Ele dorme</span> pouco</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">We sleep</span> eight hours a night / <span className="text-blue-600 font-bold">She sleeps</span> six hours / <span className="text-blue-600 font-bold">He sleeps</span> a little
+                  </p>
+                  <p className="text-gray-500 mt-1">Nós dormimos oito horas por noite / Ela dorme seis horas / Ele dorme pouco</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Você trabalha</span> aos finais de semana? / <span className="text-blue-600 font-bold">Eles trabalham</span> em feriados?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Do you work</span> on weekends? / <span className="text-blue-600 font-bold">Do they work</span> on holidays?
+                  </p>
+                  <p className="text-gray-500 mt-1">Você trabalha aos finais de semana? / Eles trabalham em feriados?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eu não trabalho</span> aos domingos / <span className="text-blue-600 font-bold">Ela não dorme</span> durante o dia / <span className="text-blue-600 font-bold">Eles não trabalham</span> à noite</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">I don't work</span> on Sundays / <span className="text-blue-600 font-bold">She doesn't sleep</span> during the day / <span className="text-blue-600 font-bold">They don't work</span> at night
+                  </p>
+                  <p className="text-gray-500 mt-1">Eu não trabalho aos domingos / Ela não dorme durante o dia / Eles não trabalham à noite</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela trabalha</span> como médica? / <span className="text-blue-600 font-bold">Ele trabalha</span> como professor? / <span className="text-blue-600 font-bold">Você trabalha</span> como engenheiro?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Does she work</span> as a doctor? / <span className="text-blue-600 font-bold">Does he work</span> as a teacher? / <span className="text-blue-600 font-bold">Do you work</span> as an engineer?
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela trabalha como médica? / Ele trabalha como professor? / Você trabalha como engenheiro?</p>
                 </div>
               </div>
             )}
@@ -300,21 +340,21 @@ export default function LessonPersonalInfoRoutine() {
                   grocery store
                 </button> = supermercado
               </li>
-                            <li>
+              <li>
                 <button 
-                  onClick={() => playAudio('grocery store')} 
+                  onClick={() => playAudio('remotely')} 
                   className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                 >
                   remotely
                 </button> = remotamente, de casa
               </li>
-                                         <li>
+              <li>
                 <button 
-                  onClick={() => playAudio('grocery store')} 
+                  onClick={() => playAudio('part-time job')} 
                   className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                 >
                   part-time job
-                </button> = Emprego de meio período, Trabalho parcial
+                </button> = emprego de meio período
               </li>
               <li>
                 <button 
@@ -436,37 +476,70 @@ export default function LessonPersonalInfoRoutine() {
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Onde <span className="text-blue-600 font-bold">você trabalha</span>? / Onde <span className="text-blue-600 font-bold">ela trabalha</span>? / Onde <span className="text-blue-600 font-bold">ele trabalha</span>? / Onde <span className="text-blue-600 font-bold">eles trabalham</span>?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Where do you work</span>? / <span className="text-blue-600 font-bold">Where does she work</span>? / <span className="text-blue-600 font-bold">Where does he work</span>? / <span className="text-blue-600 font-bold">Where do they work</span>?
+                  </p>
+                  <p className="text-gray-500 mt-1">Onde você trabalha? / Onde ela trabalha? / Onde ele trabalha? / Onde eles trabalham?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela normalmente acorda</span> cedo? / <span className="text-blue-600 font-bold">Ele normalmente acorda</span> cedo? / <span className="text-blue-600 font-bold">Você normalmente acorda</span> cedo?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Does she usually wake up</span> early? / <span className="text-blue-600 font-bold">Does he usually wake up</span> early? / <span className="text-blue-600 font-bold">Do you usually wake up</span> early?
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela normalmente acorda cedo? / Ele normalmente acorda cedo? / Você normalmente acorda cedo?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eles <span className="text-blue-600 font-bold">vão ao banco frequentemente</span>? / <span className="text-blue-600 font-bold">raramente</span> / <span className="text-blue-600 font-bold">sempre</span> / <span className="text-blue-600 font-bold">às vezes</span> / <span className="text-blue-600 font-bold">nunca</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    Do they <span className="text-blue-600 font-bold">go to the bank often</span>? / <span className="text-blue-600 font-bold">rarely</span> / <span className="text-blue-600 font-bold">always</span> / <span className="text-blue-600 font-bold">sometimes</span> / <span className="text-blue-600 font-bold">never</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Eles vão ao banco frequentemente? / raramente / sempre / às vezes / nunca</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">trabalha em um escritório ou em casa</span>? / <span className="text-blue-600 font-bold">em casa</span> / <span className="text-blue-600 font-bold">remotamente</span> / <span className="text-blue-600 font-bold">em um hospital</span> / <span className="text-blue-600 font-bold">em uma escola</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    Does he <span className="text-blue-600 font-bold">work at an office or at home</span>? / <span className="text-blue-600 font-bold">at home</span> / <span className="text-blue-600 font-bold">remotely</span> / <span className="text-blue-600 font-bold">at a hospital</span> / <span className="text-blue-600 font-bold">at a school</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ele trabalha em um escritório ou em casa? / em casa / remotamente / em um hospital / em uma escola</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">trabalho no hospital / no banco / na empresa / na escola / no escritório / no supermercado</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    I <span className="text-blue-600 font-bold">work at the hospital / at the bank / at the company / at the school / at the office / at the grocery store</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Eu trabalho no hospital / no banco / na empresa / na escola / no escritório / no supermercado</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">vai à igreja aos domingos / ao banco / ao supermercado / à farmácia / ao posto de gasolina / ao hospital</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    She <span className="text-blue-600 font-bold">goes to church on Sundays / to the bank / to the grocery store / to the drugstore / to the gas station / to the hospital</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela vai à igreja aos domingos / ao banco / ao supermercado / à farmácia / ao posto de gasolina / ao hospital</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">precisa ir à farmácia / ao posto de gasolina / ao hospital / ao banco / ao supermercado / à escola</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    He <span className="text-blue-600 font-bold">needs to go to the drugstore / to the gas station / to the hospital / to the bank / to the grocery store / to school</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ele precisa ir à farmácia / ao posto de gasolina / ao hospital / ao banco / ao supermercado / à escola</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">tenho um novo emprego / um bom emprego / um emprego em tempo parcial / um emprego em tempo integral / um emprego interessante</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    I have <span className="text-blue-600 font-bold">a new job / a good job / a part-time job / a full-time job / an interesting job</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Eu tenho um novo emprego / um bom emprego / um emprego em tempo parcial / um emprego em tempo integral / um emprego interessante</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">acorda cedo / levanta cedo / vai dormir tarde / acorda tarde / levanta tarde</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    She <span className="text-blue-600 font-bold">wakes up early / gets up early / goes to bed late / wakes up late / gets up late</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela acorda cedo / levanta cedo / vai dormir tarde / acorda tarde / levanta tarde</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">chega tarde ao trabalho / à escola / à aula / à reunião / em casa</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    He <span className="text-blue-600 font-bold">arrives late to work / to school / to class / to the meeting / at home</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ele chega tarde ao trabalho / à escola / à aula / à reunião / em casa</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Nós <span className="text-blue-600 font-bold">geralmente vamos ao cinema / ao parque / ao shopping / ao restaurante / à praia</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    We <span className="text-blue-600 font-bold">usually go to the movies / to the park / to the mall / to the restaurant / to the beach</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Nós geralmente vamos ao cinema / ao parque / ao shopping / ao restaurante / à praia</p>
                 </div>
               </div>
             )}
@@ -537,37 +610,70 @@ export default function LessonPersonalInfoRoutine() {
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Você acorda cedo todo dia</span>? / <span className="text-blue-600 font-bold">Ela acorda cedo todo dia</span>? / <span className="text-blue-600 font-bold">Ele acorda cedo todo dia</span>? / <span className="text-blue-600 font-bold">Eles acordam cedo todo dia</span>?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Do you get up early every day</span>? / <span className="text-blue-600 font-bold">Does she get up early every day</span>? / <span className="text-blue-600 font-bold">Does he get up early every day</span>? / <span className="text-blue-600 font-bold">Do they get up early every day</span>?
+                  </p>
+                  <p className="text-gray-500 mt-1">Você acorda cedo todo dia? / Ela acorda cedo todo dia? / Ele acorda cedo todo dia? / Eles acordam cedo todo dia?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela vai dormir tarde</span>? / <span className="text-blue-600 font-bold">Ele vai dormir tarde</span>? / <span className="text-blue-600 font-bold">Eles vão dormir tarde</span>? / <span className="text-blue-600 font-bold">Você vai dormir tarde</span>?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Does she go to bed late</span>? / <span className="text-blue-600 font-bold">Does he go to bed late</span>? / <span className="text-blue-600 font-bold">Do they go to bed late</span>? / <span className="text-blue-600 font-bold">Do you go to bed late</span>?
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela vai dormir tarde? / Ele vai dormir tarde? / Eles vão dormir tarde? / Você vai dormir tarde?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">você toma banho</span>? / <span className="text-blue-600 font-bold">ela toma banho</span>? / <span className="text-blue-600 font-bold">ele toma banho</span>? / <span className="text-blue-600 font-bold">eles tomam banho</span>? <span className="text-blue-600 font-bold">de manhã</span> / <span className="text-blue-600 font-bold">à noite</span> / <span className="text-blue-600 font-bold">à tarde</span> / <span className="text-blue-600 font-bold">de madrugada</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    When <span className="text-blue-600 font-bold">do you take a shower</span>? / <span className="text-blue-600 font-bold">does she take a shower</span>? / <span className="text-blue-600 font-bold">does he take a shower</span>? / <span className="text-blue-600 font-bold">do they take a shower</span>? <span className="text-blue-600 font-bold">in the morning</span> / <span className="text-blue-600 font-bold">at night</span> / <span className="text-blue-600 font-bold">in the afternoon</span> / <span className="text-blue-600 font-bold">early in the morning</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Quando você toma banho? / ela toma banho? / ele toma banho? / eles tomam banho? de manhã / à noite / à tarde / de madrugada</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eu preciso <span className="text-blue-600 font-bold">ir trabalhar / à escola / ao banco / ao supermercado / à farmácia / ao hospital</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    I need to <span className="text-blue-600 font-bold">go to work / go to school / go to the bank / go to the grocery store / go to the drugstore / go to the hospital</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Eu preciso ir trabalhar / à escola / ao banco / ao supermercado / à farmácia / ao hospital</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ela <span className="text-blue-600 font-bold">acorda às 6 da manhã / às 7 da manhã / às 8 da manhã / ao meio-dia / às 5 da manhã</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    She <span className="text-blue-600 font-bold">wakes up at 6 AM / at 7 AM / at 8 AM / at noon / at 5 AM</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela acorda às 6 da manhã / às 7 da manhã / às 8 da manhã / ao meio-dia / às 5 da manhã</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eles <span className="text-blue-600 font-bold">vão dormir à meia-noite / às 22h / às 23h / à 1h da manhã / cedo / tarde</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    They <span className="text-blue-600 font-bold">go to bed at midnight / at 10 PM / at 11 PM / at 1 AM / early / late</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Eles vão dormir à meia-noite / às 22h / às 23h / à 1h da manhã / cedo / tarde</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">toma banho de manhã / à noite / à tarde / após o trabalho / antes de dormir</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    He <span className="text-blue-600 font-bold">takes a shower in the morning / at night / in the afternoon / after work / before sleeping</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ele toma banho de manhã / à noite / à tarde / após o trabalho / antes de dormir</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Nós <span className="text-blue-600 font-bold">acordamos tarde nos finais de semana / aos sábados / aos domingos / durante as férias / nos feriados</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    We <span className="text-blue-600 font-bold">wake up late on weekends / on Saturdays / on Sundays / during vacation / on holidays</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Nós acordamos tarde nos finais de semana / aos sábados / aos domingos / durante as férias / nos feriados</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Ele <span className="text-blue-600 font-bold">vai dormir cedo durante a semana / nos dias úteis / de segunda a sexta</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    He <span className="text-blue-600 font-bold">goes to bed early during the week / on weekdays / from Monday to Friday</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ele vai dormir cedo durante a semana / nos dias úteis / de segunda a sexta</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Você precisa tomar banho agora?</span> / <span className="text-blue-600 font-bold">mais tarde</span> / <span className="text-blue-600 font-bold">amanhã</span> / <span className="text-blue-600 font-bold">antes do jantar</span> / <span className="text-blue-600 font-bold">após o café</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Do you need to take a shower now</span>? / <span className="text-blue-600 font-bold">later</span> / <span className="text-blue-600 font-bold">tomorrow</span> / <span className="text-blue-600 font-bold">before dinner</span> / <span className="text-blue-600 font-bold">after breakfast</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Você precisa tomar banho agora? / mais tarde / amanhã / antes do jantar / após o café</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">preciso acordar cedo amanhã / tenho que levantar cedo / vou dormir cedo hoje</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    I <span className="text-blue-600 font-bold">need to wake up early tomorrow / have to get up early / am going to sleep early tonight</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Eu preciso acordar cedo amanhã / tenho que levantar cedo / vou dormir cedo hoje</p>
                 </div>
               </div>
             )}
@@ -670,50 +776,89 @@ export default function LessonPersonalInfoRoutine() {
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Onde <span className="text-blue-600 font-bold">ela trabalha</span>? / Onde <span className="text-blue-600 font-bold">ele trabalha</span>? / Onde <span className="text-blue-600 font-bold">eles trabalham</span>? / Onde <span className="text-blue-600 font-bold">você trabalha</span>?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Where does she work</span>? / <span className="text-blue-600 font-bold">Where does he work</span>? / <span className="text-blue-600 font-bold">Where do they work</span>? / <span className="text-blue-600 font-bold">Where do you work</span>?
+                  </p>
+                  <p className="text-gray-500 mt-1">Onde ela trabalha? / Onde ele trabalha? / Onde eles trabalham? / Onde você trabalha?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ele trabalha</span> no hospital? / no banco / na empresa / na escola / no escritório / no supermercado</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Does he work</span> at the hospital? / at the bank / at the company / at the school / at the office / at the grocery store
+                  </p>
+                  <p className="text-gray-500 mt-1">Ele trabalha no hospital? / no banco / na empresa / na escola / no escritório / no supermercado</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eles trabalham</span> no banco? / no escritório / no supermercado / na igreja / na farmácia / no hospital</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Do they work</span> at the bank? / at the office / at the grocery store / at the church / at the drugstore / at the hospital
+                  </p>
+                  <p className="text-gray-500 mt-1">Eles trabalham no banco? / no escritório / no supermercado / na igreja / na farmácia / no hospital</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela trabalha em um escritório ou em casa</span>? / <span className="text-blue-600 font-bold">em casa</span> / <span className="text-blue-600 font-bold">remotamente</span> / <span className="text-blue-600 font-bold">em um hospital</span> / <span className="text-blue-600 font-bold">em uma escola</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Does she work at an office or at home</span>? / <span className="text-blue-600 font-bold">at home</span> / <span className="text-blue-600 font-bold">remotely</span> / <span className="text-blue-600 font-bold">at a hospital</span> / <span className="text-blue-600 font-bold">at a school</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela trabalha em um escritório ou em casa? / em casa / remotamente / em um hospital / em uma escola</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ele vai ao cinema</span>? / <span className="text-blue-600 font-bold">à academia</span> / <span className="text-blue-600 font-bold">ao parque</span> / <span className="text-blue-600 font-bold">ao restaurante</span> / <span className="text-blue-600 font-bold">ao shopping</span> / <span className="text-blue-600 font-bold">à praia</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    When <span className="text-blue-600 font-bold">does he go to the movies</span>? / <span className="text-blue-600 font-bold">to the gym</span> / <span className="text-blue-600 font-bold">to the park</span> / <span className="text-blue-600 font-bold">to the restaurant</span> / <span className="text-blue-600 font-bold">to the mall</span> / <span className="text-blue-600 font-bold">to the beach</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Quando ele vai ao cinema? / à academia / ao parque / ao restaurante / ao shopping / à praia</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ela vê seus emails</span>? / <span className="text-blue-600 font-bold">suas mensagens</span> / <span className="text-blue-600 font-bold">seus amigos</span> / <span className="text-blue-600 font-bold">sua família</span> / <span className="text-blue-600 font-bold">seus colegas</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    When <span className="text-blue-600 font-bold">does she see her emails</span>? / <span className="text-blue-600 font-bold">her messages</span> / <span className="text-blue-600 font-bold">her friends</span> / <span className="text-blue-600 font-bold">her family</span> / <span className="text-blue-600 font-bold">her colleagues</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Quando ela vê seus emails? / suas mensagens / seus amigos / sua família / seus colegas</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ele quer ir para a Itália</span>? / <span className="text-blue-600 font-bold">para a Espanha</span> / <span className="text-blue-600 font-bold">para os EUA</span> / <span className="text-blue-600 font-bold">para o Japão</span> / <span className="text-blue-600 font-bold">para a França</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    When <span className="text-blue-600 font-bold">does he want to go to Italy</span>? / <span className="text-blue-600 font-bold">to Spain</span> / <span className="text-blue-600 font-bold">to the USA</span> / <span className="text-blue-600 font-bold">to Japan</span> / <span className="text-blue-600 font-bold">to France</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Quando ele quer ir para a Itália? / para a Espanha / para os EUA / para o Japão / para a França</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Quando <span className="text-blue-600 font-bold">ela tem que ir ao hospital</span>? / <span className="text-blue-600 font-bold">ao médico</span> / <span className="text-blue-600 font-bold">ao dentista</span> / <span className="text-blue-600 font-bold">ao oftalmologista</span> / <span className="text-blue-600 font-bold">à farmácia</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    When <span className="text-blue-600 font-bold">does she have to go to the hospital</span>? / <span className="text-blue-600 font-bold">to the doctor</span> / <span className="text-blue-600 font-bold">to the dentist</span> / <span className="text-blue-600 font-bold">to the eye doctor</span> / <span className="text-blue-600 font-bold">to the drugstore</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Quando ela tem que ir ao hospital? / ao médico / ao dentista / ao oftalmologista / à farmácia</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">Eu <span className="text-blue-600 font-bold">tenho que ir à farmácia de manhã / à tarde / à noite / amanhã / hoje</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    I <span className="text-blue-600 font-bold">have to go to the drugstore in the morning / in the afternoon / at night / tomorrow / today</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Eu tenho que ir à farmácia de manhã / à tarde / à noite / amanhã / hoje</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ele trabalha no banco ou no posto de gasolina</span>? / <span className="text-blue-600 font-bold">na empresa ou na escola</span>? / <span className="text-blue-600 font-bold">no hospital ou na clínica</span>?</p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Does he work at the bank or at the gas station</span>? / <span className="text-blue-600 font-bold">at the company or at the school</span>? / <span className="text-blue-600 font-bold">at the hospital or at the clinic</span>?
+                  </p>
+                  <p className="text-gray-500 mt-1">Ele trabalha no banco ou no posto de gasolina? / na empresa ou na escola? / no hospital ou na clínica?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eles trabalham em um restaurante? / em um hotel / em uma escola / em uma loja / em uma empresa</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Do they work at a restaurant? / at a hotel / at a school / at a store / at a company</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Eles trabalham em um restaurante? / em um hotel / em uma escola / em uma loja / em uma empresa</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Ela também trabalha no hospital? / também / igualmente / da mesma forma</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">Does she also work at the hospital? / too / as well / likewise</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Ela também trabalha no hospital? / também / igualmente / da mesma forma</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Eles não trabalham na escola ou na igreja</span> / <span className="text-blue-600 font-bold">nem no banco nem no hospital</span></p>
+                  <p className="text-lg font-medium text-gray-800">
+                    <span className="text-blue-600 font-bold">They don't work at the school or at the church</span> / <span className="text-blue-600 font-bold">neither at the bank nor at the hospital</span>
+                  </p>
+                  <p className="text-gray-500 mt-1">Eles não trabalham na escola ou na igreja / nem no banco nem no hospital</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Seção 5 - Real Life Practice - CORRIGIDO COM AS FRASES SOLICITADAS */}
+        {/* Seção 5 - Real Life Practice - COM PALAVRAS EM AZUL PARA SUBSTITUIÇÃO */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8">
             <h2 className="text-2xl font-bold">REAL LIFE</h2>
@@ -742,9 +887,15 @@ export default function LessonPersonalInfoRoutine() {
                         <p className="text-lg font-medium">
                           1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('they work at')}
-                          >They work at</span> the grocery store.
+                          >They work at</span> the <span className="text-blue-600 font-bold">grocery store</span>.
                         </p>
                         <p className="text-sm text-gray-600">Eles trabalham no supermercado.</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button onClick={() => playAudio('bank')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏦 bank</button>
+                          <button onClick={() => playAudio('hospital')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏥 hospital</button>
+                          <button onClick={() => playAudio('office')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏢 office</button>
+                          <button onClick={() => playAudio('school')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏫 school</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -764,9 +915,15 @@ export default function LessonPersonalInfoRoutine() {
                         <p className="text-lg font-medium">
                           2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('i usually see')}
-                          >I usually see</span> my friends at the coffee shop.
+                          >I usually see</span> my friends at the <span className="text-blue-600 font-bold">coffee shop</span>.
                         </p>
                         <p className="text-sm text-gray-600">Eu geralmente vejo meus amigos na cafeteria.</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button onClick={() => playAudio('restaurant')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🍽️ restaurant</button>
+                          <button onClick={() => playAudio('park')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🌳 park</button>
+                          <button onClick={() => playAudio('mall')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🛍️ mall</button>
+                          <button onClick={() => playAudio('beach')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏖️ beach</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -786,9 +943,14 @@ export default function LessonPersonalInfoRoutine() {
                         <p className="text-lg font-medium">
                           3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('i study')}
-                          >I study,</span> but I don't work.
+                          >I study</span>, but <span className="text-blue-600 font-bold">I don't work</span>.
                         </p>
                         <p className="text-sm text-gray-600">Eu estudo, mas não trabalho.</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button onClick={() => playAudio('i work')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">💼 I work</button>
+                          <button onClick={() => playAudio('i travel')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">✈️ I travel</button>
+                          <button onClick={() => playAudio('i stay home')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏠 I stay home</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -808,9 +970,15 @@ export default function LessonPersonalInfoRoutine() {
                         <p className="text-lg font-medium">
                           4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('do you get up')}
-                          >Do you get up</span> early?
+                          >Do you get up</span> <span className="text-blue-600 font-bold">early</span>?
                         </p>
                         <p className="text-sm text-gray-600">Você se levanta cedo?</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button onClick={() => playAudio('late')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">⏰ late</button>
+                          <button onClick={() => playAudio('at 6 AM')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🕕 at 6 AM</button>
+                          <button onClick={() => playAudio('at 7 AM')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🕖 at 7 AM</button>
+                          <button onClick={() => playAudio('at 8 AM')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🕗 at 8 AM</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -830,9 +998,16 @@ export default function LessonPersonalInfoRoutine() {
                         <p className="text-lg font-medium">
                           5. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('do you have to go')}
-                          >Do you have to go</span> to the drugstore now?
+                          >Do you have to go</span> to the <span className="text-blue-600 font-bold">drugstore</span> <span className="text-blue-600 font-bold">now</span>?
                         </p>
                         <p className="text-sm text-gray-600">Você tem que ir à farmácia agora?</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button onClick={() => playAudio('bank')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏦 bank</button>
+                          <button onClick={() => playAudio('grocery store')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🛒 grocery store</button>
+                          <button onClick={() => playAudio('hospital')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏥 hospital</button>
+                          <button onClick={() => playAudio('later')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">⏰ later</button>
+                          <button onClick={() => playAudio('tomorrow')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">📅 tomorrow</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -852,9 +1027,15 @@ export default function LessonPersonalInfoRoutine() {
                         <p className="text-lg font-medium">
                           6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('do you work')}
-                          >Do you work</span> at the hospital?
+                          >Do you work</span> at the <span className="text-blue-600 font-bold">hospital</span>?
                         </p>
                         <p className="text-sm text-gray-600">Você trabalha no hospital?</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button onClick={() => playAudio('bank')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏦 bank</button>
+                          <button onClick={() => playAudio('office')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏢 office</button>
+                          <button onClick={() => playAudio('school')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏫 school</button>
+                          <button onClick={() => playAudio('company')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏭 company</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -874,9 +1055,15 @@ export default function LessonPersonalInfoRoutine() {
                         <p className="text-lg font-medium">
                           7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('do you go to work')}
-                          >Do you go to work</span> late?
+                          >Do you go to work</span> <span className="text-blue-600 font-bold">late</span>?
                         </p>
                         <p className="text-sm text-gray-600">Você vai trabalhar tarde?</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button onClick={() => playAudio('early')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🌅 early</button>
+                          <button onClick={() => playAudio('on time')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">⏱️ on time</button>
+                          <button onClick={() => playAudio('by bus')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🚌 by bus</button>
+                          <button onClick={() => playAudio('by car')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🚗 by car</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -896,9 +1083,15 @@ export default function LessonPersonalInfoRoutine() {
                         <p className="text-lg font-medium">
                           8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('do you usually go to bed')}
-                          >Do you usually go to bed</span> late?
+                          >Do you usually go to bed</span> <span className="text-blue-600 font-bold">late</span>?
                         </p>
                         <p className="text-sm text-gray-600">Você geralmente vai dormir tarde?</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button onClick={() => playAudio('early')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🌙 early</button>
+                          <button onClick={() => playAudio('at 10 PM')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🕙 at 10 PM</button>
+                          <button onClick={() => playAudio('at 11 PM')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🕚 at 11 PM</button>
+                          <button onClick={() => playAudio('at midnight')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🕛 at midnight</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -918,9 +1111,15 @@ export default function LessonPersonalInfoRoutine() {
                         <p className="text-lg font-medium">
                           9. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('do you go to the office')}
-                          >Do you go to the office</span> in the afternoon?
+                          >Do you go to the office</span> <span className="text-blue-600 font-bold">in the afternoon</span>?
                         </p>
                         <p className="text-sm text-gray-600">Você vai para o escritório à tarde?</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button onClick={() => playAudio('in the morning')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🌄 in the morning</button>
+                          <button onClick={() => playAudio('at night')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🌙 at night</button>
+                          <button onClick={() => playAudio('every day')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">📅 every day</button>
+                          <button onClick={() => playAudio('on Mondays')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">📆 on Mondays</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -940,9 +1139,16 @@ export default function LessonPersonalInfoRoutine() {
                         <p className="text-lg font-medium">
                           10. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('when do you have to go')}
-                          >When do you have to go</span> to the bank?
+                          >When do you have to go</span> to the <span className="text-blue-600 font-bold">bank</span>?
                         </p>
                         <p className="text-sm text-gray-600">Quando você tem que ir ao banco?</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button onClick={() => playAudio('grocery store')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🛒 grocery store</button>
+                          <button onClick={() => playAudio('drugstore')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">💊 drugstore</button>
+                          <button onClick={() => playAudio('hospital')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🏥 hospital</button>
+                          <button onClick={() => playAudio('today')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">📅 today</button>
+                          <button onClick={() => playAudio('tomorrow')} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">📅 tomorrow</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1036,40 +1242,6 @@ export default function LessonPersonalInfoRoutine() {
               <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
                 <p className="text-lg font-medium text-gray-800">4. What can you say to a waiter when you want to order food but eat at home?</p>
                 <p className="mt-2 text-gray-600">(Exemplo: I'd like to order takeout, please. / Can I get this to go?)</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Seção 7 - Real Life Practice em Português */}
-        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">REAL LIFE</h2>
-            <p className="mt-2 text-blue-100 italic">
-              Responda oralmente às seguintes perguntas
-            </p>
-          </div>
-          
-          <div className="p-8">
-            <div className="space-y-6">
-              <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-                <p className="text-lg font-medium text-gray-800">1. Onde você normalmente vê seus amigos?</p>
-                <p className="text-sm text-gray-600 mt-1">(Exemplo: Eu normalmente vejo meus amigos na cafeteria / no parque / em casa)</p>
-              </div>
-              
-              <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-                <p className="text-lg font-medium text-gray-800">2. Você estuda ou trabalha?</p>
-                <p className="text-sm text-gray-600 mt-1">(Exemplo: Eu estudo / Eu trabalho / Eu estudo e trabalho)</p>
-              </div>
-              
-              <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-                <p className="text-lg font-medium text-gray-800">3. Você vai dormir cedo ou tarde?</p>
-                <p className="text-sm text-gray-600 mt-1">(Exemplo: Eu vou dormir cedo / Eu vou dormir tarde / Depende do dia)</p>
-              </div>
-              
-              <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-                <p className="text-lg font-medium text-gray-800">4. Quando você vai ao banco?</p>
-                <p className="text-sm text-gray-600 mt-1">(Exemplo: Eu vou ao banco às segundas-feiras / quando preciso / uma vez por mês)</p>
               </div>
             </div>
           </div>

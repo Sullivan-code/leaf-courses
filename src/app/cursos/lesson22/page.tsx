@@ -9,15 +9,15 @@ import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCir
 const substitutionPractice1 = [
   { 
     key: "subs-1", 
-    original: "Ele vem para casa cedo. / tarde / à noite",
-    base: "He {0} home early.",
-    options: ["comes", "comes", "comes"],
-    correctForms: ["comes", "comes", "comes"],
+    original: "He comes home early. / late / at night",
+    base: "He comes home {0}.",
+    options: ["early", "late", "at night"],
+    correctForms: ["early", "late", "at night"],
     currentIndex: 0
   },
   { 
     key: "subs-2", 
-    original: "Ela quer morar na praia. / Ele / Nós",
+    original: "She wants to live at the beach. / He / We",
     base: "{0} want to live at the beach.",
     options: ["She", "He", "We"],
     correctForms: ["She wants", "He wants", "We want"],
@@ -25,7 +25,7 @@ const substitutionPractice1 = [
   },
   { 
     key: "subs-3", 
-    original: "Ele precisa estudar português. / espanhol / inglês",
+    original: "He needs to study Portuguese. / Spanish / English",
     base: "He needs to study {0}.",
     options: ["Portuguese", "Spanish", "English"],
     correctForms: ["Portuguese", "Spanish", "English"],
@@ -33,7 +33,7 @@ const substitutionPractice1 = [
   },
   { 
     key: "subs-4", 
-    original: "Ele às vezes estuda aos domingos. / aos sábados / às terças-feiras",
+    original: "He sometimes studies on Sundays. / on Saturdays / on Tuesdays",
     base: "He sometimes studies {0}.",
     options: ["on Sundays", "on Saturdays", "on Tuesdays"],
     correctForms: ["on Sundays", "on Saturdays", "on Tuesdays"],
@@ -41,7 +41,7 @@ const substitutionPractice1 = [
   },
   { 
     key: "subs-5", 
-    original: "Ela vai para a escola às 7:30. / 7:00 / 6:45",
+    original: "She goes to school at 7:30. / 7:00 / 6:45",
     base: "She goes to school at {0}.",
     options: ["7:30", "7:00", "6:45"],
     correctForms: ["7:30", "7:00", "6:45"],
@@ -49,7 +49,7 @@ const substitutionPractice1 = [
   },
   { 
     key: "subs-6", 
-    original: "Que dia é hoje? / É segunda-feira. / sexta-feira / quinta-feira",
+    original: "What day is today? / It's Monday. / Friday / Thursday",
     base: "What day is today? / It's {0}.",
     options: ["Monday", "Friday", "Thursday"],
     correctForms: ["Monday", "Friday", "Thursday"],
@@ -60,7 +60,7 @@ const substitutionPractice1 = [
 const substitutionPractice2 = [
   { 
     key: "subs2-1", 
-    original: "Eu preciso cozinhar hoje. / Nós / Você",
+    original: "I need to cook today. / We / You",
     base: "{0} need to cook today.",
     options: ["I", "We", "You"],
     correctForms: ["I need", "We need", "You need"],
@@ -68,7 +68,7 @@ const substitutionPractice2 = [
   },
   { 
     key: "subs2-2", 
-    original: "Ele vai para o trabalho às 9:15. / escola / igreja",
+    original: "He goes to work at 9:15. / school / church",
     base: "He goes to {0} at 9:15.",
     options: ["work", "school", "church"],
     correctForms: ["work", "school", "church"],
@@ -76,7 +76,7 @@ const substitutionPractice2 = [
   },
   { 
     key: "subs2-3", 
-    original: "Você trabalha durante a semana? / cozinha / limpa a casa",
+    original: "Do you work during the week? / cook / clean the house",
     base: "Do you {0} during the week?",
     options: ["work", "cook", "clean the house"],
     correctForms: ["work", "cook", "clean the house"],
@@ -84,7 +84,7 @@ const substitutionPractice2 = [
   },
   { 
     key: "subs2-4", 
-    original: "Nós preferimos ficar em casa aos sábados. / domingos / fins de semana",
+    original: "We prefer to stay home on Saturdays. / on Sundays / on weekends",
     base: "We prefer to stay home {0}.",
     options: ["on Saturdays", "on Sundays", "on weekends"],
     correctForms: ["on Saturdays", "on Sundays", "on weekends"],
@@ -92,7 +92,7 @@ const substitutionPractice2 = [
   },
   { 
     key: "subs2-5", 
-    original: "Eu estudo às segundas e quartas. / terças e quintas / segundas e sextas",
+    original: "I study on Mondays and Wednesdays. / Tuesdays and Thursdays / Mondays and Fridays",
     base: "I study {0}.",
     options: ["on Mondays and Wednesdays", "on Tuesdays and Thursdays", "on Mondays and Fridays"],
     correctForms: ["on Mondays and Wednesdays", "on Tuesdays and Thursdays", "on Mondays and Fridays"],
@@ -276,41 +276,136 @@ const fluencyExercises = [
     base: "I come to the English school on Wednesdays.",
     subject: "She",
     answer: "She comes to the English school on Wednesdays."
+  },
+  {
+    key: "flu-12",
+    original: "They have breakfast at 7:00 a.m. (He)",
+    base: "They have breakfast at 7:00 a.m.",
+    subject: "He",
+    answer: "He has breakfast at 7:00 a.m."
+  },
+  {
+    key: "flu-13",
+    original: "I do my homework in the evening. (She)",
+    base: "I do my homework in the evening.",
+    subject: "She",
+    answer: "She does her homework in the evening."
+  },
+  {
+    key: "flu-14",
+    original: "We watch TV at night. (He)",
+    base: "We watch TV at night.",
+    subject: "He",
+    answer: "He watches TV at night."
+  },
+  {
+    key: "flu-15",
+    original: "They play soccer on weekends. (She)",
+    base: "They play soccer on weekends.",
+    subject: "She",
+    answer: "She plays soccer on weekends."
+  },
+  {
+    key: "flu-16",
+    original: "I study English every day. (He)",
+    base: "I study English every day.",
+    subject: "He",
+    answer: "He studies English every day."
   }
 ];
 
+// Personal Questions - NOW IN ENGLISH
 const personalQuestions = [
   {
     id: 1,
-    question: "Quais lugares você vai nos fins de semana?",
-    placeholder: "Descreva os lugares que você costuma visitar nos fins de semana...",
-    instruction: "Use o pronome na terceira pessoa do singular. Exemplo: He goes to..."
+    question: "Where do you go on weekends?",
+    placeholder: "Describe the places you usually visit on weekends...",
+    instruction: "Then rewrite your answer using the third person singular. Example: He goes to the beach."
   },
   {
     id: 2,
-    question: "O que você faz durante a semana?",
-    placeholder: "Descreva suas atividades rotineiras durante a semana...",
-    instruction: "Use o pronome na terceira pessoa do singular. Exemplo: She studies..."
+    question: "What do you do during the week?",
+    placeholder: "Describe your daily routine activities during the week...",
+    instruction: "Then rewrite your answer using the third person singular. Example: She studies English."
   },
   {
     id: 3,
-    question: "O que seus amigos fazem durante a semana ou nos fins de semana?",
-    placeholder: "Descreva as atividades dos seus amigos...",
-    instruction: "Use o pronome na terceira pessoa do singular. Exemplo: He works..."
+    question: "What do your friends do during the week or on weekends?",
+    placeholder: "Describe your friends' activities...",
+    instruction: "Then rewrite your answer using the third person singular. Example: He works at an office."
   },
   {
     id: 4,
-    question: "Como você planeja sua semana?",
-    placeholder: "Descreva seu processo de planejamento semanal...",
-    instruction: "Use o pronome na terceira pessoa do singular. Exemplo: She plans..."
+    question: "How do you plan your week?",
+    placeholder: "Describe your weekly planning process...",
+    instruction: "Then rewrite your answer using the third person singular. Example: She plans her week on Sundays."
   },
   {
     id: 5,
-    question: "Qual é sua parte favorita do fim de semana?",
-    placeholder: "Descreva o que você mais gosta de fazer nos fins de semana...",
-    instruction: "Use o pronome na terceira pessoa do singular. Exemplo: He likes..."
+    question: "What is your favorite part of the weekend?",
+    placeholder: "Describe what you enjoy doing most on weekends...",
+    instruction: "Then rewrite your answer using the third person singular. Example: He likes to relax on Sundays."
   }
 ];
+
+// Dados da seção TUNE YOUR EARS (atualizado com o novo link)
+const tuneYourEarsVideo = {
+  title: "Learn English with TV Series: Daily Routines & Lifestyle",
+  youtubeId: "u2y2w-bE5qY", // NOVO LINK: https://www.youtube.com/watch?v=u2y2w-bE5qY
+  description: "Watch this video to practice your listening skills, learn vocabulary about daily routines, weekly planning, and see examples of 'He', 'She', and 'It' in context.",
+  questions: [
+    {
+      id: 1,
+      question: "What time does the person usually wake up?",
+      correctAnswer: "They wake up at 7 AM.",
+      vocabulary: [
+        { english: "wake up", portuguese: "acordar" },
+        { english: "morning routine", portuguese: "rotina matinal" },
+        { english: "alarm clock", portuguese: "despertador" }
+      ]
+    },
+    {
+      id: 2,
+      question: "What do they eat for breakfast?",
+      correctAnswer: "They eat cereal and drink coffee.",
+      vocabulary: [
+        { english: "breakfast", portuguese: "café da manhã" },
+        { english: "cereal", portuguese: "cereal" },
+        { english: "coffee", portuguese: "café" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How do they go to work or school?",
+      correctAnswer: "They take the bus.",
+      vocabulary: [
+        { english: "take the bus", portuguese: "pegar o ônibus" },
+        { english: "commute", portuguese: "deslocamento" },
+        { english: "arrive at", portuguese: "chegar em" }
+      ]
+    },
+    {
+      id: 4,
+      question: "What does 'he' do in the afternoon?",
+      correctAnswer: "He studies English.",
+      vocabulary: [
+        { english: "study", portuguese: "estudar" },
+        { english: "afternoon", portuguese: "tarde" },
+        { english: "pronoun", portuguese: "pronome" }
+      ]
+    },
+    {
+      id: 5,
+      question: "What does 'she' like to do on weekends?",
+      correctAnswer: "She likes to read books.",
+      vocabulary: [
+        { english: "like", portuguese: "gostar" },
+        { english: "read", portuguese: "ler" },
+        { english: "book", portuguese: "livro" }
+      ]
+    }
+  ]
+};
 
 // Sistema de avaliação de respostas
 const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
@@ -484,7 +579,7 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
     return (
       <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md">
         <Check size={16} className="text-green-600" />
-        <span className="text-sm text-green-700 font-medium">Correto!</span>
+        <span className="text-sm text-green-700 font-medium">Correct!</span>
       </div>
     );
   }
@@ -493,7 +588,7 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
     <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-md">
       <XCircle size={16} className="text-red-600" />
       <span className="text-sm text-red-700">
-        <span className="font-medium">Resposta esperada:</span> {correctAnswer}
+        <span className="font-medium">Expected answer:</span> {correctAnswer}
       </span>
     </div>
   );
@@ -503,7 +598,7 @@ export default function Lesson22LifestylePlanning() {
   const router = useRouter();
   
   // Estados para controle de expansão/recolhimento das seções
-  const [sections, setSections] = useState({
+  const [expandedSections, setExpandedSections] = useState({
     dialogue: true,
     vocabulary: true,
     substitution1: true,
@@ -512,8 +607,10 @@ export default function Lesson22LifestylePlanning() {
     affirmative: true,
     interrogative: true,
     fluency: true,
+    aint: true,
     unlock: true,
-    questions: true
+    questions: true,
+    tuneYourEars: true // Nova seção
   });
 
   // Estados para as práticas de substituição
@@ -531,6 +628,11 @@ export default function Lesson22LifestylePlanning() {
   const [fluencyAnswers, setFluencyAnswers] = useState<Record<string, string>>({});
   const [fluencyResults, setFluencyResults] = useState<Record<string, boolean>>({});
   const [showFluencyResults, setShowFluencyResults] = useState<Record<string, boolean>>({});
+
+  // Estados para o vídeo Tune Your Ears
+  const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
+  const [videoResults, setVideoResults] = useState<Record<string, boolean>>({});
+  const [showVideoResults, setShowVideoResults] = useState<Record<string, boolean>>({});
 
   // Estado para diálogo
   const [dialogueParts, setDialogueParts] = useState({
@@ -571,9 +673,12 @@ export default function Lesson22LifestylePlanning() {
         setShowAnswerResults(data.showAnswerResults || {});
         setFluencyResults(data.fluencyResults || {});
         setShowFluencyResults(data.showFluencyResults || {});
+        setVideoAnswers(data.videoAnswers || {});
+        setVideoResults(data.videoResults || {});
+        setShowVideoResults(data.showVideoResults || {});
         
         // Restaurar estado das seções
-        if (data.sections) setSections(data.sections);
+        if (data.expandedSections) setExpandedSections(data.expandedSections);
         
         console.log("Dados carregados do localStorage para Lesson 22");
       } catch (error) {
@@ -601,8 +706,13 @@ export default function Lesson22LifestylePlanning() {
       fluencyResults,
       showFluencyResults,
       
+      // Dados do vídeo
+      videoAnswers,
+      videoResults,
+      showVideoResults,
+      
       // Estado das seções
-      sections,
+      expandedSections,
       
       // Metadados
       lastUpdated: new Date().toISOString(),
@@ -612,16 +722,16 @@ export default function Lesson22LifestylePlanning() {
     
     try {
       localStorage.setItem("lesson22Answers", JSON.stringify(data));
-      alert("✅ Todas as suas respostas foram salvas com sucesso!\nVocê pode voltar a qualquer momento e elas estarão aqui.");
+      alert("✅ All your answers have been saved successfully!\nYou can come back anytime and they will be here.");
     } catch (error) {
       console.error("Erro ao salvar respostas:", error);
-      alert("❌ Erro ao salvar as respostas. Por favor, tente novamente.");
+      alert("❌ Error saving answers. Please try again.");
     }
   };
 
   // Função para limpar todas as respostas
   const clearAllAnswers = () => {
-    if (confirm("Tem certeza que deseja limpar TODAS as suas respostas? Esta ação não pode ser desfeita.")) {
+    if (confirm("Are you sure you want to clear ALL your answers? This action cannot be undone.")) {
       setSubs1Exercises(substitutionPractice1);
       setSubs2Exercises(substitutionPractice2);
       setWrittenAnswers({});
@@ -630,10 +740,13 @@ export default function Lesson22LifestylePlanning() {
       setShowAnswerResults({});
       setFluencyResults({});
       setShowFluencyResults({});
+      setVideoAnswers({});
+      setVideoResults({});
+      setShowVideoResults({});
       
       // Limpar do localStorage também
       localStorage.removeItem("lesson22Answers");
-      alert("Todas as respostas foram limpas.");
+      alert("All answers have been cleared.");
     }
   };
 
@@ -682,15 +795,30 @@ export default function Lesson22LifestylePlanning() {
     setShowFluencyResults(prev => ({ ...prev, [exerciseKey]: true }));
   };
 
-  // Função para tocar áudio quando palavras são clicadas
-  const handleWordClick = (word: string) => {
-    // Aqui você pode adicionar a lógica para tocar áudio específico
-    console.log("Word clicked for audio:", word);
+  // Funções para o vídeo Tune Your Ears
+  const handleVideoAnswerChange = (id: number, value: string) => {
+    setVideoAnswers(prev => ({ ...prev, [id]: value }));
+  };
+
+  const clearVideoAnswer = (id: number) => {
+    setVideoAnswers(prev => {
+      const newState = { ...prev };
+      delete newState[id];
+      return newState;
+    });
+    setShowVideoResults(prev => ({ ...prev, [`video-${id}`]: false }));
+  };
+
+  const checkVideoAnswer = (id: number, userAnswer: string, correctAnswer: string) => {
+    const isCorrect = checkAnswer(userAnswer, correctAnswer);
+    setVideoResults(prev => ({ ...prev, [`video-${id}`]: isCorrect }));
+    setShowVideoResults(prev => ({ ...prev, [`video-${id}`]: true }));
+    return isCorrect;
   };
 
   // Função para alternar expansão de seções
-  const toggleSection = (section: keyof typeof sections) => {
-    setSections(prev => ({
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
@@ -723,22 +851,22 @@ export default function Lesson22LifestylePlanning() {
                 onClick={() => toggleSection('dialogue')}
                 className="ml-4 p-2 rounded-full hover:bg-blue-600 transition"
               >
-                {sections.dialogue ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {expandedSections.dialogue ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
             <button
               onClick={toggleDialogueSpeaker}
               className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
             >
-              Trocar Papéis ({dialogueParts.currentSpeaker})
+              Switch Roles ({dialogueParts.currentSpeaker})
             </button>
           </div>
 
-          {sections.dialogue && (
+          {expandedSections.dialogue && (
             <div className="p-8">
               <div className="mb-6">
                 <h3 className="text-xl font-bold text-blue-800 mb-4">
-                  Instrução: Leia o diálogo com um colega. Depois, pratique trocando os papéis (Rachel ↔ Shawn).
+                  Instruction: Read the dialogue with a partner. Then practice switching roles (Rachel ↔ Shawn).
                 </h3>
                 
                 <div className="bg-white p-6 rounded-xl border-2 border-blue-200 shadow-md">
@@ -893,21 +1021,21 @@ export default function Lesson22LifestylePlanning() {
         <div className="bg-yellow-50 border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-yellow-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">📚 TAKE A LOOK (Vocabulário de apoio)</h2>
+              <h2 className="text-2xl font-bold">📚 TAKE A LOOK (Support Vocabulary)</h2>
               <button 
                 onClick={() => toggleSection('vocabulary')}
                 className="ml-4 p-2 rounded-full hover:bg-yellow-600 transition"
               >
-                {sections.vocabulary ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {expandedSections.vocabulary ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.vocabulary && (
+          {expandedSections.vocabulary && (
             <div className="p-8">
               <div className="mb-6">
                 <h3 className="text-xl font-bold text-yellow-800 mb-4">
-                  Instrução: Observe as expressões e pratique usando em frases.
+                  Instruction: Observe the expressions and practice using them in sentences.
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -917,7 +1045,7 @@ export default function Lesson22LifestylePlanning() {
                       <span className="text-gray-600">→</span>
                       <span className="font-medium text-gray-800">Como você está?</span>
                     </div>
-                    <p className="text-sm text-gray-600 italic">Exemplo: "Hello! How are you today?"</p>
+                    <p className="text-sm text-gray-600 italic">Example: "Hello! How are you today?"</p>
                   </div>
                   
                   <div className="bg-white p-4 rounded-xl border-2 border-yellow-200 shadow-sm">
@@ -926,7 +1054,7 @@ export default function Lesson22LifestylePlanning() {
                       <span className="text-gray-600">→</span>
                       <span className="font-medium text-gray-800">Eu estou bem.</span>
                     </div>
-                    <p className="text-sm text-gray-600 italic">Exemplo: "I'm fine, thank you!"</p>
+                    <p className="text-sm text-gray-600 italic">Example: "I'm fine, thank you!"</p>
                   </div>
                   
                   <div className="bg-white p-4 rounded-xl border-2 border-yellow-200 shadow-sm">
@@ -935,7 +1063,7 @@ export default function Lesson22LifestylePlanning() {
                       <span className="text-gray-600">→</span>
                       <span className="font-medium text-gray-800">plano</span>
                     </div>
-                    <p className="text-sm text-gray-600 italic">Exemplo: "Do you have plans for the weekend?"</p>
+                    <p className="text-sm text-gray-600 italic">Example: "Do you have plans for the weekend?"</p>
                   </div>
                   
                   <div className="bg-white p-4 rounded-xl border-2 border-yellow-200 shadow-sm">
@@ -944,7 +1072,7 @@ export default function Lesson22LifestylePlanning() {
                       <span className="text-gray-600">→</span>
                       <span className="font-medium text-gray-800">para</span>
                     </div>
-                    <p className="text-sm text-gray-600 italic">Exemplo: "We're going to the beach for the day."</p>
+                    <p className="text-sm text-gray-600 italic">Example: "We're going to the beach for the day."</p>
                   </div>
                   
                   <div className="bg-white p-4 rounded-xl border-2 border-yellow-200 shadow-sm">
@@ -953,7 +1081,7 @@ export default function Lesson22LifestylePlanning() {
                       <span className="text-gray-600">→</span>
                       <span className="font-medium text-gray-800">perto</span>
                     </div>
-                    <p className="text-sm text-gray-600 italic">Exemplo: "My brother lives near Santa Monica."</p>
+                    <p className="text-sm text-gray-600 italic">Example: "My brother lives near Santa Monica."</p>
                   </div>
                   
                   <div className="bg-white p-4 rounded-xl border-2 border-yellow-200 shadow-sm">
@@ -962,7 +1090,7 @@ export default function Lesson22LifestylePlanning() {
                       <span className="text-gray-600">→</span>
                       <span className="font-medium text-gray-800">convite</span>
                     </div>
-                    <p className="text-sm text-gray-600 italic">Exemplo: "Thanks for the invitation!"</p>
+                    <p className="text-sm text-gray-600 italic">Example: "Thanks for the invitation!"</p>
                   </div>
                   
                   <div className="bg-white p-4 rounded-xl border-2 border-yellow-200 shadow-sm">
@@ -971,7 +1099,7 @@ export default function Lesson22LifestylePlanning() {
                       <span className="text-gray-600">→</span>
                       <span className="font-medium text-gray-800">então</span>
                     </div>
-                    <p className="text-sm text-gray-600 italic">Exemplo: "See you on Friday then!"</p>
+                    <p className="text-sm text-gray-600 italic">Example: "See you on Friday then!"</p>
                   </div>
                 </div>
               </div>
@@ -982,7 +1110,7 @@ export default function Lesson22LifestylePlanning() {
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-green-400 flex items-center justify-center">
                     <div className="text-center text-white p-4">
                       <h4 className="text-xl font-bold mb-2">🏖️ Beach Scene</h4>
-                      <p className="text-sm">Representando lazer e fim de semana</p>
+                      <p className="text-sm">Representing leisure and weekend activities</p>
                     </div>
                   </div>
                 </div>
@@ -1000,16 +1128,16 @@ export default function Lesson22LifestylePlanning() {
                 onClick={() => toggleSection('substitution1')}
                 className="ml-4 p-2 rounded-full hover:bg-green-600 transition"
               >
-                {sections.substitution1 ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {expandedSections.substitution1 ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.substitution1 && (
+          {expandedSections.substitution1 && (
             <div className="p-8">
               <div className="bg-green-100 border-2 border-green-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-green-800 mb-4">
-                  ✍️ Substitution Practice I – 3' - Instrução: O professor diz a frase base. Os alunos substituem a parte indicada, mantendo a estrutura.
+                  ✍️ Substitution Practice I – 3' - Instruction: The teacher says the base sentence. Students substitute the indicated part, keeping the structure.
                 </h3>
                 
                 <div className="space-y-6">
@@ -1017,23 +1145,16 @@ export default function Lesson22LifestylePlanning() {
                     // Determinar a frase correta baseada na opção selecionada
                     let currentSentence = "";
                     if (exercise.key === "subs-1") {
-                      // Para "Ele vem para casa cedo/tarde/à noite"
-                      const timeOptions = ["early", "late", "at night"];
-                      currentSentence = `He comes home ${timeOptions[exercise.currentIndex]}.`;
+                      currentSentence = `He comes home ${exercise.options[exercise.currentIndex]}.`;
                     } else if (exercise.key === "subs-2") {
-                      // Para "Ela quer morar na praia. / Ele / Nós"
                       currentSentence = exercise.correctForms[exercise.currentIndex] + " to live at the beach.";
                     } else if (exercise.key === "subs-3") {
-                      // Para "Ele precisa estudar português/espanhol/inglês"
                       currentSentence = `He needs to study ${exercise.options[exercise.currentIndex]}.`;
                     } else if (exercise.key === "subs-4") {
-                      // Para "Ele às vezes estuda aos domingos/sábados/terças"
                       currentSentence = `He sometimes studies ${exercise.options[exercise.currentIndex]}.`;
                     } else if (exercise.key === "subs-5") {
-                      // Para "Ela vai para a escola às 7:30/7:00/6:45"
                       currentSentence = `She goes to school at ${exercise.options[exercise.currentIndex]}.`;
                     } else if (exercise.key === "subs-6") {
-                      // Para "Que dia é hoje? / É segunda/sexta/quinta"
                       currentSentence = `What day is today? It's ${exercise.options[exercise.currentIndex]}.`;
                     }
                     
@@ -1082,16 +1203,16 @@ export default function Lesson22LifestylePlanning() {
                 onClick={() => toggleSection('negative')}
                 className="ml-4 p-2 rounded-full hover:bg-red-600 transition"
               >
-                {sections.negative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {expandedSections.negative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.negative && (
+          {expandedSections.negative && (
             <div className="p-8">
               <div className="bg-red-100 border-2 border-red-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-red-800 mb-4">
-                  ⛔ Change into Negative – 2' - Instrução: Transforme as frases abaixo para a forma negativa.
+                  ⛔ Change into Negative – 2' - Instruction: Transform the sentences below into the negative form.
                 </h3>
                 
                 <div className="space-y-4">
@@ -1099,14 +1220,14 @@ export default function Lesson22LifestylePlanning() {
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-red-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
                         <p className="font-medium text-gray-700 flex-1">
-                          <span className="font-bold text-red-600">Frase:</span> {exercise.sentence}
+                          <span className="font-bold text-red-600">Sentence:</span> {exercise.sentence}
                         </p>
                       </div>
                       
                       <div className="flex gap-2 mb-2">
                         <input
                           type="text"
-                          placeholder="Escreva a forma negativa..."
+                          placeholder="Write the negative form..."
                           value={writtenAnswers[exercise.key] || ""}
                           onChange={(e) => handleWrittenAnswerChange(exercise.key, e.target.value)}
                           className="flex-1 px-3 py-2 border border-red-300 rounded-md text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent"
@@ -1115,7 +1236,7 @@ export default function Lesson22LifestylePlanning() {
                           onClick={() => handleCheckAnswer(exercise.key, writtenAnswers[exercise.key] || "", exercise.answer)}
                           className="bg-red-500 text-white py-2 px-3 rounded-md hover:bg-red-600 transition text-sm"
                         >
-                          Verificar
+                          Check
                         </button>
                       </div>
                       
@@ -1142,16 +1263,16 @@ export default function Lesson22LifestylePlanning() {
                 onClick={() => toggleSection('substitution2')}
                 className="ml-4 p-2 rounded-full hover:bg-purple-600 transition"
               >
-                {sections.substitution2 ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {expandedSections.substitution2 ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.substitution2 && (
+          {expandedSections.substitution2 && (
             <div className="p-8">
               <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-purple-800 mb-4">
-                  🔄 Substitution Practice II – 3' - Instrução: Substititua apenas a parte indicada, mantendo o restante da frase.
+                  🔄 Substitution Practice II – 3' - Instruction: Substitute only the indicated part, keeping the rest of the sentence.
                 </h3>
                 
                 <div className="space-y-6">
@@ -1159,19 +1280,14 @@ export default function Lesson22LifestylePlanning() {
                     // Determinar a frase correta baseada na opção selecionada
                     let currentSentence = "";
                     if (exercise.key === "subs2-1") {
-                      // Para "Eu preciso cozinhar hoje. / Nós / Você"
                       currentSentence = exercise.correctForms[exercise.currentIndex] + " to cook today.";
                     } else if (exercise.key === "subs2-2") {
-                      // Para "Ele vai para o trabalho às 9:15. / escola / igreja"
                       currentSentence = `He goes to ${exercise.options[exercise.currentIndex]} at 9:15.`;
                     } else if (exercise.key === "subs2-3") {
-                      // Para "Você trabalha durante a semana? / cozinha / limpa a casa"
                       currentSentence = `Do you ${exercise.options[exercise.currentIndex]} during the week?`;
                     } else if (exercise.key === "subs2-4") {
-                      // Para "Nós preferimos ficar em casa aos sábados. / domingos / fins de semana"
                       currentSentence = `We prefer to stay home ${exercise.options[exercise.currentIndex]}.`;
                     } else if (exercise.key === "subs2-5") {
-                      // Para "Eu estudo às segundas e quartas. / terças e quintas / segundas e sextas"
                       currentSentence = `I study ${exercise.options[exercise.currentIndex]}.`;
                     }
                     
@@ -1220,16 +1336,16 @@ export default function Lesson22LifestylePlanning() {
                 onClick={() => toggleSection('affirmative')}
                 className="ml-4 p-2 rounded-full hover:bg-teal-600 transition"
               >
-                {sections.affirmative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {expandedSections.affirmative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.affirmative && (
+          {expandedSections.affirmative && (
             <div className="p-8">
               <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-teal-800 mb-4">
-                  Change into Affirmative - 2' - Instrução: Transforme as frases para a forma afirmativa.
+                  Change into Affirmative - 2' - Instruction: Transform the sentences into the affirmative form.
                 </h3>
                 
                 <div className="space-y-4">
@@ -1237,14 +1353,14 @@ export default function Lesson22LifestylePlanning() {
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-teal-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
                         <p className="font-medium text-gray-700 flex-1">
-                          <span className="font-bold text-teal-600">Frase:</span> {exercise.sentence}
+                          <span className="font-bold text-teal-600">Sentence:</span> {exercise.sentence}
                         </p>
                       </div>
                       
                       <div className="flex gap-2 mb-2">
                         <input
                           type="text"
-                          placeholder="Escreva a forma afirmativa..."
+                          placeholder="Write the affirmative form..."
                           value={writtenAnswers[`aff-${exercise.key}`] || ""}
                           onChange={(e) => handleWrittenAnswerChange(`aff-${exercise.key}`, e.target.value)}
                           className="flex-1 px-3 py-2 border border-teal-300 rounded-md text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
@@ -1253,7 +1369,7 @@ export default function Lesson22LifestylePlanning() {
                           onClick={() => handleCheckAnswer(`aff-${exercise.key}`, writtenAnswers[`aff-${exercise.key}`] || "", exercise.answer)}
                           className="bg-teal-500 text-white py-2 px-3 rounded-md hover:bg-teal-600 transition text-sm"
                         >
-                          Verificar
+                          Check
                         </button>
                       </div>
                       
@@ -1280,16 +1396,16 @@ export default function Lesson22LifestylePlanning() {
                 onClick={() => toggleSection('interrogative')}
                 className="ml-4 p-2 rounded-full hover:bg-orange-600 transition"
               >
-                {sections.interrogative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {expandedSections.interrogative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.interrogative && (
+          {expandedSections.interrogative && (
             <div className="p-8">
               <div className="bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-orange-800 mb-4">
-                  Change into Interrogative - 2' - Instrução: Transforme as frases para a forma interrogativa.
+                  Change into Interrogative - 2' - Instruction: Transform the sentences into the interrogative form.
                 </h3>
                 
                 <div className="space-y-4">
@@ -1297,14 +1413,14 @@ export default function Lesson22LifestylePlanning() {
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-orange-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
                         <p className="font-medium text-gray-700 flex-1">
-                          <span className="font-bold text-orange-600">Frase:</span> {exercise.sentence}
+                          <span className="font-bold text-orange-600">Sentence:</span> {exercise.sentence}
                         </p>
                       </div>
                       
                       <div className="flex gap-2 mb-2">
                         <input
                           type="text"
-                          placeholder="Escreva a forma interrogativa..."
+                          placeholder="Write the interrogative form..."
                           value={writtenAnswers[`int-${exercise.key}`] || ""}
                           onChange={(e) => handleWrittenAnswerChange(`int-${exercise.key}`, e.target.value)}
                           className="flex-1 px-3 py-2 border border-orange-300 rounded-md text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -1313,7 +1429,7 @@ export default function Lesson22LifestylePlanning() {
                           onClick={() => handleCheckAnswer(`int-${exercise.key}`, writtenAnswers[`int-${exercise.key}`] || "", exercise.answer)}
                           className="bg-orange-500 text-white py-2 px-3 rounded-md hover:bg-orange-600 transition text-sm"
                         >
-                          Verificar
+                          Check
                         </button>
                       </div>
                       
@@ -1340,16 +1456,16 @@ export default function Lesson22LifestylePlanning() {
                 onClick={() => toggleSection('fluency')}
                 className="ml-4 p-2 rounded-full hover:bg-indigo-600 transition"
               >
-                {sections.fluency ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {expandedSections.fluency ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.fluency && (
+          {expandedSections.fluency && (
             <div className="p-8">
               <div className="bg-indigo-100 border-2 border-indigo-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-indigo-800 mb-4">
-                  Instrução: Reescreva as frases, mudando o sujeito conforme indicado.
+                  Instruction: Rewrite the sentences, changing the subject as indicated.
                 </h3>
                 
                 <div className="space-y-4">
@@ -1357,14 +1473,14 @@ export default function Lesson22LifestylePlanning() {
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-indigo-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
                         <p className="font-medium text-gray-700 flex-1">
-                          <span className="font-bold text-indigo-600">Exemplo:</span> {exercise.base} <span className="font-bold">({exercise.subject})</span>
+                          <span className="font-bold text-indigo-600">Example:</span> {exercise.base} <span className="font-bold">({exercise.subject})</span>
                         </p>
                       </div>
                       
                       <div className="flex gap-2 mb-2">
                         <input
                           type="text"
-                          placeholder={`Escreva a frase com o sujeito "${exercise.subject}"...`}
+                          placeholder={`Write the sentence with the subject "${exercise.subject}"...`}
                           value={fluencyAnswers[exercise.key] || ""}
                           onChange={(e) => handleFluencyAnswerChange(exercise.key, e.target.value)}
                           className="flex-1 px-3 py-2 border border-indigo-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -1373,7 +1489,7 @@ export default function Lesson22LifestylePlanning() {
                           onClick={() => handleCheckFluencyAnswer(exercise.key, fluencyAnswers[exercise.key] || "", exercise.answer)}
                           className="bg-indigo-500 text-white py-2 px-3 rounded-md hover:bg-indigo-600 transition text-sm"
                         >
-                          Verificar
+                          Check
                         </button>
                       </div>
                       
@@ -1391,6 +1507,88 @@ export default function Lesson22LifestylePlanning() {
           )}
         </div>
 
+        {/* AIN'T EXPLANATION SECTION */}
+        <div className="bg-amber-50 border-2 border-amber-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-amber-500 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">⚠️ USING "AIN'T" IN INFORMAL ENGLISH</h2>
+              <button 
+                onClick={() => toggleSection('aint')}
+                className="ml-4 p-2 rounded-full hover:bg-amber-600 transition"
+              >
+                {expandedSections.aint ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {expandedSections.aint && (
+            <div className="p-8">
+              <div className="bg-amber-100 border-2 border-amber-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-amber-800 mb-4">
+                  What is "ain't"?
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="bg-white p-4 rounded-lg border border-amber-200">
+                    <p className="text-gray-700 mb-3">
+                      <span className="font-bold text-amber-700">"Ain't"</span> is an informal contraction that can mean:
+                    </p>
+                    <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                      <li><span className="font-medium">am not</span> → "I ain't ready yet." (I am not ready yet.)</li>
+                      <li><span className="font-medium">is not</span> → "He ain't here right now." (He is not here right now.)</li>
+                      <li><span className="font-medium">are not</span> → "They ain't coming to the party." (They are not coming to the party.)</li>
+                      <li><span className="font-medium">have not / has not</span> → "I ain't seen that movie." (I haven't seen that movie.)</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-lg border border-amber-200">
+                    <h4 className="font-bold text-amber-700 mb-2">📌 Examples with HE, SHE, IT:</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+                      <div className="bg-amber-50 p-2 rounded">
+                        <p className="font-medium">He ain't happy.</p>
+                        <p className="text-sm text-gray-600">→ He is not happy.</p>
+                      </div>
+                      <div className="bg-amber-50 p-2 rounded">
+                        <p className="font-medium">She ain't working today.</p>
+                        <p className="text-sm text-gray-600">→ She is not working today.</p>
+                      </div>
+                      <div className="bg-amber-50 p-2 rounded">
+                        <p className="font-medium">It ain't easy.</p>
+                        <p className="text-sm text-gray-600">→ It is not easy.</p>
+                      </div>
+                      <div className="bg-amber-50 p-2 rounded">
+                        <p className="font-medium">He ain't got time.</p>
+                        <p className="text-sm text-gray-600">→ He hasn't got time.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-lg border border-amber-200">
+                    <h4 className="font-bold text-amber-700 mb-2">⚠️ Important Notes:</h4>
+                    <ul className="list-disc pl-6 space-y-1 text-gray-700">
+                      <li>"Ain't" is <span className="font-bold text-red-600">INFORMAL</span> - avoid using it in formal writing or professional situations</li>
+                      <li>Common in songs, movies, TV shows, and casual conversations</li>
+                      <li>Used in many English dialects, especially in American English</li>
+                      <li>For formal English, always use the full forms: am not, is not, are not, have not, has not</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-lg border border-amber-200">
+                    <h4 className="font-bold text-amber-700 mb-2">🎵 Practice Sentences:</h4>
+                    <div className="space-y-2">
+                      <p className="text-gray-700">1. I ain't going to the beach tomorrow.</p>
+                      <p className="text-gray-700">2. She ain't got a car.</p>
+                      <p className="text-gray-700">3. We ain't finished with the homework yet.</p>
+                      <p className="text-gray-700">4. It ain't what you think.</p>
+                      <p className="text-gray-700">5. They ain't coming to the meeting.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* UNLOCK */}
         <div className="bg-pink-50 border-2 border-pink-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-pink-500 text-white py-4 px-8 flex items-center justify-between">
@@ -1400,50 +1598,50 @@ export default function Lesson22LifestylePlanning() {
                 onClick={() => toggleSection('unlock')}
                 className="ml-4 p-2 rounded-full hover:bg-pink-600 transition"
               >
-                {sections.unlock ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {expandedSections.unlock ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.unlock && (
+          {expandedSections.unlock && (
             <div className="p-8">
               <div className="bg-pink-100 border-2 border-pink-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-pink-800 mb-4">
-                  Instrução: Peça aos alunos para dar exemplos de:
+                  Instruction: Ask students to give examples of:
                 </h3>
                 
                 <div className="space-y-6">
                   <div className="bg-white p-4 rounded-lg border border-pink-200">
-                    <h4 className="font-bold text-pink-700 mb-2">1. Lugares que eles vão nos fins de semana:</h4>
+                    <h4 className="font-bold text-pink-700 mb-2">1. Places you go on weekends:</h4>
                     <textarea
                       value={writtenAnswers["unlock-1"] || ""}
                       onChange={(e) => handleWrittenAnswerChange("unlock-1", e.target.value)}
-                      placeholder="Exemplo: He goes to the beach on weekends. She visits her family on Sundays..."
+                      placeholder="Example: He goes to the beach on weekends. She visits her family on Sundays..."
                       className="w-full h-24 p-3 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
                     />
-                    <p className="text-xs text-gray-500 mt-1">Use o pronome na terceira pessoa do singular</p>
+                    <p className="text-xs text-gray-500 mt-1">Use the third person singular pronoun</p>
                   </div>
                   
                   <div className="bg-white p-4 rounded-lg border border-pink-200">
-                    <h4 className="font-bold text-pink-700 mb-2">2. Coisas que eles fazem durante a semana:</h4>
+                    <h4 className="font-bold text-pink-700 mb-2">2. Things you do during the week:</h4>
                     <textarea
                       value={writtenAnswers["unlock-2"] || ""}
                       onChange={(e) => handleWrittenAnswerChange("unlock-2", e.target.value)}
-                      placeholder="Exemplo: He works from Monday to Friday. She studies English every day..."
+                      placeholder="Example: He works from Monday to Friday. She studies English every day..."
                       className="w-full h-24 p-3 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
                     />
-                    <p className="text-xs text-gray-500 mt-1">Use o pronome na terceira pessoa do singular</p>
+                    <p className="text-xs text-gray-500 mt-1">Use the third person singular pronoun</p>
                   </div>
                   
                   <div className="bg-white p-4 rounded-lg border border-pink-200">
-                    <h4 className="font-bold text-pink-700 mb-2">3. Coisas que parentes, amigos ou conhecidos fazem durante a semana ou nos fins de semana:</h4>
+                    <h4 className="font-bold text-pink-700 mb-2">3. Things your relatives, friends, or acquaintances do during the week or on weekends:</h4>
                     <textarea
                       value={writtenAnswers["unlock-3"] || ""}
                       onChange={(e) => handleWrittenAnswerChange("unlock-3", e.target.value)}
-                      placeholder="Exemplo: My friend plays soccer on Saturdays. My brother watches movies on weekends..."
+                      placeholder="Example: My friend plays soccer on Saturdays. My brother watches movies on weekends..."
                       className="w-full h-24 p-3 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
                     />
-                    <p className="text-xs text-gray-500 mt-1">Use o pronome na terceira pessoa do singular</p>
+                    <p className="text-xs text-gray-500 mt-1">Use the third person singular pronoun</p>
                   </div>
                 </div>
               </div>
@@ -1451,7 +1649,7 @@ export default function Lesson22LifestylePlanning() {
           )}
         </div>
 
-        {/* QUESTIONS */}
+        {/* QUESTIONS - NOW IN ENGLISH */}
         <div className="bg-cyan-50 border-2 border-cyan-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
           <div className="bg-cyan-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -1460,16 +1658,16 @@ export default function Lesson22LifestylePlanning() {
                 onClick={() => toggleSection('questions')}
                 className="ml-4 p-2 rounded-full hover:bg-cyan-600 transition"
               >
-                {sections.questions ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                {expandedSections.questions ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.questions && (
+          {expandedSections.questions && (
             <div className="p-8">
               <div className="mb-6">
                 <h3 className="text-xl font-bold text-cyan-800 mb-4">
-                  Responda estas perguntas pessoais sobre seu estilo de vida e planejamento semanal:
+                  Answer these personal questions about your lifestyle and weekly planning:
                 </h3>
               </div>
 
@@ -1492,14 +1690,136 @@ export default function Lesson22LifestylePlanning() {
               </div>
 
               <div className="mt-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-cyan-800 mb-4">💡 Dicas para escrever sobre estilo de vida:</h3>
+                <h3 className="text-xl font-bold text-cyan-800 mb-4">💡 Tips for writing about lifestyle:</h3>
                 <ul className="list-disc pl-5 space-y-2 text-cyan-700 text-sm">
-                  <li>Use verbos no presente simples para rotinas</li>
-                  <li>Pratique usando diferentes pronomes: he, she, they, we</li>
-                  <li>Inclua expressões de tempo: on weekends, during the week, every day</li>
-                  <li>Descreva atividades específicas que você faz em diferentes dias</li>
-                  <li>Mencione lugares que você frequenta regularmente</li>
-                  <li>Salve suas respostas para acompanhar seu progresso</li>
+                  <li>Use simple present verbs for routines</li>
+                  <li>Practice using different pronouns: he, she, they, we</li>
+                  <li>Include time expressions: on weekends, during the week, every day</li>
+                  <li>Describe specific activities you do on different days</li>
+                  <li>Mention places you frequent regularly</li>
+                  <li>Save your answers to track your progress</li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* SEÇÃO 6: TUNE YOUR EARS (VÍDEO ATUALIZADO) */}
+        <div className="mb-16 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 rounded-3xl shadow-lg overflow-hidden"
+             style={{ borderColor: "#06b6d4" }}>
+          <div className="py-5 px-8 flex justify-between items-center bg-gradient-to-r from-cyan-500 to-blue-500">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              🎧 TUNE YOUR EARS
+            </h2>
+            <button 
+              onClick={() => toggleSection('tuneYourEars')}
+              className="p-2 rounded-full hover:bg-white/20 transition"
+            >
+              {expandedSections.tuneYourEars ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
+            </button>
+          </div>
+          
+          {expandedSections.tuneYourEars && (
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-cyan-700 mb-4">
+                  {tuneYourEarsVideo.title}
+                </h3>
+                <p className="text-cyan-600 mb-6">{tuneYourEarsVideo.description}</p>
+                
+                {/* VÍDEO DO YOUTUBE ATUALIZADO COM O NOVO LINK */}
+                <div className="bg-black rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${tuneYourEarsVideo.youtubeId}`}
+                      title={tuneYourEarsVideo.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-[400px] md:h-[500px]"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              {/* PERGUNTAS DO VÍDEO */}
+              <div className="space-y-8">
+                {tuneYourEarsVideo.questions.map((q) => (
+                  <div key={q.id} className="bg-white p-6 rounded-xl border-2 shadow-md"
+                       style={{ borderColor: "#06b6d430" }}>
+                    <h4 className="text-lg font-bold mb-3" style={{ color: "#06b6d4" }}>
+                      Question {q.id}: {q.question}
+                    </h4>
+                    
+                    {q.vocabulary && (
+                      <div className="mb-4 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+                        <p className="text-sm font-medium text-cyan-600 mb-2 flex items-center gap-2">
+                          <Volume2 size={16} /> Vocabulary hints:
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {q.vocabulary.map((word, idx) => (
+                            <div key={idx} className="flex justify-between text-sm bg-white p-2 rounded">
+                              <span className="text-cyan-700 font-medium">{word.english}</span>
+                              <span className="text-cyan-600">→ {word.portuguese}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <textarea
+                      value={videoAnswers[q.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(q.id, e.target.value)}
+                      placeholder="Write your answer based on what you heard..."
+                      className="w-full h-32 p-4 border-2 rounded-lg focus:ring-2 focus:outline-none transition resize-none"
+                      style={{ borderColor: "#06b6d430" }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = "#06b6d4";
+                        e.currentTarget.style.boxShadow = "0 0 0 2px #06b6d420";
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = "#06b6d430";
+                        e.currentTarget.style.boxShadow = "none";
+                      }}
+                    />
+
+                    <div className="flex gap-3 mt-4">
+                      <button
+                        onClick={() => checkVideoAnswer(q.id, videoAnswers[q.id] || "", q.correctAnswer)}
+                        className="text-white px-6 py-2 rounded-lg transition font-medium hover:opacity-90"
+                        style={{ backgroundColor: "#06b6d4" }}
+                      >
+                        Check Answer
+                      </button>
+                      <button
+                        onClick={() => clearVideoAnswer(q.id)}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg transition font-medium"
+                      >
+                        Clear
+                      </button>
+                    </div>
+
+                    {showVideoResults[`video-${q.id}`] && (
+                      <div className="mt-4">
+                        <AnswerResult 
+                          isCorrect={videoResults[`video-${q.id}`] || false} 
+                          correctAnswer={q.correctAnswer}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-cyan-800 mb-4 flex items-center gap-2">
+                  <Volume2 size={20} /> 🎯 Listening Tips:
+                </h3>
+                <ul className="list-disc pl-5 space-y-2 text-cyan-700">
+                  <li>Listen first without looking at the questions</li>
+                  <li>Watch a second time while reading the questions</li>
+                  <li>Pay attention to keywords and main ideas</li>
+                  <li>Don't worry if you don't understand every word</li>
+                  <li>You can watch multiple times if needed</li>
                 </ul>
               </div>
             </div>
@@ -1513,13 +1833,13 @@ export default function Lesson22LifestylePlanning() {
               onClick={saveAllAnswers}
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 flex items-center gap-2"
             >
-              <span>💾</span> Salvar Todas as Minhas Respostas
+              <span>💾</span> Save All My Answers
             </button>
             <button
               onClick={clearAllAnswers}
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full text-sm transition duration-300"
             >
-              Limpar Tudo
+              Clear All
             </button>
           </div>
 
@@ -1528,13 +1848,13 @@ export default function Lesson22LifestylePlanning() {
               onClick={() => router.push("/cursos/lesson21")}
               className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
             >
-              &larr; Lição Anterior
+              &larr; Previous Lesson
             </button>
             <button
               onClick={() => router.push("/cursos/lesson23")}
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
             >
-              Próxima Lição &rarr;
+              Next Lesson &rarr;
             </button>
           </div>
         </div>

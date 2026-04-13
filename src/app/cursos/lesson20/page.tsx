@@ -15,20 +15,20 @@ const listenItems = [
     correctOrder: 1
   },
   {
-    key: "riceBeans",
-    label: "Arroz e Feijão",
-    image: "https://images.unsplash.com/photo-1569098644584-210bcd375b59?w=400&h=300&fit=crop",
-    audio: "/audios/l20-rice-beans-dialogue.mp3",
-    description: "Rice and Beans",
-    correctOrder: 2
-  },
-  {
     key: "tomato",
     label: "Tomate",
     image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&h=300&fit=crop",
     audio: "/audios/l20-tomato-sauce-dialogue.mp3",
     description: "Tomato",
     correctOrder: 3
+  },
+  {
+    key: "riceBeans",
+    label: "Arroz e Feijão",
+    image: "https://images.pexels.com/photos/8697185/pexels-photo-8697185.jpeg?w=400&h=300&fit=crop",
+    audio: "/audios/l20-rice-beans-dialogue.mp3",
+    description: "Rice and Beans",
+    correctOrder: 2
   }
 ];
 
@@ -177,12 +177,12 @@ export default function Lesson20Lifestyle() {
   const [isNumberingCorrect, setIsNumberingCorrect] = useState(false);
  
   const [practiceItems, setPracticeItems] = useState<PracticeItem[]>([
-    // Substitution Practice I - ALL IN ENGLISH
-    { id: 1, sentence: "We want to eat pasta for lunch.", options: ["vegetables", "rice and beans"], correctAnswer: "vegetables", userAnswer: "" },
-    { id: 2, sentence: "They don't like soup.", options: ["yogurt", "tomato sauce"], correctAnswer: "yogurt", userAnswer: "" },
-    { id: 3, sentence: "Do you clean the bedroom in the morning?", options: ["the kitchen", "the bathroom"], correctAnswer: "the kitchen", userAnswer: "" },
-    { id: 4, sentence: "I don't sleep at midnight.", options: ["at 11:00 p.m.", "at 10:00 p.m."], correctAnswer: "at 11:00 p.m.", userAnswer: "" },
-    { id: 5, sentence: "What time is it?", options: ["It's three o'clock.", "7:15", "9:30"], correctAnswer: "It's three o'clock.", userAnswer: "" },
+    // Substitution Practice I - ALL IN ENGLISH - WITHOUT CORRECT/WRONG, JUST OPTIONS
+    { id: 1, sentence: "We want to eat _____ for lunch.", options: ["pasta", "vegetables", "rice and beans"], correctAnswer: "", userAnswer: "" },
+    { id: 2, sentence: "They don't like _____.", options: ["soup", "yogurt", "tomato sauce"], correctAnswer: "", userAnswer: "" },
+    { id: 3, sentence: "Do you clean _____ in the morning?", options: ["the bedroom", "the kitchen", "the bathroom"], correctAnswer: "", userAnswer: "" },
+    { id: 4, sentence: "I don't sleep _____.", options: ["at midnight", "at 11:00 p.m.", "at 10:00 p.m."], correctAnswer: "", userAnswer: "" },
+    { id: 5, sentence: "What time is it? - _____.", options: ["It's three o'clock.", "It's 7:15", "It's 9:30"], correctAnswer: "", userAnswer: "" },
    
     // Change into Negative
     { id: 6, sentence: "I cook for my family.", options: [], correctAnswer: "I don't cook for my family.", userAnswer: "", isNegative: true },
@@ -192,12 +192,12 @@ export default function Lesson20Lifestyle() {
     { id: 10, sentence: "I take a shower in the morning.", options: [], correctAnswer: "I don't take a shower in the morning.", userAnswer: "", isNegative: true },
     { id: 11, sentence: "They have time to have lunch now.", options: [], correctAnswer: "They don't have time to have lunch now.", userAnswer: "", isNegative: true },
    
-    // Substitution Practice II - ALL IN ENGLISH
-    { id: 12, sentence: "They have an old table.", options: ["car", "house"], correctAnswer: "car", userAnswer: "" },
-    { id: 13, sentence: "Do you need a new sofa?", options: ["tablet", "job"], correctAnswer: "tablet", userAnswer: "" },
-    { id: 14, sentence: "When do you clean your house?", options: ["your shoes", "your bathroom"], correctAnswer: "your shoes", userAnswer: "" },
-    { id: 15, sentence: "I don't like to wash the dishes.", options: ["to do laundry", "to get up early"], correctAnswer: "to do laundry", userAnswer: "" },
-    { id: 16, sentence: "I get up at 7:00 a.m.", options: ["6:00", "5:00"], correctAnswer: "6:00", userAnswer: "" },
+    // Substitution Practice II - ALL IN ENGLISH - WITHOUT CORRECT/WRONG, JUST OPTIONS
+    { id: 12, sentence: "They have an old _____.", options: ["table", "car", "house"], correctAnswer: "", userAnswer: "" },
+    { id: 13, sentence: "Do you need a new _____?", options: ["sofa", "tablet", "job"], correctAnswer: "", userAnswer: "" },
+    { id: 14, sentence: "When do you clean _____?", options: ["your house", "your shoes", "your bathroom"], correctAnswer: "", userAnswer: "" },
+    { id: 15, sentence: "I don't like to _____.", options: ["wash the dishes", "do laundry", "get up early"], correctAnswer: "", userAnswer: "" },
+    { id: 16, sentence: "I get up at _____ a.m.", options: ["7:00", "6:00", "5:00"], correctAnswer: "", userAnswer: "" },
    
     // Change into Affirmative
     { id: 17, sentence: "I don't have dinner at eight o'clock.", options: [], correctAnswer: "I have dinner at eight o'clock.", userAnswer: "" },
@@ -244,71 +244,75 @@ export default function Lesson20Lifestyle() {
   const videoQuestions: VideoQuestion[] = [
     {
       id: 1,
-      question: "What time does the person in the video usually wake up?",
+      question: "What can you do to improve your English speaking skills?",
       vocabulary: [
-        { english: "Wake up", portuguese: "Acordar" },
-        { english: "Usually", portuguese: "Geralmente" },
-        { english: "Get out of bed", portuguese: "Levantar da cama" }
+        { english: "Practice daily", portuguese: "Praticar diariamente" },
+        { english: "Watch movies", portuguese: "Assistir filmes" },
+        { english: "Listen to podcasts", portuguese: "Ouvir podcasts" },
+        { english: "Speak with natives", portuguese: "Conversar com nativos" }
       ]
     },
     {
       id: 2,
-      question: "What does he have for breakfast?",
+      question: "What would you do if you didn't know how to say something in English?",
       vocabulary: [
-        { english: "Breakfast", portuguese: "Café da manhã" },
-        { english: "Toast", portuguese: "Torrada" },
-        { english: "Coffee", portuguese: "Café" },
-        { english: "Juice", portuguese: "Suco" }
+        { english: "Use gestures", portuguese: "Usar gestos" },
+        { english: "Ask for help", portuguese: "Pedir ajuda" },
+        { english: "Use a translator", portuguese: "Usar um tradutor" },
+        { english: "Describe the word", portuguese: "Descrever a palavra" }
       ]
     },
     {
       id: 3,
-      question: "How does he go to work?",
+      question: "How do you feel when you can't understand someone speaking English?",
       vocabulary: [
-        { english: "Go to work", portuguese: "Ir trabalhar" },
-        { english: "By bus", portuguese: "De ônibus" },
-        { english: "By car", portuguese: "De carro" },
-        { english: "Walk", portuguese: "Caminhar" }
+        { english: "Frustrated", portuguese: "Frustrado" },
+        { english: "Anxious", portuguese: "Ansioso" },
+        { english: "Motivated to learn more", portuguese: "Motivado a aprender mais" },
+        { english: "Ask to repeat", portuguese: "Pedir para repetir" }
       ]
     },
     {
       id: 4,
-      question: "What time does he have lunch?",
+      question: "What strategies do you use to learn new vocabulary?",
       vocabulary: [
-        { english: "Lunch break", portuguese: "Intervalo do almoço" },
-        { english: "At noon", portuguese: "Ao meio-dia" },
-        { english: "Sandwich", portuguese: "Sanduíche" }
+        { english: "Flashcards", portuguese: "Flashcards" },
+        { english: "Write sentences", portuguese: "Escrever frases" },
+        { english: "Use apps", portuguese: "Usar aplicativos" },
+        { english: "Read books", portuguese: "Ler livros" }
       ]
     },
     {
       id: 5,
-      question: "What does he do after work?",
+      question: "Compare your English skills now versus 6 months ago. What has improved?",
+      isPersonal: true,
       vocabulary: [
-        { english: "After work", portuguese: "Depois do trabalho" },
-        { english: "Exercise", portuguese: "Exercitar" },
-        { english: "Relax", portuguese: "Relaxar" },
-        { english: "Watch TV", portuguese: "Assistir TV" }
+        { english: "Vocabulary", portuguese: "Vocabulário" },
+        { english: "Pronunciation", portuguese: "Pronúncia" },
+        { english: "Listening comprehension", portuguese: "Compreensão auditiva" },
+        { english: "Speaking confidence", portuguese: "Confiança ao falar" }
       ]
     },
     {
       id: 6,
-      question: "What is your ideal morning routine?",
+      question: "What would you do differently if you could start learning English again?",
       isPersonal: true,
       vocabulary: [
-        { english: "Morning routine", portuguese: "Rotina matinal" },
-        { english: "Exercise", portuguese: "Exercício" },
-        { english: "Breakfast", portuguese: "Café da manhã" },
-        { english: "Read", portuguese: "Ler" }
+        { english: "Start earlier", portuguese: "Começar mais cedo" },
+        { english: "Practice more speaking", portuguese: "Praticar mais conversação" },
+        { english: "Travel abroad", portuguese: "Viajar para o exterior" },
+        { english: "Take formal classes", portuguese: "Fazer aulas formais" }
       ]
     },
     {
       id: 7,
-      question: "How is your routine different from the one in the video?",
+      question: "How has your life changed as you've learned more English?",
       isPersonal: true,
       vocabulary: [
-        { english: "Different", portuguese: "Diferente" },
-        { english: "Similar", portuguese: "Similar" },
-        { english: "Wake up earlier/later", portuguese: "Acordar mais cedo/mais tarde" }
+        { english: "More opportunities", portuguese: "Mais oportunidades" },
+        { english: "Better communication", portuguese: "Melhor comunicação" },
+        { english: "Watch movies without subtitles", portuguese: "Assistir filmes sem legendas" },
+        { english: "Travel more easily", portuguese: "Viajar mais facilmente" }
       ]
     }
   ];
@@ -402,22 +406,19 @@ export default function Lesson20Lifestyle() {
       [questionId]: true
     }));
     
-    // For personal questions, just save the answer
     const question = videoQuestions.find(q => q.id === questionId);
     if (question?.isPersonal) {
       alert("Your personal answer has been saved for practice!");
     } else {
-      alert("Answer saved! Check with your teacher for correction.");
+      alert("Answer saved! Great reflection on improving your English.");
     }
   };
 
   const saveAllAnswers = () => {
-    // Save video answers to notes
     Object.entries(videoAnswers).forEach(([key, value]) => {
       handleNoteChange(`video-answer-${key}`, value);
     });
     
-    // Save practice answers
     practiceItems.forEach(item => {
       if (item.userAnswer) {
         handleNoteChange(`practice-${item.id}`, item.userAnswer);
@@ -444,14 +445,12 @@ export default function Lesson20Lifestyle() {
       return;
     }
 
-    // Create speech synthesis with female voice
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
 
-    // Try to set a female voice
     const voices = speechSynthesis.getVoices();
     const femaleVoice = voices.find(voice => 
       voice.lang.includes('en') && 
@@ -461,12 +460,23 @@ export default function Lesson20Lifestyle() {
     if (femaleVoice) {
       utterance.voice = femaleVoice;
     } else {
-      // Fallback to any English voice
       const englishVoice = voices.find(voice => voice.lang.includes('en'));
       if (englishVoice) utterance.voice = englishVoice;
     }
 
     speechSynthesis.speak(utterance);
+  };
+
+  const SafeImage = ({ src, alt, className }: { src: string; alt: string; className: string }) => {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={alt}
+        className={className}
+        loading="lazy"
+      />
+    );
   };
 
   return (
@@ -575,11 +585,10 @@ export default function Lesson20Lifestyle() {
                           {numberingAnswers[item.key] ? `Nº ${numberingAnswers[item.key]}` : "Escolha o número"}
                         </div>
                         <div className="w-full h-40 relative mb-3 rounded-lg overflow-hidden">
-                          <Image
+                          <SafeImage
                             src={item.image}
                             alt={item.label}
-                            fill
-                            className="object-cover"
+                            className="w-full h-full object-cover"
                           />
                         </div>
                         <p className="text-sm text-center text-gray-600 font-medium mb-3">
@@ -685,31 +694,34 @@ export default function Lesson20Lifestyle() {
               {/* Substitution Practice I */}
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-green-700 mb-4">🟦 DRILLING PRACTICE - Substitution Practice I (3')</h3>
-                <p className="text-green-600 mb-4 italic">Substitua a parte final da frase conforme indicado.</p>
+                <p className="text-green-600 mb-4 italic">Escolha diferentes palavras para criar frases variadas com a mesma estrutura.</p>
                 <div className="space-y-4">
                   {practiceItems.slice(0, 5).map((item) => (
                     <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
-                      <p className="font-medium text-gray-700 mb-2">{item.sentence}</p>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {item.options.map((option, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => handlePracticeAnswer(item.id, option)}
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              item.userAnswer === option
-                                ? 'bg-green-500 text-white'
-                                : 'bg-green-100 text-green-700 hover:bg-green-200'
-                            }`}
-                          >
-                            {option}
-                          </button>
+                      <p className="font-medium text-gray-700 mb-2">
+                        {item.sentence.split('_____').map((part, i) => (
+                          <span key={i}>
+                            {part}
+                            {i === 0 && (
+                              <span className="inline-block mx-1">
+                                <select
+                                  value={item.userAnswer}
+                                  onChange={(e) => handlePracticeAnswer(item.id, e.target.value)}
+                                  className="border border-green-400 rounded px-2 py-1 bg-green-50 text-green-800 font-medium"
+                                >
+                                  <option value="">[choose word]</option>
+                                  {item.options.map((opt, idx) => (
+                                    <option key={idx} value={opt}>{opt}</option>
+                                  ))}
+                                </select>
+                              </span>
+                            )}
+                          </span>
                         ))}
-                      </div>
+                      </p>
                       {item.userAnswer && (
-                        <div className={`text-sm ${
-                          item.userAnswer === item.correctAnswer ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                          {item.userAnswer === item.correctAnswer ? '✅ Correto!' : '❌ Tente novamente'}
+                        <div className="text-sm text-green-600 mt-2">
+                          ✅ Sua frase: {item.sentence.replace('_____', item.userAnswer)}
                         </div>
                       )}
                     </div>
@@ -758,26 +770,36 @@ export default function Lesson20Lifestyle() {
               {/* Substitution Practice II */}
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-green-700 mb-4">🟨 Substitution Practice II (3')</h3>
-                <p className="text-green-600 mb-4 italic">Substitua conforme indicado.</p>
+                <p className="text-green-600 mb-4 italic">Escolha diferentes palavras para criar frases variadas com a mesma estrutura.</p>
                 <div className="space-y-4">
                   {practiceItems.slice(11, 16).map((item) => (
                     <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
-                      <p className="font-medium text-gray-700 mb-2">{item.sentence}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {item.options.map((option, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => handlePracticeAnswer(item.id, option)}
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              item.userAnswer === option
-                                ? 'bg-green-500 text-white'
-                                : 'bg-green-100 text-green-700 hover:bg-green-200'
-                            }`}
-                          >
-                            {option}
-                          </button>
+                      <p className="font-medium text-gray-700 mb-2">
+                        {item.sentence.split('_____').map((part, i) => (
+                          <span key={i}>
+                            {part}
+                            {i === 0 && (
+                              <span className="inline-block mx-1">
+                                <select
+                                  value={item.userAnswer}
+                                  onChange={(e) => handlePracticeAnswer(item.id, e.target.value)}
+                                  className="border border-green-400 rounded px-2 py-1 bg-green-50 text-green-800 font-medium"
+                                >
+                                  <option value="">[choose word]</option>
+                                  {item.options.map((opt, idx) => (
+                                    <option key={idx} value={opt}>{opt}</option>
+                                  ))}
+                                </select>
+                              </span>
+                            )}
+                          </span>
                         ))}
-                      </div>
+                      </p>
+                      {item.userAnswer && (
+                        <div className="text-sm text-green-600 mt-2">
+                          ✅ Sua frase: {item.sentence.replace('_____', item.userAnswer)}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -991,18 +1013,17 @@ export default function Lesson20Lifestyle() {
             <div className="p-8">
               <div className="mb-8 text-center">
                 <h3 className="text-2xl font-bold text-orange-700 mb-4">
-                  Watch the video about daily routines and answer the questions below:
+                  Watch the video and reflect on your English learning journey:
                 </h3>
                
-                {/* Container do vídeo do YouTube - ATUALIZADO */}
                 <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
-                  <div className="aspect-w-16 aspect-h-9">
+                  <div className="relative pb-[56.25%] h-0">
                     <iframe
                       src="https://www.youtube.com/embed/EXlVa3DkUPo?list=PLc0_DKGuWp_2GK_ZyY81hiV_vdMaUmezE&index=33"
                       title="English Listening Practice - Daily Routines"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      className="w-full h-[400px] md:h-[500px]"
+                      className="absolute top-0 left-0 w-full h-full"
                     />
                   </div>
                 </div>
@@ -1012,73 +1033,65 @@ export default function Lesson20Lifestyle() {
                 </div>
               </div>
 
-              {/* Vocabulary Help */}
+              {/* Vocabulary Help - UPDATED */}
               <div className="mb-8 bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-orange-800 mb-4">📖 Key Vocabulary from the Video:</h3>
+                <h3 className="text-xl font-bold text-orange-800 mb-4">📖 Key Vocabulary for Improving Your English:</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Daily routine</span>
-                      <span className="text-orange-600">Rotina diária</span>
+                      <span className="font-medium text-orange-700">Practice regularly</span>
+                      <span className="text-orange-600">Praticar regularmente</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Wake up</span>
-                      <span className="text-orange-600">Acordar</span>
+                      <span className="font-medium text-orange-700">Listen to podcasts</span>
+                      <span className="text-orange-600">Ouvir podcasts</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Breakfast</span>
-                      <span className="text-orange-600">Café da manhã</span>
+                      <span className="font-medium text-orange-700">Watch with subtitles</span>
+                      <span className="text-orange-600">Assistir com legendas</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Go to work</span>
-                      <span className="text-orange-600">Ir trabalhar</span>
+                      <span className="font-medium text-orange-700">Speak without fear</span>
+                      <span className="text-orange-600">Falar sem medo</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Lunch break</span>
-                      <span className="text-orange-600">Intervalo para almoço</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Come home</span>
-                      <span className="text-orange-600">Voltar para casa</span>
+                      <span className="font-medium text-orange-700">Use a dictionary</span>
+                      <span className="text-orange-600">Usar dicionário</span>
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Dinner</span>
-                      <span className="text-orange-600">Jantar</span>
+                      <span className="font-medium text-orange-700">Ask for clarification</span>
+                      <span className="text-orange-600">Pedir esclarecimento</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Relax</span>
-                      <span className="text-orange-600">Relaxar</span>
+                      <span className="font-medium text-orange-700">Describe around the word</span>
+                      <span className="text-orange-600">Descrever a palavra</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Go to bed</span>
-                      <span className="text-orange-600">Ir dormir</span>
+                      <span className="font-medium text-orange-700">Use body language</span>
+                      <span className="text-orange-600">Usar linguagem corporal</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Weekend</span>
-                      <span className="text-orange-600">Fim de semana</span>
+                      <span className="font-medium text-orange-700">Take notes</span>
+                      <span className="text-orange-600">Fazer anotações</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Free time</span>
-                      <span className="text-orange-600">Tempo livre</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-orange-700">Hobbies</span>
-                      <span className="text-orange-600">Hobbies</span>
+                      <span className="font-medium text-orange-700">Review regularly</span>
+                      <span className="text-orange-600">Revisar regularmente</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Questions Section */}
+              {/* Questions Section - UPDATED */}
               <div className="space-y-6 mb-8">
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-orange-200 shadow-md">
                     <h4 className="text-lg font-bold text-orange-700 mb-3">
                       {question.question}
                       {question.isPersonal && (
-                        <span className="ml-2 text-sm font-normal text-orange-500">(Personal answer)</span>
+                        <span className="ml-2 text-sm font-normal text-orange-500">(Personal reflection)</span>
                       )}
                     </h4>
                    
@@ -1108,7 +1121,7 @@ export default function Lesson20Lifestyle() {
                         onClick={() => checkVideoAnswer(question.id)}
                         className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition font-medium"
                       >
-                        Check Answer
+                        Save Answer
                       </button>
                       <button
                         onClick={() => handleVideoAnswerChange(question.id, "")}
@@ -1121,7 +1134,7 @@ export default function Lesson20Lifestyle() {
                     {showVideoAnswerResults[question.id] && question.isPersonal && (
                       <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-md">
                         <p className="text-sm text-orange-700">
-                          <span className="font-medium">Note:</span> This is a personal question. Your answer has been saved for practice.
+                          <span className="font-medium">Note:</span> Great reflection! Keep track of your progress as you continue learning English.
                         </p>
                       </div>
                     )}
@@ -1130,14 +1143,14 @@ export default function Lesson20Lifestyle() {
               </div>
 
               <div className="bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-orange-800 mb-4">🎯 Listening Practice Tips:</h3>
+                <h3 className="text-xl font-bold text-orange-800 mb-4">🎯 Tips for Improving Your English:</h3>
                 <ul className="list-disc pl-5 space-y-2 text-orange-700 text-sm">
-                  <li>Watch the video at least twice - first for general understanding, then for details</li>
-                  <li>Pay attention to daily routine vocabulary and expressions</li>
-                  <li>Note down phrases you can use in your own conversations</li>
-                  <li>Practice repeating the sentences to improve pronunciation</li>
-                  <li>Try to describe your own routine using the vocabulary from the video</li>
-                  <li>Focus on understanding the main ideas rather than every single word</li>
+                  <li>Set small, achievable daily goals for your English practice</li>
+                  <li>Don't be afraid to make mistakes - they are part of learning</li>
+                  <li>Use English in real situations whenever possible</li>
+                  <li>Find a study partner or language exchange friend</li>
+                  <li>Celebrate your progress, no matter how small</li>
+                  <li>Compare your skills now to where you started to stay motivated</li>
                 </ul>
               </div>
             </div>

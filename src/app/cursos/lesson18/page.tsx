@@ -105,38 +105,29 @@ const substitutionPracticeI = [
   },
 ];
 
-// Exercícios Change Into Negative
+// Exercícios Change Into Negative (EXPANDIDO com ain't, she, he, nomes)
 const negativeExercises = [
-  {
-    id: "neg1",
-    sentence: "They have ten magazines and 20 books.",
-    correctAnswer: "They don't have ten magazines and 20 books."
-  },
-  {
-    id: "neg2",
-    sentence: "You need to read your e-mails at night.",
-    correctAnswer: "You don't need to read your e-mails at night."
-  },
-  {
-    id: "neg3",
-    sentence: "We have to go to work early.",
-    correctAnswer: "We don't have to go to work early."
-  },
-  {
-    id: "neg4",
-    sentence: "I want to go to the grocery store now.",
-    correctAnswer: "I don't want to go to the grocery store now."
-  },
-  {
-    id: "neg5",
-    sentence: "They work at the coffee shop.",
-    correctAnswer: "They don't work at the coffee shop."
-  },
-  {
-    id: "neg6",
-    sentence: "I see my parents at home every day.",
-    correctAnswer: "I don't see my parents at home every day."
-  },
+  { id: "neg1", sentence: "They have ten magazines and 20 books.", correctAnswer: "They don't have ten magazines and 20 books." },
+  { id: "neg2", sentence: "You need to read your e-mails at night.", correctAnswer: "You don't need to read your e-mails at night." },
+  { id: "neg3", sentence: "We have to go to work early.", correctAnswer: "We don't have to go to work early." },
+  { id: "neg4", sentence: "I want to go to the grocery store now.", correctAnswer: "I don't want to go to the grocery store now." },
+  { id: "neg5", sentence: "They work at the coffee shop.", correctAnswer: "They don't work at the coffee shop." },
+  { id: "neg6", sentence: "I see my parents at home every day.", correctAnswer: "I don't see my parents at home every day." },
+  // NOVOS EXERCÍCIOS COM SHE, HE, NOMES
+  { id: "neg7", sentence: "She likes to drink coffee in the morning.", correctAnswer: "She doesn't like to drink coffee in the morning." },
+  { id: "neg8", sentence: "He works at the hospital on weekends.", correctAnswer: "He doesn't work at the hospital on weekends." },
+  { id: "neg9", sentence: "Maria studies English every night.", correctAnswer: "Maria doesn't study English every night." },
+  { id: "neg10", sentence: "John has a meeting at 3 PM today.", correctAnswer: "John doesn't have a meeting at 3 PM today." },
+  { id: "neg11", sentence: "Sarah and I are going to the party.", correctAnswer: "Sarah and I aren't going to the party." },
+  // EXERCÍCIOS COM AIN'T
+  { id: "neg12", sentence: "I am ready for the test.", correctAnswer: "I ain't ready for the test." },
+  { id: "neg13", sentence: "She is coming to the party.", correctAnswer: "She ain't coming to the party." },
+  { id: "neg14", sentence: "They are working on the project.", correctAnswer: "They ain't working on the project." },
+  { id: "neg15", sentence: "He is telling the truth.", correctAnswer: "He ain't telling the truth." },
+  { id: "neg16", sentence: "We are going to the beach tomorrow.", correctAnswer: "We ain't going to the beach tomorrow." },
+  { id: "neg17", sentence: "I am feeling well today.", correctAnswer: "I ain't feeling well today." },
+  { id: "neg18", sentence: "She is your best friend.", correctAnswer: "She ain't your best friend." },
+  { id: "neg19", sentence: "They are playing soccer now.", correctAnswer: "They ain't playing soccer now." },
 ];
 
 // Exercícios de Substitution Practice II (inglês)
@@ -227,72 +218,45 @@ const substitutionPracticeIII = [
   },
 ];
 
-// Exercícios Change Into Affirmative
+// Exercícios Change Into Affirmative (EXPANDIDO)
 const affirmativeExercises = [
-  {
-    id: "aff1",
-    sentence: "I don't like to go to the mall.",
-    correctAnswer: "I like to go to the mall."
-  },
-  {
-    id: "aff2",
-    sentence: "They don't need to study today.",
-    correctAnswer: "They need to study today."
-  },
-  {
-    id: "aff3",
-    sentence: "I don't have to take a shower now.",
-    correctAnswer: "I have to take a shower now."
-  },
-  {
-    id: "aff4",
-    sentence: "We don't want to eat a sandwich for dinner.",
-    correctAnswer: "We want to eat a sandwich for dinner."
-  },
-  {
-    id: "aff5",
-    sentence: "You don't have to send this e-mail to your boss.",
-    correctAnswer: "You have to send this e-mail to your boss."
-  },
-  {
-    id: "aff6",
-    sentence: "They don't have to speak Spanish at work.",
-    correctAnswer: "They have to speak Spanish at work."
-  },
+  { id: "aff1", sentence: "I don't like to go to the mall.", correctAnswer: "I like to go to the mall." },
+  { id: "aff2", sentence: "They don't need to study today.", correctAnswer: "They need to study today." },
+  { id: "aff3", sentence: "I don't have to take a shower now.", correctAnswer: "I have to take a shower now." },
+  { id: "aff4", sentence: "We don't want to eat a sandwich for dinner.", correctAnswer: "We want to eat a sandwich for dinner." },
+  { id: "aff5", sentence: "You don't have to send this e-mail to your boss.", correctAnswer: "You have to send this e-mail to your boss." },
+  { id: "aff6", sentence: "They don't have to speak Spanish at work.", correctAnswer: "They have to speak Spanish at work." },
+  // NOVOS EXERCÍCIOS COM SHE, HE, NOMES
+  { id: "aff7", sentence: "She doesn't like to wake up early.", correctAnswer: "She likes to wake up early." },
+  { id: "aff8", sentence: "He doesn't work on Saturdays.", correctAnswer: "He works on Saturdays." },
+  { id: "aff9", sentence: "Peter doesn't have a car.", correctAnswer: "Peter has a car." },
+  { id: "aff10", sentence: "Anna doesn't speak French.", correctAnswer: "Anna speaks French." },
+  // EXERCÍCIOS COM AIN'T
+  { id: "aff11", sentence: "I ain't ready for the meeting.", correctAnswer: "I am ready for the meeting." },
+  { id: "aff12", sentence: "She ain't coming to the party.", correctAnswer: "She is coming to the party." },
+  { id: "aff13", sentence: "They ain't working today.", correctAnswer: "They are working today." },
+  { id: "aff14", sentence: "He ain't telling the truth.", correctAnswer: "He is telling the truth." },
 ];
 
-// Exercícios Change Into Interrogative
+// Exercícios Change Into Interrogative (EXPANDIDO)
 const interrogativeExercises = [
-  {
-    id: "int1",
-    sentence: "You live in Italy with your family.",
-    correctAnswer: "Do you live in Italy with your family?"
-  },
-  {
-    id: "int2",
-    sentence: "You read your messages at home.",
-    correctAnswer: "Do you read your messages at home?"
-  },
-  {
-    id: "int3",
-    sentence: "They work at the grocery store.",
-    correctAnswer: "Do they work at the grocery store?"
-  },
-  {
-    id: "int4",
-    sentence: "You work at a restaurant.",
-    correctAnswer: "Do you work at a restaurant?"
-  },
-  {
-    id: "int5",
-    sentence: "They prefer to go to the mall in the evening.",
-    correctAnswer: "Do they prefer to go to the mall in the evening?"
-  },
-  {
-    id: "int6",
-    sentence: "You usually study with your classmate.",
-    correctAnswer: "Do you usually study with your classmate?"
-  },
+  { id: "int1", sentence: "You live in Italy with your family.", correctAnswer: "Do you live in Italy with your family?" },
+  { id: "int2", sentence: "You read your messages at home.", correctAnswer: "Do you read your messages at home?" },
+  { id: "int3", sentence: "They work at the grocery store.", correctAnswer: "Do they work at the grocery store?" },
+  { id: "int4", sentence: "You work at a restaurant.", correctAnswer: "Do you work at a restaurant?" },
+  { id: "int5", sentence: "They prefer to go to the mall in the evening.", correctAnswer: "Do they prefer to go to the mall in the evening?" },
+  { id: "int6", sentence: "You usually study with your classmate.", correctAnswer: "Do you usually study with your classmate?" },
+  // NOVOS EXERCÍCIOS COM SHE, HE, NOMES
+  { id: "int7", sentence: "She likes to drink coffee in the morning.", correctAnswer: "Does she like to drink coffee in the morning?" },
+  { id: "int8", sentence: "He works at the bank.", correctAnswer: "Does he work at the bank?" },
+  { id: "int9", sentence: "Maria studies every night.", correctAnswer: "Does Maria study every night?" },
+  { id: "int10", sentence: "John has a meeting today.", correctAnswer: "Does John have a meeting today?" },
+  { id: "int11", sentence: "Sarah is going to the party.", correctAnswer: "Is Sarah going to the party?" },
+  { id: "int12", sentence: "They are playing soccer.", correctAnswer: "Are they playing soccer?" },
+  // MAIS EXERCÍCIOS INTERROGATIVOS
+  { id: "int13", sentence: "You have finished your homework.", correctAnswer: "Have you finished your homework?" },
+  { id: "int14", sentence: "She can speak three languages.", correctAnswer: "Can she speak three languages?" },
+  { id: "int15", sentence: "They will arrive tomorrow.", correctAnswer: "Will they arrive tomorrow?" },
 ];
 
 // Questions para Speaking Practice
@@ -1097,11 +1061,11 @@ export default function Lesson18() {
           )}
         </div>
 
-        {/* PRÁTICA DE VERBOS */}
+        {/* PRÁTICA DE VERBOS / VERB PRACTICE */}
         <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">📚 PRÁTICA DE VERBOS</h2>
+              <h2 className="text-2xl font-bold">📚 VERB PRACTICE</h2>
               <button 
                 onClick={() => toggleSection('verbs')}
                 className="ml-4 p-2 rounded-full hover:bg-blue-600 transition"
@@ -1181,11 +1145,11 @@ export default function Lesson18() {
           )}
         </div>
 
-        {/* NOVAS PALAVRAS */}
+        {/* NEW WORDS PRACTICE - CHANGE INTO NEGATIVE */}
         <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-green-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">📖 NOVAS PALAVRAS</h2>
+              <h2 className="text-2xl font-bold">📖 NEW WORDS PRACTICE - CHANGE INTO NEGATIVE</h2>
               <button 
                 onClick={() => toggleSection('newWords')}
                 className="ml-4 p-2 rounded-full hover:bg-green-600 transition"
@@ -1197,11 +1161,11 @@ export default function Lesson18() {
 
           {sections.newWords && (
             <div className="p-8">
-              {/* CHANGE INTO NEGATIVE */}
               <div className="mb-8 bg-green-100 border-2 border-green-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-green-800 mb-6">🔹 CHANGE INTO NEGATIVE</h3>
+                <p className="text-green-700 mb-4 italic">Practice transforming affirmative sentences into negative forms, including with "ain't", "she", "he", and specific names.</p>
                 
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {negativeExercises.map((exercise) => (
                     <div key={exercise.id} className="bg-white p-4 rounded-lg border border-green-200">
                       <div className="flex items-start gap-3">
@@ -1244,25 +1208,54 @@ export default function Lesson18() {
                     </div>
                   ))}
                 </div>
-              </div>
 
+                <div className="mt-6 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                  <h4 className="font-bold text-yellow-800 mb-2">📝 Grammar Notes:</h4>
+                  <ul className="text-sm text-yellow-700 space-y-1 list-disc pl-5">
+                    <li>Use "don't" for I, you, we, they</li>
+                    <li>Use "doesn't" for he, she, it</li>
+                    <li>"Ain't" is informal for "am not", "is not", "are not"</li>
+                    <li>Example: I ain't ready = I am not ready</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* USEFUL PHRASES PRACTICE - SUBSTITUTION II & III */}
+        <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-purple-500 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">💬 USEFUL PHRASES PRACTICE</h2>
+              <button 
+                onClick={() => toggleSection('usefulPhrases')}
+                className="ml-4 p-2 rounded-full hover:bg-purple-600 transition"
+              >
+                {sections.usefulPhrases ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.usefulPhrases && (
+            <div className="p-8">
               {/* SUBSTITUTION PRACTICE II */}
-              <div className="mb-8 bg-green-100 border-2 border-green-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-green-800 mb-6">🔹 SUBSTITUTION PRACTICE II</h3>
+              <div className="mb-8 bg-purple-100 border-2 border-purple-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-purple-800 mb-6">🔹 SUBSTITUTION PRACTICE II</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {substitutionPracticeII.map((exercise) => (
-                    <div key={exercise.id} className="bg-white p-4 rounded-lg border border-green-200">
-                      <p className="font-medium text-green-700 mb-2">{exercise.original}</p>
+                    <div key={exercise.id} className="bg-white p-4 rounded-lg border border-purple-200">
+                      <p className="font-medium text-purple-700 mb-2">{exercise.original}</p>
                       <div className="space-y-3">
                         {exercise.variations.map((variation: string, index: number) => (
                           <div key={index} className="flex items-center gap-2">
-                            <span className="text-sm text-green-600 w-20">{variation}:</span>
+                            <span className="text-sm text-purple-600 w-20">{variation}:</span>
                             <input
                               type="text"
                               value={substitutionIIAnswers[`${exercise.id}-${index}`] || ""}
                               onChange={(e) => handleSubstitutionIIChange(`${exercise.id}-${index}`, e.target.value)}
-                              className="flex-1 p-2 border border-green-300 rounded-md text-sm"
+                              className="flex-1 p-2 border border-purple-300 rounded-md text-sm"
                               placeholder="Type the complete sentence"
                             />
                             {showSubstitutionIIResults[exercise.id] && substitutionIIAnswerResults[`${exercise.id}-${index}`] !== undefined && (
@@ -1276,7 +1269,7 @@ export default function Lesson18() {
                       <div className="flex gap-2 mt-3">
                         <button
                           onClick={() => handleSubstitutionIICheck(exercise.id, exercise.correctAnswers)}
-                          className="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600 transition text-sm"
+                          className="bg-purple-500 text-white py-1 px-3 rounded-md hover:bg-purple-600 transition text-sm"
                         >
                           Check Answers
                         </button>
@@ -1303,26 +1296,7 @@ export default function Lesson18() {
                   ))}
                 </div>
               </div>
-            </div>
-          )}
-        </div>
 
-        {/* FRASES ÚTEIS */}
-        <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-purple-500 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">💬 FRASES ÚTEIS</h2>
-              <button 
-                onClick={() => toggleSection('usefulPhrases')}
-                className="ml-4 p-2 rounded-full hover:bg-purple-600 transition"
-              >
-                {sections.usefulPhrases ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.usefulPhrases && (
-            <div className="p-8">
               {/* SUBSTITUTION PRACTICE III */}
               <div className="mb-8 bg-purple-100 border-2 border-purple-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-purple-800 mb-6">🔹 SUBSTITUTION PRACTICE III</h3>
@@ -1384,8 +1358,9 @@ export default function Lesson18() {
               {/* CHANGE INTO AFFIRMATIVE */}
               <div className="mb-8 bg-purple-100 border-2 border-purple-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-purple-800 mb-6">🔹 CHANGE INTO AFFIRMATIVE</h3>
+                <p className="text-purple-700 mb-4 italic">Practice transforming negative sentences into affirmative forms.</p>
                 
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {affirmativeExercises.map((exercise) => (
                     <div key={exercise.id} className="bg-white p-4 rounded-lg border border-purple-200">
                       <div className="flex items-start gap-3">
@@ -1433,8 +1408,9 @@ export default function Lesson18() {
               {/* CHANGE INTO INTERROGATIVE */}
               <div className="mb-8 bg-purple-100 border-2 border-purple-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-purple-800 mb-6">🔹 CHANGE INTO INTERROGATIVE</h3>
+                <p className="text-purple-700 mb-4 italic">Practice transforming statements into questions.</p>
                 
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {interrogativeExercises.map((exercise) => (
                     <div key={exercise.id} className="bg-white p-4 rounded-lg border border-purple-200">
                       <div className="flex items-start gap-3">
@@ -1476,6 +1452,16 @@ export default function Lesson18() {
                       </div>
                     </div>
                   ))}
+                </div>
+
+                <div className="mt-6 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                  <h4 className="font-bold text-yellow-800 mb-2">📝 Question Formation Tips:</h4>
+                  <ul className="text-sm text-yellow-700 space-y-1 list-disc pl-5">
+                    <li>For present simple: Do/Does + subject + verb?</li>
+                    <li>For present continuous: Am/Is/Are + subject + verb-ing?</li>
+                    <li>For modal verbs: Modal + subject + verb?</li>
+                    <li>For present perfect: Have/Has + subject + past participle?</li>
+                  </ul>
                 </div>
               </div>
             </div>

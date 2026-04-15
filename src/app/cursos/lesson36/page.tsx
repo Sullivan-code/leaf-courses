@@ -45,9 +45,6 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-// Embaralhar as imagens para exibição (mantendo os dados originais)
-const listenItems = shuffleArray(listenItemsOriginal);
-
 // ============================================
 // DRILLING PRACTICE I - Substitution Practice
 // ============================================
@@ -477,6 +474,16 @@ export default function Lesson36() {
   const [imageSequence, setImageSequence] = useState<number[]>([]);
   const [showFinalSequenceResult, setShowFinalSequenceResult] = useState(false);
   const [isSequenceCorrect, setIsSequenceCorrect] = useState(false);
+  
+  // Estado para armazenar a lista de itens embaralhados (inicializado no cliente)
+  const [shuffledListenItems, setShuffledListenItems] = useState(listenItemsOriginal);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Embaralhar as imagens para exibição APENAS no cliente para evitar erro de hidratação
+  useEffect(() => {
+    setShuffledListenItems(shuffleArray(listenItemsOriginal));
+    setIsHydrated(true);
+  }, []);
 
   // ==============================
   // PERSISTÊNCIA - CARREGAMENTO
@@ -710,8 +717,20 @@ export default function Lesson36() {
 
   const currentCard = speakCards[currentCardIndex];
 
+  // Se não estiver hidratado ainda, renderiza um placeholder ou nada
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading lesson...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/lesson36/background.jpg')` }}>
+    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/background.jpg')` }}>
       <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         
         {/* HEADER */}
@@ -734,7 +753,7 @@ export default function Lesson36() {
                 {sections.listen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
-            <AudioPlayer src="/audios/lesson36/listen.mp3" />
+            <AudioPlayer src="/audios/listen.mp3" />
           </div>
 
           {sections.listen && (
@@ -750,7 +769,7 @@ export default function Lesson36() {
 
               {/* Imagens embaralhadas - cada imagem é clicável para construir a sequência */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {listenItems.map((item) => (
+                {shuffledListenItems.map((item) => (
                   <div 
                     key={item.key} 
                     className="bg-white rounded-xl shadow-md border-2 border-purple-200 overflow-hidden cursor-pointer transition-all hover:shadow-xl hover:scale-105"
@@ -845,7 +864,7 @@ export default function Lesson36() {
               <div className="border-t-2 border-purple-200 pt-6 mt-4">
                 <h3 className="font-bold text-purple-800 mb-4">🎯 Ou identifique cada imagem individualmente:</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {listenItems.map((item) => (
+                  {shuffledListenItems.map((item) => (
                     <div key={`ind-${item.key}`} className="bg-white p-4 rounded-lg border border-purple-200">
                       <p className="text-sm font-medium text-gray-700 text-center mb-3">{item.label}</p>
                       
@@ -1190,7 +1209,7 @@ export default function Lesson36() {
               <li><strong>Questions</strong> (Do you...? / Why do you...?)</li>
             </ul>
             <div className="mt-4 p-4 bg-white rounded-lg border border-cyan-200">
-              <AudioPlayer src="/audios/lesson36/tune-in.mp3" />
+              <AudioPlayer src="/audios/tune-in.mp3" />
             </div>
           </div>
         </div>

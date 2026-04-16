@@ -492,7 +492,7 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
     else if (["He", "She", "It", "This", "That"].includes(oldWord) && ["He", "She", "It", "This", "That"].includes(newWord)) {
       // Replace exactly the word, preserving punctuation after it
       const regex = new RegExp(`\\b${oldWord}\\b`, 'gi');
-      newText = newText.replace(regex, (match) => {
+      newText = newText.replace(regex, (match: string) => {
         // Preserve original capitalization pattern
         if (match === match.toUpperCase()) return newWord.toUpperCase();
         if (match === match.toLowerCase()) return newWord.toLowerCase();

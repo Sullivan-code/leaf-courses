@@ -7,20 +7,41 @@ import {
   Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, 
   X, Check, XCircle, Download, MessageCircle, Coffee, 
   BookOpen, Briefcase, Utensils, Home, Tv, Smartphone, Users,
-  Heart, Sun, Car, Music
+  Heart, Sun, Car, Music, Headphones, Target, TrendingUp, Clock,
+  AlertCircle, Zap
 } from "lucide-react";
 
 // ==============================
 // CONFIGURAÇÃO DA LIÇÃO
 // ==============================
 const LESSON_NUMBER = 34;
-const LESSON_TITLE = "Improve Your Pronunciation";
+const LESSON_TITLE = "Tune Your Ears";
+const LESSON_SUBTITLE = "Slow Listening & Shadowing Practice";
 const LESSON_THEME_COLOR = "#0ea5e9"; // Sky-500
 const BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1516979187457-637abb4f9353?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80";
-const PRONUNCIATION_IMAGE = "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80";
+const LISTENING_IMAGE = "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80";
 
 // ==============================
-// DADOS DA LIÇÃO - PRONÚNCIA (ATUALIZADO COM MAIS EXEMPLOS E ÁUDIOS)
+// KEY VOCABULARY FROM THE VIDEO
+// ==============================
+const keyVocabulary = [
+  { english: "to maximize", portuguese: "maximizar", icon: Zap },
+  { english: "myths", portuguese: "mitos", icon: AlertCircle },
+  { english: "step by step", portuguese: "passo a passo", icon: TrendingUp },
+  { english: "shadowing", portuguese: "técnica onde você repete após o professor para praticar estrutura e pronúncia", icon: Headphones },
+  { english: "you need time", portuguese: "você precisa de tempo", icon: Clock },
+  { english: "to understand", portuguese: "entender", icon: BookOpen },
+  { english: "to grow", portuguese: "crescer", icon: TrendingUp },
+  { english: "just keep going", portuguese: "apenas continue indo", icon: Target },
+  { english: "to write down", portuguese: "escrever, anotar", icon: BookOpen },
+  { english: "fuel", portuguese: "combustível", icon: Zap },
+  { english: "the perfect time", portuguese: "a hora certa", icon: Clock },
+  { english: "mood", portuguese: "humor, temperamento", icon: Sun },
+  { english: "to set a timer", portuguese: "colocar um temporizador", icon: Clock }
+];
+
+// ==============================
+// DADOS DA LIÇÃO - PRONÚNCIA (COM HE/SHE/IT)
 // ==============================
 const pronunciationItems = [
   { word: "milk", phrase: "I drink coffee with milk.", example: "I drink coffee with milk every morning.", audio: "/audios/lesson34/milk.mp3", icon: Coffee },
@@ -38,7 +59,6 @@ const pronunciationItems = [
   { word: "bad", phrase: "It's bad.", example: "The weather is bad today.", audio: "/audios/lesson34/bad.mp3", icon: null },
   { word: "everything", phrase: "I know everything about the project.", example: "I know everything about the project details.", audio: "/audios/lesson34/everything.mp3", icon: null },
   { word: "thing", phrase: "I have to buy one more thing.", example: "I have to buy one more thing at the store.", audio: "/audios/lesson34/thing.mp3", icon: null },
-  // NOVAS PALAVRAS COM HE, SHE, IT
   { word: "he", phrase: "He works every day.", example: "He works at the hospital.", audio: "/audios/lesson34/he.mp3", icon: Users },
   { word: "she", phrase: "She likes music.", example: "She likes classical music.", audio: "/audios/lesson34/she.mp3", icon: Music },
   { word: "it", phrase: "It is sunny today.", example: "It is sunny and hot.", audio: "/audios/lesson34/it.mp3", icon: Sun },
@@ -47,7 +67,7 @@ const pronunciationItems = [
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - SUBSTITUTION PRACTICE I (COM HE/SHE/IT)
+// DADOS DA LIÇÃO - SUBSTITUTION PRACTICE I
 // ==============================
 const substitutionPracticeI = [
   {
@@ -112,7 +132,7 @@ const substitutionPracticeI = [
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - SUBSTITUTION PRACTICE II (COM HE/SHE/IT)
+// DADOS DA LIÇÃO - SUBSTITUTION PRACTICE II
 // ==============================
 const substitutionPracticeII = [
   {
@@ -184,7 +204,7 @@ const substitutionPracticeII = [
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - AFFIRMATIVE PRACTICE (COM HE/SHE/IT)
+// DADOS DA LIÇÃO - AFFIRMATIVE PRACTICE
 // ==============================
 const affirmativePractice = [
   {
@@ -242,7 +262,7 @@ const affirmativePractice = [
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - QUESTIONS (COM HE/SHE/IT)
+// DADOS DA LIÇÃO - QUESTIONS
 // ==============================
 const conversationQuestions = [
   { id: "a", question: "Do you have a minute to talk to me?", icon: Users },
@@ -255,69 +275,61 @@ const conversationQuestions = [
   { id: "h", question: "Does your teacher like to talk about music?", icon: Users },
   { id: "i", question: "Does your father / mother usually meet his / her friends on weekends?", icon: Users },
   { id: "j", question: "Does your wife / husband have to speak English at work?", icon: Briefcase },
-  // NOVAS PERGUNTAS COM HE, SHE, IT
   { id: "k", question: "Does he like to play soccer?", icon: Users },
   { id: "l", question: "Does she enjoy cooking?", icon: Utensils },
   { id: "m", question: "Is it going to rain today?", icon: Sun },
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - TUNE YOUR EARS (VÍDEO ATUALIZADO)
+// DADOS DA LIÇÃO - TUNE YOUR EARS (VÍDEO ATUALIZADO COM AS PERGUNTAS SOLICITADAS)
 // ==============================
 const tuneYourEarsVideo = {
-  title: "A1 English Listening Practice - Daily Routines and Pronouns",
-  youtubeId: "uo-Ds9H_mNs", // NOVO LINK: https://www.youtube.com/watch?v=uo-Ds9H_mNs
-  description: "Watch this video to practice your listening skills, learn vocabulary about daily routines, and hear examples of 'He', 'She', and 'It' in context.",
+  title: "TUNE IN YOUR EARS - English Listening Practice | Slow Listening & Shadowing",
+  youtubeId: "uo-Ds9H_mNs",
+  description: "Watch this video to practice slow listening and shadowing. Pay attention to the key vocabulary and answer the reflection questions below.",
+  shadowingExplanation: "Shadowing is a technique where you repeat after your teacher to practice structure and pronunciation. Listen, pause, and repeat what you hear to improve your fluency and accent.",
   questions: [
     {
       id: 1,
-      question: "What time does the person wake up?",
-      correctAnswer: "They wake up at 7 AM.",
-      vocabulary: [
-        { english: "wake up", portuguese: "acordar" },
-        { english: "morning routine", portuguese: "rotina matinal" },
-        { english: "alarm clock", portuguese: "despertador" }
-      ]
+      question: "How can you use your mistakes as your fuel?",
+      correctAnswer: "By learning from them and using them as motivation to improve.",
+      reflectionType: "personal"
     },
     {
       id: 2,
-      question: "What do they eat for breakfast?",
-      correctAnswer: "They eat cereal and drink coffee.",
-      vocabulary: [
-        { english: "breakfast", portuguese: "café da manhã" },
-        { english: "cereal", portuguese: "cereal" },
-        { english: "coffee", portuguese: "café" }
-      ]
+      question: "We know we can't wait for the perfect time, but how do you know you're good enough at English?",
+      correctAnswer: "When you can communicate and understand without needing to translate everything.",
+      reflectionType: "personal"
     },
     {
       id: 3,
-      question: "How do they go to work?",
-      correctAnswer: "They take the bus to work.",
-      vocabulary: [
-        { english: "take the bus", portuguese: "pegar o ônibus" },
-        { english: "commute", portuguese: "deslocamento" },
-        { english: "arrive at", portuguese: "chegar em" }
-      ]
+      question: "How can you use a timer to help you with English?",
+      correctAnswer: "By setting a timer to study for short, focused periods (like 15-25 minutes) every day.",
+      reflectionType: "personal"
     },
     {
       id: 4,
-      question: "What does 'he' do in the afternoon?",
-      correctAnswer: "He studies English.",
-      vocabulary: [
-        { english: "study", portuguese: "estudar" },
-        { english: "afternoon", portuguese: "tarde" },
-        { english: "pronoun", portuguese: "pronome" }
-      ]
+      question: "Do you think your progress is slow? Why or why not?",
+      correctAnswer: "This is a personal reflection question. Be honest about your learning journey.",
+      reflectionType: "personal"
     },
     {
       id: 5,
-      question: "What does 'she' like to do?",
-      correctAnswer: "She likes to read books.",
-      vocabulary: [
-        { english: "like", portuguese: "gostar" },
-        { english: "read", portuguese: "ler" },
-        { english: "book", portuguese: "livro" }
-      ]
+      question: "Do you think progress is only slow in life, or when it's real progress it's fast?",
+      correctAnswer: "Real progress can feel slow because it's steady and consistent. Fast progress often doesn't last.",
+      reflectionType: "personal"
+    },
+    {
+      id: 6,
+      question: "Do you see learning a language as a journey or a long walk? Explain.",
+      correctAnswer: "Both are good metaphors. A journey suggests destinations and goals; a long walk suggests daily effort and patience.",
+      reflectionType: "personal"
+    },
+    {
+      id: 7,
+      question: "What's your biggest goal with English?",
+      correctAnswer: "This is personal. It could be traveling, getting a job, making friends, or understanding movies.",
+      reflectionType: "personal"
     }
   ]
 };
@@ -418,24 +430,30 @@ const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
 interface AnswerResultProps {
   isCorrect: boolean;
   correctAnswer: string;
+  isReflection?: boolean;
 }
 
-const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
+const AnswerResult = ({ isCorrect, correctAnswer, isReflection = false }: AnswerResultProps) => {
   return (
-    <div className={`p-4 rounded-lg ${isCorrect ? 'bg-green-100 border-green-300' : 'bg-red-100 border-red-300'} border-2`}>
+    <div className={`p-4 rounded-lg ${isCorrect ? 'bg-green-100 border-green-300' : 'bg-blue-100 border-blue-300'} border-2`}>
       <div className="flex items-start gap-3">
         {isCorrect ? (
           <Check className="text-green-600 flex-shrink-0" size={24} />
         ) : (
-          <XCircle className="text-red-600 flex-shrink-0" size={24} />
+          <div className="text-blue-600 flex-shrink-0">💡</div>
         )}
         <div>
-          <p className={`font-bold mb-1 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-            {isCorrect ? 'Correct!' : 'Not quite right'}
+          <p className={`font-bold mb-1 ${isCorrect ? 'text-green-700' : 'text-blue-700'}`}>
+            {isCorrect ? 'Great answer!' : 'Reflection Note'}
           </p>
-          {!isCorrect && (
+          {!isCorrect && !isReflection && (
             <p className="text-gray-700">
               <span className="font-medium">Suggested answer:</span> {correctAnswer}
+            </p>
+          )}
+          {isReflection && (
+            <p className="text-gray-700 text-sm">
+              This is a personal reflection. Think about your own experience.
             </p>
           )}
         </div>
@@ -445,7 +463,7 @@ const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
 };
 
 // ==============================
-// COMPONENTE DE SUBSTITUIÇÃO INTERATIVA (CORRIGIDO)
+// COMPONENTE DE SUBSTITUIÇÃO INTERATIVA
 // ==============================
 interface SubstitutionExerciseProps {
   exercise: any;
@@ -453,47 +471,34 @@ interface SubstitutionExerciseProps {
 }
 
 const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps) => {
-  // Initialize state with the original English text from the exercise data
   const [currentText, setCurrentText] = useState(exercise.english);
   const [showPortuguese, setShowPortuguese] = useState(false);
-  // Track which word was last replaced to avoid multiple replacements of the same instance
   const [lastReplaced, setLastReplaced] = useState<{ oldWord: string, newWord: string } | null>(null);
 
-  // Function to handle substitution with proper grammar adjustments (a/an)
   const handleSubstitution = (oldWord: string, newWord: string) => {
     let newText = currentText;
     
-    // First, handle special case for "a car" -> "a bike" / "a motorcycle" (preserve article)
     if (oldWord === "a car" && (newWord === "a bike" || newWord === "a motorcycle")) {
       newText = newText.replace(/\ba car\b/i, newWord);
     }
-    // Handle "a car" -> "a car" (no change, but we keep the logic)
     else if (oldWord === "a car" && newWord === "a car") {
       // Do nothing
     }
-    // Handle "a car" -> other options that might need different article
     else if (oldWord === "a car") {
-      // If new word starts with a vowel sound, use 'an'
       const vowelSounds = ['a', 'e', 'i', 'o', 'u'];
       const firstLetter = newWord.toLowerCase().charAt(0);
       const article = vowelSounds.includes(firstLetter) ? 'an' : 'a';
       newText = newText.replace(/\ba car\b/i, `${article} ${newWord.replace(/^(a|an)\s+/i, '')}`);
     }
-    // Handle "on TV" -> "on your cell phone" / "on your tablet"
     else if (oldWord === "on TV" && (newWord === "on your cell phone" || newWord === "on your tablet")) {
       newText = newText.replace(/\bon TV\b/i, newWord);
     }
-    // Handle "your" -> "his" / "her" (preserves case and context)
     else if (oldWord === "your" && (newWord === "his" || newWord === "her")) {
-      // Replace 'your' with the new possessive while keeping the rest of the sentence
       newText = newText.replace(/\byour\b/i, newWord);
     }
-    // Handle "He" / "She" / "It" pronoun replacements (preserve capitalization)
     else if (["He", "She", "It", "This", "That"].includes(oldWord) && ["He", "She", "It", "This", "That"].includes(newWord)) {
-      // Replace exactly the word, preserving punctuation after it
       const regex = new RegExp(`\\b${oldWord}\\b`, 'gi');
       newText = newText.replace(regex, (match: string) => {
-        // Preserve original capitalization pattern
         if (match === match.toUpperCase()) return newWord.toUpperCase();
         if (match === match.toLowerCase()) return newWord.toLowerCase();
         if (match.charAt(0) === match.charAt(0).toUpperCase()) {
@@ -502,75 +507,57 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
         return newWord;
       });
     }
-    // Handle "know" -> "learn" / "understand"
     else if (oldWord === "know" && (newWord === "learn" || newWord === "understand")) {
       newText = newText.replace(/\bknow\b/i, newWord);
     }
-    // Handle "religion" -> "music" / "business"
     else if (oldWord === "religion" && (newWord === "music" || newWord === "business")) {
       newText = newText.replace(/\breligion\b/i, newWord);
     }
-    // Handle "good" -> "great" / "excellent"
     else if (oldWord === "good" && (newWord === "great" || newWord === "excellent")) {
       newText = newText.replace(/\bgood\b/i, newWord);
     }
-    // Handle "books" -> "magazines" / "novels"
     else if (oldWord === "books" && (newWord === "magazines" || newWord === "novels")) {
       newText = newText.replace(/\bbooks\b/i, newWord);
     }
-    // Handle "rains" -> "snows" / "is sunny"
     else if (oldWord === "rains" && (newWord === "snows" || newWord === "is sunny")) {
       newText = newText.replace(/\brains\b/i, newWord);
     }
-    // Handle "here" -> "in winter" / "in spring"
     else if (oldWord === "here" && (newWord === "in winter" || newWord === "in spring")) {
       newText = newText.replace(/\bhere\b/i, newWord);
     }
-    // Handle "properly" -> "well" / "fast"
     else if (oldWord === "properly" && (newWord === "well" || newWord === "fast")) {
       newText = newText.replace(/\bproperly\b/i, newWord);
     }
-    // Handle "on weekends" -> "on Mondays" / "on Fridays"
     else if (oldWord === "on weekends" && (newWord === "on Mondays" || newWord === "on Fridays")) {
       newText = newText.replace(/\bon weekends\b/i, newWord);
     }
-    // Handle "English" -> "Spanish" / "French"
     else if (oldWord === "English" && (newWord === "Spanish" || newWord === "French")) {
       newText = newText.replace(/\bEnglish\b/i, newWord);
     }
-    // Handle "coffee" -> "tea" / "juice"
     else if (oldWord === "coffee" && (newWord === "tea" || newWord === "juice")) {
       newText = newText.replace(/\bcoffee\b/i, newWord);
     }
-    // Handle "every day" -> "during the week" / "all day"
     else if (oldWord === "every day" && (newWord === "during the week" || newWord === "all day")) {
       newText = newText.replace(/\bevery day\b/i, newWord);
     }
-    // Handle "now" -> "in a few minutes"
     else if (oldWord === "now" && newWord === "in a few minutes") {
       newText = newText.replace(/\bnow\b/i, newWord);
     }
-    // Handle "next week" -> "next month" / "next year"
     else if (oldWord === "next week" && (newWord === "next month" || newWord === "next year")) {
       newText = newText.replace(/\bnext week\b/i, newWord);
     }
-    // Handle "The test" -> "The movie" / "The meeting"
     else if (oldWord === "The test" && (newWord === "The movie" || newWord === "The meeting")) {
       newText = newText.replace(/\bThe test\b/i, newWord);
     }
-    // Handle "it" -> "this problem" / "this subject"
     else if (oldWord === "it" && (newWord === "this problem" || newWord === "this subject")) {
       newText = newText.replace(/\bit\b/gi, newWord);
     }
-    // Handle "fashion" -> "sports" / "music"
     else if (oldWord === "fashion" && (newWord === "sports" || newWord === "music")) {
       newText = newText.replace(/\bfashion\b/i, newWord);
     }
-    // Handle "politics" -> "business" / "movies"
     else if (oldWord === "politics" && (newWord === "business" || newWord === "movies")) {
       newText = newText.replace(/\bpolitics\b/i, newWord);
     }
-    // General replacement for any other word
     else {
       const regex = new RegExp(`\\b${oldWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
       newText = newText.replace(regex, newWord);
@@ -581,20 +568,16 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
     onUpdate(exercise.id, newText);
   };
 
-  // Helper to find which word from options is currently in the text
   const getCurrentWord = (subOption: any) => {
     const words = currentText.split(/\s+/);
-    // First try to find exact match with punctuation stripped
     for (const word of words) {
       const cleanWord = word.replace(/[!?.,;:]$/, '');
-      // Check if the clean word matches any of the options (case insensitive for some)
       for (const opt of subOption.options) {
         if (cleanWord.toLowerCase() === opt.toLowerCase()) {
           return opt;
         }
       }
     }
-    // If not found, check for multi-word options
     for (const opt of subOption.options) {
       if (currentText.toLowerCase().includes(opt.toLowerCase())) {
         return opt;
@@ -603,7 +586,6 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
     return subOption.options[0];
   };
 
-  // Reset to original English text
   const resetToOriginal = () => {
     setCurrentText(exercise.english);
     onUpdate(exercise.id, exercise.english);
@@ -614,7 +596,6 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
     <div className="bg-white p-6 rounded-xl border-2 border-opacity-50 shadow-md hover:shadow-lg transition-all"
          style={{ borderColor: `${LESSON_THEME_COLOR}40` }}>
       
-      {/* Cabeçalho com tradução e reset */}
       <div className="flex justify-between items-start mb-3">
         <button
           onClick={() => setShowPortuguese(!showPortuguese)}
@@ -631,7 +612,6 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
         </button>
       </div>
 
-      {/* Frase atual */}
       <div className="mb-4">
         <p className="text-2xl font-bold text-gray-800 mb-2">
           {currentText}
@@ -644,7 +624,6 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
         )}
       </div>
 
-      {/* Botões de substituição */}
       <div className="space-y-3">
         {exercise.substitutions.map((sub: any, idx: number) => {
           const currentWord = getCurrentWord(sub);
@@ -673,7 +652,6 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
         })}
       </div>
       
-      {/* Dica de gramática */}
       <div className="mt-4 text-xs text-gray-400 border-t pt-2">
         💡 Tip: Click on any option to replace the highlighted word in the sentence.
       </div>
@@ -748,10 +726,9 @@ const InteractiveQuestion = ({ id, question, icon: Icon, value, onChange, onClea
 // ==============================
 // COMPONENTE PRINCIPAL
 // ==============================
-export default function Lesson34Pronunciation() {
+export default function Lesson34TuneYourEars() {
   const router = useRouter();
   
-  // Estados para controle de expansão das seções
   const [expandedSections, setExpandedSections] = useState({
     pronunciation: true,
     substitution1: true,
@@ -761,20 +738,15 @@ export default function Lesson34Pronunciation() {
     tuneYourEars: true
   });
 
-  // Estados para os exercícios interativos
   const [substitution1Texts, setSubstitution1Texts] = useState<Record<number, string>>({});
   const [substitution2Texts, setSubstitution2Texts] = useState<Record<number, string>>({});
   const [affirmativeTexts, setAffirmativeTexts] = useState<Record<number, string>>({});
   const [questionAnswers, setQuestionAnswers] = useState<Record<string, string>>({});
   const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
   
-  // Estados para resultados das verificações
   const [showResults, setShowResults] = useState<Record<string, boolean>>({});
   const [answerCorrectness, setAnswerCorrectness] = useState<Record<string, boolean>>({});
 
-  // ==============================
-  // FUNÇÕES DE MANIPULAÇÃO
-  // ==============================
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -819,11 +791,18 @@ export default function Lesson34Pronunciation() {
     setShowResults(prev => ({ ...prev, [`video-${id}`]: false }));
   };
 
-  const checkVideoAnswer = (id: number, userAnswer: string, correctAnswer: string) => {
+  const checkVideoAnswer = (id: number, userAnswer: string, correctAnswer: string, isReflection: boolean = false) => {
+    if (isReflection) {
+      setAnswerCorrectness(prev => ({ ...prev, [`video-${id}`]: true }));
+      setShowResults(prev => ({ ...prev, [`video-${id}`]: true }));
+      return true;
+    }
+    
     const normalizedUser = userAnswer.toLowerCase().trim().replace(/[.,]/g, '');
     const normalizedCorrect = correctAnswer.toLowerCase().trim().replace(/[.,]/g, '');
     
-    const isCorrect = normalizedUser === normalizedCorrect;
+    const isCorrect = normalizedUser === normalizedCorrect || 
+      (normalizedUser.length > 10 && normalizedCorrect.includes(normalizedUser.substring(0, 20)));
     
     setAnswerCorrectness(prev => ({ ...prev, [`video-${id}`]: isCorrect }));
     setShowResults(prev => ({ ...prev, [`video-${id}`]: true }));
@@ -831,7 +810,6 @@ export default function Lesson34Pronunciation() {
     return isCorrect;
   };
 
-  // Função para salvar todas as respostas
   const saveAllAnswers = () => {
     const allData = {
       substitution1Texts,
@@ -846,19 +824,16 @@ export default function Lesson34Pronunciation() {
     alert("All your answers have been saved locally!");
   };
 
-  // Função para exportar como PDF (simulação)
   const exportToPDF = () => {
     alert("PDF export functionality would be implemented here. For now, your answers are saved in your browser.");
   };
 
-  // Função para compartilhar no WhatsApp
   const shareOnWhatsApp = () => {
-    const text = `I just completed Lesson ${LESSON_NUMBER}: ${LESSON_TITLE}! Check out my progress.`;
+    const text = `I just completed Lesson ${LESSON_NUMBER}: ${LESSON_TITLE} - ${LESSON_SUBTITLE}! Check out my progress.`;
     const url = encodeURIComponent(window.location.href);
     window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
   };
 
-  // Função para limpar todas as respostas
   const clearAllAnswers = () => {
     if (confirm("Are you sure you want to clear all answers? This action cannot be undone.")) {
       setSubstitution1Texts({});
@@ -872,14 +847,10 @@ export default function Lesson34Pronunciation() {
     }
   };
 
-  // ==============================
-  // RENDERIZAÇÃO
-  // ==============================
   return (
     <div className="min-h-screen py-16 px-4 md:px-6 bg-cover bg-center bg-fixed relative"
          style={{ backgroundImage: `url('${BACKGROUND_IMAGE}')` }}>
       
-      {/* Overlay para melhor legibilidade */}
       <div className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm"></div>
       
       <div className="relative max-w-6xl mx-auto bg-white bg-opacity-95 rounded-3xl p-6 md:p-10 shadow-2xl">
@@ -887,14 +858,15 @@ export default function Lesson34Pronunciation() {
         {/* CABEÇALHO DA LIÇÃO */}
         <div className="text-center mb-16">
           <div className="inline-block p-3 rounded-full mb-4" style={{ backgroundColor: `${LESSON_THEME_COLOR}20` }}>
-            <Volume2 size={48} style={{ color: LESSON_THEME_COLOR }} />
+            <Headphones size={48} style={{ color: LESSON_THEME_COLOR }} />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: LESSON_THEME_COLOR }}>
             LESSON {LESSON_NUMBER}
           </h1>
           <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-gray-800">{LESSON_TITLE}</h2>
+          <h3 className="text-xl text-gray-600 mb-4">{LESSON_SUBTITLE}</h3>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            Master pronunciation, practice sentence substitution, and improve your conversation skills.
+            Practice slow listening, shadowing technique, and reflect on your English learning journey.
           </p>
           
           <div className="flex flex-wrap justify-center gap-4 mt-8">
@@ -937,12 +909,11 @@ export default function Lesson34Pronunciation() {
           
           {expandedSections.pronunciation && (
             <div className="p-8">
-              {/* IMAGEM HORIZONTAL GRANDE COM ÍCONES */}
               <div className="mb-10 rounded-2xl overflow-hidden shadow-xl relative">
                 <div className="relative w-full h-72 md:h-96">
                   <Image
-                    src={PRONUNCIATION_IMAGE}
-                    alt="Pronunciation Practice"
+                    src={LISTENING_IMAGE}
+                    alt="Listening Practice"
                     fill
                     className="object-cover"
                     priority
@@ -954,7 +925,6 @@ export default function Lesson34Pronunciation() {
                     </div>
                   </div>
                   
-                  {/* Ícones decorativos flutuantes */}
                   <div className="absolute top-4 right-4 flex gap-2">
                     <span className="bg-white/90 p-2 rounded-full shadow-lg"><Coffee className="text-amber-600" size={20} /></span>
                     <span className="bg-white/90 p-2 rounded-full shadow-lg"><BookOpen className="text-blue-600" size={20} /></span>
@@ -964,7 +934,6 @@ export default function Lesson34Pronunciation() {
                 </div>
               </div>
               
-              {/* ITENS DE PRONÚNCIA */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {pronunciationItems.map((item, index) => {
                   const Icon = item.icon;
@@ -1133,12 +1102,12 @@ export default function Lesson34Pronunciation() {
           )}
         </div>
 
-        {/* SEÇÃO 6: TUNE YOUR EARS (VÍDEO ATUALIZADO) */}
+        {/* SEÇÃO 6: TUNE IN YOUR EARS */}
         <div className="mb-16 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 rounded-3xl shadow-lg overflow-hidden"
              style={{ borderColor: "#06b6d4" }}>
           <div className="py-5 px-8 flex justify-between items-center bg-gradient-to-r from-cyan-500 to-blue-500">
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              🎧 TUNE YOUR EARS
+              🎧 TUNE IN YOUR EARS
             </h2>
             <button 
               onClick={() => toggleSection('tuneYourEars')}
@@ -1156,7 +1125,17 @@ export default function Lesson34Pronunciation() {
                 </h3>
                 <p className="text-cyan-600 mb-6">{tuneYourEarsVideo.description}</p>
                 
-                {/* VÍDEO DO YOUTUBE ATUALIZADO */}
+                {/* SHADOWING EXPLANATION */}
+                <div className="bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6 mb-8 text-left">
+                  <h4 className="text-lg font-bold text-cyan-800 mb-2 flex items-center gap-2">
+                    <Headphones size={20} /> What is Shadowing?
+                  </h4>
+                  <p className="text-cyan-700">{tuneYourEarsVideo.shadowingExplanation}</p>
+                  <p className="text-cyan-600 text-sm mt-2 italic">
+                    How to practice: Listen to a short phrase → Pause the video → Repeat exactly what you heard → Focus on rhythm and intonation
+                  </p>
+                </div>
+                
                 <div className="bg-black rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
                   <div className="aspect-w-16 aspect-h-9">
                     <iframe
@@ -1169,36 +1148,46 @@ export default function Lesson34Pronunciation() {
                   </div>
                 </div>
               </div>
+
+              {/* KEY VOCABULARY FROM THE VIDEO - AGORA DENTRO DO TUNE IN YOUR EARS */}
+              <div className="mb-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-cyan-800 mb-4 flex items-center gap-2">
+                  <BookOpen size={20} /> 📖 Key Vocabulary from the Video:
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {keyVocabulary.map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={idx} className="flex items-center justify-between p-3 bg-white rounded-lg hover:shadow-md transition-all">
+                        <div className="flex items-center gap-2">
+                          {Icon && <Icon size={16} style={{ color: LESSON_THEME_COLOR }} />}
+                          <span className="font-medium text-cyan-700">{item.english}</span>
+                        </div>
+                        <span className="text-cyan-600 text-sm">{item.portuguese}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
               
-              {/* PERGUNTAS DO VÍDEO */}
+              {/* REFLECTION QUESTIONS */}
               <div className="space-y-8">
+                <h3 className="text-xl font-bold text-center text-cyan-700">Reflection Questions</h3>
+                <p className="text-center text-gray-600 -mt-4">
+                  Answer these questions honestly to reflect on your English learning journey.
+                </p>
+                
                 {tuneYourEarsVideo.questions.map((q) => (
                   <div key={q.id} className="bg-white p-6 rounded-xl border-2 shadow-md"
                        style={{ borderColor: `${LESSON_THEME_COLOR}30` }}>
                     <h4 className="text-lg font-bold mb-3" style={{ color: LESSON_THEME_COLOR }}>
                       Question {q.id}: {q.question}
                     </h4>
-                    
-                    {q.vocabulary && (
-                      <div className="mb-4 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
-                        <p className="text-sm font-medium text-cyan-600 mb-2 flex items-center gap-2">
-                          <Volume2 size={16} /> Vocabulary hints:
-                        </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {q.vocabulary.map((word, idx) => (
-                            <div key={idx} className="flex justify-between text-sm bg-white p-2 rounded">
-                              <span className="text-cyan-700 font-medium">{word.english}</span>
-                              <span className="text-cyan-600">→ {word.portuguese}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
 
                     <textarea
                       value={videoAnswers[q.id] || ""}
                       onChange={(e) => handleVideoAnswerChange(q.id, e.target.value)}
-                      placeholder="Write your answer based on what you heard..."
+                      placeholder="Write your reflection here... (There is no wrong answer - be honest with yourself)"
                       className="w-full h-32 p-4 border-2 rounded-lg focus:ring-2 focus:outline-none transition resize-none"
                       style={{ borderColor: `${LESSON_THEME_COLOR}30` }}
                       onFocus={(e) => {
@@ -1213,11 +1202,11 @@ export default function Lesson34Pronunciation() {
 
                     <div className="flex gap-3 mt-4">
                       <button
-                        onClick={() => checkVideoAnswer(q.id, videoAnswers[q.id] || "", q.correctAnswer)}
+                        onClick={() => checkVideoAnswer(q.id, videoAnswers[q.id] || "", q.correctAnswer, q.reflectionType === "personal")}
                         className="text-white px-6 py-2 rounded-lg transition font-medium hover:opacity-90"
                         style={{ backgroundColor: LESSON_THEME_COLOR }}
                       >
-                        Check Answer
+                        Check / Reflect
                       </button>
                       <button
                         onClick={() => clearVideoAnswer(q.id)}
@@ -1232,6 +1221,7 @@ export default function Lesson34Pronunciation() {
                         <AnswerResult 
                           isCorrect={answerCorrectness[`video-${q.id}`] || false} 
                           correctAnswer={q.correctAnswer}
+                          isReflection={q.reflectionType === "personal"}
                         />
                       </div>
                     )}
@@ -1241,14 +1231,15 @@ export default function Lesson34Pronunciation() {
               
               <div className="mt-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-cyan-800 mb-4 flex items-center gap-2">
-                  <Volume2 size={20} /> 🎯 Listening Tips:
+                  <Headphones size={20} /> 🎯 Listening & Shadowing Tips:
                 </h3>
                 <ul className="list-disc pl-5 space-y-2 text-cyan-700">
                   <li>Listen first without looking at the questions</li>
-                  <li>Watch a second time while reading the questions</li>
-                  <li>Pay attention to keywords and main ideas</li>
-                  <li>Don't worry if you don't understand every word</li>
-                  <li>You can watch multiple times if needed</li>
+                  <li>Practice shadowing: pause after each sentence and repeat</li>
+                  <li>Use your mistakes as fuel - learn from them</li>
+                  <li>Set a timer for daily practice (15-25 minutes is enough)</li>
+                  <li>Remember: progress happens step by step, not overnight</li>
+                  <li>Write down new vocabulary and review it regularly</li>
                 </ul>
               </div>
             </div>
@@ -1289,9 +1280,9 @@ export default function Lesson34Pronunciation() {
           </div>
         </div>
         
-        {/* CRÉDITOS */}
         <div className="mt-8 text-center text-gray-500 text-sm">
-          <p>Lesson {LESSON_NUMBER}: {LESSON_TITLE} • Interactive English Practice • All answers are saved in your browser</p>
+          <p>Lesson {LESSON_NUMBER}: {LESSON_TITLE} - {LESSON_SUBTITLE} • Interactive English Practice • All answers are saved in your browser</p>
+          <p className="mt-1">🎧 Remember: Tune your ears, practice shadowing, and keep going step by step!</p>
         </div>
       </div>
     </div>

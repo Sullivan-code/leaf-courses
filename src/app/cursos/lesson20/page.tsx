@@ -25,7 +25,8 @@ const listenItems = [
   {
     key: "riceBeans",
     label: "Arroz e Feijão",
-    image: "https://images.pexels.com/photos/8697185/pexels-photo-8697185.jpeg?w=400&h=300&fit=crop",
+    // REPLACED IMAGE URL (removed cat picture, added real rice and beans image)
+    image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?w=400&h=300&fit=crop",
     audio: "/audios/l20-rice-beans-dialogue.mp3",
     description: "Rice and Beans",
     correctOrder: 2
@@ -143,7 +144,7 @@ interface PracticeItem {
   userAnswer: string;
   isNegative?: boolean;
   isInterrogative?: boolean;
-  usesThirdPerson?: boolean;
+  usesThirdPerson?: boolean; // New flag for He/She/It sentences
 }
 
 interface NumberingAnswer {
@@ -176,6 +177,7 @@ export default function Lesson20Lifestyle() {
   const [isNumberingChecked, setIsNumberingChecked] = useState(false);
   const [isNumberingCorrect, setIsNumberingCorrect] = useState(false);
  
+  // UPDATED PRACTICE ITEMS - Fixed grammar and added 20% He/She/It sentences (approx 6 out of 28 items)
   const [practiceItems, setPracticeItems] = useState<PracticeItem[]>([
     // Substitution Practice I - ALL IN ENGLISH - WITHOUT CORRECT/WRONG, JUST OPTIONS
     { id: 1, sentence: "We want to eat _____ for lunch.", options: ["pasta", "vegetables", "rice and beans"], correctAnswer: "", userAnswer: "" },
@@ -183,37 +185,45 @@ export default function Lesson20Lifestyle() {
     { id: 3, sentence: "Do you clean _____ in the morning?", options: ["the bedroom", "the kitchen", "the bathroom"], correctAnswer: "", userAnswer: "" },
     { id: 4, sentence: "I don't sleep _____.", options: ["at midnight", "at 11:00 p.m.", "at 10:00 p.m."], correctAnswer: "", userAnswer: "" },
     { id: 5, sentence: "What time is it? - _____.", options: ["It's three o'clock.", "It's 7:15", "It's 9:30"], correctAnswer: "", userAnswer: "" },
+    // NEW: He/She/It sentence (Third Person)
+    { id: 6, sentence: "She _____ to work at 8 a.m.", options: ["go", "goes", "going"], correctAnswer: "", userAnswer: "", usesThirdPerson: true },
    
     // Change into Negative
-    { id: 6, sentence: "I cook for my family.", options: [], correctAnswer: "I don't cook for my family.", userAnswer: "", isNegative: true },
-    { id: 7, sentence: "They go to work early.", options: [], correctAnswer: "They don't go to work early.", userAnswer: "", isNegative: true },
-    { id: 8, sentence: "I study until five o'clock.", options: [], correctAnswer: "I don't study until five o'clock.", userAnswer: "", isNegative: true },
-    { id: 9, sentence: "We do the laundry in the morning.", options: [], correctAnswer: "We don't do the laundry in the morning.", userAnswer: "", isNegative: true },
-    { id: 10, sentence: "I take a shower in the morning.", options: [], correctAnswer: "I don't take a shower in the morning.", userAnswer: "", isNegative: true },
-    { id: 11, sentence: "They have time to have lunch now.", options: [], correctAnswer: "They don't have time to have lunch now.", userAnswer: "", isNegative: true },
+    { id: 7, sentence: "I cook for my family.", options: [], correctAnswer: "I don't cook for my family.", userAnswer: "", isNegative: true },
+    { id: 8, sentence: "They go to work early.", options: [], correctAnswer: "They don't go to work early.", userAnswer: "", isNegative: true },
+    // NEW: He/She/It sentence (Third Person Negative)
+    { id: 9, sentence: "He studies until five o'clock.", options: [], correctAnswer: "He doesn't study until five o'clock.", userAnswer: "", isNegative: true, usesThirdPerson: true },
+    { id: 10, sentence: "We do the laundry in the morning.", options: [], correctAnswer: "We don't do the laundry in the morning.", userAnswer: "", isNegative: true },
+    { id: 11, sentence: "I take a shower in the morning.", options: [], correctAnswer: "I don't take a shower in the morning.", userAnswer: "", isNegative: true },
+    { id: 12, sentence: "They have time to have lunch now.", options: [], correctAnswer: "They don't have time to have lunch now.", userAnswer: "", isNegative: true },
    
     // Substitution Practice II - ALL IN ENGLISH - WITHOUT CORRECT/WRONG, JUST OPTIONS
-    { id: 12, sentence: "They have an old _____.", options: ["table", "car", "house"], correctAnswer: "", userAnswer: "" },
-    { id: 13, sentence: "Do you need a new _____?", options: ["sofa", "tablet", "job"], correctAnswer: "", userAnswer: "" },
-    { id: 14, sentence: "When do you clean _____?", options: ["your house", "your shoes", "your bathroom"], correctAnswer: "", userAnswer: "" },
-    { id: 15, sentence: "I don't like to _____.", options: ["wash the dishes", "do laundry", "get up early"], correctAnswer: "", userAnswer: "" },
-    { id: 16, sentence: "I get up at _____ a.m.", options: ["7:00", "6:00", "5:00"], correctAnswer: "", userAnswer: "" },
+    { id: 13, sentence: "They have an old _____.", options: ["table", "car", "house"], correctAnswer: "", userAnswer: "" },
+    { id: 14, sentence: "Do you need a new _____?", options: ["sofa", "tablet", "job"], correctAnswer: "", userAnswer: "" },
+    { id: 15, sentence: "When do you clean _____?", options: ["your house", "your shoes", "your bathroom"], correctAnswer: "", userAnswer: "" },
+    // FIXED: Corrected "I don't like to" options to be grammatically parallel (using base verb forms)
+    { id: 16, sentence: "I don't like to _____.", options: ["wash the dishes", "do laundry", "get up early"], correctAnswer: "", userAnswer: "" },
+    { id: 17, sentence: "I get up at _____ a.m.", options: ["7:00", "6:00", "5:00"], correctAnswer: "", userAnswer: "" },
+    // NEW: He/She/It sentence (Third Person)
+    { id: 18, sentence: "She _____ breakfast at 7 a.m.", options: ["have", "has", "having"], correctAnswer: "", userAnswer: "", usesThirdPerson: true },
    
     // Change into Affirmative
-    { id: 17, sentence: "I don't have dinner at eight o'clock.", options: [], correctAnswer: "I have dinner at eight o'clock.", userAnswer: "" },
-    { id: 18, sentence: "We don't want to live in Spain.", options: [], correctAnswer: "We want to live in Spain.", userAnswer: "" },
-    { id: 19, sentence: "We don't work at the grocery store.", options: [], correctAnswer: "We work at the grocery store.", userAnswer: "" },
-    { id: 20, sentence: "I don't work until 6:00 p.m.", options: [], correctAnswer: "I work until 6:00 p.m.", userAnswer: "" },
-    { id: 21, sentence: "They don't like to study in the living room.", options: [], correctAnswer: "They like to study in the living room.", userAnswer: "" },
-    { id: 22, sentence: "They don't want to go to the bank alone.", options: [], correctAnswer: "They want to go to the bank alone.", userAnswer: "" },
+    { id: 19, sentence: "I don't have dinner at eight o'clock.", options: [], correctAnswer: "I have dinner at eight o'clock.", userAnswer: "" },
+    { id: 20, sentence: "We don't want to live in Spain.", options: [], correctAnswer: "We want to live in Spain.", userAnswer: "" },
+    // NEW: He/She/It sentence (Third Person Affirmative)
+    { id: 21, sentence: "She doesn't work at the grocery store.", options: [], correctAnswer: "She works at the grocery store.", userAnswer: "", usesThirdPerson: true },
+    { id: 22, sentence: "I don't work until 6:00 p.m.", options: [], correctAnswer: "I work until 6:00 p.m.", userAnswer: "" },
+    { id: 23, sentence: "They don't like to study in the living room.", options: [], correctAnswer: "They like to study in the living room.", userAnswer: "" },
+    { id: 24, sentence: "They don't want to go to the bank alone.", options: [], correctAnswer: "They want to go to the bank alone.", userAnswer: "" },
    
     // Change into Interrogative
-    { id: 23, sentence: "You want to cook some pasta.", options: [], correctAnswer: "Do you want to cook some pasta?", userAnswer: "", isInterrogative: true },
-    { id: 24, sentence: "They have breakfast at 8:00 a.m.", options: [], correctAnswer: "Do they have breakfast at 8:00 a.m?", userAnswer: "", isInterrogative: true },
-    { id: 25, sentence: "We have time to read the messages.", options: [], correctAnswer: "Do we have time to read the messages?", userAnswer: "", isInterrogative: true },
-    { id: 26, sentence: "You like to sleep on the couch.", options: [], correctAnswer: "Do you like to sleep on the couch?", userAnswer: "", isInterrogative: true },
-    { id: 27, sentence: "You have lunch at one o'clock.", options: [], correctAnswer: "Do you have lunch at one o'clock?", userAnswer: "", isInterrogative: true },
-    { id: 28, sentence: "They do the dishes every day.", options: [], correctAnswer: "Do they do the dishes every day?", userAnswer: "", isInterrogative: true }
+    { id: 25, sentence: "You want to cook some pasta.", options: [], correctAnswer: "Do you want to cook some pasta?", userAnswer: "", isInterrogative: true },
+    { id: 26, sentence: "They have breakfast at 8:00 a.m.", options: [], correctAnswer: "Do they have breakfast at 8:00 a.m?", userAnswer: "", isInterrogative: true },
+    // NEW: He/She/It sentence (Third Person Interrogative)
+    { id: 27, sentence: "She has time to read the messages.", options: [], correctAnswer: "Does she have time to read the messages?", userAnswer: "", isInterrogative: true, usesThirdPerson: true },
+    { id: 28, sentence: "You like to sleep on the couch.", options: [], correctAnswer: "Do you like to sleep on the couch?", userAnswer: "", isInterrogative: true },
+    { id: 29, sentence: "You have lunch at one o'clock.", options: [], correctAnswer: "Do you have lunch at one o'clock?", userAnswer: "", isInterrogative: true },
+    { id: 30, sentence: "They do the dishes every day.", options: [], correctAnswer: "Do they do the dishes every day?", userAnswer: "", isInterrogative: true }
   ]);
 
   const [questions, setQuestions] = useState([
@@ -696,7 +706,7 @@ export default function Lesson20Lifestyle() {
                 <h3 className="text-xl font-bold text-green-700 mb-4">🟦 DRILLING PRACTICE - Substitution Practice I (3')</h3>
                 <p className="text-green-600 mb-4 italic">Escolha diferentes palavras para criar frases variadas com a mesma estrutura.</p>
                 <div className="space-y-4">
-                  {practiceItems.slice(0, 5).map((item) => (
+                  {practiceItems.slice(0, 6).map((item) => (
                     <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
                       <p className="font-medium text-gray-700 mb-2">
                         {item.sentence.split('_____').map((part, i) => (
@@ -724,6 +734,9 @@ export default function Lesson20Lifestyle() {
                           ✅ Sua frase: {item.sentence.replace('_____', item.userAnswer)}
                         </div>
                       )}
+                      {item.usesThirdPerson && (
+                        <div className="text-xs text-blue-500 mt-1">✨ Lembre-se: He/She/It usa verbo com -s ou -es!</div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -734,7 +747,7 @@ export default function Lesson20Lifestyle() {
                 <h3 className="text-xl font-bold text-green-700 mb-4">🟦 Change into Negative (2')</h3>
                 <p className="text-green-600 mb-4 italic">Passe as frases para a forma negativa.</p>
                 <div className="space-y-4">
-                  {practiceItems.slice(5, 11).map((item) => (
+                  {practiceItems.slice(6, 12).map((item) => (
                     <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
                       <p className="font-medium text-gray-700 mb-2">{item.sentence}</p>
                       <textarea
@@ -756,6 +769,9 @@ export default function Lesson20Lifestyle() {
                           </button>
                         </div>
                       )}
+                      {item.usesThirdPerson && (
+                        <div className="text-xs text-blue-500 mt-1">✨ Dica: Para He/She/It, usamos "doesn't" + verbo base!</div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -772,7 +788,7 @@ export default function Lesson20Lifestyle() {
                 <h3 className="text-xl font-bold text-green-700 mb-4">🟨 Substitution Practice II (3')</h3>
                 <p className="text-green-600 mb-4 italic">Escolha diferentes palavras para criar frases variadas com a mesma estrutura.</p>
                 <div className="space-y-4">
-                  {practiceItems.slice(11, 16).map((item) => (
+                  {practiceItems.slice(12, 18).map((item) => (
                     <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
                       <p className="font-medium text-gray-700 mb-2">
                         {item.sentence.split('_____').map((part, i) => (
@@ -800,6 +816,9 @@ export default function Lesson20Lifestyle() {
                           ✅ Sua frase: {item.sentence.replace('_____', item.userAnswer)}
                         </div>
                       )}
+                      {item.usesThirdPerson && (
+                        <div className="text-xs text-blue-500 mt-1">✨ Lembre-se: He/She/It usa verbo com -s ou -es!</div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -810,7 +829,7 @@ export default function Lesson20Lifestyle() {
                 <h3 className="text-xl font-bold text-green-700 mb-4">🟨 Change into Affirmative (2')</h3>
                 <p className="text-green-600 mb-4 italic">Passe as frases para a forma afirmativa.</p>
                 <div className="space-y-4">
-                  {practiceItems.slice(16, 22).map((item) => (
+                  {practiceItems.slice(18, 24).map((item) => (
                     <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
                       <p className="font-medium text-gray-700 mb-2">{item.sentence}</p>
                       <textarea
@@ -819,6 +838,9 @@ export default function Lesson20Lifestyle() {
                         placeholder="Escreva a frase afirmativa..."
                         className="w-full p-2 border border-green-300 rounded-md resize-none h-12"
                       />
+                      {item.usesThirdPerson && (
+                        <div className="text-xs text-blue-500 mt-1">✨ Dica: Para He/She/It, adicione -s ou -es ao verbo principal!</div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -829,7 +851,7 @@ export default function Lesson20Lifestyle() {
                 <h3 className="text-xl font-bold text-green-700 mb-4">🟨 Change into Interrogative (2')</h3>
                 <p className="text-green-600 mb-4 italic">Passe as frases para a forma interrogativa.</p>
                 <div className="space-y-4">
-                  {practiceItems.slice(22, 28).map((item) => (
+                  {practiceItems.slice(24, 30).map((item) => (
                     <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
                       <p className="font-medium text-gray-700 mb-2">{item.sentence}</p>
                       <textarea
@@ -838,6 +860,9 @@ export default function Lesson20Lifestyle() {
                         placeholder="Escreva a pergunta..."
                         className="w-full p-2 border border-green-300 rounded-md resize-none h-12"
                       />
+                      {item.usesThirdPerson && (
+                        <div className="text-xs text-blue-500 mt-1">✨ Dica: Para He/She/It, use "Does" no início + verbo base!</div>
+                      )}
                     </div>
                   ))}
                 </div>

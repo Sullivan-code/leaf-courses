@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCircle, Download, MessageCircle, RefreshCw } from "lucide-react";
+import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCircle, Download, MessageCircle, RefreshCw, Mic } from "lucide-react";
 
 // ==============================
 // LESSON CONFIGURATION
@@ -11,7 +11,7 @@ import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCir
 const LESSON_NUMBER = 24;
 const LESSON_TITLE = "Lifestyle & Weekly Planning";
 const LESSON_THEME_COLOR = "#0ea5e9"; // Sky-500
-const BACKGROUND_IMAGE = "/images/lesson24-bg.jpg"; // You will need to provide this image
+const BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1557683316-973673baf926?w=1600&h=900&fit=crop"; // Modern gradient background
 
 // ==============================
 // LESSON DATA - PRONUNCIATION
@@ -92,7 +92,7 @@ const changeToAffirmativeExercises = [
 ];
 
 // ==============================
-// LESSON DATA - QUESTIONS
+// LESSON DATA - CONVERSATION QUESTIONS
 // ==============================
 const conversationQuestions = [
   "What time do you go to work or to school?",
@@ -108,7 +108,7 @@ const conversationQuestions = [
 ];
 
 // ==============================
-// LESSON DATA - TUNE YOUR EARS (VIDEO)
+// LESSON DATA - TUNE YOUR EARS (VIDEO + ALL QUESTIONS COMBINED)
 // ==============================
 const tuneYourEarsData = {
   title: "A1 English Listening Practice - How to improve English in five months",
@@ -136,14 +136,41 @@ const tuneYourEarsData = {
     { english: "Improve fluency", portuguese: "Melhorar a fluência" },
     { english: "Build confidence", portuguese: "Construir confiança" },
   ],
-  discussionQuestions: [
-    "Why is it good changing sentences with words we've learned?",
-    "How do you practice speaking out loud?",
-    "Do you like reviewing old lessons?"
-  ],
-  videoQuestions: [
+  // ALL QUESTIONS COMBINED (Discussion + Video Comprehension)
+  combinedQuestions: [
     {
       id: 1,
+      type: "discussion",
+      question: "Why is it good changing sentences with words we've learned?",
+      correctAnswer: "It helps reinforce vocabulary and understand sentence structure.",
+      vocabulary: [
+        { english: "reinforce", portuguese: "reforçar" },
+        { english: "sentence structure", portuguese: "estrutura da frase" }
+      ]
+    },
+    {
+      id: 2,
+      type: "discussion",
+      question: "How do you practice speaking out loud?",
+      correctAnswer: "I repeat sentences from videos or read aloud from books.",
+      vocabulary: [
+        { english: "repeat", portuguese: "repetir" },
+        { english: "read aloud", portuguese: "ler em voz alta" }
+      ]
+    },
+    {
+      id: 3,
+      type: "discussion",
+      question: "Do you like reviewing old lessons?",
+      correctAnswer: "Yes, it helps me remember what I learned before.",
+      vocabulary: [
+        { english: "review", portuguese: "revisar" },
+        { english: "remember", portuguese: "lembrar" }
+      ]
+    },
+    {
+      id: 4,
+      type: "video",
       question: "What is one key tip mentioned for improving English?",
       correctAnswer: "Practice speaking every day, even if it's just for a few minutes.",
       vocabulary: [
@@ -153,7 +180,8 @@ const tuneYourEarsData = {
       ]
     },
     {
-      id: 2,
+      id: 5,
+      type: "video",
       question: "How can weekly planning help with language learning?",
       correctAnswer: "It helps you stay organized and set specific goals for each week.",
       vocabulary: [
@@ -163,7 +191,8 @@ const tuneYourEarsData = {
       ]
     },
     {
-      id: 3,
+      id: 6,
+      type: "video",
       question: "What lifestyle change can make learning English easier?",
       correctAnswer: "Incorporating English into your daily activities, like listening to music or podcasts.",
       vocabulary: [
@@ -239,14 +268,14 @@ const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
     <div className={`flex items-center gap-2 ${compact ? "ml-2" : ""}`}>
       <button 
         onClick={togglePlayPause} 
-        className={`${compact ? "p-1" : "p-2"} text-white rounded-full hover:opacity-90`}
+        className={`${compact ? "p-1" : "p-2"} text-white rounded-full hover:opacity-90 transition-all`}
         style={{ backgroundColor: LESSON_THEME_COLOR }}
       >
         {isPlaying ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
       </button>
       <button 
         onClick={resetAudio} 
-        className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600`}
+        className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600 transition-all`}
       >
         <RotateCcw size={compact ? 12 : 16} />
       </button>
@@ -262,6 +291,95 @@ const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
       
       <audio ref={audioRef} src={src} preload="auto" />
     </div>
+  );
+};
+
+// ==============================
+// AUXILIARY COMPONENT: TEXT-TO-SPEECH (FEMALE VOICE)
+// ==============================
+interface TextToSpeechProps {
+  text: string;
+  buttonSize?: "sm" | "md";
+}
+
+const TextToSpeech = ({ text, buttonSize = "md" }: TextToSpeechProps) => {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [speechSynthesis, setSpeechSynthesis] = useState<SpeechSynthesis | null>(null);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setSpeechSynthesis(window.speechSynthesis);
+    }
+  }, []);
+
+  const speakText = () => {
+    if (!speechSynthesis) {
+      alert("Your browser doesn't support speech synthesis.");
+      return;
+    }
+
+    // Cancel any ongoing speech
+    speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    
+    // Try to get a female voice
+    const setFemaleVoice = () => {
+      const voices = speechSynthesis.getVoices();
+      const femaleVoice = voices.find(voice => 
+        voice.name.includes('Google UK English Female') || 
+        voice.name.includes('Samantha') ||
+        voice.name.includes('Female') ||
+        voice.lang === 'en-US' && voice.name.includes('Female')
+      );
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
+      }
+    };
+    
+    setFemaleVoice();
+    if (speechSynthesis.getVoices().length === 0) {
+      speechSynthesis.addEventListener('voiceschanged', setFemaleVoice, { once: true });
+    }
+    
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    
+    utteranceRef.current = utterance;
+    speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeaking = () => {
+    if (speechSynthesis) {
+      speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
+  };
+
+  const handleClick = () => {
+    if (isSpeaking) {
+      stopSpeaking();
+    } else {
+      speakText();
+    }
+  };
+
+  const sizeClass = buttonSize === "sm" ? "p-1" : "p-1.5";
+
+  return (
+    <button
+      onClick={handleClick}
+      className={`${sizeClass} rounded-full transition-all duration-200 hover:scale-105 flex items-center justify-center`}
+      style={{ backgroundColor: isSpeaking ? '#ef4444' : LESSON_THEME_COLOR }}
+      title={isSpeaking ? "Stop speaking" : "Listen (Female voice)"}
+    >
+      <Mic size={buttonSize === "sm" ? 14 : 16} className="text-white" />
+    </button>
   );
 };
 
@@ -289,7 +407,7 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
 };
 
 // ==============================
-// SUBSTITUTION COMPONENT (SIMPLIFIED - LEFT SIDE ONLY)
+// SUBSTITUTION COMPONENT WITH TEXT-TO-SPEECH
 // ==============================
 interface SubstitutionItem {
   base: string;
@@ -361,18 +479,24 @@ const SubstitutionPractice = ({
         <div className="space-y-6">
           {data.portuguese.map((item, idx) => (
             <div key={idx} className="bg-white p-6 rounded-xl border-2 shadow-md" style={{ borderColor: borderColor.replace('border-', '') }}>
-              {/* Portuguese Instruction */}
-              <div className="mb-4 pb-3 border-b border-gray-200">
-                <p className="text-gray-500 text-sm mb-1">🇵🇹 Instrução em Português:</p>
-                <p className={`${textColor} font-medium text-lg`}>{item.sentence}</p>
+              {/* Portuguese Instruction with Text-to-Speech */}
+              <div className="mb-4 pb-3 border-b border-gray-200 flex justify-between items-start">
+                <div className="flex-1">
+                  <p className="text-gray-500 text-sm mb-1">🇵🇹 Instrução em Português:</p>
+                  <p className={`${textColor} font-medium text-lg`}>{item.sentence}</p>
+                </div>
+                <TextToSpeech text={item.sentence} buttonSize="sm" />
               </div>
               
-              {/* English Sentence Display */}
-              <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                <p className="text-gray-500 text-sm mb-1">🇬🇧 English Sentence:</p>
-                <p className="text-gray-800 font-medium text-xl">
-                  {getCurrentSentence(idx)}
-                </p>
+              {/* English Sentence Display with Text-to-Speech */}
+              <div className="mb-4 p-4 bg-gray-50 rounded-lg flex justify-between items-start">
+                <div className="flex-1">
+                  <p className="text-gray-500 text-sm mb-1">🇬🇧 English Sentence:</p>
+                  <p className="text-gray-800 font-medium text-xl">
+                    {getCurrentSentence(idx)}
+                  </p>
+                </div>
+                <TextToSpeech text={getCurrentSentence(idx)} buttonSize="sm" />
               </div>
               
               {/* Substitution Buttons with Translations */}
@@ -439,8 +563,7 @@ export default function Lesson24Lifestyle() {
   const [negativeAnswers, setNegativeAnswers] = useState<Record<number, string>>({});
   const [affirmativeAnswers, setAffirmativeAnswers] = useState<Record<number, string>>({});
   const [questionAnswers, setQuestionAnswers] = useState<Record<number, string>>({});
-  const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
-  const [discussionAnswers, setDiscussionAnswers] = useState<Record<number, string>>({});
+  const [tuneAnswers, setTuneAnswers] = useState<Record<number, string>>({});
   
   // State for check results
   const [showResults, setShowResults] = useState<Record<string, boolean>>({});
@@ -456,7 +579,7 @@ export default function Lesson24Lifestyle() {
     }));
   };
 
-  const handleAnswerChange = (type: 'negative' | 'affirmative' | 'question' | 'video' | 'discussion', id: number, value: string) => {
+  const handleAnswerChange = (type: 'negative' | 'affirmative' | 'question' | 'tune', id: number, value: string) => {
     switch (type) {
       case 'negative':
         setNegativeAnswers(prev => ({ ...prev, [id]: value }));
@@ -467,18 +590,15 @@ export default function Lesson24Lifestyle() {
       case 'question':
         setQuestionAnswers(prev => ({ ...prev, [id]: value }));
         break;
-      case 'video':
-        setVideoAnswers(prev => ({ ...prev, [id]: value }));
-        break;
-      case 'discussion':
-        setDiscussionAnswers(prev => ({ ...prev, [id]: value }));
+      case 'tune':
+        setTuneAnswers(prev => ({ ...prev, [id]: value }));
         break;
     }
     
     setShowResults(prev => ({ ...prev, [`${type}-${id}`]: false }));
   };
 
-  const checkAnswer = (type: 'negative' | 'affirmative' | 'video', id: number, userAnswer: string, correctAnswer: string) => {
+  const checkAnswer = (type: 'negative' | 'affirmative' | 'tune', id: number, userAnswer: string, correctAnswer: string) => {
     const normalizedUser = userAnswer.toLowerCase().trim().replace(/[.,]/g, '');
     const normalizedCorrect = correctAnswer.toLowerCase().trim().replace(/[.,]/g, '');
     
@@ -490,7 +610,7 @@ export default function Lesson24Lifestyle() {
     return isCorrect;
   };
 
-  const clearAnswer = (type: 'negative' | 'affirmative' | 'question' | 'video' | 'discussion', id: number) => {
+  const clearAnswer = (type: 'negative' | 'affirmative' | 'question' | 'tune', id: number) => {
     switch (type) {
       case 'negative':
         setNegativeAnswers(prev => {
@@ -513,15 +633,8 @@ export default function Lesson24Lifestyle() {
           return newState;
         });
         break;
-      case 'video':
-        setVideoAnswers(prev => {
-          const newState = { ...prev };
-          delete newState[id];
-          return newState;
-        });
-        break;
-      case 'discussion':
-        setDiscussionAnswers(prev => {
+      case 'tune':
+        setTuneAnswers(prev => {
           const newState = { ...prev };
           delete newState[id];
           return newState;
@@ -537,8 +650,7 @@ export default function Lesson24Lifestyle() {
       negativeAnswers,
       affirmativeAnswers,
       questionAnswers,
-      videoAnswers,
-      discussionAnswers,
+      tuneAnswers,
       timestamp: new Date().toISOString()
     };
     
@@ -561,7 +673,7 @@ export default function Lesson24Lifestyle() {
   // ==============================
   return (
     <div className="min-h-screen py-16 px-6 bg-cover bg-center bg-fixed" style={{ 
-      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('${BACKGROUND_IMAGE}')`,
+      backgroundImage: `linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url('${BACKGROUND_IMAGE}')`,
       backgroundSize: 'cover',
       backgroundAttachment: 'fixed'
     }}>
@@ -598,7 +710,7 @@ export default function Lesson24Lifestyle() {
           </div>
         </div>
 
-        {/* SECTION 1: IMPROVE YOUR PRONUNCIATION - COM NOVA IMAGEM DE ACADEMIA */}
+        {/* SECTION 1: IMPROVE YOUR PRONUNCIATION */}
         <div className="mb-16 bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-3xl shadow-lg overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-5 px-8 flex justify-between items-center">
             <h2 className="text-2xl font-bold">🎯 IMPROVE YOUR PRONUNCIATION</h2>
@@ -612,7 +724,7 @@ export default function Lesson24Lifestyle() {
           
           {expandedSections.pronunciation && (
             <div className="p-8">
-              {/* NOVA IMAGEM DE ACADEMIA - PESSOA TREINANDO */}
+              {/* Fitness Image */}
               <div className="mb-10 rounded-2xl overflow-hidden shadow-xl">
                 <div className="relative w-full h-72 md:h-96">
                   <Image
@@ -632,13 +744,16 @@ export default function Lesson24Lifestyle() {
                 </div>
               </div>
               
-              {/* Grid de Pronúncia */}
+              {/* Pronunciation Grid with Text-to-Speech */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {pronunciationItems.map((item, index) => (
                   <div key={index} className="bg-white p-5 rounded-xl border border-blue-200 shadow-sm hover:shadow-md transition">
                     <div className="flex justify-between items-start mb-3">
                       <h4 className="text-lg font-bold text-blue-800">{item.word}</h4>
-                      <AudioPlayer src={item.audio} compact />
+                      <div className="flex gap-1">
+                        <TextToSpeech text={item.word} buttonSize="sm" />
+                        <AudioPlayer src={item.audio} compact />
+                      </div>
                     </div>
                     <p className="text-blue-600 mb-1">{item.phrase}</p>
                     <p className="text-gray-700 italic text-sm">{item.example}</p>
@@ -646,7 +761,7 @@ export default function Lesson24Lifestyle() {
                 ))}
               </div>
 
-              {/* Dica extra sobre estilo de vida saudável */}
+              {/* Fitness tip */}
               <div className="mt-8 bg-gradient-to-r from-blue-100 to-cyan-100 border border-blue-300 rounded-xl p-4 text-center">
                 <p className="text-blue-700">
                   💪 <span className="font-bold">Fitness & Learning Tip:</span> Just like going to the gym regularly, practice English every day for best results! Consistency is key for both fitness and fluency.
@@ -692,7 +807,10 @@ export default function Lesson24Lifestyle() {
                   <div key={exercise.id} className="bg-white p-5 rounded-xl border border-red-200">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex-1">
-                        <p className="text-lg font-medium text-gray-800 mb-2">{exercise.sentence}</p>
+                        <div className="flex items-center gap-2 mb-2">
+                          <p className="text-lg font-medium text-gray-800">{exercise.sentence}</p>
+                          <TextToSpeech text={exercise.sentence} buttonSize="sm" />
+                        </div>
                         <textarea
                           value={negativeAnswers[exercise.id] || ""}
                           onChange={(e) => handleAnswerChange('negative', exercise.id, e.target.value)}
@@ -768,7 +886,10 @@ export default function Lesson24Lifestyle() {
                   <div key={exercise.id} className="bg-white p-5 rounded-xl border border-yellow-200">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex-1">
-                        <p className="text-lg font-medium text-gray-800 mb-2">{exercise.sentence}</p>
+                        <div className="flex items-center gap-2 mb-2">
+                          <p className="text-lg font-medium text-gray-800">{exercise.sentence}</p>
+                          <TextToSpeech text={exercise.sentence} buttonSize="sm" />
+                        </div>
                         <textarea
                           value={affirmativeAnswers[exercise.id] || ""}
                           onChange={(e) => handleAnswerChange('affirmative', exercise.id, e.target.value)}
@@ -829,7 +950,10 @@ export default function Lesson24Lifestyle() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {conversationQuestions.map((question, idx) => (
                   <div key={idx} className="bg-white p-5 rounded-xl border border-indigo-200">
-                    <h4 className="text-lg font-medium text-indigo-800 mb-3">{question}</h4>
+                    <div className="flex items-center gap-2 mb-3">
+                      <h4 className="text-lg font-medium text-indigo-800 flex-1">{question}</h4>
+                      <TextToSpeech text={question} buttonSize="sm" />
+                    </div>
                     <textarea
                       value={questionAnswers[idx] || ""}
                       onChange={(e) => handleAnswerChange('question', idx, e.target.value)}
@@ -861,7 +985,7 @@ export default function Lesson24Lifestyle() {
           )}
         </div>
 
-        {/* SECTION 7: TUNE IN YOUR EARS */}
+        {/* SECTION 7: TUNE IN YOUR EARS (COMBINED QUESTIONS) */}
         <div className="mb-16 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-3xl shadow-lg overflow-hidden">
           <div className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-5 px-8 flex justify-between items-center">
             <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
@@ -905,40 +1029,18 @@ export default function Lesson24Lifestyle() {
                   ))}
                 </div>
               </div>
-
-              <div className="mb-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-cyan-800 mb-4">💭 Discussion Questions:</h3>
-                <div className="space-y-4">
-                  {tuneYourEarsData.discussionQuestions.map((question, idx) => (
-                    <div key={idx} className="bg-white p-4 rounded-lg">
-                      <p className="font-medium text-cyan-700 mb-2">{idx + 1}. {question}</p>
-                      <textarea
-                        value={discussionAnswers[idx] || ""}
-                        onChange={(e) => handleAnswerChange('discussion', idx, e.target.value)}
-                        placeholder="Write your answer here..."
-                        className="w-full p-2 border border-cyan-300 rounded-md focus:ring-2 focus:ring-cyan-500"
-                        rows={3}
-                      />
-                      <div className="flex justify-end mt-2">
-                        <button
-                          onClick={() => clearAnswer('discussion', idx)}
-                          className="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded hover:bg-gray-200"
-                        >
-                          Clear
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
               
+              {/* ALL QUESTIONS COMBINED */}
               <div className="space-y-8">
-                <h3 className="text-xl font-bold text-cyan-800 mb-4">🎯 Video Comprehension Questions:</h3>
-                {tuneYourEarsData.videoQuestions.map((q) => (
+                <h3 className="text-xl font-bold text-cyan-800 mb-4">🎯 Comprehension & Discussion Questions:</h3>
+                {tuneYourEarsData.combinedQuestions.map((q) => (
                   <div key={q.id} className="bg-white p-6 rounded-xl border-2 border-cyan-200 shadow-md">
-                    <h4 className="text-lg font-bold text-cyan-700 mb-3">
-                      Question {q.id}: {q.question}
-                    </h4>
+                    <div className="flex items-center gap-2 mb-3">
+                      <h4 className="text-lg font-bold text-cyan-700 flex-1">
+                        {q.type === "discussion" ? "💭 Discussion" : "🎬 Video"} Question {q.id}: {q.question}
+                      </h4>
+                      <TextToSpeech text={q.question} buttonSize="sm" />
+                    </div>
                     
                     {q.vocabulary && (
                       <div className="mb-4 p-3 bg-cyan-50 rounded-lg">
@@ -955,31 +1057,31 @@ export default function Lesson24Lifestyle() {
                     )}
 
                     <textarea
-                      value={videoAnswers[q.id] || ""}
-                      onChange={(e) => handleAnswerChange('video', q.id, e.target.value)}
-                      placeholder="Write your answer based on what you heard..."
+                      value={tuneAnswers[q.id] || ""}
+                      onChange={(e) => handleAnswerChange('tune', q.id, e.target.value)}
+                      placeholder="Write your answer based on what you heard or your own opinion..."
                       className="w-full h-32 p-3 border border-cyan-300 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none"
                     />
 
                     <div className="flex gap-3 mt-3">
                       <button
-                        onClick={() => checkAnswer('video', q.id, videoAnswers[q.id] || "", q.correctAnswer)}
+                        onClick={() => checkAnswer('tune', q.id, tuneAnswers[q.id] || "", q.correctAnswer)}
                         className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-md transition font-medium"
                       >
                         Check Answer
                       </button>
                       <button
-                        onClick={() => clearAnswer('video', q.id)}
+                        onClick={() => clearAnswer('tune', q.id)}
                         className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md transition"
                       >
                         Clear
                       </button>
                     </div>
 
-                    {showResults[`video-${q.id}`] && (
+                    {showResults[`tune-${q.id}`] && (
                       <div className="mt-3">
                         <AnswerResult 
-                          isCorrect={answerCorrectness[`video-${q.id}`] || false} 
+                          isCorrect={answerCorrectness[`tune-${q.id}`] || false} 
                           correctAnswer={q.correctAnswer}
                         />
                       </div>
@@ -1017,8 +1119,7 @@ export default function Lesson24Lifestyle() {
                   setNegativeAnswers({});
                   setAffirmativeAnswers({});
                   setQuestionAnswers({});
-                  setVideoAnswers({});
-                  setDiscussionAnswers({});
+                  setTuneAnswers({});
                   setShowResults({});
                   setAnswerCorrectness({});
                 }
@@ -1049,6 +1150,7 @@ export default function Lesson24Lifestyle() {
         {/* CREDITS */}
         <div className="mt-8 text-center text-gray-500 text-sm">
           <p>Lesson {LESSON_NUMBER}: {LESSON_TITLE} • Interactive English Practice • All answers are saved in your browser</p>
+          <p className="text-xs mt-1">🔊 Click on the microphone icon next to any sentence to hear it spoken in a female voice (Text-to-Speech)</p>
         </div>
       </div>
     </div>

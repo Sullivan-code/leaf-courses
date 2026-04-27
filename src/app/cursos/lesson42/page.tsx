@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { Pause, Play, RotateCcw, ChevronDown, ChevronUp, Check, XCircle, ChevronLeft, ChevronRight, Volume2 } from "lucide-react";
 
@@ -12,24 +11,24 @@ const listenItemsOriginal = [
   {
     key: "image1",
     label: "1. pessoas sentadas em grupo conversando",
-    image: "/images/lesson42/people-working.jpg",
-    placeholder: "👥💻",
+    image: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600",
+    placeholder: "👥💬",
     description: "pessoas sentadas em grupo conversando e usando laptops",
     correctNumber: 1
   },
   {
     key: "image2",
     label: "2. pessoas tomando café ao fundo",
-    image: "/images/lesson42/coffee-break.jpg",
-    placeholder: "☕",
+    image: "https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?auto=compress&cs=tinysrgb&w=600",
+    placeholder: "☕👥",
     description: "pessoas em pé ao fundo tomando café e interagindo",
     correctNumber: 2
   },
   {
     key: "image3",
     label: "3. estudantes trabalhando em círculo",
-    image: "/images/lesson42/students-circle.jpg",
-    placeholder: "👨‍🎓📚",
+    image: "https://images.pexels.com/photos/5428830/pexels-photo-5428830.jpeg?auto=compress&cs=tinysrgb&w=600",
+    placeholder: "👨‍🎓🔄📚",
     description: "estudantes sentados em círculo trabalhando juntos",
     correctNumber: 3
   },
@@ -287,9 +286,9 @@ const questionCards = [
 ];
 
 // ============================================
-// TUNE YOUR EARS - Video Section (Small Talk)
+// TUNE IN YOUR EARS - Video Section (Small Talk)
 // ============================================
-const tuneYourEarsVideo = {
+const tuneInYourEarsVideo = {
   title: "🎬 Small Talk: Starting Conversations in English",
   description: "Watch this video to learn how to start short conversations in different places like the gym, cafe, or government office. Practice your listening skills!",
   youtubeId: "w98U_C_9nVs",
@@ -367,18 +366,6 @@ const tuneYourEarsVideo = {
     }
   ]
 };
-
-// ============================================
-// TUNE IN YOUR EARS - Final practice phrases
-// ============================================
-const tuneInPhrases = [
-  { english: "I am tired.", portuguese: "Estou cansado(a)." },
-  { english: "She is worried.", portuguese: "Ela está preocupada." },
-  { english: "They are busy.", portuguese: "Eles estão ocupados." },
-  { english: "Are you ready?", portuguese: "Você está pronto(a)?" },
-  { english: "Is he hungry?", portuguese: "Ele está com fome?" },
-  { english: "We are not late.", portuguese: "Não estamos atrasados." },
-];
 
 // ============================================
 // COMPONENTES AUXILIARES
@@ -549,24 +536,20 @@ export default function Lesson42() {
   const [interrogativeResults, setInterrogativeResults] = useState<Record<number, boolean>>({});
   const [showInterrogativeResults, setShowInterrogativeResults] = useState<Record<number, boolean>>({});
   
-  // Estado para o Questions section
+  // Estado para o QUESTIONS section
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [questionsUserAnswer, setQuestionsUserAnswer] = useState("");
   const [showQuestionsResult, setShowQuestionsResult] = useState(false);
-  const [questionsResult, setQuestionsResult] = useState(false);
+  const [questionsResult, setQuestionsResult] = useState<boolean>(false);
   
-  // Estado para o Tune Your Ears video answers
+  // Estado para o Tune In Your Ears video answers
   const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
   const [showVideoResults, setShowVideoResults] = useState<Record<string, boolean>>({});
   const [videoResults, setVideoResults] = useState<Record<string, boolean>>({});
   
-  // Estado para o Tune in Your Ears (phrases)
-  const [tuneInUserAnswer, setTuneInUserAnswer] = useState("");
-  const [showTuneInResult, setShowTuneInResult] = useState(false);
-  const [currentTuneInIndex, setCurrentTuneInIndex] = useState(0);
-  
   // Estados para controle de expansão das seções
   const [sections, setSections] = useState({
+    conversationTime: true,
     listen: true,
     drilling1: true,
     negative: true,
@@ -574,8 +557,7 @@ export default function Lesson42() {
     affirmative: true,
     interrogative: true,
     questions: true,
-    tuneYourEars: true,
-    tuneIn: true
+    tuneInYourEars: true
   });
 
   // Estado para armazenar a sequência de números que o aluno selecionou (ordem das imagens)
@@ -622,7 +604,6 @@ export default function Lesson42() {
         if (data.questionsResult !== undefined) setQuestionsResult(data.questionsResult);
         if (data.sections) setSections(data.sections);
         if (data.imageSequence) setImageSequence(data.imageSequence);
-        if (data.currentTuneInIndex !== undefined) setCurrentTuneInIndex(data.currentTuneInIndex);
         if (data.videoAnswers) setVideoAnswers(data.videoAnswers);
         
         console.log("Dados carregados do localStorage para Lesson 42");
@@ -657,7 +638,6 @@ export default function Lesson42() {
       questionsResult,
       sections,
       imageSequence,
-      currentTuneInIndex,
       videoAnswers,
       lastUpdated: new Date().toISOString(),
       lessonName: "Lesson 42 - Health, Feelings & Professions",
@@ -695,9 +675,6 @@ export default function Lesson42() {
       setQuestionsResult(false);
       setImageSequence([]);
       setShowFinalSequenceResult(false);
-      setCurrentTuneInIndex(0);
-      setTuneInUserAnswer("");
-      setShowTuneInResult(false);
       setVideoAnswers({});
       setShowVideoResults({});
       setVideoResults({});
@@ -753,18 +730,6 @@ export default function Lesson42() {
     setShowFinalSequenceResult(true);
   };
 
-  // Listen functions
-  const handleListenSelect = (key: string, number: number) => {
-    setListenAnswers(prev => ({ ...prev, [key]: number }));
-    setShowListenResults(prev => ({ ...prev, [key]: false }));
-  };
-
-  const handleListenCheck = (key: string, correctNumber: number) => {
-    const isCorrect = listenAnswers[key] === correctNumber;
-    setListenResults(prev => ({ ...prev, [key]: isCorrect }));
-    setShowListenResults(prev => ({ ...prev, [key]: true }));
-  };
-
   // Negative functions
   const handleNegativeChange = (id: number, value: string) => {
     setNegativeEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
@@ -810,21 +775,22 @@ export default function Lesson42() {
     }
   };
 
-  // Questions functions
+  // QUESTIONS functions
   const handleQuestionsCheck = () => {
     const currentCard = questionCards[currentCardIndex];
     const userLower = questionsUserAnswer.toLowerCase().trim();
     
-    const isCorrect = (currentCard.id === 1 && userLower.includes("birthday")) ||
-                     (currentCard.id === 2 && (userLower.includes("years old") || userLower.match(/\d+/))) ||
-                     (currentCard.id === 3 && (userLower.includes("years old") || userLower.match(/\d+/))) ||
-                     (currentCard.id === 4 && (userLower.includes("yes") || userLower.includes("no"))) ||
-                     (currentCard.id === 5 && (userLower.includes("yes") || userLower.includes("no"))) ||
-                     (currentCard.id === 6 && (userLower.includes("yes") || userLower.includes("no"))) ||
-                     (currentCard.id === 7 && (userLower.includes("yes") || userLower.includes("no"))) ||
-                     (currentCard.id === 8 && (userLower.includes("yes") || userLower.includes("no"))) ||
-                     (currentCard.id === 9 && (userLower.includes("yes") || userLower.includes("no"))) ||
-                     (currentCard.id === 10 && (userLower.includes("yes") || userLower.includes("no")));
+    let isCorrect = false;
+    
+    if (currentCard.id === 1 && userLower.includes("birthday")) {
+      isCorrect = true;
+    } else if (currentCard.id === 2 && (userLower.includes("years old") || userLower.match(/\d+/))) {
+      isCorrect = true;
+    } else if (currentCard.id === 3 && (userLower.includes("years old") || userLower.match(/\d+/))) {
+      isCorrect = true;
+    } else if (currentCard.id >= 4 && currentCard.id <= 10 && (userLower.includes("yes") || userLower.includes("no"))) {
+      isCorrect = true;
+    }
     
     setQuestionsResult(isCorrect);
     setShowQuestionsResult(true);
@@ -834,12 +800,14 @@ export default function Lesson42() {
     setCurrentCardIndex((prev) => (prev + 1) % questionCards.length);
     setQuestionsUserAnswer("");
     setShowQuestionsResult(false);
+    setQuestionsResult(false);
   };
 
   const prevCard = () => {
     setCurrentCardIndex((prev) => (prev - 1 + questionCards.length) % questionCards.length);
     setQuestionsUserAnswer("");
     setShowQuestionsResult(false);
+    setQuestionsResult(false);
   };
 
   const currentCard = questionCards[currentCardIndex];
@@ -860,36 +828,6 @@ export default function Lesson42() {
   const clearVideoAnswer = (questionId: number) => {
     setVideoAnswers(prev => ({ ...prev, [questionId]: "" }));
     setShowVideoResults(prev => ({ ...prev, [`video-${questionId}`]: false }));
-  };
-
-  // Tune In functions
-  const handleTuneInCheck = () => {
-    const currentPhrase = tuneInPhrases[currentTuneInIndex];
-    const isCorrect = tuneInUserAnswer.toLowerCase().trim() === currentPhrase.english.toLowerCase();
-    setShowTuneInResult(true);
-    setTimeout(() => {
-      if (isCorrect && currentTuneInIndex < tuneInPhrases.length - 1) {
-        setCurrentTuneInIndex(prev => prev + 1);
-        setTuneInUserAnswer("");
-        setShowTuneInResult(false);
-      }
-    }, 1500);
-  };
-
-  const nextTuneInPhrase = () => {
-    if (currentTuneInIndex < tuneInPhrases.length - 1) {
-      setCurrentTuneInIndex(prev => prev + 1);
-      setTuneInUserAnswer("");
-      setShowTuneInResult(false);
-    }
-  };
-
-  const prevTuneInPhrase = () => {
-    if (currentTuneInIndex > 0) {
-      setCurrentTuneInIndex(prev => prev - 1);
-      setTuneInUserAnswer("");
-      setShowTuneInResult(false);
-    }
   };
 
   // Se não estiver hidratado ainda, renderiza um placeholder ou nada
@@ -917,47 +855,57 @@ export default function Lesson42() {
           <p className="text-md text-gray-500 mt-2">Talk to your friends about health, feelings, work, and appointments!</p>
         </div>
 
-        {/* DIALOGUE SECTION */}
+        {/* ============================================ */}
+        {/* CONVERSATION TIME - Dialogue Section */}
+        {/* ============================================ */}
         <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-indigo-600 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">💬 DIALOGUE</h2>
-          </div>
-          <div className="p-8">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white p-5 rounded-xl border border-indigo-200">
-                <p className="font-bold text-indigo-700 mb-2">Peter:</p>
-                <p className="text-gray-700">Hey, Donna, what&apos;s up?</p>
-                <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
-                <p className="text-gray-700">I&apos;m tired and I still have to read these projects for next week.</p>
-                <p className="font-bold text-indigo-700 mt-3 mb-2">Peter:</p>
-                <p className="text-gray-700">Next week? That&apos;s a lot of work. Are you worried?</p>
-                <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
-                <p className="text-gray-700">Yes, I am. I have to work extra hours until I finish it. What about you? Are you busy, too?</p>
-              </div>
-              <div className="bg-white p-5 rounded-xl border border-indigo-200">
-                <p className="font-bold text-indigo-700 mb-2">Peter:</p>
-                <p className="text-gray-700">Yes, I am, but I&apos;m happy because I have a business lunch with Pam Wilson and Justin Davis tomorrow.</p>
-                <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
-                <p className="text-gray-700">Who are they?</p>
-                <p className="font-bold text-indigo-700 mt-3 mb-2">Peter:</p>
-                <p className="text-gray-700">They work at an office abroad and they want to talk about the projects for next year and the deadlines.</p>
-                <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
-                <p className="text-gray-700">I see. Do they speak English?</p>
-                <p className="font-bold text-indigo-700 mt-3 mb-2">Peter:</p>
-                <p className="text-gray-700">Yes, they speak English very well.</p>
-                <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
-                <p className="text-gray-700">Good for you! Hey, Peter, I don&apos;t have a lot of time for lunch, but do you want to grab a bite to eat?</p>
-                <p className="font-bold text-indigo-700 mt-3 mb-2">Peter:</p>
-                <p className="text-gray-700">Sure! Good idea.</p>
-                <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
-                <p className="text-gray-700">Let&apos;s go.</p>
-              </div>
-            </div>
-            <div className="mt-4 p-3 bg-indigo-100 rounded-lg">
-              <AudioPlayer src="/audios/lesson42-dialogue.mp3" compact={false} />
-              <p className="text-xs text-indigo-600 mt-2">🎧 Listen to the dialogue and practice with a partner</p>
+          <div className="bg-indigo-600 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">💬 CONVERSATION TIME</h2>
+              <button onClick={() => toggleSection('conversationTime')} className="ml-4 p-2 rounded-full hover:bg-indigo-700 transition">
+                {sections.conversationTime ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
             </div>
           </div>
+
+          {sections.conversationTime && (
+            <div className="p-8">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white p-5 rounded-xl border border-indigo-200">
+                  <p className="font-bold text-indigo-700 mb-2">Peter:</p>
+                  <p className="text-gray-700">Hey, Donna, what&apos;s up?</p>
+                  <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
+                  <p className="text-gray-700">I&apos;m tired and I still have to read these projects for next week.</p>
+                  <p className="font-bold text-indigo-700 mt-3 mb-2">Peter:</p>
+                  <p className="text-gray-700">Next week? That&apos;s a lot of work. Are you worried?</p>
+                  <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
+                  <p className="text-gray-700">Yes, I am. I have to work extra hours until I finish it. What about you? Are you busy, too?</p>
+                </div>
+                <div className="bg-white p-5 rounded-xl border border-indigo-200">
+                  <p className="font-bold text-indigo-700 mb-2">Peter:</p>
+                  <p className="text-gray-700">Yes, I am, but I&apos;m happy because I have a business lunch with Pam Wilson and Justin Davis tomorrow.</p>
+                  <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
+                  <p className="text-gray-700">Who are they?</p>
+                  <p className="font-bold text-indigo-700 mt-3 mb-2">Peter:</p>
+                  <p className="text-gray-700">They work at an office abroad and they want to talk about the projects for next year and the deadlines.</p>
+                  <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
+                  <p className="text-gray-700">I see. Do they speak English?</p>
+                  <p className="font-bold text-indigo-700 mt-3 mb-2">Peter:</p>
+                  <p className="text-gray-700">Yes, they speak English very well.</p>
+                  <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
+                  <p className="text-gray-700">Good for you! Hey, Peter, I don&apos;t have a lot of time for lunch, but do you want to grab a bite to eat?</p>
+                  <p className="font-bold text-indigo-700 mt-3 mb-2">Peter:</p>
+                  <p className="text-gray-700">Sure! Good idea.</p>
+                  <p className="font-bold text-indigo-700 mt-3 mb-2">Donna:</p>
+                  <p className="text-gray-700">Let&apos;s go.</p>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-indigo-100 rounded-lg">
+                <AudioPlayer src="/audios/lesson42-dialogue.mp3" compact={false} />
+                <p className="text-xs text-indigo-600 mt-2">🎧 Listen to the conversation and practice with a partner</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ============================================ */}
@@ -1322,33 +1270,37 @@ export default function Lesson42() {
                 
                 <div className="flex gap-3">
                   <button onClick={handleQuestionsCheck} className="flex-1 bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-md transition font-medium">Check Answer</button>
-                  <button onClick={() => { setQuestionsUserAnswer(""); setShowQuestionsResult(false); }} className="px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-md transition">Clear</button>
+                  <button onClick={() => { setQuestionsUserAnswer(""); setShowQuestionsResult(false); setQuestionsResult(false); }} className="px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-md transition">Clear</button>
                 </div>
                 
-                {showQuestionsResult && <div className="mt-4"><AnswerResult isCorrect={questionsResult} correctAnswer={currentCard.answer} /></div>}
+                {showQuestionsResult && (
+                  <div className="mt-4">
+                    <AnswerResult isCorrect={questionsResult} correctAnswer={currentCard.answer} />
+                  </div>
+                )}
               </div>
             </div>
           )}
         </div>
 
         {/* ============================================ */}
-        {/* TUNE YOUR EARS (VIDEO SECTION) */}
+        {/* TUNE IN YOUR EARS (VIDEO SECTION) */}
         {/* ============================================ */}
         <div className="mb-10 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 rounded-3xl shadow-lg overflow-hidden"
              style={{ borderColor: "#06b6d4" }}>
           <div className="py-5 px-8 flex justify-between items-center bg-gradient-to-r from-cyan-500 to-blue-500">
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              🎧 TUNE YOUR EARS
+              🎧 TUNE IN YOUR EARS
             </h2>
             <button 
-              onClick={() => toggleSection('tuneYourEars')}
+              onClick={() => toggleSection('tuneInYourEars')}
               className="p-2 rounded-full hover:bg-white/20 transition"
             >
-              {sections.tuneYourEars ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
+              {sections.tuneInYourEars ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
             </button>
           </div>
           
-          {sections.tuneYourEars && (
+          {sections.tuneInYourEars && (
             <div className="p-8">
               {/* Key Vocabulary Section */}
               <div className="mb-8 bg-white rounded-xl p-6 shadow-md border border-cyan-200">
@@ -1356,7 +1308,7 @@ export default function Lesson42() {
                   <Volume2 size={20} /> 📚 KEY VOCABULARY FROM THE VIDEO
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {tuneYourEarsVideo.keyVocabulary.map((vocab, idx) => (
+                  {tuneInYourEarsVideo.keyVocabulary.map((vocab, idx) => (
                     <div key={idx} className="bg-cyan-50 p-2 rounded-lg border border-cyan-200">
                       <p className="font-bold text-cyan-800 text-sm">{vocab.english}</p>
                       <p className="text-xs text-cyan-600">{vocab.portuguese}</p>
@@ -1368,15 +1320,15 @@ export default function Lesson42() {
               {/* Video Player */}
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold text-cyan-700 mb-4">
-                  {tuneYourEarsVideo.title}
+                  {tuneInYourEarsVideo.title}
                 </h3>
-                <p className="text-cyan-600 mb-6">{tuneYourEarsVideo.description}</p>
+                <p className="text-cyan-600 mb-6">{tuneInYourEarsVideo.description}</p>
                 
                 <div className="bg-black rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
                   <div className="aspect-w-16 aspect-h-9">
                     <iframe
-                      src={`https://www.youtube.com/embed/${tuneYourEarsVideo.youtubeId}`}
-                      title={tuneYourEarsVideo.title}
+                      src={`https://www.youtube.com/embed/${tuneInYourEarsVideo.youtubeId}`}
+                      title={tuneInYourEarsVideo.title}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       className="w-full h-[400px] md:h-[500px]"
@@ -1387,7 +1339,7 @@ export default function Lesson42() {
               
               {/* Questions from the video */}
               <div className="space-y-8">
-                {tuneYourEarsVideo.questions.map((q) => (
+                {tuneInYourEarsVideo.questions.map((q) => (
                   <div key={q.id} className="bg-white p-6 rounded-xl border-2 shadow-md"
                        style={{ borderColor: "#06b6d430" }}>
                     <h4 className="text-lg font-bold mb-3" style={{ color: "#06b6d4" }}>
@@ -1462,75 +1414,9 @@ export default function Lesson42() {
                   <li>Listen first without looking at the questions</li>
                   <li>Watch a second time while reading the questions</li>
                   <li>Pay attention to keywords and main ideas</li>
-                  <li>Don't worry if you don't understand every word</li>
+                  <li>Don&apos;t worry if you don&apos;t understand every word</li>
                   <li>You can watch multiple times if needed</li>
                 </ul>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================ */}
-        {/* TUNE IN YOUR EARS - Phrases Practice */}
-        {/* ============================================ */}
-        <div className="bg-cyan-50 border-2 border-cyan-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-cyan-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS - PHRASES</h2>
-              <button onClick={() => toggleSection('tuneIn')} className="ml-4 p-2 rounded-full hover:bg-cyan-700 transition">
-                {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.tuneIn && (
-            <div className="p-8">
-              <p className="text-cyan-700 mb-4">🔊 Listen and repeat aloud. Practice your pronunciation!</p>
-              
-              <div className="bg-white p-6 rounded-xl border-2 border-cyan-200">
-                <div className="flex items-center justify-between mb-6">
-                  <button onClick={prevTuneInPhrase} className="p-2 bg-cyan-100 text-cyan-700 rounded-full hover:bg-cyan-200 transition" disabled={currentTuneInIndex === 0}>
-                    <ChevronLeft size={24} />
-                  </button>
-                  <span className="text-sm text-cyan-600">Phrase {currentTuneInIndex + 1} of {tuneInPhrases.length}</span>
-                  <button onClick={nextTuneInPhrase} className="p-2 bg-cyan-100 text-cyan-700 rounded-full hover:bg-cyan-200 transition" disabled={currentTuneInIndex === tuneInPhrases.length - 1}>
-                    <ChevronRight size={24} />
-                  </button>
-                </div>
-
-                <div className="mb-6 p-4 bg-cyan-100 rounded-lg text-center">
-                  <p className="text-sm text-cyan-700 mb-1">Portuguese:</p>
-                  <p className="text-xl text-gray-800">{tuneInPhrases[currentTuneInIndex].portuguese}</p>
-                </div>
-
-                <div className="mb-4">
-                  <p className="text-sm text-gray-700 mb-2">Type the English translation:</p>
-                  <textarea
-                    value={tuneInUserAnswer}
-                    onChange={(e) => setTuneInUserAnswer(e.target.value)}
-                    placeholder="Write the English phrase here..."
-                    className="w-full h-20 p-3 border border-cyan-300 rounded-md resize-none mb-3"
-                  />
-                </div>
-
-                <div className="flex gap-3">
-                  <button onClick={handleTuneInCheck} className="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white py-3 rounded-md transition font-medium">Check</button>
-                  <button onClick={() => { setTuneInUserAnswer(""); setShowTuneInResult(false); }} className="px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-md transition">Clear</button>
-                </div>
-
-                {showTuneInResult && (
-                  <div className="mt-4">
-                    <AnswerResult 
-                      isCorrect={tuneInUserAnswer.toLowerCase().trim() === tuneInPhrases[currentTuneInIndex].english.toLowerCase()} 
-                      correctAnswer={tuneInPhrases[currentTuneInIndex].english} 
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4 p-3 bg-cyan-100 rounded-lg">
-                <AudioPlayer src="/audios/lesson42-tunein.mp3" compact={false} />
-                <p className="text-xs text-cyan-600 mt-2">🎧 Listen to the correct pronunciation</p>
               </div>
             </div>
           )}
@@ -1576,7 +1462,7 @@ export default function Lesson42() {
             <button onClick={() => router.push("/cursos")} className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors">
               &larr; Back to Courses
             </button>
-            <button onClick={() => router.push("/cursos/lesson43")} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">
+            <button onClick={() => router.push("/cursos/review7")} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">
               Next Lesson &rarr;
             </button>
           </div>

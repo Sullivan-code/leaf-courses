@@ -104,7 +104,7 @@ export default function LessonFoodAndDrink() {
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. Eu <span className="text-blue-600">quero</span> suco. / gosto / como</p>
+                  <p className="text-lg font-medium text-gray-800">1. Eu <span className="text-blue-600">quero</span> suco. / gosto / prefiro</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">2. Você <span className="text-blue-600">gosta</span> de chocolate? / quer / come</p>

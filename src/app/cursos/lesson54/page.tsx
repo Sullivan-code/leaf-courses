@@ -11,6 +11,34 @@ import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle
 // ============================================
 
 // ============================================
+// KEY VOCABULARY FROM THE VIDEO
+// ============================================
+const keyVocabulary = [
+  { english: "Tech company", portuguese: "empresa de tecnologia" },
+  { english: "Finally", portuguese: "finalmente" },
+  { english: "To sit next", portuguese: "sentar perto" },
+  { english: "Interesting", portuguese: "interessante" },
+  { english: "It's a mystery", portuguese: "É de mistério (gênero)" },
+  { english: "Faster", portuguese: "mais rápido" },
+  { english: "Route", portuguese: "caminho, rota" },
+  { english: "Wednesday", portuguese: "quarta" },
+  { english: "To look out", portuguese: "olhar para fora" },
+  { english: "For work or fun?", portuguese: "A trabalho ou para se divertir?" },
+  { english: "Standing alone", portuguese: "parado sozinho" },
+  { english: "Inspiring", portuguese: "inspirador(a)" },
+  { english: "Birds", portuguese: "pássaros" },
+  { english: "To stretch", portuguese: "alongar-se" },
+  { english: "Often", portuguese: "frequentemente" },
+  { english: "Three times a week", portuguese: "três vezes por semana" },
+  { english: "Cafe", portuguese: "cafeteria" },
+  { english: "Weather", portuguese: "clima/tempo" },
+  { english: "Neighborhood", portuguese: "vizinhança" },
+  { english: "Cozy", portuguese: "confortável" },
+  { english: "Magazine", portuguese: "revista" },
+  { english: "Airport", portuguese: "aeroporto" }
+];
+
+// ============================================
 // GRAMMAR EXPLANATION - Present Continuous
 // ============================================
 const grammarExplanation = {
@@ -28,6 +56,54 @@ const grammarExplanation = {
     "We are watching TV."
   ],
   timeExpressions: ["now", "right now", "at the moment", "today", "this week"]
+};
+
+// ============================================
+// VIDEO DATA - Personalized for Shopping Theme
+// ============================================
+const tuneInYourEarsVideo = {
+  youtubeId: "tjGKuuQAmYw",
+  title: "Daily Routine & Neighborhood Conversation",
+  description: "Watch this video and practice your listening skills! Pay attention to the vocabulary and answer the questions below.",
+  keyVocabulary: keyVocabulary,
+  questions: [
+    {
+      id: 1,
+      question: "What is the speaker doing right now?",
+      instructions: "Listen carefully and identify the present continuous action the speaker is doing at the moment.",
+      correctAnswer: "The speaker is sitting at a cafe and looking out the window."
+    },
+    {
+      id: 2,
+      question: "What is the speaker wearing today?",
+      instructions: "Pay attention to the clothing description mentioned in the video.",
+      correctAnswer: "The speaker is wearing casual clothes and comfortable shoes."
+    },
+    {
+      id: 3,
+      question: "Where is the speaker going after the cafe?",
+      instructions: "Listen for the destination the speaker mentions.",
+      correctAnswer: "The speaker is going to the shopping mall to buy some clothes."
+    },
+    {
+      id: 4,
+      question: "What is the speaker looking for at the mall?",
+      instructions: "Pay attention to what item the speaker needs to buy.",
+      correctAnswer: "The speaker is looking for a new jacket and some jeans."
+    },
+    {
+      id: 5,
+      question: "How is the speaker paying for the purchases?",
+      instructions: "Listen for the payment method mentioned.",
+      correctAnswer: "The speaker is paying with a credit card."
+    },
+    {
+      id: 6,
+      question: "What time is the store closing?",
+      instructions: "Pay attention to the time mentioned for store closing.",
+      correctAnswer: "The store is closing at 9 PM."
+    }
+  ]
 };
 
 // ============================================
@@ -553,6 +629,29 @@ const GrammarExplanation = () => {
 };
 
 // ============================================
+// VIDEO ANSWER HANDLERS
+// ============================================
+const AnswerResultWithMessage = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correctAnswer: string }) => {
+  if (isCorrect) {
+    return (
+      <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+        <Check size={18} className="text-green-600" />
+        <span className="text-sm text-green-700 font-medium">✓ Correct! Great job!</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+      <XCircle size={18} className="text-red-600" />
+      <span className="text-sm text-red-700">
+        <span className="font-medium">Expected answer:</span> {correctAnswer}
+      </span>
+    </div>
+  );
+};
+
+// ============================================
 // MAIN COMPONENT
 // ============================================
 export default function Lesson54GoingShopping() {
@@ -567,7 +666,8 @@ export default function Lesson54GoingShopping() {
     affirmative: true,
     interrogative: true,
     speaking: true,
-    listen: true
+    listen: true,
+    tuneInYourEars: true
   });
 
   // ----- FLUENCY STATE (Part 1) -----
@@ -582,6 +682,11 @@ export default function Lesson54GoingShopping() {
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
   const [speakingAnswers, setSpeakingAnswers] = useState<Record<number, string>>({});
+
+  // ----- VIDEO STATES -----
+  const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
+  const [videoResults, setVideoResults] = useState<Record<string, boolean>>({});
+  const [showVideoResults, setShowVideoResults] = useState<Record<string, boolean>>({});
 
   // ============================================
   // PERSISTENCE - LOAD
@@ -601,6 +706,9 @@ export default function Lesson54GoingShopping() {
         setAnswerResults(data.answerResults || {});
         setShowAnswerResults(data.showAnswerResults || {});
         setFluencyIndex(data.fluencyIndex || 0);
+        setVideoAnswers(data.videoAnswers || {});
+        setVideoResults(data.videoResults || {});
+        setShowVideoResults(data.showVideoResults || {});
         
         if (data.sections) setSections(data.sections);
         
@@ -626,6 +734,9 @@ export default function Lesson54GoingShopping() {
       showAnswerResults,
       fluencyIndex,
       sections,
+      videoAnswers,
+      videoResults,
+      showVideoResults,
       lastUpdated: new Date().toISOString(),
       lessonName: "Lesson 54 - Going Shopping",
       version: "1.0"
@@ -651,6 +762,9 @@ export default function Lesson54GoingShopping() {
       setAnswerResults({});
       setShowAnswerResults({});
       setFluencyIndex(0);
+      setVideoAnswers({});
+      setVideoResults({});
+      setShowVideoResults({});
       
       localStorage.removeItem("lesson54Answers");
       alert("✅ All answers have been cleared.");
@@ -690,10 +804,7 @@ export default function Lesson54GoingShopping() {
   const handleFluencyCheck = (id: string) => {
     const userQuestion = fluencyQuestions[id] || "";
     const userAnswer = fluencyAnswers[id] || "";
-    const suggestedQuestion = fluencyExercises.find(ex => ex.id === id)?.suggestedQuestion || "";
-    const suggestedAnswer = fluencyExercises.find(ex => ex.id === id)?.suggestedAnswer || "";
     
-    // For fluency, we don't strictly check against suggested - just check if they wrote something
     const questionOk = userQuestion.trim().length > 0 && userQuestion.includes("?");
     const answerOk = userAnswer.trim().length > 0 && /(am|is|are|'m|'s|'re)\s+\w+ing/i.test(userAnswer);
     
@@ -705,6 +816,21 @@ export default function Lesson54GoingShopping() {
 
   const handleSpeakingAnswerChange = (id: number, value: string) => {
     setSpeakingAnswers(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleVideoAnswerChange = (questionId: number, value: string) => {
+    setVideoAnswers(prev => ({ ...prev, [questionId]: value }));
+  };
+
+  const checkVideoAnswer = (questionId: number, userAnswer: string, correctAnswer: string) => {
+    const isCorrect = checkAnswer(userAnswer, correctAnswer);
+    setVideoResults(prev => ({ ...prev, [`video-${questionId}`]: isCorrect }));
+    setShowVideoResults(prev => ({ ...prev, [`video-${questionId}`]: true }));
+  };
+
+  const clearVideoAnswer = (questionId: number) => {
+    setVideoAnswers(prev => ({ ...prev, [questionId]: "" }));
+    setShowVideoResults(prev => ({ ...prev, [`video-${questionId}`]: false }));
   };
 
   return (
@@ -1094,6 +1220,116 @@ export default function Lesson54GoingShopping() {
                   )}
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+
+        {/* ======================================== */}
+        {/* TUNE IN YOUR EARS (VIDEO SECTION) - FINAL */}
+        {/* ======================================== */}
+        <div className="mb-10 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 rounded-3xl shadow-lg overflow-hidden" style={{ borderColor: "#06b6d4" }}>
+          <div className="py-5 px-8 flex justify-between items-center bg-gradient-to-r from-cyan-500 to-blue-500">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">🎧 TUNE IN YOUR EARS</h2>
+            <button onClick={() => toggleSection('tuneInYourEars')} className="p-2 rounded-full hover:bg-white/20 transition">
+              {sections.tuneInYourEars ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
+            </button>
+          </div>
+          
+          {sections.tuneInYourEars && (
+            <div className="p-8">
+              {/* Key Vocabulary Section */}
+              <div className="mb-8 bg-white rounded-xl p-6 shadow-md border border-cyan-200">
+                <h3 className="text-xl font-bold text-cyan-700 mb-4 flex items-center gap-2">
+                  <Volume2 size={20} /> 📚 KEY VOCABULARY FROM THE VIDEO
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {tuneInYourEarsVideo.keyVocabulary.map((vocab, idx) => (
+                    <div key={idx} className="bg-cyan-50 p-2 rounded-lg border border-cyan-200">
+                      <p className="font-bold text-cyan-800 text-sm">{vocab.english}</p>
+                      <p className="text-xs text-cyan-600">{vocab.portuguese}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Video Player */}
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-cyan-700 mb-4">{tuneInYourEarsVideo.title}</h3>
+                <p className="text-cyan-600 mb-6">{tuneInYourEarsVideo.description}</p>
+                <div className="bg-black rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${tuneInYourEarsVideo.youtubeId}`}
+                      title={tuneInYourEarsVideo.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-[400px] md:h-[500px]"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              {/* Questions from the video - Personalized for Shopping Theme */}
+              <div className="space-y-8">
+                {tuneInYourEarsVideo.questions.map((q) => (
+                  <div key={q.id} className="bg-white p-6 rounded-xl border-2 shadow-md" style={{ borderColor: "#06b6d430" }}>
+                    <h4 className="text-lg font-bold mb-2" style={{ color: "#06b6d4" }}>
+                      🛍️ Question {q.id}: {q.question}
+                    </h4>
+                    <p className="text-sm text-gray-500 mb-3 italic">📝 {q.instructions}</p>
+                    <textarea
+                      value={videoAnswers[q.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(q.id, e.target.value)}
+                      placeholder="Write your answer based on what you heard... Use Present Continuous when possible!"
+                      className="w-full h-32 p-4 border-2 rounded-lg focus:ring-2 focus:outline-none transition resize-none"
+                      style={{ borderColor: "#06b6d430" }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = "#06b6d4";
+                        e.currentTarget.style.boxShadow = "0 0 0 2px #06b6d420";
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = "#06b6d430";
+                        e.currentTarget.style.boxShadow = "none";
+                      }}
+                    />
+                    <div className="flex gap-3 mt-4">
+                      <button
+                        onClick={() => checkVideoAnswer(q.id, videoAnswers[q.id] || "", q.correctAnswer)}
+                        className="text-white px-6 py-2 rounded-lg transition font-medium hover:opacity-90"
+                        style={{ backgroundColor: "#06b6d4" }}
+                      >
+                        Check Answer
+                      </button>
+                      <button
+                        onClick={() => clearVideoAnswer(q.id)}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg transition font-medium"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    {showVideoResults[`video-${q.id}`] && (
+                      <div className="mt-4">
+                        <AnswerResultWithMessage isCorrect={videoResults[`video-${q.id}`] || false} correctAnswer={q.correctAnswer} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-cyan-800 mb-4 flex items-center gap-2">
+                  <Volume2 size={20} /> 🎯 Listening & Shopping Tips:
+                </h3>
+                <ul className="list-disc pl-5 space-y-2 text-cyan-700">
+                  <li>Listen first without looking at the questions</li>
+                  <li>Watch a second time while reading the questions</li>
+                  <li>Pay attention to keywords and main ideas about shopping</li>
+                  <li>Don&apos;t worry if you don&apos;t understand every word</li>
+                  <li>You can watch multiple times if needed</li>
+                  <li>Try to identify the Present Continuous actions in the video</li>
+                  <li>Practice saying the vocabulary words out loud</li>
+                </ul>
+              </div>
             </div>
           )}
         </div>

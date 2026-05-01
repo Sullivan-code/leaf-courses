@@ -721,7 +721,7 @@ export default function Lesson48EatingOut() {
         {/* ============================================ */}
         <div className="bg-amber-50 border-2 border-amber-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-amber-600 text-white py-4 px-8 flex justify-between items-center">
-            <h2 className="text-2xl font-bold">🎧 TURNING YOUR EARS</h2>
+            <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
             <button onClick={() => toggleSection('turningYourEars')} className="p-2 rounded-full hover:bg-amber-700">
               {expandedSections.turningYourEars ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
             </button>

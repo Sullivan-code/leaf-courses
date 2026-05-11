@@ -54,7 +54,7 @@ export default function LessonFoodAndDrink() {
             Lesson 1 - Food & Drink
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Aprenda vocabulário essencial e expressões para falar sobre comida e bebida em inglês. 🍔🥤
+            Learn essential vocabulary and expressions to talk about food and drink in English. 🍔🥤
           </p>
           <div className="w-64 h-64 mx-auto">
             <Image
@@ -69,18 +69,18 @@ export default function LessonFoodAndDrink() {
 
         {/* Seção 1 - Verbos com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">Verbs</h2>
               <p className="mt-2 text-blue-100 italic">
-                Clique nos verbos para ouvir a pronúncia e estude suas conjugações
+                Click on the verbs to hear the pronunciation and study their conjugations
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('verbs')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.verbs ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -106,35 +106,45 @@ export default function LessonFoodAndDrink() {
             
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. <span className="text-blue-600">beber</span> / Você bebe. / Eu bebo.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I drink / You drink / He drinks</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu bebo / Você bebe / Ele bebe</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600">comer</span> / Eu como. / Você come.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I eat / You eat / She eats</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como / Você come / Ela come</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. Eu <span className="text-blue-600">como</span> pão. / gosto de / quero</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I eat <span className="text-blue-600">bread</span> / I like / I want</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como pão / Eu gosto / Eu quero</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Você <span className="text-blue-600">bebe</span> café? / gosta de / prefere</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you drink <span className="text-blue-600">coffee</span>? / Do you like / Do you prefer</p>
+                  <p className="text-sm text-gray-500 mt-1">Você bebe café? / Você gosta / Você prefere</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Nós <span className="text-blue-600">comemos</span> queijo. / preferimos / gostamos</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We eat <span className="text-blue-600">cheese</span> / We prefer / We like</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós comemos queijo / Nós preferimos / Nós gostamos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. Eles <span className="text-blue-600">bebem</span> água. / preferem / precisam</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They drink <span className="text-blue-600">water</span> / They prefer / They need</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles bebem água / Eles preferem / Eles precisam</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. Ela <span className="text-blue-600">come</span> biscoitos. / biscoitos salgados / quer</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">She eats <span className="text-blue-600">crackers</span> / cookies / She wants</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela come biscoitos salgados / biscoitos doces / Ela quer</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. Eu <span className="text-blue-600">bebo</span> leite. / preciso / gosto</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I drink <span className="text-blue-600">milk</span> / I need / I like</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu bebo leite / Eu preciso / Eu gosto</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. Você <span className="text-blue-600">come</span> frutas? / gosta / prefere</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you eat <span className="text-blue-600">fruit</span>? / Do you like / Do you prefer</p>
+                  <p className="text-sm text-gray-500 mt-1">Você come frutas? / Você gosta / Você prefere</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. Nós <span className="text-blue-600">bebemos</span> chá. / preferimos / gostamos</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We drink <span className="text-blue-600">tea</span> / We prefer / We like</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós bebemos chá / Nós preferimos / Nós gostamos</p>
                 </div>
               </div>
             )}
@@ -143,18 +153,18 @@ export default function LessonFoodAndDrink() {
 
         {/* Seção 2 - Vocabulário com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">New Vocabulary</h2>
               <p className="mt-2 text-blue-100 italic">
-                Clique em cada palavra para ouvir sua pronúncia correta
+                Click on each word to hear its correct pronunciation
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('vocabulary')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.vocabulary ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.vocabulary ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -175,6 +185,14 @@ export default function LessonFoodAndDrink() {
                 >
                   coffee
                 </button> = café
+              </li>
+              <li>
+                <button 
+                  onClick={() => playAudio('chamomile')} 
+                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                >
+                  chamomile tea
+                </button> = chá de camomila
               </li>
               <li>
                 <button 
@@ -284,35 +302,45 @@ export default function LessonFoodAndDrink() {
             
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. Eu bebo <span className="text-blue-600">água</span>. / café / leite</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I drink <span className="text-blue-600">water</span>. / coffee / milk</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu bebo água. / café / leite</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. Você bebe <span className="text-blue-600">leite</span>. / chá / suco</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">You drink <span className="text-blue-600">milk</span>. / tea / juice</p>
+                  <p className="text-sm text-gray-500 mt-1">Você bebe leite. / chá / suco</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. Você come <span className="text-blue-600">biscoitos</span>. / bolachas doces / queijo</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">You eat <span className="text-blue-600">crackers</span>. / cookies / cheese</p>
+                  <p className="text-sm text-gray-500 mt-1">Você come biscoitos salgados. / biscoitos doces / queijo</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Eu bebo chá e <span className="text-blue-600">água</span>, obrigado. / suco e café / café e água</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I drink tea and <span className="text-blue-600">water</span>, thank you. / juice and coffee / coffee and water</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu bebo chá e água, obrigado. / suco e café / café e água</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Eu como <span className="text-blue-600">pão</span> com manteiga. / biscoito / panqueca</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I eat <span className="text-blue-600">bread</span> with butter. / cracker / pancake</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como pão com manteiga. / biscoito / panqueca</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. Você prefere <span className="text-blue-600">queijo</span> ou presunto? / manteiga / chá ou leite</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you prefer <span className="text-blue-600">cheese</span> or ham? / butter / tea or milk</p>
+                  <p className="text-sm text-gray-500 mt-1">Você prefere queijo ou presunto? / manteiga / chá ou leite</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. Nós bebemos <span className="text-blue-600">suco</span> de laranja. / café / chá</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We drink orange <span className="text-blue-600">juice</span>. / coffee / tea</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós bebemos suco de laranja. / café / chá</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. Eles comem <span className="text-blue-600">panquecas</span> no café da manhã. / biscoitos / pão</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They eat <span className="text-blue-600">pancakes</span> for breakfast. / crackers / bread</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles comem panquecas no café da manhã. / biscoitos / pão</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. Eu gosto de <span className="text-blue-600">chá</span>. / café / leite</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I like <span className="text-blue-600">tea</span>. / coffee / milk</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu gosto de chá. / café / leite</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. Você quer <span className="text-blue-600">água</span> ou suco? / café / leite</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you want <span className="text-blue-600">water</span> or juice? / coffee / milk</p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer água ou suco? / café / leite</p>
                 </div>
               </div>
             )}
@@ -321,18 +349,18 @@ export default function LessonFoodAndDrink() {
 
         {/* Seção 3 - Frases Úteis com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">Slangs and Fluency</h2>
               <p className="mt-2 text-blue-100 italic">
-                Pratique frases comuns e expressões do dia a dia
+                Practice common phrases and everyday expressions
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('usefulPhrases')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.usefulPhrases ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.usefulPhrases ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -358,35 +386,45 @@ export default function LessonFoodAndDrink() {
             
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. Eu como <span className="text-blue-600">biscoitos salgados</span>. E você? / biscoitos doces / panquecas</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I eat <span className="text-blue-600">crackers</span>. And you? / cookies / pancakes</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como biscoitos salgados. E você? / biscoitos doces / panquecas</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. Eu bebo <span className="text-blue-600">água e suco</span>. E você? / café e suco / café e chá</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I drink <span className="text-blue-600">water and juice</span>. And you? / coffee and juice / coffee and tea</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu bebo água e suco. E você? / café e suco / café e chá</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. Você quer <span className="text-blue-600">café</span> ou chá? / leite / suco</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you want <span className="text-blue-600">coffee</span> or tea? / milk / juice</p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer café ou chá? / leite / suco</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Eu gosto de pão com <span className="text-blue-600">queijo</span>. / manteiga / presunto</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I like bread with <span className="text-blue-600">cheese</span>. / butter / ham</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu gosto de pão com queijo. / manteiga / presunto</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Nós comemos <span className="text-blue-600">arroz</span> no almoço. / feijão / batata-frita</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We eat <span className="text-blue-600">rice</span> for lunch. / beans / french fries</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós comemos arroz no almoço. / feijão / batata frita</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. Você bebe <span className="text-blue-600">leite com chocolate?</span> / café / chá</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you drink <span className="text-blue-600">chocolate milk</span>? / coffee / tea</p>
+                  <p className="text-sm text-gray-500 mt-1">Você bebe leite com chocolate? / café / chá</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. Eu prefiro <span className="text-blue-600">suco</span> de laranja. / maçã / uva</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I prefer orange <span className="text-blue-600">juice</span>. / apple / grape</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu prefiro suco de laranja. / maçã / uva</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. Eles bebem chá de <span className="text-blue-600">camomila</span>. / hortelã / erva-doce</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They drink <span className="text-blue-600">chamomile</span> tea. / mint / anise</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles bebem chá de camomila. / hortelã / erva-doce</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. Eu como <span className="text-blue-600">queijo</span> com pão. / presunto / manteiga</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I eat <span className="text-blue-600">cheese</span> with bread. / ham / butter</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como queijo com pão. / presunto / manteiga</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. Você gosta de <span className="text-blue-600">panquecas</span>? / biscoitos / pão</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you like <span className="text-blue-600">pancakes</span>? / crackers / bread</p>
+                  <p className="text-sm text-gray-500 mt-1">Você gosta de panquecas? / biscoitos / pão</p>
                 </div>
               </div>
             )}
@@ -395,24 +433,24 @@ export default function LessonFoodAndDrink() {
 
         {/* Seção 4 - Gramática com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">Understand Grammar</h2>
               <p className="mt-2 text-blue-100 italic">
-                Observe a estrutura das frases e pratique a formação correta
+                Observe the sentence structure and practice correct formation
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('grammar')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.grammar ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
             <p className="text-lg text-gray-700 mb-4">
-              Veja como usar os verbos <button onClick={() => playAudio('eat')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">eat</button> e <button onClick={() => playAudio('drink')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">drink</button> em frases:
+              See how to use the verbs <button onClick={() => playAudio('eat')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">eat</button> (comer) and <button onClick={() => playAudio('drink')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">drink</button> (beber) in sentences:
             </p>
             <div className="bg-blue-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
               <p>
@@ -429,7 +467,7 @@ export default function LessonFoodAndDrink() {
                   className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                 >
                   You eat cookies
-                </button> = Você come bolachas doces.
+                </button> = Você come biscoitos doces.
               </p>
               <p>
                 <button 
@@ -437,7 +475,7 @@ export default function LessonFoodAndDrink() {
                   className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                 >
                   I eat bread and ham
-                </button> = Eu como pão com presunto.
+                </button> = Eu como pão e presunto.
               </p>
               <p>
                 <button 
@@ -467,48 +505,57 @@ export default function LessonFoodAndDrink() {
             
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. Eu como pão com <span className="text-blue-600">manteiga</span>. / presunto / queijo</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I eat bread with <span className="text-blue-600">butter</span>. / ham / cheese</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como pão com manteiga. / presunto / queijo</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. Você bebe <span className="text-blue-600">suco</span> e eu bebo <span className="text-blue-600">água</span>. / leite - café / chá - suco</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">You drink <span className="text-blue-600">juice</span> and I drink <span className="text-blue-600">water</span>. / milk - coffee / tea - juice</p>
+                  <p className="text-sm text-gray-500 mt-1">Você bebe suco e eu bebo água. / leite - café / chá - suco</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. Eu bebo <span className="text-blue-600">café</span>. E você? / leite / suco</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I drink <span className="text-blue-600">coffee</span>. And you? / milk / juice</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu bebo café. E você? / leite / suco</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Eu como <span className="text-blue-600">biscoitos salgados</span>. E você? / biscoitos doces / panquecas</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I eat <span className="text-blue-600">crackers</span>. And you? / cookies / pancakes</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como biscoitos salgados. E você? / biscoitos doces / panquecas</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Você <span className="text-blue-600">come</span> queijo? / bebe / prefere</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you <span className="text-blue-600">eat</span> cheese? / drink / prefer</p>
+                  <p className="text-sm text-gray-500 mt-1">Você come queijo? / bebe / prefere</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. Nós <span className="text-blue-600">bebemos</span> chá. / comemos / gostamos</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We <span className="text-blue-600">drink</span> tea. / eat / like</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós bebemos chá. / comemos / gostamos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. Ela <span className="text-blue-600">bebe</span> leite com café. / come / quer</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">She <span className="text-blue-600">drinks</span> milk with coffee. / eats / wants</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela bebe leite com café. / come / quer</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. Eles <span className="text-blue-600">comem</span> pão com manteiga. / bebem / precisam</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They <span className="text-blue-600">eat</span> bread with butter. / drink / need</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles comem pão com manteiga. / bebem / precisam</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. Eu <span className="text-blue-600">gosto</span> de café. / bebo / tomo</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I <span className="text-blue-600">like</span> coffee. / drink / have</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu gosto de café. / bebo / tomo</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. Você <span className="text-blue-600">prefere</span> chá ou café? / bebe / toma</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you <span className="text-blue-600">prefer</span> tea or coffee? / drink / have</p>
+                  <p className="text-sm text-gray-500 mt-1">Você prefere chá ou café? / bebe / toma</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-
-        {/* Seção 5 - Real Life */}
+        {/* Seção 5 - Real Life Practice */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
             <h2 className="text-2xl font-bold">Real Life Practice</h2>
             <p className="mt-2 text-blue-100 italic">
-              Substitua as palavras em azul para praticar a pronúncia em situações reais
+              Replace the blue words to practice pronunciation in real situations
             </p>
           </div>
           
@@ -530,7 +577,7 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          1. I eat <span 
+                          I eat <span 
                             className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('bread')}
                           >bread</span>. And you?
@@ -553,12 +600,12 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          2. I drink <span 
+                          I drink <span 
                             className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('coffee')}
                           >coffee</span> with milk
                         </p>
-                        <p className="text-sm text-gray-600">Eu bebo café com leite.</p>
+                        <p className="text-sm text-gray-600">Eu bebo café com leite</p>
                       </div>
                     </div>
                   </div>
@@ -576,7 +623,7 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          3. Do you eat <span 
+                          Do you eat <span 
                             className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('ham')}
                           >ham</span> and cheese?
@@ -599,12 +646,12 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          4. We drink <span 
+                          We drink <span 
                             className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('juice')}
                           >juice</span> in the morning
                         </p>
-                        <p className="text-sm text-gray-600">Nós bebemos suco de manhã.</p>
+                        <p className="text-sm text-gray-600">Nós bebemos suco de manhã</p>
                       </div>
                     </div>
                   </div>
@@ -622,7 +669,7 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          5. Do you prefer <span 
+                          Do you prefer <span 
                             className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('tea')}
                           >tea</span> or coffee?
@@ -645,12 +692,12 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          6. They eat <span 
+                          They eat <span 
                             className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('pancakes')}
                           >pancakes</span> for breakfast
                         </p>
-                        <p className="text-sm text-gray-600">Eles comem panquecas no café da manhã.</p>
+                        <p className="text-sm text-gray-600">Eles comem panquecas no café da manhã</p>
                       </div>
                     </div>
                   </div>
@@ -668,12 +715,12 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          7. I like <span 
+                          I like <span 
                             className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('bread')}
-                          >bread</span> and cheese.
+                          >bread</span> and cheese
                         </p>
-                        <p className="text-sm text-gray-600">Eu gosto de pão com queijo.</p>
+                        <p className="text-sm text-gray-600">Eu gosto de pão e queijo</p>
                       </div>
                     </div>
                   </div>
@@ -691,7 +738,7 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          8. Do you drink water with <span 
+                          Do you drink water with <span 
                             className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('ice')}
                           >ice</span>?
@@ -714,12 +761,12 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          9. We eat <span 
+                          We eat <span 
                             className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('cookies')}
                           >cookies</span> with tea
                         </p>
-                        <p className="text-sm text-gray-600">Nós comemos biscoitos com chá.</p>
+                        <p className="text-sm text-gray-600">Nós comemos biscoitos com chá</p>
                       </div>
                     </div>
                   </div>
@@ -731,7 +778,7 @@ export default function LessonFoodAndDrink() {
                     <div className="relative h-64 w-full">
                       <Image
                         src="/images/reallife-image1.jpg"
-                        alt="Pessoas conversando em um café"
+                        alt="People talking in a cafe"
                         layout="fill"
                         objectFit="cover"
                         className="rounded-xl"
@@ -746,7 +793,7 @@ export default function LessonFoodAndDrink() {
                     <div className="relative h-64 w-full">
                       <Image
                         src="/images/reallife-image2.jpg"
-                        alt="Pessoas pedindo comida em um restaurante"
+                        alt="People ordering food in a restaurant"
                         layout="fill"
                         objectFit="cover"
                         className="rounded-xl"
@@ -764,11 +811,11 @@ export default function LessonFoodAndDrink() {
 
         {/* Seção 6 - Check It Out (estilo print) */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-3xl font-bold">CHECK IT OUT!</h2>
               <p className="mt-2 text-blue-100 italic">
-                Revise os pontos principais e expressões essenciais da lição
+                Review the main points and essential expressions of the lesson
               </p>
             </div>
           </div>
@@ -776,21 +823,22 @@ export default function LessonFoodAndDrink() {
           <div className="flex flex-col md:flex-row">
             {/* Coluna esquerda - Verbos */}
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
-              <p><span className="font-bold">to eat →</span> I eat</p>
-              <p><span className="font-bold">to drink →</span> you drink</p>
+              <p><span className="font-bold">to eat (comer) →</span> I eat</p>
+              <p><span className="font-bold">to drink (beber) →</span> you drink</p>
             </div>
 
             {/* Coluna central - Imagem e balão */}
             <div className="bg-white flex-1 p-6 flex flex-col items-center justify-center text-xl relative">
               <Image
                 src="/images/juice-image.jpg"
-                alt="Mulher tomando suco"
+                alt="Woman drinking juice"
                 width={160}
                 height={160}
                 className="rounded-full w-40 h-40 object-cover mb-4"
               />
               <div className="bg-yellow-200 text-black px-4 py-2 rounded-xl shadow-md text-center">
                 I drink juice. <span className="font-bold">And you?</span>
+                <p className="text-sm text-gray-600 mt-1">Eu bebo suco. E você?</p>
               </div>
             </div>
 
@@ -806,7 +854,7 @@ export default function LessonFoodAndDrink() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                   </svg>
                 </button>
-                <p>• Good morning!</p>
+                <p>• Good morning! (Bom dia!)</p>
               </div>
               <div className="flex items-center group">
                 <button 
@@ -818,7 +866,7 @@ export default function LessonFoodAndDrink() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                   </svg>
                 </button>
-                <p>• Good afternoon!</p>
+                <p>• Good afternoon! (Boa tarde!)</p>
               </div>
               <div className="flex items-center group">
                 <button 
@@ -830,7 +878,7 @@ export default function LessonFoodAndDrink() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                   </svg>
                 </button>
-                <p>• Good evening!</p>
+                <p>• Good evening! (Boa noite!)</p>
               </div>
             </div>
           </div>
@@ -840,9 +888,9 @@ export default function LessonFoodAndDrink() {
         <div className="text-center">
           <button
             onClick={() => router.push("/cursos/lesson2")}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
           >
-            Próxima Lição &rarr;
+            Next Lesson &rarr;
           </button>
         </div>
       </div>

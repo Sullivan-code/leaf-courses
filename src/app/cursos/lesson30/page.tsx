@@ -2,18 +2,20 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
-  Pause,
-  Play,
-  RotateCcw,
-  Volume2,
   ChevronDown,
   ChevronUp,
-  X,
   Check,
   XCircle,
+  Headphones,
+  BookOpen,
 } from "lucide-react";
+
+// ============================================
+// TEMA DA LIÇÃO
+// ============================================
+const LESSON_THEME_COLOR = "#0ea5e9"; // cyan-600
 
 // ============================================
 // DADOS DA LIÇÃO 30 - FLUENCY & IMPERATIVES
@@ -26,7 +28,7 @@ const fluencyImages = [
     src: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&q=80",
     alt: "Friends at school",
     phrase: "Speak with your friends at school.",
-    negative: "Don’t speak with your friends at school.",
+    negative: "Don't speak with your friends at school.",
     variations: ["Speak with your teachers.", "Speak with your parents."],
   },
   {
@@ -34,7 +36,7 @@ const fluencyImages = [
     src: "https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=400&q=80",
     alt: "Turn sign",
     phrase: "Turn left at the park.",
-    negative: "Don’t turn left at the park.",
+    negative: "Don't turn left at the park.",
     variations: ["Turn right at the bank.", "Turn left on this street."],
   },
   {
@@ -42,7 +44,7 @@ const fluencyImages = [
     src: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&q=80",
     alt: "Subway",
     phrase: "Take the subway to school.",
-    negative: "Don’t take the subway to school.",
+    negative: "Don't take the subway to school.",
     variations: ["Take the bus to work.", "Take a cab to the airport."],
   },
   {
@@ -50,7 +52,7 @@ const fluencyImages = [
     src: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80",
     alt: "Work on computer",
     phrase: "Work on your computer today.",
-    negative: "Don’t work on your computer today.",
+    negative: "Don't work on your computer today.",
     variations: ["Work at the office.", "Work from home."],
   },
   {
@@ -58,7 +60,7 @@ const fluencyImages = [
     src: "https://images.unsplash.com/photo-1516550893888-a82f123f2ab0?w=400&q=80",
     alt: "Stay home",
     phrase: "Stay home all day long.",
-    negative: "Don’t stay home all day long.",
+    negative: "Don't stay home all day long.",
     variations: ["Stay here with me.", "Stay at school."],
   },
   {
@@ -66,7 +68,7 @@ const fluencyImages = [
     src: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25?w=400&q=80",
     alt: "Park with children",
     phrase: "Go to the park with your children.",
-    negative: "Don’t go to the park with your children.",
+    negative: "Don't go to the park with your children.",
     variations: ["Go to the museum.", "Go downtown."],
   },
   {
@@ -74,7 +76,7 @@ const fluencyImages = [
     src: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&q=80",
     alt: "Drive to work",
     phrase: "Drive to work.",
-    negative: "Don’t drive to work.",
+    negative: "Don't drive to work.",
     variations: ["Drive to school.", "Drive downtown."],
   },
 ];
@@ -101,17 +103,17 @@ const generateFluencyCards = (): FluencyCard[] => {
       image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&q=80",
       alt: "Speak",
       imperative: "Speak with your friends at school.",
-      negative: "Don’t speak with your friends at school.",
+      negative: "Don't speak with your friends at school.",
       pronounVariations: [
-        { person: "I", sentence: "I speak with my friends at school.", negative: "I don’t speak with my friends at school." },
-        { person: "She", sentence: "She speaks with her friends at school.", negative: "She doesn’t speak with her friends at school." },
-        { person: "They", sentence: "They speak with their friends at school.", negative: "They don’t speak with their friends at school." },
-        { person: "We", sentence: "We speak with our friends at school.", negative: "We don’t speak with our friends at school." },
+        { person: "I", sentence: "I speak with my friends at school.", negative: "I don't speak with my friends at school." },
+        { person: "She", sentence: "She speaks with her friends at school.", negative: "She doesn't speak with her friends at school." },
+        { person: "They", sentence: "They speak with their friends at school.", negative: "They don't speak with their friends at school." },
+        { person: "We", sentence: "We speak with our friends at school.", negative: "We don't speak with our friends at school." },
       ],
       combinationSuggestions: [
-        "Don’t speak. Go to the library.",
+        "Don't speak. Go to the library.",
         "She speaks with her teachers.",
-        "They don’t speak during class.",
+        "They don't speak during class.",
       ],
     },
     {
@@ -119,14 +121,14 @@ const generateFluencyCards = (): FluencyCard[] => {
       image: "https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=400&q=80",
       alt: "Turn",
       imperative: "Turn left at the park.",
-      negative: "Don’t turn left at the park.",
+      negative: "Don't turn left at the park.",
       pronounVariations: [
-        { person: "He", sentence: "He turns left at the park.", negative: "He doesn’t turn left at the park." },
-        { person: "You", sentence: "You turn left at the park.", negative: "You don’t turn left at the park." },
+        { person: "He", sentence: "He turns left at the park.", negative: "He doesn't turn left at the park." },
+        { person: "You", sentence: "You turn left at the park.", negative: "You don't turn left at the park." },
       ],
       combinationSuggestions: [
         "Turn right after the museum.",
-        "Don’t turn left. Turn right.",
+        "Don't turn left. Turn right.",
         "She turns left every day.",
       ],
     },
@@ -135,15 +137,15 @@ const generateFluencyCards = (): FluencyCard[] => {
       image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&q=80",
       alt: "Take",
       imperative: "Take the subway to school.",
-      negative: "Don’t take the subway to school.",
+      negative: "Don't take the subway to school.",
       pronounVariations: [
-        { person: "I", sentence: "I take the subway to school.", negative: "I don’t take the subway to school." },
-        { person: "She", sentence: "She takes the subway to school.", negative: "She doesn’t take the subway to school." },
-        { person: "They", sentence: "They take the subway to school.", negative: "They don’t take the subway to school." },
+        { person: "I", sentence: "I take the subway to school.", negative: "I don't take the subway to school." },
+        { person: "She", sentence: "She takes the subway to school.", negative: "She doesn't take the subway to school." },
+        { person: "They", sentence: "They take the subway to school.", negative: "They don't take the subway to school." },
       ],
       combinationSuggestions: [
         "Take the bus to work.",
-        "Don’t take the subway. Take a cab.",
+        "Don't take the subway. Take a cab.",
         "He takes the train downtown.",
       ],
     },
@@ -152,15 +154,15 @@ const generateFluencyCards = (): FluencyCard[] => {
       image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80",
       alt: "Work",
       imperative: "Work on your computer today.",
-      negative: "Don’t work on your computer today.",
+      negative: "Don't work on your computer today.",
       pronounVariations: [
-        { person: "He", sentence: "He works on his computer today.", negative: "He doesn’t work on his computer today." },
-        { person: "They", sentence: "They work on their computer today.", negative: "They don’t work on their computer today." },
+        { person: "He", sentence: "He works on his computer today.", negative: "He doesn't work on his computer today." },
+        { person: "They", sentence: "They work on their computer today.", negative: "They don't work on their computer today." },
       ],
       combinationSuggestions: [
         "Work at the office.",
-        "Don’t work today. Stay home.",
-        "She doesn’t work downtown.",
+        "Don't work today. Stay home.",
+        "She doesn't work downtown.",
       ],
     },
     {
@@ -168,14 +170,14 @@ const generateFluencyCards = (): FluencyCard[] => {
       image: "https://images.unsplash.com/photo-1516550893888-a82f123f2ab0?w=400&q=80",
       alt: "Stay",
       imperative: "Stay home all day long.",
-      negative: "Don’t stay home all day long.",
+      negative: "Don't stay home all day long.",
       pronounVariations: [
-        { person: "I", sentence: "I stay home all day long.", negative: "I don’t stay home all day long." },
-        { person: "She", sentence: "She stays home all day long.", negative: "She doesn’t stay home all day long." },
+        { person: "I", sentence: "I stay home all day long.", negative: "I don't stay home all day long." },
+        { person: "She", sentence: "She stays home all day long.", negative: "She doesn't stay home all day long." },
       ],
       combinationSuggestions: [
         "Stay here with me.",
-        "Don’t stay home. Go out.",
+        "Don't stay home. Go out.",
         "We stay near the park.",
       ],
     },
@@ -184,15 +186,15 @@ const generateFluencyCards = (): FluencyCard[] => {
       image: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25?w=400&q=80",
       alt: "Go",
       imperative: "Go to the park with your children.",
-      negative: "Don’t go to the park with your children.",
+      negative: "Don't go to the park with your children.",
       pronounVariations: [
-        { person: "I", sentence: "I go to the park with my children.", negative: "I don’t go to the park with my children." },
-        { person: "She", sentence: "She goes to the park with her children.", negative: "She doesn’t go to the park with her children." },
-        { person: "They", sentence: "They go to the park with their children.", negative: "They don’t go to the park with their children." },
+        { person: "I", sentence: "I go to the park with my children.", negative: "I don't go to the park with my children." },
+        { person: "She", sentence: "She goes to the park with her children.", negative: "She doesn't go to the park with her children." },
+        { person: "They", sentence: "They go to the park with their children.", negative: "They don't go to the park with their children." },
       ],
       combinationSuggestions: [
         "Go to the museum.",
-        "Don’t go alone.",
+        "Don't go alone.",
         "We go downtown by bus.",
       ],
     },
@@ -201,15 +203,15 @@ const generateFluencyCards = (): FluencyCard[] => {
       image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&q=80",
       alt: "Drive",
       imperative: "Drive to work.",
-      negative: "Don’t drive to work.",
+      negative: "Don't drive to work.",
       pronounVariations: [
-        { person: "He", sentence: "He drives to work.", negative: "He doesn’t drive to work." },
-        { person: "We", sentence: "We drive to work.", negative: "We don’t drive to work." },
+        { person: "He", sentence: "He drives to work.", negative: "He doesn't drive to work." },
+        { person: "We", sentence: "We drive to work.", negative: "We don't drive to work." },
       ],
       combinationSuggestions: [
         "Drive to school.",
-        "Don’t drive. Take the bus.",
-        "She doesn’t drive a bus.",
+        "Don't drive. Take the bus.",
+        "She doesn't drive a bus.",
       ],
     },
   ];
@@ -227,7 +229,7 @@ const substitutionPractice1 = [
   {
     key: "subs1-2",
     original: "Eles não querem ir depois do trabalho. / antes",
-    base: "They don’t want to go {0} work.",
+    base: "They don't want to go {0} work.",
     options: ["after", "before"],
     currentIndex: 0,
   },
@@ -256,12 +258,12 @@ const substitutionPractice1 = [
 
 // --- CHANGE INTO NEGATIVE (PÁGINA 2) ---
 const negativeExercises = [
-  { key: "neg-1", sentence: "Stay here with me.", answer: "Don’t stay here with me." },
-  { key: "neg-2", sentence: "Take your passport with you.", answer: "Don’t take your passport with you." },
-  { key: "neg-3", sentence: "Turn right on this street.", answer: "Don’t turn right on this street." },
-  { key: "neg-4", sentence: "Buy chocolate cookies at the grocery store.", answer: "Don’t buy chocolate cookies at the grocery store." },
-  { key: "neg-5", sentence: "Go to the museum by motorcycle.", answer: "Don’t go to the museum by motorcycle." },
-  { key: "neg-6", sentence: "Walk two blocks.", answer: "Don’t walk two blocks." },
+  { key: "neg-1", sentence: "Stay here with me.", answer: "Don't stay here with me." },
+  { key: "neg-2", sentence: "Take your passport with you.", answer: "Don't take your passport with you." },
+  { key: "neg-3", sentence: "Turn right on this street.", answer: "Don't turn right on this street." },
+  { key: "neg-4", sentence: "Buy chocolate cookies at the grocery store.", answer: "Don't buy chocolate cookies at the grocery store." },
+  { key: "neg-5", sentence: "Go to the museum by motorcycle.", answer: "Don't go to the museum by motorcycle." },
+  { key: "neg-6", sentence: "Walk two blocks.", answer: "Don't walk two blocks." },
 ];
 
 // --- SUBSTITUTION PRACTICE II (PÁGINA 3) ---
@@ -270,14 +272,14 @@ const substitutionPractice2 = [
     key: "subs2-1",
     original: "Ele me leva de carro para casa. / centro da cidade / para a estação de trem",
     correctAnswer: "He takes me home by car.",
-    options: ["home", "downtown", "the train station"],
+    options: ["home", "downtown", "to the train station"],
     currentIndex: 0,
   },
   {
     key: "subs2-2",
     original: "Pegue um táxi para ir ao shopping. / cinema / aeroporto",
     correctAnswer: "Take a cab to the mall.",
-    options: ["the mall", "the cinema", "the airport"],
+    options: ["the mall", "the movies", "the airport"],
     currentIndex: 0,
   },
   {
@@ -291,7 +293,7 @@ const substitutionPractice2 = [
     key: "subs2-4",
     original: "Eles têm uma casa de praia. / perto daqui / longe daqui",
     correctAnswer: "They have a beach house.",
-    options: ["a beach house", "near here", "far from here"],
+    options: ["a beach house", "a beach house near here", "a beach house far from here"],
     currentIndex: 0,
   },
   {
@@ -305,12 +307,12 @@ const substitutionPractice2 = [
 
 // --- CHANGE INTO AFFIRMATIVE (PÁGINA 3) ---
 const affirmativeExercises = [
-  { key: "aff-1", sentence: "My grandparents don’t like to go to the museum.", answer: "My grandparents like to go to the museum." },
-  { key: "aff-2", sentence: "Don’t go straight ahead.", answer: "Go straight ahead." },
-  { key: "aff-3", sentence: "They don’t work near here.", answer: "They work near here." },
-  { key: "aff-4", sentence: "She doesn’t know the price of food there.", answer: "She knows the price of food there." },
-  { key: "aff-5", sentence: "They don’t have money to buy the tickets.", answer: "They have money to buy the tickets." },
-  { key: "aff-6", sentence: "He doesn’t drive a bus.", answer: "He drives a bus." },
+  { key: "aff-1", sentence: "My grandparents don't like to go to the museum.", answer: "My grandparents like to go to the museum." },
+  { key: "aff-2", sentence: "Don't go straight ahead.", answer: "Go straight ahead." },
+  { key: "aff-3", sentence: "They don't work near here.", answer: "They work near here." },
+  { key: "aff-4", sentence: "She doesn't know the price of food there.", answer: "She knows the price of food there." },
+  { key: "aff-5", sentence: "They don't have money to buy the tickets.", answer: "They have money to buy the tickets." },
+  { key: "aff-6", sentence: "He doesn't drive a bus.", answer: "He drives a bus." },
 ];
 
 // --- QUESTIONS (PÁGINA 4) ---
@@ -320,11 +322,95 @@ const personalQuestions = [
   { id: 3, question: "Do you prefer to drive or to walk?", placeholder: "I prefer to drive because it's faster." },
   { id: 4, question: "Do you take a cab when you have to go to the airport?", placeholder: "Yes, I usually take a cab." },
   { id: 5, question: "Do you need to take a bus to go downtown from here?", placeholder: "No, I can walk downtown." },
-  { id: 6, question: "What’s your address?", placeholder: "I live on Main Street, number 123." },
+  { id: 6, question: "What's your address?", placeholder: "I live on Main Street, number 123." },
   { id: 7, question: "Does your cousin live on this street?", placeholder: "Yes, my cousin lives on this street." },
   { id: 8, question: "Where do you usually go on vacation?", placeholder: "I usually go to the beach." },
   { id: 9, question: "How much money do you have to go to the museum?", placeholder: "I have 20 dollars." },
   { id: 10, question: "Where do you have to go after class?", placeholder: "I have to go home after class." },
+];
+
+// ============================================
+// TUNE IN YOUR EARS - DADOS (CAMPING THEME)
+// ============================================
+const tuneYourEarsVideo = {
+  youtubeId: "dQw4w9WgXcQ",
+  title: "🏕️ Camping Vocabulary & Outdoor Adventures",
+  description: "Watch this video about camping and outdoor activities. Learn essential vocabulary for your next nature adventure!",
+  shadowingExplanation: "Shadowing is a technique where you listen to a native speaker and repeat what they say immediately after, trying to copy their pronunciation, intonation, and rhythm exactly. It helps improve your speaking fluency and accent!",
+  questions: [
+    {
+      id: 1,
+      question: "Have you ever been camping? Where did you go?",
+      correctAnswer: "This is a personal answer about your camping experiences.",
+      reflectionType: "personal"
+    },
+    {
+      id: 2,
+      question: "What equipment do you need to go camping? Mention at least 3 items.",
+      correctAnswer: "Tent, sleeping bag, air mattress, fire pits, skewers, etc.",
+      reflectionType: "personal"
+    },
+    {
+      id: 3,
+      question: "Is camping safe? What precautions should you take?",
+      correctAnswer: "Camping is safe if you choose a safe campground and follow safety rules.",
+      reflectionType: "personal"
+    },
+    {
+      id: 4,
+      question: "What is your favorite food to cook over the fire while camping?",
+      correctAnswer: "Meatballs, hot dogs, marshmallows, etc.",
+      reflectionType: "personal"
+    },
+    {
+      id: 5,
+      question: "Do you prefer camping during the daytime or nighttime? Why?",
+      correctAnswer: "This is a personal answer about your preference.",
+      reflectionType: "personal"
+    },
+    {
+      id: 6,
+      question: "What are your greatest memories of camping with family or friends?",
+      correctAnswer: "This is a personal answer about your memories.",
+      reflectionType: "personal"
+    },
+    {
+      id: 7,
+      question: "Would you like to go camping somewhere new? Where?",
+      correctAnswer: "This is a personal answer about your dream camping destination.",
+      reflectionType: "personal"
+    },
+    {
+      id: 8,
+      question: "How does camping help you connect with nature?",
+      correctAnswer: "Camping allows you to stay in parks, sleep outdoors, and enjoy uncovered natural spaces.",
+      reflectionType: "personal"
+    }
+  ]
+};
+
+const keyVocabulary = [
+  { english: "Camping", portuguese: "Acampar / camping" },
+  { english: "To support", portuguese: "Apoiar / ajudar" },
+  { english: "Sign up", portuguese: "Inscreva-se" },
+  { english: "Click on the link below", portuguese: "Clique no link abaixo" },
+  { english: "I went", portuguese: "Eu fui" },
+  { english: "Parks", portuguese: "Parques (perto da natureza)" },
+  { english: "Safe", portuguese: "Seguro" },
+  { english: "Campground", portuguese: "Área de acampamento" },
+  { english: "Sites", portuguese: "Área" },
+  { english: "Fire pits", portuguese: "Fogueiras" },
+  { english: "Tent", portuguese: "Cabana / barraca" },
+  { english: "Nighttime", portuguese: "Período da noite" },
+  { english: "Uncovered", portuguese: "Descoberto" },
+  { english: "Sleeping bags", portuguese: "Sacos de dormir" },
+  { english: "Air mattress", portuguese: "Colchão inflável" },
+  { english: "To cook over the fire", portuguese: "Cozinhar em cima do fogo" },
+  { english: "Skewers", portuguese: "Espetos" },
+  { english: "Meatballs", portuguese: "Almôndegas" },
+  { english: "Somewhere", portuguese: "Em algum lugar" },
+  { english: "Greatest memories", portuguese: "Maiores memórias" },
+  { english: "To camp with family", portuguese: "Acampar com a família" },
 ];
 
 // ============================================
@@ -339,10 +425,20 @@ const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
 const AnswerResult = ({
   isCorrect,
   correctAnswer,
+  isReflection = false,
 }: {
   isCorrect: boolean;
   correctAnswer: string;
+  isReflection?: boolean;
 }) => {
+  if (isReflection) {
+    return (
+      <div className="flex items-center gap-2 p-2 bg-blue-50 border border-blue-200 rounded-md">
+        <Check size={16} className="text-blue-600" />
+        <span className="text-sm text-blue-700 font-medium">Answer saved! Great reflection!</span>
+      </div>
+    );
+  }
   if (isCorrect) {
     return (
       <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md">
@@ -375,6 +471,7 @@ export default function Lesson30Fluency() {
     substitution2: true,
     affirmative: true,
     questions: true,
+    tuneYourEars: true,
   });
 
   // Estados para os cards de fluência
@@ -392,6 +489,11 @@ export default function Lesson30Fluency() {
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
 
+  // Estados para Tune Your Ears
+  const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
+  const [showResults, setShowResults] = useState<Record<string, boolean>>({});
+  const [answerCorrectness, setAnswerCorrectness] = useState<Record<string, boolean>>({});
+
   // ==============================
   // PERSISTÊNCIA (LOCALSTORAGE)
   // ==============================
@@ -406,6 +508,9 @@ export default function Lesson30Fluency() {
         setAnswerResults(data.answerResults || {});
         setShowAnswerResults(data.showAnswerResults || {});
         setSections(data.sections || sections);
+        setVideoAnswers(data.videoAnswers || {});
+        setShowResults(data.showResults || {});
+        setAnswerCorrectness(data.answerCorrectness || {});
         if (data.activeFluencyCard) setActiveFluencyCard(data.activeFluencyCard);
         if (data.showNegative) setShowNegative(data.showNegative);
         if (data.showPronounVariation) setShowPronounVariation(data.showPronounVariation);
@@ -426,6 +531,9 @@ export default function Lesson30Fluency() {
       activeFluencyCard,
       showNegative,
       showPronounVariation,
+      videoAnswers,
+      showResults,
+      answerCorrectness,
       lastUpdated: new Date().toISOString(),
       lessonName: "Lesson 30 - Fluency & Imperatives",
     };
@@ -442,6 +550,9 @@ export default function Lesson30Fluency() {
       setShowAnswerResults({});
       setShowNegative({});
       setShowPronounVariation({});
+      setVideoAnswers({});
+      setShowResults({});
+      setAnswerCorrectness({});
       localStorage.removeItem("lesson30Answers");
       alert("Respostas limpas.");
     }
@@ -482,6 +593,27 @@ export default function Lesson30Fluency() {
 
   const setPronounVariation = (cardId: string, person: string) => {
     setShowPronounVariation((prev) => ({ ...prev, [cardId]: person }));
+  };
+
+  // Funções para Tune Your Ears
+  const handleVideoAnswerChange = (id: number, value: string) => {
+    setVideoAnswers((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const checkVideoAnswer = (id: number, userAnswer: string, correctAnswer: string, isReflection: boolean) => {
+    const resultKey = `video-${id}`;
+    if (isReflection) {
+      setAnswerCorrectness((prev) => ({ ...prev, [resultKey]: true }));
+    } else {
+      const isCorrect = checkAnswer(userAnswer, correctAnswer);
+      setAnswerCorrectness((prev) => ({ ...prev, [resultKey]: isCorrect }));
+    }
+    setShowResults((prev) => ({ ...prev, [resultKey]: true }));
+  };
+
+  const clearVideoAnswer = (id: number) => {
+    setVideoAnswers((prev) => ({ ...prev, [id]: "" }));
+    setShowResults((prev) => ({ ...prev, [`video-${id}`]: false }));
   };
 
   return (
@@ -535,6 +667,7 @@ export default function Lesson30Fluency() {
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, 33vw"
+                        unoptimized
                       />
                     </div>
                     <div className="p-5">
@@ -629,16 +762,16 @@ export default function Lesson30Fluency() {
                 </p>
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                   <div className="bg-white bg-opacity-20 p-3 rounded-lg">
-                    ✨ Don’t drive to work. Take the bus.
+                    ✨ Don't drive to work. Take the bus.
                   </div>
                   <div className="bg-white bg-opacity-20 p-3 rounded-lg">
-                    ✨ She doesn’t take the subway. She drives to work.
+                    ✨ She doesn't take the subway. She drives to work.
                   </div>
                   <div className="bg-white bg-opacity-20 p-3 rounded-lg">
                     ✨ Go to the museum and speak with your teachers.
                   </div>
                   <div className="bg-white bg-opacity-20 p-3 rounded-lg">
-                    ✨ Don’t stay home. Go downtown.
+                    ✨ Don't stay home. Go downtown.
                   </div>
                 </div>
               </div>
@@ -754,11 +887,9 @@ export default function Lesson30Fluency() {
               </h3>
               <div className="space-y-6">
                 {subs2Exercises.map((ex) => {
-                  const baseParts = ex.correctAnswer.split(" ");
-                  const targetWord = ex.options[ex.currentIndex];
                   const sentence = ex.correctAnswer.replace(
                     ex.options[0],
-                    targetWord
+                    ex.options[ex.currentIndex]
                   );
                   return (
                     <div key={ex.key} className="bg-white p-5 rounded-xl border-2 border-purple-200 shadow-md">
@@ -861,6 +992,138 @@ export default function Lesson30Fluency() {
                 <p className="text-indigo-700">
                   Answer out loud! Record yourself and practice the imperatives and negatives.
                 </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ==============================================
+            SEÇÃO 7: TUNE IN YOUR EARS (ÚLTIMA ATIVIDADE)
+            TEMA: CAMPING & NATURE
+            ============================================== */}
+        <div className="bg-cyan-50 border-2 border-cyan-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
+          <div className="bg-cyan-600 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS - CAMPING EDITION 🏕️</h2>
+              <button
+                onClick={() => toggleSection("tuneYourEars")}
+                className="ml-4 p-2 rounded-full hover:bg-cyan-700 transition"
+              >
+                {sections.tuneYourEars ? (
+                  <ChevronUp size={24} />
+                ) : (
+                  <ChevronDown size={24} />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {sections.tuneYourEars && (
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-cyan-700 mb-4">
+                  {tuneYourEarsVideo.title}
+                </h3>
+                <p className="text-cyan-600 mb-6">{tuneYourEarsVideo.description}</p>
+                
+                {/* SHADOWING EXPLANATION */}
+                <div className="bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6 mb-8 text-left">
+                  <h4 className="text-lg font-bold text-cyan-800 mb-2 flex items-center gap-2">
+                    <Headphones size={20} /> What is Shadowing?
+                  </h4>
+                  <p className="text-cyan-700">{tuneYourEarsVideo.shadowingExplanation}</p>
+                  <p className="text-cyan-600 text-sm mt-2 italic">
+                    How to practice: Listen to a short phrase → Pause the video → Repeat exactly what you heard → Focus on rhythm and intonation
+                  </p>
+                </div>
+                
+                <div className="bg-black rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${tuneYourEarsVideo.youtubeId}`}
+                      title={tuneYourEarsVideo.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-[400px] md:h-[500px]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* KEY VOCABULARY FROM THE VIDEO - CAMPING THEME */}
+              <div className="mb-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-cyan-800 mb-4 flex items-center gap-2">
+                  <BookOpen size={20} /> 📖 Key Vocabulary - Camping & Nature:
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {keyVocabulary.map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-3 bg-white rounded-lg hover:shadow-md transition-all">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-cyan-700">{item.english}</span>
+                      </div>
+                      <span className="text-cyan-600 text-sm">{item.portuguese}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* REFLECTION QUESTIONS - CAMPING THEMED */}
+              <div className="space-y-8">
+                <h3 className="text-xl font-bold text-center text-cyan-700">🏕️ Camping Reflection Questions</h3>
+                <p className="text-center text-gray-600 -mt-4">
+                  Reflect on your camping experiences or imagine your perfect outdoor adventure. Share your thoughts in English.
+                </p>
+                
+                {tuneYourEarsVideo.questions.map((q) => (
+                  <div key={q.id} className="bg-white p-6 rounded-xl border-2 shadow-md"
+                       style={{ borderColor: `${LESSON_THEME_COLOR}30` }}>
+                    <h4 className="text-lg font-bold mb-3" style={{ color: LESSON_THEME_COLOR }}>
+                      Question {q.id}: {q.question}
+                    </h4>
+
+                    <textarea
+                      value={videoAnswers[q.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(q.id, e.target.value)}
+                      placeholder="Write your answer here... (Share your camping memories and thoughts!)"
+                      className="w-full h-32 p-4 border-2 rounded-lg focus:ring-2 focus:outline-none transition resize-none"
+                      style={{ borderColor: `${LESSON_THEME_COLOR}30` }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = LESSON_THEME_COLOR;
+                        e.currentTarget.style.boxShadow = `0 0 0 2px ${LESSON_THEME_COLOR}20`;
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = `${LESSON_THEME_COLOR}30`;
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    />
+
+                    <div className="flex gap-3 mt-4">
+                      <button
+                        onClick={() => checkVideoAnswer(q.id, videoAnswers[q.id] || "", q.correctAnswer, q.reflectionType === "personal")}
+                        className="text-white px-6 py-2 rounded-lg transition font-medium hover:opacity-90"
+                        style={{ backgroundColor: LESSON_THEME_COLOR }}
+                      >
+                        Reflect & Save
+                      </button>
+                      <button
+                        onClick={() => clearVideoAnswer(q.id)}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg transition font-medium"
+                      >
+                        Clear
+                      </button>
+                    </div>
+
+                    {showResults[`video-${q.id}`] && (
+                      <div className="mt-4">
+                        <AnswerResult 
+                          isCorrect={answerCorrectness[`video-${q.id}`] || false} 
+                          correctAnswer={q.correctAnswer}
+                          isReflection={q.reflectionType === "personal"}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}

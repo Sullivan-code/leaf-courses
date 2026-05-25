@@ -63,7 +63,8 @@ export default function Lesson25GettingAround() {
     { english: "backpack", portuguese: "mochila" },
     { english: "passport", portuguese: "passaporte" },
     { english: "thing", portuguese: "coisa" },
-    { english: "good / bad", portuguese: "bom / ruim" },
+    { english: "good", portuguese: "bom" },
+    { english: "bad", portuguese: "ruim" },
     { english: "cheap / expensive", portuguese: "barato / caro" },
     { english: "a lot of", portuguese: "muito(a)" }
   ];

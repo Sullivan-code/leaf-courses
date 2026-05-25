@@ -37,7 +37,7 @@ export default function LessonGettingAround() {
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
       style={{
-        backgroundImage: `url("/images/lesson27-bg.jpg")`,
+        backgroundImage: `url("https://images.pexels.com/photos/466506/pexels-photo-466506.jpeg?auto=compress&cs=tinysrgb&w=1600")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -54,10 +54,10 @@ export default function LessonGettingAround() {
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
             Aprenda vocabulário essencial e expressões para falar sobre lugares, visitas e locomoção em inglês. 🗺️🚶‍♀️🏛️
           </p>
-          <div className="w-64 h-64 mx-auto">
+          <div className="w-64 h-64 mx-auto relative">
             <Image
-              src="/images/lesson27-main.jpg"
-              alt="Lesson intro - Getting Around"
+              src="https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+              alt="Getting around the city - map and navigation"
               width={256}
               height={256}
               className="w-full h-full object-cover rounded-2xl shadow-md"
@@ -67,7 +67,7 @@ export default function LessonGettingAround() {
 
         {/* Seção 1 - Verbos com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">VERBS</h2>
               <p className="mt-2 text-blue-100 italic">
@@ -76,9 +76,9 @@ export default function LessonGettingAround() {
             </div>
             <button 
               onClick={() => toggleDrill('verbs')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.verbs ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -104,38 +104,37 @@ export default function LessonGettingAround() {
             
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. <span className="text-blue-600">encontrar, conhecer</span> / Eu encontro. / Você encontra. / Nós encontramos.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I meet / You meet / He meets</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu encontro / Você encontra / Ele encontra</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. Eu não <span className="text-blue-600">encontro</span>. / Eles não encontram. / Vocês não encontram.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I don't meet / We don't meet / They don't meet</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu não encontro / Nós não encontramos / Eles não encontram</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. Ela <span className="text-blue-600">encontra</span>. / Ela não encontra. / Ela encontra?</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I want to meet <span className="text-blue-600">my friends</span> / my family / my teacher</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu quero encontrar meus amigos / minha família / meu professor</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Você encontra seus <span className="text-blue-600">amigos</span>? / no shopping / na praia</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I visit / You visit / She visits</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu visito / Você visita / Ela visita</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Onde você encontra seus <span className="text-blue-600">vizinhos</span>? / colegas de classe / professores</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">She wants to visit <span className="text-blue-600">the park</span> / the museum / the beach</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela quer visitar o parque / o museu / a praia</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. I want to meet <span className="text-blue-600">John</span>. / a Lisa / a Kelly</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I go / You go / We go</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu vou / Você vai / Nós vamos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. <span className="text-blue-600">visitar</span> / Eu visito. / Ela visita. / Nós visitamos.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I go to <span className="text-blue-600">school</span> / to work / to the store</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu vou para a escola / para o trabalho / para a loja</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. Ela quer <span className="text-blue-600">visitar</span>. / prefere / gosta de</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. Eu visito meus amigos aos <span className="text-blue-600">domingos</span>. / sábados / aos fins de semana</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. Quando você visita sua <span className="text-blue-600">família</span>? / seu pai / sua mãe</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">11. I want to visit <span className="text-blue-600">you</span>. / Ela quer / Nós queremos</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you go to <span className="text-blue-600">the beach</span>? / to the park / to the cinema</p>
+                  <p className="text-sm text-gray-500 mt-1">Você vai à praia? / ao parque / ao cinema</p>
                 </div>
               </div>
             )}
@@ -144,7 +143,7 @@ export default function LessonGettingAround() {
 
         {/* Seção 2 - Vocabulário com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">NEW WORDS</h2>
               <p className="mt-2 text-blue-100 italic">
@@ -153,9 +152,9 @@ export default function LessonGettingAround() {
             </div>
             <button 
               onClick={() => toggleDrill('vocabulary')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.vocabulary ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.vocabulary ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -207,41 +206,29 @@ export default function LessonGettingAround() {
             
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. Eu preciso visitar meus <span className="text-blue-600">parentes</span>. / meus avós / meu tio</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I visit my <span className="text-blue-600">grandparents</span> / my uncle / my aunt</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu visito meus avós / meu tio / minha tia</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. Eu vou ao cinema com meus <span className="text-blue-600">primos</span>. / meu tio / minha tia</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I go to the <span className="text-blue-600">park</span> / to the square / to the museum</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu vou ao parque / à praça / ao museu</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. Você gosta de ir à <span className="text-blue-600">praia</span>? / ao parque / ao museu</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">This <span className="text-blue-600">place</span> is nice / beautiful / interesting</p>
+                  <p className="text-sm text-gray-500 mt-1">Este lugar é legal / bonito / interessante</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Ela quer visitar este <span className="text-blue-600">museu</span>. / parque / lugar</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">The school is <span className="text-blue-600">near</span> here / far from here / close to the park</p>
+                  <p className="text-sm text-gray-500 mt-1">A escola é perto daqui / longe daqui / perto do parque</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Eu gosto muito daquele <span className="text-blue-600">lugar</span>. / daquela praça / daquele parque</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I live <span className="text-blue-600">near</span> the beach / the supermarket / the hospital</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu moro perto da praia / do supermercado / do hospital</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. Você encontra seus amigos no <span className="text-blue-600">escritório</span>? / no parque / na praça</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. Você fala com seus <span className="text-blue-600">primos</span> todos os dias? / seus avós / seus tios</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. I live <span className="text-blue-600">near</span> the park. / da praça / do hospital</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. Ele mora <span className="text-blue-600">perto</span> do shopping. / do banco / do mercado</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. She lives <span className="text-blue-600">far</span> from the beach. / do cinema / da academia</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">11. I don't live near <span className="text-blue-600">here</span>. / Ele / Ela</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">12. Você mora longe <span className="text-blue-600">daqui</span>? / seus pais / Ela</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">She lives <span className="text-blue-600">far from</span> the city / the airport / the station</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela mora longe da cidade / do aeroporto / da estação</p>
                 </div>
               </div>
             )}
@@ -250,7 +237,7 @@ export default function LessonGettingAround() {
 
         {/* Seção 3 - Frases Úteis com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">USEFUL PHRASES</h2>
               <p className="mt-2 text-blue-100 italic">
@@ -259,9 +246,9 @@ export default function LessonGettingAround() {
             </div>
             <button 
               onClick={() => toggleDrill('usefulPhrases')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.usefulPhrases ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.usefulPhrases ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -277,33 +264,38 @@ export default function LessonGettingAround() {
                   We like to go to the beach on vacation.
                 </button> = Nós gostamos de ir à praia nas férias.
               </p>
+              <p>
+                <button onClick={() => playAudio('i_will_keep_track_of_all_the_places_i_visit')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800">
+                  I will keep track of all the places I visit.
+                </button> = Eu vou manter o controle de todos os lugares que visitar.
+              </p>
             </div>
             
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. Aonde você quer ir nas <span className="text-blue-600">férias</span>? / eles / ela</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I want to meet <span className="text-blue-600">my friends</span> / my family / my coworkers</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu quero encontrar meus amigos / minha família / meus colegas de trabalho</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. Ela quer ir à <span className="text-blue-600">praia</span> nas férias. / ao parque / ao campo</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We go to <span className="text-blue-600">the beach</span> / the park / the mountains on vacation</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós vamos à praia / ao parque / às montanhas nas férias</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. Ele visita muitos lugares nas <span className="text-blue-600">férias</span>. / nos fins de semana / aos sábados</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I will <span className="text-blue-600">keep track of</span> my expenses / my time / my favorite places</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu vou manter o controle das minhas despesas / do meu tempo / dos meus lugares favoritos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Eu preciso ir à <span className="text-blue-600">loja</span> amanhã. / ao museu / à farmácia</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">She will <span className="text-blue-600">keep track of</span> the museums / the restaurants / the stores</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela vai manter o controle dos museus / dos restaurantes / das lojas</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Aonde você quer ir <span className="text-blue-600">amanhã</span>? / eles / ela</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We need to <span className="text-blue-600">keep track of</span> the time / the money / the distance</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós precisamos manter o controle do tempo / do dinheiro / da distância</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. Eu quero encontrar meus colegas de trabalho <span className="text-blue-600">amanhã</span>. / no sábado / esta semana</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. É <span className="text-blue-600">caro</span>. / barato / novo</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. É <span className="text-blue-600">perto</span>. / longe / velho</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Where do you want to go <span className="text-blue-600">tomorrow</span>? / today / on the weekend</p>
+                  <p className="text-sm text-gray-500 mt-1">Aonde você quer ir amanhã? / hoje / no fim de semana</p>
                 </div>
               </div>
             )}
@@ -312,7 +304,7 @@ export default function LessonGettingAround() {
 
         {/* Seção 4 - Gramática com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">GRAMMAR</h2>
               <p className="mt-2 text-blue-100 italic">
@@ -321,9 +313,9 @@ export default function LessonGettingAround() {
             </div>
             <button 
               onClick={() => toggleDrill('grammar')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.grammar ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -356,41 +348,53 @@ export default function LessonGettingAround() {
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="grid md:grid-cols-2 gap-4">
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How many</span> primos você tem? / tios / tias</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How many <span className="text-blue-600">cousins</span> / uncles / aunts do you have?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quantos primos / tios / tias você tem?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How many</span> irmãos ela tem? / irmãs / colegas de classe</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How many <span className="text-blue-600">parks</span> / museums / squares are near here?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quantos parques / museus / praças são perto daqui?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How many</span> lembrancinhas você quer comprar? / presentes / livros</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How many <span className="text-blue-600">friends</span> / classmates / neighbors do you have?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quantos amigos / colegas de classe / vizinhos você tem?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How many</span> lugares você quer visitar? / parentes / amigos</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How many <span className="text-blue-600">countries</span> / cities / towns do you want to visit?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quantos países / cidades / vilarejos você quer visitar?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How many</span> tomates você precisa comprar? / maçãs / ovos</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How many <span className="text-blue-600">days</span> / weeks / months are you staying?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quantos dias / semanas / meses você vai ficar?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How many</span> panquecas ela quer comer? / biscoitos doces / biscoitos salgados</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How many <span className="text-blue-600">maps</span> / tickets / bags do you need?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quantos mapas / ingressos / sacolas você precisa?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How much</span> money do you need? / Quanto dinheiro você quer? / tem</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How much <span className="text-blue-600">money</span> / time / food do you have?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quanto dinheiro / tempo / comida você tem?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How much</span> tempo você tem? / precisa / quer</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How much <span className="text-blue-600">water</span> / milk / juice do you drink?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quanta água / leite / suco você bebe?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800">De quanto tempo você precisa para <span className="text-blue-600">tomar um banho</span>? / almoçar / malhar</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How much <span className="text-blue-600">gas</span> / electricity / energy do we need?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quanto combustível / eletricidade / energia nós precisamos?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How much</span> comida você quer levar? / geleia / chocolate</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How much <span className="text-blue-600">luggage</span> / baggage / stuff are you taking?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quanta bagagem / bagagem / coisa você está levando?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How much</span> água ela bebe todos os dias? / café / chá</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How much <span className="text-blue-600">traffic</span> / noise / pollution is there?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quanto trânsito / barulho / poluição há?</p>
                   </div>
-                  <div className="p-4 bg-white rounded-xl border border-blue-200">
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">How much</span> tempo ele tem para estudar? / ler / dormir</p>
+                  <div className="p-4 bg-white rounded-xl border border-purple-200">
+                    <p className="text-lg font-medium text-gray-800">How much <span className="text-blue-600">distance</span> / space / room do we have?</p>
+                    <p className="text-sm text-gray-500 mt-1">Quanta distância / espaço / lugar nós temos?</p>
                   </div>
                 </div>
               </div>
@@ -400,7 +404,7 @@ export default function LessonGettingAround() {
 
         {/* Seção 5 - Real Life Practice */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
             <h2 className="text-2xl font-bold">REAL LIFE PRACTICE</h2>
             <p className="mt-2 text-blue-100 italic">
               Substitua as palavras em azul para praticar em situações reais
@@ -556,11 +560,11 @@ export default function LessonGettingAround() {
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
                     <div className="relative h-64 w-full">
                       <Image
-                        src="/images/lesson27-reallife1.jpg"
+                        src="https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
                         alt="Família visitando parentes"
-                        layout="fill"
-                        objectFit="cover"
-                        className="rounded-xl"
+                        width={400}
+                        height={300}
+                        className="w-full h-full object-cover rounded-xl"
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
@@ -571,11 +575,11 @@ export default function LessonGettingAround() {
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
                     <div className="relative h-64 w-full">
                       <Image
-                        src="/images/lesson27-reallife2.jpg"
+                        src="https://images.pexels.com/photos/1666847/pexels-photo-1666847.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
                         alt="Pessoas em um museu"
-                        layout="fill"
-                        objectFit="cover"
-                        className="rounded-xl"
+                        width={400}
+                        height={300}
+                        className="w-full h-full object-cover rounded-xl"
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
@@ -590,7 +594,7 @@ export default function LessonGettingAround() {
 
         {/* Seção 6 - Check It Out! */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
             <h2 className="text-3xl font-bold">CHECK IT OUT!</h2>
             <p className="mt-2 text-blue-100 italic">
               Revise os pontos principais e expressões essenciais da lição
@@ -601,11 +605,12 @@ export default function LessonGettingAround() {
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
               <p><span className="font-bold">• on my vacation</span></p>
               <p><span className="font-bold">• on your vacation</span></p>
+              <p><span className="font-bold">• to keep track of</span></p>
             </div>
 
             <div className="bg-white flex-1 p-6 flex flex-col items-center justify-center text-xl relative">
               <Image
-                src="/images/lesson27-check.jpg"
+                src="https://images.unsplash.com/photo-1524661135-423995f22d0e?auto=compress&cs=tinysrgb&w=160&h=160&fit=crop"
                 alt="Mapa e localização"
                 width={160}
                 height={160}
@@ -670,11 +675,15 @@ export default function LessonGettingAround() {
             </div>
             <div className="flex items-center">
               <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2">✓</span>
-              <span className="text-gray-800">Conjugar verbos to meet e to visit</span>
+              <span className="text-gray-800">Conjugar verbos to meet, to visit e to go</span>
             </div>
             <div className="flex items-center">
               <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2">✓</span>
               <span className="text-gray-800">Falar sobre férias e fins de semana</span>
+            </div>
+            <div className="flex items-center">
+              <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2">✓</span>
+              <span className="text-gray-800">Usar a expressão "to keep track of"</span>
             </div>
           </div>
         </div>
@@ -683,9 +692,9 @@ export default function LessonGettingAround() {
         <div className="text-center">
           <button
             onClick={() => router.push("/cursos/lesson28")}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-lg"
+            className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
           >
-            Próxima Lição &rarr;
+            Next Lesson &rarr;
           </button>
         </div>
       </div>

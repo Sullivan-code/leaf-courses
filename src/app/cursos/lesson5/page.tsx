@@ -347,7 +347,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Useful Phrases</h2>
+              <h2 className="text-2xl font-bold">Slangs and Fluency</h2>
               <p className="mt-2 text-blue-100 italic">
                 Pratique frases comuns para expressar preferências alimentares
               </p>

@@ -15,6 +15,8 @@ import {
   XCircle,
   Repeat,
   ArrowRight,
+  Headphones,
+  BookOpen,
 } from "lucide-react";
 
 // ==============================================
@@ -180,15 +182,28 @@ const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
 const AnswerResult = ({
   isCorrect,
   correctAnswer,
+  isReflection = false,
 }: {
   isCorrect: boolean;
   correctAnswer: string;
+  isReflection?: boolean;
 }) => {
-  if (isCorrect) {
+  if (isCorrect && !isReflection) {
     return (
       <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md">
         <Check size={16} className="text-green-600" />
         <span className="text-sm text-green-700 font-medium">Correct! ✓</span>
+      </div>
+    );
+  }
+
+  if (isReflection) {
+    return (
+      <div className="flex items-center gap-2 p-2 bg-blue-50 border border-blue-200 rounded-md">
+        <Check size={16} className="text-blue-600" />
+        <span className="text-sm text-blue-700 font-medium">
+          Great reflection! Keep thinking about your English journey.
+        </span>
       </div>
     );
   }
@@ -223,7 +238,83 @@ export default function Lesson26GettingAround() {
     affirmativeDrill: true,
     interrogativeDrill: true,
     output: true,
+    tuneYourEars: true,
   });
+
+  // Dados do vídeo Tune Your Ears
+  const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
+  const [showResults, setShowResults] = useState<Record<string, boolean>>({});
+  const [answerCorrectness, setAnswerCorrectness] = useState<
+    Record<string, boolean>
+  >({});
+
+  const LESSON_THEME_COLOR = "#0891b2"; // cyan-600
+  const LESSON_NUMBER = 26;
+  const LESSON_TITLE = "GETTING AROUND";
+  const LESSON_SUBTITLE = "Locomotion & Daily Routines";
+
+  const tuneYourEarsVideo = {
+    title: "🎧 Tune Your Ears: A Childhood Story",
+    description:
+      "Listen to this fascinating story about growing up and discovering nature. Practice your listening skills and learn new vocabulary!",
+    youtubeId: "q81l6BEHPGo",
+    shadowingExplanation:
+      "Shadowing is a powerful language learning technique where you listen to native speech and repeat it immediately, trying to match the rhythm, intonation, and pronunciation as closely as possible.",
+    questions: [
+      {
+        id: 1,
+        question: "What did you do when you were a kid?",
+        correctAnswer: "",
+        reflectionType: "personal",
+      },
+      {
+        id: 2,
+        question: "Are you afraid of bugs?",
+        correctAnswer: "",
+        reflectionType: "personal",
+      },
+      {
+        id: 3,
+        question: "What games did you play as a kid?",
+        correctAnswer: "",
+        reflectionType: "personal",
+      },
+      {
+        id: 4,
+        question: "Did you watch Pokemon as a kid? If so, what was your favorite Pokemon?",
+        correctAnswer: "",
+        reflectionType: "personal",
+      },
+      {
+        id: 5,
+        question: "Did you use to read when you were younger?",
+        correctAnswer: "",
+        reflectionType: "personal",
+      },
+    ],
+  };
+
+  const keyVocabulary = [
+    { english: "Cards", portuguese: "Cartas", icon: Volume2 },
+    { english: "Might", portuguese: "Pode, Podem", icon: Volume2 },
+    { english: "Outside", portuguese: "Do lado de fora", icon: Volume2 },
+    { english: "To put in", portuguese: "Colocar dentro", icon: Volume2 },
+    { english: "I fed them", portuguese: "Eu alimentava eles", icon: Volume2 },
+    { english: "Caterpillars", portuguese: "Lagartas", icon: Volume2 },
+    { english: "Cantaloupe", portuguese: "Melão", icon: Volume2 },
+    { english: "Where I grew up...", portuguese: "Onde eu cresci...", icon: Volume2 },
+    { english: "Bones", portuguese: "Ossos", icon: Volume2 },
+    { english: "Squirrels", portuguese: "Esquilos", icon: Volume2 },
+    { english: "Snake skeleton", portuguese: "Esqueleto de cobra", icon: Volume2 },
+    { english: "Gross", portuguese: "Nojento", icon: Volume2 },
+    { english: "Paper airplanes", portuguese: "Aviões de papel", icon: Volume2 },
+    { english: "To try", portuguese: "Experimentar", icon: Volume2 },
+    { english: "To choose", portuguese: "Escolher", icon: Volume2 },
+    { english: "Either", portuguese: "também", icon: Volume2 },
+    { english: "Usually", portuguese: "Geralmente", icon: Volume2 },
+    { english: "Basketball", portuguese: "Basquetebol", icon: Volume2 },
+    { english: "I stopped playing", portuguese: "Eu parei de jogar", icon: Volume2 },
+  ];
 
   // Frases da seção de Fluência
   const [fluencySentences, setFluencySentences] = useState<
@@ -311,7 +402,7 @@ export default function Lesson26GettingAround() {
     },
   ]);
 
-  // Exercícios de substituição - PRÁTICA I
+  // Exercícios de substituição - PRÁTICA I (com "work" alterado)
   const [substitutionExercisesOne, setSubstitutionExercisesOne] = useState<
     SubstitutionExercise[]
   >([
@@ -361,7 +452,7 @@ export default function Lesson26GettingAround() {
     },
   ]);
 
-  // Exercícios de substituição - PRÁTICA II
+  // Exercícios de substituição - PRÁTICA II (com "work" alterado)
   const [substitutionExercisesTwo, setSubstitutionExercisesTwo] = useState<
     SubstitutionExercise[]
   >([
@@ -371,7 +462,7 @@ export default function Lesson26GettingAround() {
       baseTranslation: "Eu não faço exercícios nos fins de semana.",
       substitutions: [
         { value: "weekends", label: "weekends 📆" },
-        { value: "Saturdays", label: "Saturdays 📅" },
+        { value: "work days", label: "work days 💼" },
         { value: "Sundays", label: "Sundays ☀️" },
       ],
       currentSubstitution: "weekends",
@@ -754,6 +845,85 @@ export default function Lesson26GettingAround() {
       ...prev,
       [id]: value,
     }));
+  };
+
+  // Funções para o Tune Your Ears
+  const handleVideoAnswerChange = (id: number, value: string) => {
+    setVideoAnswers((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const checkVideoAnswer = (id: number, answer: string, correctAnswer: string, isReflection: boolean) => {
+    const key = `video-${id}`;
+    
+    if (isReflection) {
+      setAnswerCorrectness((prev) => ({
+        ...prev,
+        [key]: true,
+      }));
+      setShowResults((prev) => ({
+        ...prev,
+        [key]: true,
+      }));
+      return;
+    }
+
+    const isCorrect = answer.toLowerCase().trim() === correctAnswer.toLowerCase().trim();
+    
+    setAnswerCorrectness((prev) => ({
+      ...prev,
+      [key]: isCorrect,
+    }));
+    
+    setShowResults((prev) => ({
+      ...prev,
+      [key]: true,
+    }));
+  };
+
+  const clearVideoAnswer = (id: number) => {
+    setVideoAnswers((prev) => ({
+      ...prev,
+      [id]: "",
+    }));
+    setShowResults((prev) => ({
+      ...prev,
+      [`video-${id}`]: false,
+    }));
+  };
+
+  const saveAllAnswers = () => {
+    localStorage.setItem("lesson26_fluency", JSON.stringify(fluencySentences));
+    localStorage.setItem("lesson26_substitutionOne", JSON.stringify(substitutionExercisesOne));
+    localStorage.setItem("lesson26_substitutionTwo", JSON.stringify(substitutionExercisesTwo));
+    localStorage.setItem("lesson26_transformations", JSON.stringify(transformationExercises));
+    localStorage.setItem("lesson26_output", JSON.stringify(outputAnswers));
+    localStorage.setItem("lesson26_video", JSON.stringify(videoAnswers));
+    alert("✅ All answers saved successfully!");
+  };
+
+  const clearAllAnswers = () => {
+    if (confirm("Are you sure you want to clear all answers?")) {
+      setFluencySentences((prev) =>
+        prev.map((s) => ({ ...s, currentMode: "affirmative" }))
+      );
+      setSubstitutionExercisesOne((prev) =>
+        prev.map((ex) => ({ ...ex, currentSubstitution: ex.substitutions[0].value }))
+      );
+      setSubstitutionExercisesTwo((prev) =>
+        prev.map((ex) => ({ ...ex, currentSubstitution: ex.substitutions[0].value }))
+      );
+      setTransformationExercises((prev) =>
+        prev.map((ex) => ({ ...ex, userAnswer: "", isCompleted: false, isCorrect: false }))
+      );
+      setOutputAnswers({});
+      setVideoAnswers({});
+      setShowResults({});
+      setAnswerCorrectness({});
+      alert("🗑️ All answers cleared!");
+    }
   };
 
   // ==============================================
@@ -1271,7 +1441,156 @@ export default function Lesson26GettingAround() {
         </div>
 
         {/* ==============================================
-            SEÇÃO 7: OUTPUT - SPEAKING & WRITING PRACTICE
+            SEÇÃO 7: TUNE IN YOUR EARS
+            ============================================== */}
+        <div className="bg-cyan-50 border-2 border-cyan-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
+          <div className="bg-cyan-600 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
+              <button
+                onClick={() => toggleSection("tuneYourEars")}
+                className="ml-4 p-2 rounded-full hover:bg-cyan-700 transition"
+              >
+                {sections.tuneYourEars ? (
+                  <ChevronUp size={24} />
+                ) : (
+                  <ChevronDown size={24} />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {sections.tuneYourEars && (
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-cyan-700 mb-4">
+                  {tuneYourEarsVideo.title}
+                </h3>
+                <p className="text-cyan-600 mb-6">{tuneYourEarsVideo.description}</p>
+                
+                {/* SHADOWING EXPLANATION */}
+                <div className="bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6 mb-8 text-left">
+                  <h4 className="text-lg font-bold text-cyan-800 mb-2 flex items-center gap-2">
+                    <Headphones size={20} /> What is Shadowing?
+                  </h4>
+                  <p className="text-cyan-700">{tuneYourEarsVideo.shadowingExplanation}</p>
+                  <p className="text-cyan-600 text-sm mt-2 italic">
+                    How to practice: Listen to a short phrase → Pause the video → Repeat exactly what you heard → Focus on rhythm and intonation
+                  </p>
+                </div>
+                
+                <div className="bg-black rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${tuneYourEarsVideo.youtubeId}`}
+                      title={tuneYourEarsVideo.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-[400px] md:h-[500px]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* KEY VOCABULARY FROM THE VIDEO */}
+              <div className="mb-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-cyan-800 mb-4 flex items-center gap-2">
+                  <BookOpen size={20} /> 📖 Key Vocabulary from the Video:
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {keyVocabulary.map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={idx} className="flex items-center justify-between p-3 bg-white rounded-lg hover:shadow-md transition-all">
+                        <div className="flex items-center gap-2">
+                          {Icon && <Icon size={16} style={{ color: LESSON_THEME_COLOR }} />}
+                          <span className="font-medium text-cyan-700">{item.english}</span>
+                        </div>
+                        <span className="text-cyan-600 text-sm">{item.portuguese}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              {/* REFLECTION QUESTIONS - CHILDHOOD THEMED */}
+              <div className="space-y-8">
+                <h3 className="text-xl font-bold text-center text-cyan-700">Childhood Reflection Questions</h3>
+                <p className="text-center text-gray-600 -mt-4">
+                  Reflect on your childhood memories and share your thoughts in English.
+                </p>
+                
+                {tuneYourEarsVideo.questions.map((q) => (
+                  <div key={q.id} className="bg-white p-6 rounded-xl border-2 shadow-md"
+                       style={{ borderColor: `${LESSON_THEME_COLOR}30` }}>
+                    <h4 className="text-lg font-bold mb-3" style={{ color: LESSON_THEME_COLOR }}>
+                      Question {q.id}: {q.question}
+                    </h4>
+
+                    <textarea
+                      value={videoAnswers[q.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(q.id, e.target.value)}
+                      placeholder="Write your answer here... (Share your childhood memories!)"
+                      className="w-full h-32 p-4 border-2 rounded-lg focus:ring-2 focus:outline-none transition resize-none"
+                      style={{ borderColor: `${LESSON_THEME_COLOR}30` }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = LESSON_THEME_COLOR;
+                        e.currentTarget.style.boxShadow = `0 0 0 2px ${LESSON_THEME_COLOR}20`;
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = `${LESSON_THEME_COLOR}30`;
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    />
+
+                    <div className="flex gap-3 mt-4">
+                      <button
+                        onClick={() => checkVideoAnswer(q.id, videoAnswers[q.id] || "", q.correctAnswer, q.reflectionType === "personal")}
+                        className="text-white px-6 py-2 rounded-lg transition font-medium hover:opacity-90"
+                        style={{ backgroundColor: LESSON_THEME_COLOR }}
+                      >
+                        Reflect & Save
+                      </button>
+                      <button
+                        onClick={() => clearVideoAnswer(q.id)}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg transition font-medium"
+                      >
+                        Clear
+                      </button>
+                    </div>
+
+                    {showResults[`video-${q.id}`] && (
+                      <div className="mt-4">
+                        <AnswerResult 
+                          isCorrect={answerCorrectness[`video-${q.id}`] || false} 
+                          correctAnswer={q.correctAnswer}
+                          isReflection={q.reflectionType === "personal"}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-cyan-800 mb-4 flex items-center gap-2">
+                  <Headphones size={20} /> 🎯 Listening & Shadowing Tips:
+                </h3>
+                <ul className="list-disc pl-5 space-y-2 text-cyan-700">
+                  <li>Listen first without looking at the questions</li>
+                  <li>Practice shadowing: pause after each sentence and repeat</li>
+                  <li>Use your mistakes as fuel - learn from them</li>
+                  <li>Set a timer for daily practice (15-25 minutes is enough)</li>
+                  <li>Remember: progress happens step by step, not overnight</li>
+                  <li>Write down new vocabulary and review it regularly</li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ==============================================
+            SEÇÃO 8: OUTPUT - SPEAKING & WRITING PRACTICE
             ============================================== */}
         <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
           <div className="bg-indigo-600 text-white py-4 px-8 flex items-center justify-between">
@@ -1343,49 +1662,44 @@ export default function Lesson26GettingAround() {
         </div>
 
         {/* ==============================================
-            BOTÕES DE NAVEGAÇÃO
+            RODAPÉ E NAVEGAÇÃO
             ============================================== */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-8 pt-4 border-t border-gray-200">
-          <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mt-12 pt-8 border-t border-gray-300">
+          <div className="flex flex-col sm:flex-row gap-4">
             <button
-              onClick={() => {
-                alert("✅ All your progress has been saved locally!");
-              }}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 flex items-center gap-2 shadow-md"
+              onClick={saveAllAnswers}
+              className="flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition font-medium shadow-md"
             >
-              <span>💾</span> Save Progress
+              <Check size={20} /> Save All Answers
             </button>
             <button
-              onClick={() => {
-                if (confirm("Reset all answers?")) {
-                  window.location.reload();
-                }
-              }}
-              className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-full text-sm transition duration-300"
+              onClick={clearAllAnswers}
+              className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition font-medium shadow-md"
             >
-              Reset
+              <X size={20} /> Clear All
             </button>
           </div>
-
+          
           <div className="flex gap-4">
             <button
               onClick={() => router.push("/cursos")}
-              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+              className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-full transition font-medium shadow-md"
             >
-              ← Back to Courses
+              &larr; Back to Courses
             </button>
             <button
-              onClick={() => router.push("/cursos/lesson27")}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+              onClick={() => router.push(`/cursos/lesson${LESSON_NUMBER + 1}`)}
+              className="px-6 py-3 text-white rounded-full transition font-medium shadow-md"
+              style={{ backgroundColor: LESSON_THEME_COLOR }}
             >
-              Next Lesson →
+              Next Lesson &rarr;
             </button>
           </div>
         </div>
-
-        {/* FOOTER */}
-        <div className="mt-6 text-center text-gray-500 text-sm">
-          <p>Lesson 26 - Getting Around • Interactive Drilling Practice</p>
+        
+        <div className="mt-8 text-center text-gray-500 text-sm">
+          <p>Lesson {LESSON_NUMBER}: {LESSON_TITLE} - {LESSON_SUBTITLE} • Interactive English Practice • All answers are saved in your browser</p>
+          <p className="mt-1">🎧 Remember: Tune your ears, practice shadowing, and keep going step by step!</p>
         </div>
       </div>
     </div>

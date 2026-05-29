@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar';
 
-export default function LessonFoodAndDrink() {
+export default function Lesson5FoodAndDrink() {
   const router = useRouter();
   const [openDrills, setOpenDrills] = useState({
     verbs: false,
@@ -14,6 +13,11 @@ export default function LessonFoodAndDrink() {
     usefulPhrases: false,
     grammar: false,
   });
+  
+  // Estado para o modal de anotações do professor
+  const [noteModal, setNoteModal] = useState({ isOpen: false, text: "" });
+  // Estado para as anotações salvas que aparecem na tela
+  const [teacherNotes, setTeacherNotes] = useState<string[]>([]);
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills({
@@ -23,18 +27,40 @@ export default function LessonFoodAndDrink() {
   };
 
   const playAudio = (text: string) => {
-    // Formatação mais robusta para frases com múltiplas palavras
     const formattedText = text
       .toLowerCase()
-      .replace(/\s+/g, '-') // Usar hífens em vez de underscores
-      .replace(/[^\w\s-]/g, '') // Manter hífens
-      .replace(/\s*\/\s*/g, '-or-') // Tratar "ou" em opções
+      .replace(/\s+/g, '-')
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s*\/\s*/g, '-or-')
       .trim();
-    
-    console.log('Tentando reproduzir áudio:', `/audios/${formattedText}.mp3`); // Para debug
     
     const audio = new Audio(`/audios/${formattedText}.mp3`);
     audio.play().catch(e => console.error("Erro ao reproduzir áudio:", e));
+  };
+
+  // Função para abrir o modal de anotações do professor
+  const openNoteModal = () => {
+    setNoteModal({ isOpen: true, text: "" });
+  };
+
+  // Função para fechar o modal de anotações
+  const closeNoteModal = () => {
+    setNoteModal({ isOpen: false, text: "" });
+  };
+
+  // Função para salvar a anotação do professor e exibir na tela
+  const saveNote = () => {
+    if (noteModal.text.trim()) {
+      setTeacherNotes([...teacherNotes, noteModal.text]);
+      closeNoteModal();
+    } else {
+      alert("Por favor, digite uma anotação antes de salvar.");
+    }
+  };
+
+  // Função para remover uma anotação
+  const removeNote = (index: number) => {
+    setTeacherNotes(teacherNotes.filter((_, i) => i !== index));
   };
 
   // URLs das imagens
@@ -45,7 +71,7 @@ export default function LessonFoodAndDrink() {
 
   return (
     <div
-      className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
+      className="min-h-screen rounded-2xl py-16 px-6 bg-fixed relative"
       style={{
         backgroundImage: `url("/images/l5-orange-juice.jpg")`,
         backgroundSize: "cover",
@@ -54,6 +80,45 @@ export default function LessonFoodAndDrink() {
         backgroundAttachment: "fixed",
       }}
     >
+      {/* Ícone de lápis fixo para professores - APENAS UM na página toda */}
+      <button 
+        onClick={openNoteModal}
+        className="fixed bottom-6 right-6 bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-full shadow-lg transition-all duration-300 z-50"
+        aria-label="Fazer anotação para a turma"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+        </svg>
+      </button>
+
+      {/* Área de anotações do professor que aparecem na tela */}
+      {teacherNotes.length > 0 && (
+        <div className="fixed top-20 right-6 bg-white rounded-lg shadow-lg p-4 max-w-sm z-40 border-l-4 border-yellow-500">
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="font-bold text-gray-700">📝 Anotações do Professor</h4>
+            <button 
+              onClick={() => setTeacherNotes([])}
+              className="text-xs text-gray-400 hover:text-gray-600"
+            >
+              Limpar todas
+            </button>
+          </div>
+          <div className="space-y-2">
+            {teacherNotes.map((note, index) => (
+              <div key={index} className="bg-gray-50 p-2 rounded text-sm text-gray-600 flex justify-between items-start">
+                <span>{note}</span>
+                <button 
+                  onClick={() => removeNote(index)}
+                  className="text-red-400 hover:text-red-600 ml-2"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="max-w-5xl mx-auto bg-[#f0f8ff] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         
         {/* Título centralizado com imagem abaixo */}
@@ -62,7 +127,7 @@ export default function LessonFoodAndDrink() {
             Lesson 5 - Food & Drink
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Aprenda a expressar preferências sobre alimentos e bebidas em inglês. 🍖🥗
+            Learn to express preferences about food and drinks in English. 🍖🥗
           </p>
           <div className="w-64 h-64 mx-auto">
             <img
@@ -73,20 +138,20 @@ export default function LessonFoodAndDrink() {
           </div>
         </div>
 
-        {/* Seção 1 - Verbos com Drill (ORGANIZED SECTION) */}
+        {/* Seção 1 - Verbos com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">Verbs</h2>
               <p className="mt-2 text-blue-100 italic">
-                Clique nos verbos para ouvir a pronúncia e pratique suas formas
+                Click on the verbs to hear the pronunciation and practice their forms
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('verbs')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.verbs ? 'Ocultar Prática' : 'Mostrar Prática'}
+              {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -112,53 +177,53 @@ export default function LessonFoodAndDrink() {
             
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. I prefer <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('prefer')}>juice</span>. / soda</p>
-                  <p className="text-sm text-gray-600 mt-1">Eu prefiro suco. / refrigerante</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I prefer <span className="text-blue-600 font-bold">juice</span>. / <span className="text-blue-600 font-bold">soda</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu prefiro suco. / refrigerante</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. Do you prefer <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you prefer')}>rice or beans</span>? / meat or fish / chicken or salad</p>
-                  <p className="text-sm text-gray-600 mt-1">Você prefere arroz ou feijão? / carne ou peixe / frango ou salada</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you prefer <span className="text-blue-600 font-bold">rice</span> or <span className="text-blue-600 font-bold">beans</span>? / <span className="text-blue-600 font-bold">meat</span> or <span className="text-blue-600 font-bold">fish</span> / <span className="text-blue-600 font-bold">chicken</span> or <span className="text-blue-600 font-bold">salad</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você prefere arroz ou feijão? / carne ou peixe / frango ou salada</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. They prefer <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('they prefer')}>bread with butter</span>. / eggs / French fries</p>
-                  <p className="text-sm text-gray-600 mt-1">Eles preferem pão com manteiga. / ovos / batata frita</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They prefer <span className="text-blue-600 font-bold">bread</span> with butter. / <span className="text-blue-600 font-bold">eggs</span> / <span className="text-blue-600 font-bold">French fries</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eles preferem pão com manteiga. / ovos / batata frita</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. We prefer <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('we prefer')}>salad</span>. / vegetables / greens</p>
-                  <p className="text-sm text-gray-600 mt-1">Nós preferimos salada. / legumes / verduras</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We prefer <span className="text-blue-600 font-bold">salad</span>. / <span className="text-blue-600 font-bold">vegetables</span> / <span className="text-blue-600 font-bold">greens</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Nós preferimos salada. / legumes / verduras</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('she prefers')}>She prefers</span> fish. / chicken / meat</p>
-                  <p className="text-sm text-gray-600 mt-1">Ela prefere peixe. / frango / carne</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">She prefers <span className="text-blue-600 font-bold">fish</span>. / <span className="text-blue-600 font-bold">chicken</span> / <span className="text-blue-600 font-bold">meat</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Ela prefere peixe. / frango / carne</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('love')}>love</span> pizza. / hamburger / chocolate</p>
-                  <p className="text-sm text-gray-600 mt-1">Eu adoro pizza. / hambúrguer / chocolate</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I <span className="text-blue-600 font-bold">love</span> pizza. / <span className="text-blue-600 font-bold">hamburger</span> / <span className="text-blue-600 font-bold">chocolate</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu adoro pizza. / hambúrguer / chocolate</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you love')}>Do you love</span> ice cream? / cake / sweets</p>
-                  <p className="text-sm text-gray-600 mt-1">Você adora sorvete? / bolo / doces</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you <span className="text-blue-600 font-bold">love</span> ice cream? / <span className="text-blue-600 font-bold">cake</span> / <span className="text-blue-600 font-bold">sweets</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você adora sorvete? / bolo / doces</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('they love')}>They love</span> French fries. / sandwiches / soda</p>
-                  <p className="text-sm text-gray-600 mt-1">Eles adoram batatas fritas. / sanduíches / refrigerante</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They <span className="text-blue-600 font-bold">love</span> French fries. / <span className="text-blue-600 font-bold">sandwiches</span> / <span className="text-blue-600 font-bold">soda</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eles adoram batatas fritas. / sanduíches / refrigerante</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('we love')}>We love</span> Italian food. / Japanese / Mexican</p>
-                  <p className="text-sm text-gray-600 mt-1">Nós adoramos comida italiana. / japonesa / mexicana</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We <span className="text-blue-600 font-bold">love</span> Italian food. / <span className="text-blue-600 font-bold">Japanese</span> / <span className="text-blue-600 font-bold">Mexican</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Nós adoramos comida italiana. / japonesa / mexicana</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('she loves')}>She loves</span> coffee. / tea / natural juices</p>
-                  <p className="text-sm text-gray-600 mt-1">Ela adora café. / chá / sucos naturais</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">She <span className="text-blue-600 font-bold">loves</span> coffee. / <span className="text-blue-600 font-bold">tea</span> / <span className="text-blue-600 font-bold">natural juices</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Ela adora café. / chá / sucos naturais</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">11. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('prefer to eat')}>prefer to eat</span> fruits. / vegetables / healthy food</p>
-                  <p className="text-sm text-gray-600 mt-1">Eu prefiro comer frutas. / vegetais / alimentos saudáveis</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I <span className="text-blue-600 font-bold">prefer to eat</span> fruits. / <span className="text-blue-600 font-bold">vegetables</span> / <span className="text-blue-600 font-bold">healthy food</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu prefiro comer frutas. / vegetais / alimentos saudáveis</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">12. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you prefer to drink')}>Do you prefer to drink</span> water or juice? / tea or coffee</p>
-                  <p className="text-sm text-gray-600 mt-1">Você prefere beber água ou suco? / chá ou café</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you <span className="text-blue-600 font-bold">prefer to drink</span> water or juice? / <span className="text-blue-600 font-bold">tea or coffee</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você prefere beber água ou suco? / chá ou café</p>
                 </div>
               </div>
             )}
@@ -167,176 +232,111 @@ export default function LessonFoodAndDrink() {
 
         {/* Seção 2 - Vocabulário com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">New Vocabulary</h2>
               <p className="mt-2 text-blue-100 italic">
-                Clique em cada palavra para ouvir sua pronúncia correta
+                Click on each word to hear its correct pronunciation
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('vocabulary')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.vocabulary ? 'Ocultar Prática' : 'Mostrar Prática'}
+              {openDrills.vocabulary ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               <li>
-                <button 
-                  onClick={() => playAudio('beef')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  beef
-                </button> = carne bovina
+                <button onClick={() => playAudio('beef')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">beef</button> = carne bovina
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('chicken')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  chicken
-                </button> = frango
+                <button onClick={() => playAudio('chicken')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">chicken</button> = frango
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('fish')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  fish
-                </button> = peixe
+                <button onClick={() => playAudio('fish')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">fish</button> = peixe
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('bacon')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  bacon
-                </button> = bacon
+                <button onClick={() => playAudio('bacon')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">bacon</button> = bacon
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('sausage')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  sausage
-                </button> = linguiça, salsicha
+                <button onClick={() => playAudio('sausage')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">sausage</button> = linguiça, salsicha
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('tomato')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  tomato
-                </button> = tomate
+                <button onClick={() => playAudio('tomato')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">tomato</button> = tomate
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('salad')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  salad
-                </button> = salada
+                <button onClick={() => playAudio('salad')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">salad</button> = salada
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('french fries')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  French fries
-                </button> = batatas fritas
+                <button onClick={() => playAudio('french fries')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">French fries</button> = batatas fritas
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('sandwich')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  sandwich
-                </button> = sanduíche
+                <button onClick={() => playAudio('sandwich')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">sandwich</button> = sanduíche
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('vegetables')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  vegetables
-                </button> = legumes, verduras
+                <button onClick={() => playAudio('vegetables')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">vegetables</button> = legumes, verduras
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('rice')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  rice
-                </button> = arroz
+                <button onClick={() => playAudio('rice')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">rice</button> = arroz
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('beans')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  beans
-                </button> = Feijão
+                <button onClick={() => playAudio('beans')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">beans</button> = Feijão
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('soda')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  soda
-                </button> = Refrigerante
+                <button onClick={() => playAudio('soda')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">soda</button> = Refrigerante
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('or')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  or
-                </button> = ou
+                <button onClick={() => playAudio('or')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">or</button> = ou
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('what')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  what
-                </button> = o que, qual, quer
+                <button onClick={() => playAudio('what')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">what</button> = o que, qual
               </li>
             </ul>
             
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. Eu <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('prefer')}>prefiro</span> carne bovina. / frango / peixe</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">1. I prefer <span className="text-blue-600 font-bold">beef</span>. / <span className="text-blue-600 font-bold">chicken</span> / <span className="text-blue-600 font-bold">fish</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu prefiro carne bovina. / frango / peixe</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. Você quer <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('bacon')}>bacon</span> com ovos? / salsicha / tomate</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">2. Do you want <span className="text-blue-600 font-bold">bacon</span> with eggs? / <span className="text-blue-600 font-bold">sausage</span> / <span className="text-blue-600 font-bold">tomato</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer bacon com ovos? / salsicha / tomate</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. Nós <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('love')}>adoramos</span> salada. / legumes / batatas fritas</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">3. We love <span className="text-blue-600 font-bold">salad</span>. / <span className="text-blue-600 font-bold">vegetables</span> / <span className="text-blue-600 font-bold">French fries</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Nós adoramos salada. / legumes / batatas fritas</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Eu quero um <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('sandwich')}>sanduíche</span>. / salada / prato com peixe</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">4. I want a <span className="text-blue-600 font-bold">sandwich</span>. / <span className="text-blue-600 font-bold">salad</span> / <span className="text-blue-600 font-bold">fish dish</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu quero um sanduíche. / salada / prato com peixe</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Você <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('prefer')}>prefere</span> tomate na salada? / bacon / salsicha</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">5. Do you prefer <span className="text-blue-600 font-bold">tomato</span> in your salad? / <span className="text-blue-600 font-bold">bacon</span> / <span className="text-blue-600 font-bold">sausage</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você prefere tomate na salada? / bacon / salsicha</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. A comida está na <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('refrigerator')}>geladeira</span>. / freezer / armário</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">6. The food is in the <span className="text-blue-600 font-bold">refrigerator</span>. / <span className="text-blue-600 font-bold">freezer</span> / <span className="text-blue-600 font-bold">cupboard</span></p>
+                  <p className="text-sm text-gray-500 mt-1">A comida está na geladeira. / freezer / armário</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. Você quer carne <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('or')}>ou</span> frango? / peixe / salada</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">7. Do you want meat <span className="text-blue-600 font-bold">or</span> chicken? / <span className="text-blue-600 font-bold">fish</span> / <span className="text-blue-600 font-bold">salad</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer carne ou frango? / peixe / salada</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('what')}>O que</span> você quer comer? / beber / preferir</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold">What</span> do you want to eat? / <span className="text-blue-600 font-bold">drink</span> / <span className="text-blue-600 font-bold">prefer</span></p>
+                  <p className="text-sm text-gray-500 mt-1">O que você quer comer? / beber / preferir</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. Eu <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('love')}>adoro</span> sanduíches. / batatas fritas / pizza</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">9. I love <span className="text-blue-600 font-bold">sandwiches</span>. / <span className="text-blue-600 font-bold">French fries</span> / <span className="text-blue-600 font-bold">pizza</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu adoro sanduíches. / batatas fritas / pizza</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. Eles <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('prefer')}>preferem</span> vegetais cozidos. / crus / grelhados</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">10. They prefer cooked <span className="text-blue-600 font-bold">vegetables</span>. / <span className="text-blue-600 font-bold">raw</span> / <span className="text-blue-600 font-bold">grilled</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eles preferem vegetais cozidos. / crus / grelhados</p>
                 </div>
               </div>
             )}
@@ -345,120 +345,90 @@ export default function LessonFoodAndDrink() {
 
         {/* Seção 3 - Frases Úteis com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">Slangs and Fluency</h2>
               <p className="mt-2 text-blue-100 italic">
-                Pratique frases comuns para expressar preferências alimentares
+                Practice common phrases to express food preferences
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('usefulPhrases')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.usefulPhrases ? 'Ocultar Prática' : 'Mostrar Prática'}
+              {openDrills.usefulPhrases ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
               <li>
-                <button 
-                  onClick={() => playAudio('i want a glass of water please')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  I want a glass of water, please.
-                </button> = Eu quero um copo de água, por favor.
+                <button onClick={() => playAudio('i want a glass of water please')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">I want a glass of water, please.</button> = Eu quero um copo de água, por favor.
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('i prefer a cup of tea')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  I prefer a cup of tea.
-                </button> = Eu prefiro uma xícara de chá.
+                <button onClick={() => playAudio('i prefer a cup of tea')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">I prefer a cup of tea.</button> = Eu prefiro uma xícara de chá.
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('we love rice and beans for lunch')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  We love rice and beans for lunch.
-                </button> = Nós adoramos arroz e feijão no almoço.
+                <button onClick={() => playAudio('we love rice and beans for lunch')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">We love rice and beans for lunch.</button> = Nós adoramos arroz e feijão no almoço.
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('i eat bread and eggs for breakfast')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  I eat bread and eggs for breakfast.
-                </button> = Eu como pão e ovos no café da manhã.
+                <button onClick={() => playAudio('i eat bread and eggs for breakfast')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">I eat bread and eggs for breakfast.</button> = Eu como pão e ovos no café da manhã.
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('i-prefer-fish-for-dinner')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  I prefer fish for dinner.
-                </button> = Eu prefiro peixe no jantar.
+                <button onClick={() => playAudio('i prefer fish for dinner')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">I prefer fish for dinner.</button> = Eu prefiro peixe no jantar.
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('what-do-you-prefer-to-eat')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  What do you prefer to eat?
-                </button> = O que você prefere comer?
+                <button onClick={() => playAudio('what do you prefer to eat')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">What do you prefer to eat?</button> = O que você prefere comer?
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('what-do-you-want-to-drink')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  What do you want to drink?
-                </button> = O que você quer beber?
+                <button onClick={() => playAudio('what do you want to drink')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">What do you want to drink?</button> = O que você quer beber?
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('i-love-pizza-for-dinner')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  I love pizza for dinner.
-                </button> = Eu adoro pizza no jantar.
+                <button onClick={() => playAudio('i love pizza for dinner')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">I love pizza for dinner.</button> = Eu adoro pizza no jantar.
               </li>
             </ul>
             
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. Eu quero um copo de <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('water')}>água</span>, por favor. / suco / leite</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">1. I want a glass of <span className="text-blue-600 font-bold">water</span>, please. / <span className="text-blue-600 font-bold">juice</span> / <span className="text-blue-600 font-bold">milk</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu quero um copo de água, por favor. / suco / leite</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. Eu quero uma xícara de <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('tea')}>chá</span>. / café / chocolate</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">2. I want a cup of <span className="text-blue-600 font-bold">tea</span>. / <span className="text-blue-600 font-bold">coffee</span> / <span className="text-blue-600 font-bold">hot chocolate</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu quero uma xícara de chá. / café / chocolate quente</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. Eu como <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('rice and beans')}>arroz e feijão</span> no almoço. / carne e salada / peixe e legumes</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">3. I eat <span className="text-blue-600 font-bold">rice and beans</span> for lunch. / <span className="text-blue-600 font-bold">meat and salad</span> / <span className="text-blue-600 font-bold">fish and vegetables</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como arroz e feijão no almoço. / carne e salada / peixe e legumes</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. Eu como <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('bread and eggs')}>pão e ovos</span> no café da manhã. / cereal e leite / frutas e iogurte</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">4. I eat <span className="text-blue-600 font-bold">bread and eggs</span> for breakfast. / <span className="text-blue-600 font-bold">cereal and milk</span> / <span className="text-blue-600 font-bold">fruits and yogurt</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como pão e ovos no café da manhã. / cereal e leite / frutas e iogurte</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. Eu <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('prefer')}>prefiro</span> peixe no jantar. / frango / salada</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">5. I <span className="text-blue-600 font-bold">prefer</span> fish for dinner. / <span className="text-blue-600 font-bold">chicken</span> / <span className="text-blue-600 font-bold">salad</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu prefiro peixe no jantar. / frango / salada</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('what')}>O que</span> você quer comer? / beber / jantar</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">6. <span className="text-blue-600 font-bold">What</span> do you want to eat? / <span className="text-blue-600 font-bold">drink</span> / <span className="text-blue-600 font-bold">have for dinner</span></p>
+                  <p className="text-sm text-gray-500 mt-1">O que você quer comer? / beber / jantar</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('what')}>O que</span> você quer para o almoço? / jantar / café da manhã</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">7. <span className="text-blue-600 font-bold">What</span> do you want for lunch? / <span className="text-blue-600 font-bold">dinner</span> / <span className="text-blue-600 font-bold">breakfast</span></p>
+                  <p className="text-sm text-gray-500 mt-1">O que você quer para o almoço? / jantar / café da manhã</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. Eu <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('love')}>adoro</span> pizza no jantar. / massa / comida japonesa</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">8. I <span className="text-blue-600 font-bold">love</span> pizza for dinner. / <span className="text-blue-600 font-bold">pasta</span> / <span className="text-blue-600 font-bold">Japanese food</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu adoro pizza no jantar. / massa / comida japonesa</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. Você <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('prefer')}>prefere</span> carne ou frango no jantar? / peixe / salada</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">9. Do you <span className="text-blue-600 font-bold">prefer</span> meat or chicken for dinner? / <span className="text-blue-600 font-bold">fish</span> / <span className="text-blue-600 font-bold">salad</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você prefere carne ou frango no jantar? / peixe / salada</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. Nós <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('love')}>amamos</span> sobremesa depois do jantar. / café / chá</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">10. We <span className="text-blue-600 font-bold">love</span> dessert after dinner. / <span className="text-blue-600 font-bold">coffee</span> / <span className="text-blue-600 font-bold">tea</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Nós amamos sobremesa depois do jantar. / café / chá</p>
                 </div>
               </div>
             )}
@@ -467,144 +437,118 @@ export default function LessonFoodAndDrink() {
 
         {/* Seção 4 - Gramática com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Grammar</h2>
+              <h2 className="text-2xl font-bold">Understand Grammar</h2>
               <p className="mt-2 text-blue-100 italic">
-                Estruturas para fazer perguntas sobre preferências alimentares
+                Structures to ask and answer about food preferences
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('grammar')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.grammar ? 'Ocultar Prática' : 'Mostrar Prática'}
+              {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
             <div className="bg-blue-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
               <p>
-                <button 
-                  onClick={() => playAudio('do-you-eat-fish')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  Do you eat fish?
-                </button> = Você come peixe?
+                <button onClick={() => playAudio('do you eat fish')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">Do you eat fish?</button> = Você come peixe?
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('do-you-want-to-eat-french-fries')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  Do you want to eat French fries?
-                </button> = Você quer comer batatas fritas?
+                <button onClick={() => playAudio('do you want to eat french fries')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">Do you want to eat French fries?</button> = Você quer comer batatas fritas?
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('do-you-eat-bread-for-breakfast')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  Do you eat bread for breakfast?
-                </button> = Você come pão no café da manhã?
+                <button onClick={() => playAudio('do you eat bread for breakfast')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">Do you eat bread for breakfast?</button> = Você come pão no café da manhã?
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('what do you eat for dinner')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  What do you eat for dinner?
-                </button> = O que você come no jantar?
+                <button onClick={() => playAudio('what do you eat for dinner')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">What do you eat for dinner?</button> = O que você come no jantar?
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('what do you want to drink')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  What do you want to drink?
-                </button> = O que você quer beber?
+                <button onClick={() => playAudio('what do you want to drink')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">What do you want to drink?</button> = O que você quer beber?
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('what-do-you-like-to-eat')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  What do you like to eat?
-                </button> = O que você gosta de comer?
+                <button onClick={() => playAudio('what do you like to eat')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">What do you like to eat?</button> = O que você gosta de comer?
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('do-you-prefer-coffee-or-tea')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  Do you prefer coffee or tea?
-                </button> = Você prefere café ou chá?
+                <button onClick={() => playAudio('do you prefer coffee or tea')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">Do you prefer coffee or tea?</button> = Você prefere café ou chá?
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('do you love chocolate')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  Do you love chocolate?
-                </button> = Você adora chocolate?
+                <button onClick={() => playAudio('do you love chocolate')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">Do you love chocolate?</button> = Você adora chocolate?
               </p>
             </div>
             
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you eat')}>Do you eat</span> bread? / rice / eggs / salad / fish</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">1. <span className="text-blue-600 font-bold">Do you eat</span> bread? / <span className="text-blue-600 font-bold">rice</span> / <span className="text-blue-600 font-bold">eggs</span> / <span className="text-blue-600 font-bold">salad</span> / <span className="text-blue-600 font-bold">fish</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você come pão? / arroz / ovos / salada / peixe</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you drink')}>Do you drink</span> juice? / soda / tea / coffee / milk</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600 font-bold">Do you drink</span> juice? / <span className="text-blue-600 font-bold">soda</span> / <span className="text-blue-600 font-bold">tea</span> / <span className="text-blue-600 font-bold">coffee</span> / <span className="text-blue-600 font-bold">milk</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você bebe suco? / refrigerante / chá / café / leite</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you want')}>Do you want</span> water? / soda / rice / beans / sausage</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">3. <span className="text-blue-600 font-bold">Do you want</span> water? / <span className="text-blue-600 font-bold">soda</span> / <span className="text-blue-600 font-bold">rice</span> / <span className="text-blue-600 font-bold">beans</span> / <span className="text-blue-600 font-bold">sausage</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer água? / refrigerante / arroz / feijão / salsicha</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you like')}>Do you like</span> salad? / fish / chicken / French fries / meat</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">4. <span className="text-blue-600 font-bold">Do you like</span> salad? / <span className="text-blue-600 font-bold">fish</span> / <span className="text-blue-600 font-bold">chicken</span> / <span className="text-blue-600 font-bold">French fries</span> / <span className="text-blue-600 font-bold">meat</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você gosta de salada? / peixe / frango / batatas fritas / carne</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you eat')}>Do you eat</span> chicken? / fish / meat / vegetables / sausage</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">5. <span className="text-blue-600 font-bold">Do you eat</span> chicken? / <span className="text-blue-600 font-bold">fish</span> / <span className="text-blue-600 font-bold">meat</span> / <span className="text-blue-600 font-bold">vegetables</span> / <span className="text-blue-600 font-bold">sausage</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você come frango? / peixe / carne / legumes / salsicha</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you drink')}>Do you drink</span> soda? / juice / milk / water / tea</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">6. <span className="text-blue-600 font-bold">Do you drink</span> soda? / <span className="text-blue-600 font-bold">juice</span> / <span className="text-blue-600 font-bold">milk</span> / <span className="text-blue-600 font-bold">water</span> / <span className="text-blue-600 font-bold">tea</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você bebe refrigerante? / suco / leite / água / chá</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you like')}>Do you like</span> sandwiches? / tomatoes / salad / bacon / beans</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">7. <span className="text-blue-600 font-bold">Do you like</span> sandwiches? / <span className="text-blue-600 font-bold">tomatoes</span> / <span className="text-blue-600 font-bold">salad</span> / <span className="text-blue-600 font-bold">bacon</span> / <span className="text-blue-600 font-bold">beans</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você gosta de sanduíches? / tomates / salada / bacon / feijão</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you want')}>Do you want</span> soda? / juice / water / meat / eggs</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold">Do you want</span> soda? / <span className="text-blue-600 font-bold">juice</span> / <span className="text-blue-600 font-bold">water</span> / <span className="text-blue-600 font-bold">meat</span> / <span className="text-blue-600 font-bold">eggs</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer refrigerante? / suco / água / carne / ovos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you prefer')}>Do you prefer</span> rice? / beans / French fries / salad / bacon</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">9. <span className="text-blue-600 font-bold">Do you prefer</span> rice? / <span className="text-blue-600 font-bold">beans</span> / <span className="text-blue-600 font-bold">French fries</span> / <span className="text-blue-600 font-bold">salad</span> / <span className="text-blue-600 font-bold">bacon</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você prefere arroz? / feijão / batatas fritas / salada / bacon</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you prefer to eat')}>Do you prefer to eat</span> meat? / fish / chicken / sausage</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">10. <span className="text-blue-600 font-bold">Do you prefer to eat</span> meat? / <span className="text-blue-600 font-bold">fish</span> / <span className="text-blue-600 font-bold">chicken</span> / <span className="text-blue-600 font-bold">sausage</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você prefere comer carne? / peixe / frango / salsicha</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">11. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you love')}>Do you love</span> pizza? / chocolate / ice cream</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">11. <span className="text-blue-600 font-bold">Do you love</span> pizza? / <span className="text-blue-600 font-bold">chocolate</span> / <span className="text-blue-600 font-bold">ice cream</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você adora pizza? / chocolate / sorvete</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">12. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('do you prefer')}>Do you prefer</span> coffee or tea? / juice or soda / water or milk</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">12. <span className="text-blue-600 font-bold">Do you prefer</span> coffee or tea? / <span className="text-blue-600 font-bold">juice or soda</span> / <span className="text-blue-600 font-bold">water or milk</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você prefere café ou chá? / suco ou refrigerante / água ou leite</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">13. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('what do you prefer to eat')}>What do you prefer to eat</span> for dinner? / lunch / breakfast</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">13. <span className="text-blue-600 font-bold">What do you prefer to eat</span> for dinner? / <span className="text-blue-600 font-bold">lunch</span> / <span className="text-blue-600 font-bold">breakfast</span></p>
+                  <p className="text-sm text-gray-500 mt-1">O que você prefere comer no jantar? / almoço / café da manhã</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">14. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('what do you love to drink')}>What do you love to drink</span> in the morning? / afternoon / evening</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">14. <span className="text-blue-600 font-bold">What do you love to drink</span> in the morning? / <span className="text-blue-600 font-bold">afternoon</span> / <span className="text-blue-600 font-bold">evening</span></p>
+                  <p className="text-sm text-gray-500 mt-1">O que você adora beber pela manhã? / tarde / noite</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Seção 5 - Real Life Practice*/}
+        {/* Seção 5 - Real Life Practice */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
             <h2 className="text-2xl font-bold">Real Life Practice</h2>
             <p className="mt-2 text-blue-100 italic">
-              Substitua as palavras em azul para praticar a pronúncia em situações reais
+              Replace the words to practice pronunciation in real situations
             </p>
           </div>
           
@@ -613,7 +557,7 @@ export default function LessonFoodAndDrink() {
               <div className="flex flex-col lg:flex-row gap-8">
                 {/* Frases - 2/3 da largura em grandes */}
                 <div className="lg:w-2/3 space-y-6">
-                  <div className="group">
+                  <div>
                     <div className="flex items-start">
                       <button 
                         onClick={() => playAudio('i prefer to drink a glass of water')} 
@@ -626,16 +570,14 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          1. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('prefer')}
-                          >prefer</span> to drink a glass of water.
+                          1. I prefer to drink a glass of water.
                         </p>
                         <p className="text-sm text-gray-600">Eu prefiro beber um copo de água.</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="group">
+                  <div>
                     <div className="flex items-start">
                       <button 
                         onClick={() => playAudio('i prefer to eat beef and vegetables')} 
@@ -648,16 +590,14 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          2. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('prefer')}
-                          >prefer</span> to eat beef and vegetables.
+                          2. I prefer to eat beef and vegetables.
                         </p>
                         <p className="text-sm text-gray-600">Eu prefiro comer carne bovina e legumes.</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="group">
+                  <div>
                     <div className="flex items-start">
                       <button 
                         onClick={() => playAudio('i prefer juice to soda')} 
@@ -670,16 +610,14 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          3. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('prefer')}
-                          >prefer</span> juice to soda.
+                          3. I prefer juice to soda.
                         </p>
                         <p className="text-sm text-gray-600">Eu prefiro suco a refrigerante.</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="group">
+                  <div>
                     <div className="flex items-start">
                       <button 
                         onClick={() => playAudio('i love french fries')} 
@@ -692,16 +630,14 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          4. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('love')}
-                          >love</span> French fries.
+                          4. I love French fries.
                         </p>
                         <p className="text-sm text-gray-600">Eu adoro batatas fritas.</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="group">
+                  <div>
                     <div className="flex items-start">
                       <button 
                         onClick={() => playAudio('i prefer to eat chicken and salad for lunch')} 
@@ -714,19 +650,17 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          5. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('prefer')}
-                          >prefer</span> to eat chicken and salad for lunch.
+                          5. I prefer to eat chicken and salad for lunch.
                         </p>
                         <p className="text-sm text-gray-600">Eu prefiro comer frango e salada no almoço.</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="group">
+                  <div>
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('do-you-like-sausages-and-bacon')} 
+                        onClick={() => playAudio('do you like sausages and bacon')} 
                         className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
@@ -736,19 +670,17 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('do you like')}
-                          >Do you like</span> sausages and bacon?
+                          6. Do you like sausages and bacon?
                         </p>
                         <p className="text-sm text-gray-600">Você gosta de salsichas e bacon?</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="group">
+                  <div>
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('do-you-want-to-drink-juice')} 
+                        onClick={() => playAudio('do you want to drink juice')} 
                         className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
@@ -758,19 +690,17 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('do you want to drink')}
-                          >Do you want to drink</span> juice?
+                          7. Do you want to drink juice?
                         </p>
                         <p className="text-sm text-gray-600">Você quer beber suco?</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="group">
+                  <div>
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('do-you-prefer-to-eat-beef-or-fish-for-dinner')} 
+                        onClick={() => playAudio('do you prefer to eat fish or beef for dinner')} 
                         className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
@@ -780,20 +710,17 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          8. Do you prefer to eat <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('fish or beef')}
-                          >fish or beef</span> for dinner?
+                          8. Do you prefer to eat fish or beef for dinner?
                         </p>
                         <p className="text-sm text-gray-600">Você prefere comer peixe ou carne bovina no jantar?</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="group">
+                  <div>
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('what-do-you-like')} 
+                        onClick={() => playAudio('what do you like')} 
                         className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
@@ -803,17 +730,14 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          9. <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('what do you like')}
-                          >What do you like</span>?
+                          9. What do you like?
                         </p>
                         <p className="text-sm text-gray-600">O que você gosta?</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="group">
+                  <div>
                     <div className="flex items-start">
                       <button 
                         onClick={() => playAudio('what do you want to eat')} 
@@ -826,10 +750,7 @@ export default function LessonFoodAndDrink() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          10. <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('what do you want to eat')}
-                          >What do you want to eat</span>?
+                          10. What do you want to eat?
                         </p>
                         <p className="text-sm text-gray-600">O que você quer comer?</p>
                       </div>
@@ -839,29 +760,29 @@ export default function LessonFoodAndDrink() {
 
                 {/* Container das imagens - 1/3 da largura em grandes */}
                 <div className="lg:w-1/3 flex flex-col gap-4">
-                  <div className="bg-white rounded-2xl p-4 shadow-md h-full">
+                  <div className="bg-white rounded-2xl p-4 shadow-md">
                     <div className="relative h-64 w-full">
                       <img
                         src={beefAndFishImage}
-                        alt="Refeições principais"
+                        alt="Main meals"
                         className="rounded-xl object-cover w-full h-full"
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
-                      Carnes, peixes e acompanhamentos
+                      Meats, fish and side dishes
                     </p>
                   </div>
                   
-                  <div className="bg-white rounded-2xl p-4 shadow-md h-full">
+                  <div className="bg-white rounded-2xl p-4 shadow-md">
                     <div className="relative h-64 w-full">
                       <img
                         src={drinkAndSandwichImage}
-                        alt="Bebidas e sanduíches"
+                        alt="Drinks and sandwiches"
                         className="rounded-xl object-cover w-full h-full"
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
-                      Bebidas e sanduíches variados
+                      Drinks and varied sandwiches
                     </p>
                   </div>
                 </div>
@@ -870,99 +791,42 @@ export default function LessonFoodAndDrink() {
           </div>
         </div>
 
-        {/* Seção 6 - Check It Out (estilo print) */}
+        {/* Seção 6 - Check It Out */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-3xl font-bold">CHECK IT OUT!</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Pratique estruturas essenciais para falar sobre preferências alimentares
-              </p>
-            </div>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
+            <h2 className="text-3xl font-bold">CHECK IT OUT!</h2>
+            <p className="mt-2 text-blue-100 italic">
+              Practice essential structures to talk about food preferences
+            </p>
           </div>
 
           <div className="flex flex-col md:flex-row">
-            {/* Coluna esquerda - Perguntas e respostas */}
+            {/* Coluna esquerda - Expressões */}
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
-              <div className="mb-4">
-                <h3 className="font-bold text-lg mb-2 text-yellow-300">Respostas Simples:</h3>
-                <p className="text-sm text-blue-200 mb-2">
-                  Use <span className="font-bold">"Yes, I do"</span> para respostas positivas e 
-                  <span className="font-bold"> "No, I don't"</span> para respostas negativas quando a pergunta começa com "Do you...".
-                </p>
-              </div>
-              <div className="flex items-center group">
-                <button 
-                  onClick={() => playAudio("yes-i-do-no-i-dont")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
-                  aria-label="Play audio"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                </button>
-                <p>• Do you eat beef? → <span className="font-bold">Yes, I do. / No, I don't.</span></p>
-              </div>
-              <div className="flex items-center group">
-                <button 
-                  onClick={() => playAudio("yes-i-do-no-i-dont")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
-                  aria-label="Play audio"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                </button>
-                <p>• Do you drink soda? → <span className="font-bold">Yes, I do. / No, I don't.</span></p>
-              </div>
-              <div className="flex items-center group">
-                <button 
-                  onClick={() => playAudio("yes-i-do-no-i-dont")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
-                  aria-label="Play audio"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                </button>
-                <p>• Do you prefer coffee? → <span className="font-bold">Yes, I do. / No, I don't.</span></p>
-              </div>
-              <div className="flex items-center group">
-                <button 
-                  onClick={() => playAudio("yes-i-do-no-i-dont")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
-                  aria-label="Play audio"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                </button>
-                <p>• Do you love chocolate? → <span className="font-bold">Yes, I do. / No, I don't.</span></p>
-              </div>
+              <p className="font-bold">I like to eat... <span className="text-sm text-blue-300 ml-2">Eu gosto de comer...</span></p>
+              <p className="font-bold">I want to drink... <span className="text-sm text-blue-300 ml-2">Eu quero beber...</span></p>
+              <p className="font-bold">I don't like to eat... <span className="text-sm text-blue-300 ml-2">Eu não gosto de comer...</span></p>
+              <p className="font-bold">I don't want to drink... <span className="text-sm text-blue-300 ml-2">Eu não quero beber...</span></p>
             </div>
 
             {/* Coluna central - Imagem e balão */}
-            <div className="bg-white flex-1 p-6 flex flex-col items-center justify-center text-xl relative">
+            <div className="bg-white flex-1 p-6 flex flex-col items-center justify-center text-xl">
               <img
                 src={vegetablesImage}
-                alt="Pessoa escolhendo comida"
+                alt="Person choosing food"
                 className="rounded-full w-40 h-40 object-cover mb-4"
               />
               <div className="bg-yellow-200 text-black px-4 py-2 rounded-xl shadow-md text-center">
                 What do you want to eat? <span className="font-bold">I want chicken!</span>
-              </div>
-              <div className="mt-4 text-center text-sm text-gray-600">
-                <p>Use <span className="font-bold">"do"</span> para perguntas e respostas simples</p>
-                <p>Exemplo: "Do you like pizza?" → "Yes, I <span className="font-bold">do</span>"</p>
+                <p className="text-sm text-gray-600 mt-1">O que você quer comer? Eu quero frango!</p>
               </div>
             </div>
 
-            {/* Coluna direita - Plural forms */}
+            {/* Coluna direita - Despedidas */}
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
-              <h3 className="font-bold text-lg mb-2">Plurals examples:</h3>
               <div className="flex items-center group">
                 <button 
-                  onClick={() => playAudio("vegetables")}
+                  onClick={() => playAudio("bye see you")}
                   className="mr-2 text-blue-200 hover:text-white transition-colors"
                   aria-label="Play audio"
                 >
@@ -970,11 +834,11 @@ export default function LessonFoodAndDrink() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                   </svg>
                 </button>
-                <p>• vegetable → <span className="font-bold">vegetables</span></p>
+                <p>• Bye! See you. <span className="text-sm text-blue-300 ml-2">Tchau! Até mais.</span></p>
               </div>
               <div className="flex items-center group">
                 <button 
-                  onClick={() => playAudio("tomatoes")}
+                  onClick={() => playAudio("see you later")}
                   className="mr-2 text-blue-200 hover:text-white transition-colors"
                   aria-label="Play audio"
                 >
@@ -982,11 +846,11 @@ export default function LessonFoodAndDrink() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                   </svg>
                 </button>
-                <p>• tomato → <span className="font-bold">tomatoes</span></p>
+                <p>• See you later. <span className="text-sm text-blue-300 ml-2">Até mais tarde.</span></p>
               </div>
               <div className="flex items-center group">
                 <button 
-                  onClick={() => playAudio("sandwiches")}
+                  onClick={() => playAudio("good night")}
                   className="mr-2 text-blue-200 hover:text-white transition-colors"
                   aria-label="Play audio"
                 >
@@ -994,40 +858,67 @@ export default function LessonFoodAndDrink() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                   </svg>
                 </button>
-                <p>• sandwich → <span className="font-bold">sandwiches</span></p>
-              </div>
-              <div className="flex items-center group">
-                <button 
-                  onClick={() => playAudio("fries")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
-                  aria-label="Play audio"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                </button>
-                <p>• French fries → <span className="font-bold">fries</span></p>
+                <p>• Good night! <span className="text-sm text-blue-300 ml-2">Boa noite!</span></p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Botão para próxima lição */}
+        {/* Botões de navegação */}
         <div className="flex justify-center gap-4 mt-8">
           <button
             onClick={() => router.push("/cursos/lesson4")}
-            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            className="inline-block rounded-full bg-gradient-to-r from-gray-500 to-gray-600 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-gray-600 hover:to-gray-800 active:animate-glow"
           >
-            &larr; Lição Anterior
+            &larr; Previous Lesson
           </button>
           <button
             onClick={() => router.push("/cursos/lesson6")}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
           >
-            Próxima Lição &rarr;
+            Next Lesson &rarr;
           </button>
-        </div>  
+        </div>
       </div>
+
+      {/* Modal de Anotações do Professor */}
+      {noteModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-blue-800">📝 Anotação para a Turma</h3>
+              <button 
+                onClick={closeNoteModal}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <textarea
+              value={noteModal.text}
+              onChange={(e) => setNoteModal({ ...noteModal, text: e.target.value })}
+              placeholder="Digite aqui sua anotação para a turma...&#10;Exemplo: Prestem atenção na pronúncia de 'prefer'!&#10;Ou: Revisem o vocabulário de alimentos para a próxima aula."
+              className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 resize-none"
+            />
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                onClick={closeNoteModal}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={saveNote}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Salvar e Exibir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

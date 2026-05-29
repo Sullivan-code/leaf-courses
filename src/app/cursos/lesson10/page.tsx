@@ -3,9 +3,210 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCircle } from "lucide-react";
+import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCircle, VolumeX } from "lucide-react";
 
-// Dados da Lição 10 - Atualizados com o conteúdo fornecido
+// ============================================
+// SPEECH SYSTEM WITH VOICE SELECTION (AMERICAN ENGLISH ONLY)
+// ============================================
+
+interface SpeakTextProps {
+  text: string;
+  children?: React.ReactNode;
+  className?: string;
+  voiceType?: "female" | "male";
+}
+
+// Helper function to get an American English voice
+const getAmericanVoice = (voiceType: "female" | "male" = "female"): SpeechSynthesisVoice | null => {
+  if (typeof window === 'undefined') return null;
+  const voices = window.speechSynthesis.getVoices();
+  
+  // First, try to find explicit American English voices
+  let americanVoices = voices.filter(voice => 
+    voice.lang === 'en-US' && voice.localService === true
+  );
+  
+  // If no localService en-US, try any en-US
+  if (americanVoices.length === 0) {
+    americanVoices = voices.filter(voice => voice.lang === 'en-US');
+  }
+  
+  // If still none, try any English voice from the US
+  if (americanVoices.length === 0) {
+    americanVoices = voices.filter(voice => 
+      voice.lang.startsWith('en') && 
+      (voice.name.toLowerCase().includes('us') || 
+       voice.name.toLowerCase().includes('american'))
+    );
+  }
+  
+  if (americanVoices.length === 0) return null;
+  
+  // For female voice
+  if (voiceType === "female") {
+    const femaleVoice = americanVoices.find(voice => 
+      voice.name.toLowerCase().includes('samantha') ||
+      voice.name.toLowerCase().includes('google uk female') ||
+      voice.name.toLowerCase().includes('victoria') ||
+      voice.name.toLowerCase().includes('female')
+    );
+    return femaleVoice || americanVoices[0];
+  } 
+  // For male voice
+  else {
+    const maleVoice = americanVoices.find(voice => 
+      voice.name.toLowerCase().includes('daniel') ||
+      voice.name.toLowerCase().includes('google uk male') ||
+      voice.name.toLowerCase().includes('male')
+    );
+    return maleVoice || americanVoices[0];
+  }
+};
+
+// Speech component for text-to-speech
+const SpeakText = ({ text, children, className = "", voiceType = "female" }: SpeakTextProps) => {
+  const speak = () => {
+    if (!text || typeof window === 'undefined') return;
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    
+    // Get American English voice
+    const americanVoice = getAmericanVoice(voiceType);
+    if (americanVoice) {
+      utterance.voice = americanVoice;
+    }
+    
+    window.speechSynthesis.speak(utterance);
+  };
+
+  return (
+    <button
+      onClick={speak}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
+      title="Click to hear pronunciation"
+    >
+      {children || text}
+      <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+    </button>
+  );
+};
+
+// Component for pronouncing entire sentences
+const SpeakSentence = ({ text, children, className = "", voiceType = "female" }: SpeakTextProps) => {
+  return (
+    <button
+      onClick={() => {
+        const speechText = children && typeof children === 'string' ? children : text;
+        if (speechText && typeof window !== 'undefined') {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(speechText);
+          utterance.lang = 'en-US';
+          utterance.rate = 0.85;
+          utterance.pitch = 1.0;
+          
+          const americanVoice = getAmericanVoice(voiceType);
+          if (americanVoice) utterance.voice = americanVoice;
+          
+          window.speechSynthesis.speak(utterance);
+        }
+      }}
+      className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors ${className}`}
+    >
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
+    </button>
+  );
+};
+
+// Hook for speech functionality
+const useSpeech = () => {
+  const speak = (text: string, voiceType: "female" | "male" = "female") => {
+    if (!text || typeof window === 'undefined') return;
+    
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    
+    const americanVoice = getAmericanVoice(voiceType);
+    if (americanVoice) utterance.voice = americanVoice;
+    
+    window.speechSynthesis.speak(utterance);
+  };
+  
+  return { speak };
+};
+
+// ============================================
+// LESSON DATA
+// ============================================
+
+// Vocabulary with audio
+const vocabulary = [
+  { word: "a little", translation: "um pouco" },
+  { word: "I get", translation: "eu entendo" },
+  { word: "understand", translation: "entender" },
+  { word: "prefer", translation: "preferir" },
+  { word: "abroad", translation: "no exterior" },
+  { word: "alone", translation: "sozinho" },
+  { word: "classmate", translation: "colega de classe" },
+  { word: "teacher", translation: "professor" },
+  { word: "friend", translation: "amigo" }
+];
+
+// Key Vocabulary from Video
+const videoKeyVocabulary = [
+  { word: "Tips", translation: "Dicas / conselhos" },
+  { word: "Perfection", translation: "Perfeição" },
+  { word: "even native speakers", translation: "até mesmo os nativos" },
+  { word: "goal", translation: "Objetivo" },
+  { word: "Habit", translation: "Hábito" },
+  { word: "your own words", translation: "suas próprias palavras" },
+  { word: "English-speaking group", translation: "Grupo falante de inglês" },
+  { word: "A mix of accents", translation: "Uma mistura de sotaques" },
+  { word: "Slangs", translation: "Gírias" },
+  { word: "celebrate your progress", translation: "Celebre o seu progresso" },
+  { word: "It's a piece of cake", translation: "Isso é muito fácil" },
+  { word: "tone and emotion", translation: "tom e emoção" },
+  { word: "Sarcastic", translation: "Sarcástico" },
+  { word: "It depends on", translation: "Depende de" },
+  { word: "You'll be / You will be", translation: "Você vai estar / Você estará" },
+  { word: "faster", translation: "Mais rápido" },
+  { word: "To turn on", translation: "Ligar (um aparelho)" },
+  { word: "To procrastinate", translation: "Procrastinar" },
+  { word: "A must", translation: "algo que você deve fazer" },
+  { word: "maybe you're ordering food", translation: "Talvez você esteja pedindo comida" },
+  { word: "Role-switching", translation: "Troca de papéis (numa conversa)" },
+  { word: "Confidence", translation: "Confiança" },
+  { word: "Positive affirmations", translation: "Afirmações positivas" }
+];
+
+// Main dialogue with voice roles (Zoey - female, Mike - male)
+const mainDialogue = [
+  { speaker: "Zoey", text: "Hi, Mike.", voiceType: "female" as const },
+  { speaker: "Mike", text: "Hello, Zoey. What's up?", voiceType: "male" as const },
+  { speaker: "Zoey", text: "Mike, do you speak Spanish?", voiceType: "female" as const },
+  { speaker: "Mike", text: "A little.", voiceType: "male" as const },
+  { speaker: "Zoey", text: "I don't understand this word. Queso?", voiceType: "female" as const },
+  { speaker: "Mike", text: "Ah, queso is cheese.", voiceType: "male" as const },
+  { speaker: "Zoey", text: "Got it! Thank you. Where do you study Spanish?", voiceType: "female" as const },
+  { speaker: "Mike", text: "I study Spanish at LEAF. What about you?", voiceType: "male" as const },
+  { speaker: "Zoey", text: "I study alone. I want to live in Spain.", voiceType: "female" as const },
+  { speaker: "Mike", text: "Do you want to study Spanish with me?", voiceType: "male" as const },
+  { speaker: "Zoey", text: "Yes!", voiceType: "female" as const },
+  { speaker: "Mike", text: "Great! See you later!", voiceType: "male" as const },
+  { speaker: "Zoey", text: "See you!", voiceType: "female" as const }
+];
+
+// Substitution practice 1
 const substitutionPractice1 = [
   { 
     key: "subs-1", 
@@ -44,6 +245,7 @@ const substitutionPractice1 = [
   }
 ];
 
+// Substitution practice 2
 const substitutionPractice2 = [
   { 
     key: "subs2-1", 
@@ -82,382 +284,63 @@ const substitutionPractice2 = [
   }
 ];
 
+// Negative exercises
 const negativeExercises = [
-  { 
-    key: "neg-1", 
-    sentence: "I want to live in this country.",
-    answer: "I don't want to live in this country."
-  },
-  { 
-    key: "neg-2", 
-    sentence: "We speak Spanish at school.",
-    answer: "We don't speak Spanish at school."
-  },
-  { 
-    key: "neg-3", 
-    sentence: "I understand that word.",
-    answer: "I don't understand that word."
-  },
-  { 
-    key: "neg-4", 
-    sentence: "They like this city.",
-    answer: "They don't like this city."
-  },
-  { 
-    key: "neg-5", 
-    sentence: "We want to live in the U.S.A.",
-    answer: "We don't want to live in the U.S.A."
-  },
-  { 
-    key: "neg-6", 
-    sentence: "I speak this language.",
-    answer: "I don't speak this language."
-  }
+  { key: "neg-1", sentence: "I want to live in this country.", answer: "I don't want to live in this country." },
+  { key: "neg-2", sentence: "We speak Spanish at school.", answer: "We don't speak Spanish at school." },
+  { key: "neg-3", sentence: "I understand that word.", answer: "I don't understand that word." },
+  { key: "neg-4", sentence: "They like this city.", answer: "They don't like this city." },
+  { key: "neg-5", sentence: "We want to live in the U.S.A.", answer: "We don't want to live in the U.S.A." },
+  { key: "neg-6", sentence: "I speak this language.", answer: "I don't speak this language." }
 ];
 
+// Affirmative exercises
 const affirmativeExercises = [
-  { 
-    key: "aff-1", 
-    sentence: "She doesn't understand that word.",
-    answer: "She understands that word."
-  },
-  { 
-    key: "aff-2", 
-    sentence: "He doesn't study Italian in the afternoon.",
-    answer: "He studies Italian in the afternoon."
-  },
-  { 
-    key: "aff-3", 
-    sentence: "They don't eat chicken sandwiches.",
-    answer: "They eat chicken sandwiches."
-  },
-  { 
-    key: "aff-4", 
-    sentence: "We don't speak Spanish with our classmates.",
-    answer: "We speak Spanish with our classmates."
-  },
-  { 
-    key: "aff-5", 
-    sentence: "It doesn't work properly.",
-    answer: "It works properly."
-  },
-  { 
-    key: "aff-6", 
-    sentence: "You don't study German with your teacher.",
-    answer: "You study German with your teacher."
-  }
+  { key: "aff-1", sentence: "She doesn't understand that word.", answer: "She understands that word." },
+  { key: "aff-2", sentence: "He doesn't study Italian in the afternoon.", answer: "He studies Italian in the afternoon." },
+  { key: "aff-3", sentence: "They don't eat chicken sandwiches.", answer: "They eat chicken sandwiches." },
+  { key: "aff-4", sentence: "We don't speak Spanish with our classmates.", answer: "We speak Spanish with our classmates." },
+  { key: "aff-5", sentence: "It doesn't work properly.", answer: "It works properly." },
+  { key: "aff-6", sentence: "You don't study German with your teacher.", answer: "You study German with your teacher." }
 ];
 
+// Interrogative exercises
 const interrogativeExercises = [
-  { 
-    key: "int-1", 
-    sentence: "She lives in Brazil with her friend.",
-    answer: "Does she live in Brazil with her friend?"
-  },
-  { 
-    key: "int-2", 
-    sentence: "They understand Spanish and Italian.",
-    answer: "Do they understand Spanish and Italian?"
-  },
-  { 
-    key: "int-3", 
-    sentence: "He prefers to study in the morning.",
-    answer: "Does he prefer to study in the morning?"
-  },
-  { 
-    key: "int-4", 
-    sentence: "You like to eat vegetables for lunch.",
-    answer: "Do you like to eat vegetables for lunch?"
-  },
-  { 
-    key: "int-5", 
-    sentence: "We want to speak with your teacher.",
-    answer: "Do we want to speak with your teacher?"
-  },
-  { 
-    key: "int-6", 
-    sentence: "It works very well.",
-    answer: "Does it work very well?"
-  }
+  { key: "int-1", sentence: "She lives in Brazil with her friend.", answer: "Does she live in Brazil with her friend?" },
+  { key: "int-2", sentence: "They understand Spanish and Italian.", answer: "Do they understand Spanish and Italian?" },
+  { key: "int-3", sentence: "He prefers to study in the morning.", answer: "Does he prefer to study in the morning?" },
+  { key: "int-4", sentence: "You like to eat vegetables for lunch.", answer: "Do you like to eat vegetables for lunch?" },
+  { key: "int-5", sentence: "We want to speak with your teacher.", answer: "Do we want to speak with your teacher?" },
+  { key: "int-6", sentence: "It works very well.", answer: "Does it work very well?" }
 ];
 
+// Unlock questions
 const unlockQuestions = [
-  {
-    id: 1,
-    question: "Where do you want to live?",
-    placeholder: "Write about places where you want to live..."
-  },
-  {
-    id: 2,
-    question: "Which languages don't you understand?",
-    placeholder: "List languages you don't understand and explain why..."
-  },
-  {
-    id: 3,
-    question: "How do you greet your friends?",
-    placeholder: "Describe different ways you greet friends..."
-  },
-  {
-    id: 4,
-    question: "What do you like to eat for lunch and dinner?",
-    placeholder: "Describe your favorite lunch and dinner foods..."
-  }
+  { id: 1, question: "Where do you want to live?", placeholder: "Write about places where you want to live..." },
+  { id: 2, question: "Which languages don't you understand?", placeholder: "List languages you don't understand and explain why..." },
+  { id: 3, question: "How do you greet your friends?", placeholder: "Describe different ways you greet friends..." },
+  { id: 4, question: "What do you like to eat for lunch and dinner?", placeholder: "Describe your favorite lunch and dinner foods..." }
 ];
 
-// Video questions for Tune In Your Ears section - REFORMULADAS com base no Key Vocabulary
+// Video questions
 const videoQuestions = [
-  {
-    id: "video-1",
-    question: "According to the video, what are some practical TIPS to improve your English listening skills?",
-    isPersonal: false,
-    vocabulary: [
-      { english: "tips", portuguese: "dicas" },
-      { english: "improve", portuguese: "melhorar" },
-      { english: "listening skills", portuguese: "habilidades de compreensão auditiva" }
-    ]
-  },
-  {
-    id: "video-2",
-    question: "The speaker mentions that even NATIVE SPEAKERS make mistakes. Why is it important not to focus on PERFECTION when learning English?",
-    isPersonal: false,
-    vocabulary: [
-      { english: "native speakers", portuguese: "falantes nativos" },
-      { english: "perfection", portuguese: "perfeição" }
-    ]
-  },
-  {
-    id: "video-3",
-    question: "What GOALS and HABITS does the speaker suggest for creating a daily English practice routine?",
-    isPersonal: false,
-    vocabulary: [
-      { english: "goals", portuguese: "objetivos" },
-      { english: "habits", portuguese: "hábitos" }
-    ]
-  },
-  {
-    id: "video-4",
-    question: "How can you practice English in YOUR OWN WORDS and join an ENGLISH-SPEAKING GROUP to improve your CONFIDENCE?",
-    isPersonal: true,
-    vocabulary: [
-      { english: "your own words", portuguese: "suas próprias palavras" },
-      { english: "english-speaking group", portuguese: "grupo falante de inglês" },
-      { english: "confidence", portuguese: "confiança" }
-    ]
-  },
-  {
-    id: "video-5",
-    question: "How can we be exposed to different accents to improve our listening skills?",
-    isPersonal: false,
-    vocabulary: [
-      { english: "a mix of accents", portuguese: "uma mistura de sotaques" },
-      { english: "slangs", portuguese: "gírias" }
-    ]
-  },
-  {
-    id: "video-6",
-    question: "How can learning expressions like piece of cake help you sound more natural?",
-    isPersonal: false,
-    vocabulary: [
-      { english: "it's a piece of cake", portuguese: "é muito fácil" }
-    ]
-  },
-  {
-    id: "video-7",
-    question: "How does TONE AND EMOTION in conversations affect meaning? Give an example of how a SARCASTIC tone can change a phrase.",
-    isPersonal: false,
-    vocabulary: [
-      { english: "tone and emotion", portuguese: "tom e emoção" },
-      { english: "sarcastic", portuguese: "sarcástico" },
-      { english: "it depends on", portuguese: "depende de" }
-    ]
-  },
-  {
-    id: "video-9",
-    question: "According to the video, what are some situations where you might need English, like ORDERING FOOD or having conversations? How can ROLE-SWITCHING help you prepare for these situations?",
-    isPersonal: true,
-    vocabulary: [
-      { english: "maybe you're ordering food", portuguese: "talvez você esteja pedindo comida" },
-      { english: "role-switching", portuguese: "troca de papéis" }
-    ]
-  },
-  {
-    id: "video-10",
-    question: "Why is it important to CELEBRATE YOUR PROGRESS and use POSITIVE AFFIRMATIONS when learning English? How do these practices affect your motivation?",
-    isPersonal: true,
-    vocabulary: [
-      { english: "celebrate your progress", portuguese: "celebre o seu progresso" },
-      { english: "positive affirmations", portuguese: "afirmações positivas" }
-    ]
-  }
+  { id: "video-1", question: "According to the video, what are some practical TIPS to improve your English listening skills?", isPersonal: false },
+  { id: "video-2", question: "The speaker mentions that even NATIVE SPEAKERS make mistakes. Why is it important not to focus on PERFECTION when learning English?", isPersonal: false },
+  { id: "video-3", question: "What GOALS and HABITS does the speaker suggest for creating a daily English practice routine?", isPersonal: false },
+  { id: "video-4", question: "How can you practice English in YOUR OWN WORDS and join an ENGLISH-SPEAKING GROUP to improve your CONFIDENCE?", isPersonal: true },
+  { id: "video-5", question: "How can we be exposed to different accents to improve our listening skills?", isPersonal: false },
+  { id: "video-6", question: "How can learning expressions like 'piece of cake' help you sound more natural?", isPersonal: false },
+  { id: "video-7", question: "How does TONE AND EMOTION in conversations affect meaning?", isPersonal: false },
+  { id: "video-8", question: "Why is it important to CELEBRATE YOUR PROGRESS and use POSITIVE AFFIRMATIONS when learning English?", isPersonal: true }
 ];
 
-// Sistema de avaliação de respostas
+// Helper function to check answers
 const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
-  const normalize = (text: string) => 
-    text.toLowerCase().trim().replace(/[.,?!]/g, '');
-  
+  const normalize = (text: string) => text.toLowerCase().trim().replace(/[.,?!]/g, '');
   return normalize(userAnswer) === normalize(correctAnswer);
 };
 
-interface AudioPlayerProps {
-  src: string;
-  compact?: boolean;
-}
-
-const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressBarRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const audio = audioRef.current || new Audio(src);
-    if (!audioRef.current) audioRef.current = audio;
-    else audio.src = src;
-
-    const updateProgress = () => {
-      if (audio.duration) {
-        setProgress((audio.currentTime / audio.duration) * 100);
-      }
-    };
-
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setProgress(100);
-    };
-
-    audio.addEventListener("timeupdate", updateProgress);
-    audio.addEventListener("ended", handleEnded);
-
-    return () => {
-      audio.removeEventListener("timeupdate", updateProgress);
-      audio.removeEventListener("ended", handleEnded);
-      audio.pause();
-    };
-  }, [src]);
-
-  const togglePlayPause = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play().catch((err) => console.error("Audio error:", err));
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const resetAudio = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      setIsPlaying(false);
-      setProgress(0);
-    }
-  };
-
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || !progressBarRef.current) return;
-    
-    const rect = progressBarRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const width = rect.width;
-    const percent = offsetX / width;
-    audio.currentTime = percent * audio.duration;
-    setProgress(percent * 100);
-  };
-
-  return (
-    <div className={`flex items-center gap-2 ${compact ? "ml-2" : ""}`}>
-      <button 
-        onClick={togglePlayPause} 
-        className={`${compact ? "p-1" : "p-2"} bg-blue-500 text-white rounded-full hover:bg-blue-600`}
-      >
-        {isPlaying ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
-      </button>
-      <button 
-        onClick={resetAudio} 
-        className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600`}
-      >
-        <RotateCcw size={compact ? 12 : 16} />
-      </button>
-      
-      {!compact && (
-        <div 
-          ref={progressBarRef}
-          className="w-20 h-1 bg-gray-300 rounded-full overflow-hidden cursor-pointer"
-          onClick={handleProgressClick}
-        >
-          <div 
-            className="h-full bg-blue-500 transition-all duration-200" 
-            style={{ width: `${progress}%` }} 
-          />
-        </div>
-      )}
-      
-      <audio ref={audioRef} src={src} preload="auto" />
-    </div>
-  );
-};
-
-const SimpleAudioPlayer = ({ src }: { src: string }) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  const playAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(err => console.error("Error playing audio:", err));
-    }
-  };
-
-  return (
-    <div className="flex items-center gap-2">
-      <button 
-        onClick={playAudio}
-        className="p-1 bg-green-500 text-white rounded-full hover:bg-green-600"
-      >
-        <Volume2 size={14} />
-      </button>
-      <audio ref={audioRef} src={src} preload="none" />
-    </div>
-  );
-};
-
-// Componente para destaque de palavras
-const HighlightedText = ({ 
-  text, 
-  highlightedWords, 
-  onWordClick 
-}: { 
-  text: string; 
-  highlightedWords: string[];
-  onWordClick?: (word: string) => void;
-}) => {
-  const words = text.split(' ');
-  
-  return (
-    <p className="text-gray-800">
-      {words.map((word, index) => {
-        const cleanWord = word.replace('?', '').replace('!', '').replace('.', '').replace('"', '');
-        const isHighlighted = highlightedWords.includes(cleanWord);
-        
-        return (
-          <span
-            key={index}
-            className={isHighlighted ? "text-red-600 font-semibold cursor-pointer hover:bg-yellow-100 px-1 rounded" : ""}
-            onClick={isHighlighted && onWordClick ? () => onWordClick(cleanWord) : undefined}
-          >
-            {word}
-            {index < words.length - 1 ? ' ' : ''}
-          </span>
-        );
-      })}
-    </p>
-  );
-};
-
-// Componente para mostrar resultado da avaliação
+// Answer result component
 const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correctAnswer: string }) => {
   if (isCorrect) {
     return (
@@ -467,7 +350,6 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
       </div>
     );
   }
-
   return (
     <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-md">
       <XCircle size={16} className="text-red-600" />
@@ -478,114 +360,16 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
   );
 };
 
-// Mapeamento de países para idiomas
-const countryLanguageMap: Record<string, { language: string; spelling: string; audioSrc: string }> = {
-  "https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg": {
-    language: "Portuguese", 
-    spelling: "B-R-A-Z-I-L",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/portuguese.mp3"
-  },
-  "https://i.ibb.co/7xnjGkDN/italian-flag.jpg": {
-    language: "Italian",
-    spelling: "I-T-A-L-Y",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/italian.mp3"
-  },
-  "https://i.ibb.co/21VkwN19/spanish-fla.jpg": {
-    language: "Spanish",
-    spelling: "S-P-A-I-N",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/spanish.mp3"
-  },
-  "https://i.ibb.co/kskr0zmq/german-flag.jpg": {
-    language: "German",
-    spelling: "G-E-R-M-A-N-Y",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/german.mp3"
-  },
-  "https://i.ibb.co/qLL8CKv5/american-flag.jpg": {
-    language: "English",
-    spelling: "U-N-I-T-E-D S-T-A-T-E-S",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/english.mp3"
-  },
-  "https://i.ibb.co/dwjk9s3S/france-flag.jpg": {
-    language: "French",
-    spelling: "F-R-A-N-C-E",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/french.mp3"
-  }
-};
-
-// Mapeamento de comidas para países
-const foodCountryMap: Record<string, { country: string; food: string; audioSrc: string }> = {
-  "https://i.ibb.co/kskr0zmq/german-flag.jpg": {
-    country: "Germany",
-    food: "sausages",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/sausages.mp3"
-  },
-  "https://i.ibb.co/7xnjGkDN/italian-flag.jpg": {
-    country: "Italy", 
-    food: "pizza",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/pizza.mp3"
-  },
-  "https://i.ibb.co/21VkwN19/spanish-fla.jpg": {
-    country: "Spain",
-    food: "paella",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/paella.mp3"
-  },
-  "https://i.ibb.co/qLL8CKv5/american-flag.jpg": {
-    country: "United States",
-    food: "hamburger",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/hamburger.mp3"
-  },
-  "https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg": {
-    country: "Brazil",
-    food: "feijoada",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/feijoada.mp3"
-  },
-  "https://i.ibb.co/dwjk9s3S/france-flag.jpg": {
-    country: "France",
-    food: "croissant",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/croissant.mp3"
-  }
-};
-
-// Mapeamento de comidas para spelling
-const foodSpellingMap: Record<string, { food: string; spelling: string; audioSrc: string }> = {
-  "https://i.ibb.co/8LF0pHjv/yogurt.jpg": {
-    food: "yogurt",
-    spelling: "Y-O-G-U-R-T",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/yogurt.mp3"
-  },
-  "https://i.ibb.co/99zBTC4q/sandwich.jpg": {
-    food: "sandwich",
-    spelling: "S-A-N-D-W-I-C-H",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/sandwich.mp3"
-  },
-  "https://i.ibb.co/W4kNfZ2F/cookies.jpg": {
-    food: "cookies",
-    spelling: "C-O-O-K-I-E-S",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/cookies.mp3"
-  },
-  "https://i.ibb.co/pjYHqBsc/juice.jpg": {
-    food: "juice",
-    spelling: "J-U-I-C-E",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/juice.mp3"
-  },
-  "https://i.ibb.co/jvg8bfKY/orange-juice.jpg": {
-    food: "orange juice",
-    spelling: "O-R-A-N-G-E J-U-I-C-E",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/orange_juice.mp3"
-  },
-  "https://i.ibb.co/HfCPk3qD/friends.jpg": {
-    food: "friends",
-    spelling: "F-R-I-E-N-D-S",
-    audioSrc: "https://raw.githubusercontent.com/your-repo/audio/main/friends.mp3"
-  }
-};
+// ============================================
+// MAIN LESSON COMPONENT
+// ============================================
 
 export default function Lesson10LanguagesAndCountries() {
   const router = useRouter();
+  const { speak } = useSpeech();
   
-  // Estados para controle de expansão/recolhimento das seções
+  // State for sections
   const [sections, setSections] = useState({
-    talkToFriend: true,
     vocabulary: true,
     substitution1: true,
     negative: true,
@@ -596,60 +380,17 @@ export default function Lesson10LanguagesAndCountries() {
     tuneIn: true
   });
   
-  // Estados para as práticas de substituição
+  // State for exercises
   const [subs1Exercises, setSubs1Exercises] = useState(substitutionPractice1);
   const [subs2Exercises, setSubs2Exercises] = useState(substitutionPractice2);
-  
-  // Estados para as respostas escritas
   const [writtenAnswers, setWrittenAnswers] = useState<Record<string, string>>({});
-  
-  // Estados para avaliação de respostas
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
-
-  // Estados para as respostas do vídeo
   const [videoAnswers, setVideoAnswers] = useState<Record<string, string>>({});
   const [showVideoAnswerResults, setShowVideoAnswerResults] = useState<Record<string, boolean>>({});
 
-  // Estado para diálogos dinâmicos baseados na seleção
-  const [practiceDialogs] = useState([
-    {
-      question: "Do you want to speak Portuguese or French with me?",
-      response: "I want to speak Portuguese with you.",
-      highlighted: ["Portuguese", "French", "Portuguese"]
-    },
-    {
-      question: "How do you spell 'yogurt'?",
-      response: "Y-O-G-U-R-T",
-      highlighted: ["yogurt", "Y", "O", "G", "U", "R", "T"]
-    }
-  ]);
-
-  // Diálogo principal da lição
-  const mainDialogue = [
-    { speaker: "Zoey", text: "Hi, Mike.", audioSrc: "" },
-    { speaker: "Mike", text: "Hello, Zoey. What's up?", audioSrc: "" },
-    { speaker: "Zoey", text: "Mike, do you speak Spanish?", audioSrc: "" },
-    { speaker: "Mike", text: "A little.", audioSrc: "" },
-    { speaker: "Zoey", text: "I don't understand this word. Queso?", audioSrc: "" },
-    { speaker: "Mike", text: "Ah, queso is cheese.", audioSrc: "" },
-    { speaker: "Zoey", text: "Got it! Thank you. Where do you study Spanish?", audioSrc: "" },
-    { speaker: "Mike", text: "I study Spanish at LEAF. What about you?", audioSrc: "" },
-    { speaker: "Zoey", text: "I study alone. I want to live in Spain.", audioSrc: "" },
-    { speaker: "Mike", text: "Do you want to study Spanish with me?", audioSrc: "" },
-    { speaker: "Zoey", text: "Yes!", audioSrc: "" },
-    { speaker: "Mike", text: "Great! See you later!", audioSrc: "" },
-    { speaker: "Zoey", text: "See you!", audioSrc: "" }
-  ];
-
-  // Vocabulário
-  const vocabulary = [
-    { word: "a little", translation: "um pouco", audioSrc: "" },
-    { word: "I get", translation: "eu entendo", audioSrc: "" }
-  ];
-
+  // Load saved answers
   useEffect(() => {
-    // Carregar respostas salvas do localStorage
     const savedAnswers = localStorage.getItem("lesson10Answers");
     if (savedAnswers) {
       try {
@@ -672,7 +413,6 @@ export default function Lesson10LanguagesAndCountries() {
       videoAnswers,
       lastUpdated: new Date().toISOString()
     };
-    
     localStorage.setItem("lesson10Answers", JSON.stringify(data));
     alert("All answers saved successfully to your browser!");
   };
@@ -689,25 +429,17 @@ export default function Lesson10LanguagesAndCountries() {
     }
   };
 
-  // Funções para manipular as práticas de substituição
+  // Handlers
   const handleSubs1OptionClick = (exerciseKey: string, optionIndex: number) => {
-    setSubs1Exercises(prev => 
-      prev.map(exercise => 
-        exercise.key === exerciseKey 
-          ? { ...exercise, currentIndex: optionIndex }
-          : exercise
-      )
-    );
+    setSubs1Exercises(prev => prev.map(exercise => 
+      exercise.key === exerciseKey ? { ...exercise, currentIndex: optionIndex } : exercise
+    ));
   };
 
   const handleSubs2OptionClick = (exerciseKey: string, optionIndex: number) => {
-    setSubs2Exercises(prev => 
-      prev.map(exercise => 
-        exercise.key === exerciseKey 
-          ? { ...exercise, currentIndex: optionIndex }
-          : exercise
-      )
-    );
+    setSubs2Exercises(prev => prev.map(exercise => 
+      exercise.key === exerciseKey ? { ...exercise, currentIndex: optionIndex } : exercise
+    ));
   };
 
   const handleWrittenAnswerChange = (key: string, value: string) => {
@@ -718,7 +450,6 @@ export default function Lesson10LanguagesAndCountries() {
     setVideoAnswers(prev => ({ ...prev, [key]: value }));
   };
 
-  // Função para verificar respostas
   const handleCheckAnswer = (exerciseKey: string, userAnswer: string, correctAnswer: string) => {
     const isCorrect = checkAnswer(userAnswer, correctAnswer);
     setAnswerResults(prev => ({ ...prev, [exerciseKey]: isCorrect }));
@@ -729,116 +460,69 @@ export default function Lesson10LanguagesAndCountries() {
     setShowVideoAnswerResults(prev => ({ ...prev, [questionId]: true }));
   };
 
-  // Função para tocar áudio quando palavras são clicadas
-  const handleWordClick = (word: string) => {
-    // Buscar o áudio correspondente à palavra
-    const audioSrc = getAudioForWord(word);
-    if (audioSrc) {
-      const audio = new Audio(audioSrc);
-      audio.play().catch(err => console.error("Error playing word audio:", err));
-    }
-  };
-
-  // Função auxiliar para obter áudio baseado na palavra
-  const getAudioForWord = (word: string): string | null => {
-    // Verificar se é um idioma
-    const countryEntry = Object.values(countryLanguageMap).find(
-      info => info.language.toLowerCase() === word.toLowerCase()
-    );
-    if (countryEntry) return countryEntry.audioSrc;
-
-    // Verificar se é um país
-    const countrySpelling = Object.values(countryLanguageMap).find(
-      info => info.spelling.replace(/-/g, '') === word.toUpperCase()
-    );
-    if (countrySpelling) return countrySpelling.audioSrc;
-
-    // Verificar se é uma comida do spelling
-    const foodSpellingEntry = Object.values(foodSpellingMap).find(
-      info => info.food.toLowerCase() === word.toLowerCase() || 
-             info.spelling.replace(/-/g, ' ').includes(word.toUpperCase())
-    );
-    if (foodSpellingEntry) return foodSpellingEntry.audioSrc;
-
-    // Verificar se é uma comida tradicional
-    const foodEntry = Object.values(foodCountryMap).find(
-      info => info.food.toLowerCase() === word.toLowerCase()
-    );
-    if (foodEntry) return foodEntry.audioSrc;
-
-    return null;
-  };
-
-  // Função para alternar expansão de seções
   const toggleSection = (section: keyof typeof sections) => {
-    setSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
+    setSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
   return (
     <div className="min-h-screen py-16 px-4 sm:px-6 relative overflow-hidden">
-      {/* Background Image com overlay */}
+      {/* Background */}
       <div 
         className="fixed inset-0 bg-cover bg-center bg-no-repeat z-0"
         style={{ 
-          backgroundImage: `url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2833&q=80')`,
+          backgroundImage: `url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2833&q=80')`,
         }}
       />
-      {/* Overlay escuro para melhor legibilidade */}
       <div className="fixed inset-0 bg-black bg-opacity-50 z-0" />
       
       <div className="relative z-10 max-w-5xl mx-auto bg-white bg-opacity-95 backdrop-blur-sm rounded-[40px] p-6 md:p-10 shadow-2xl">
+        
+        {/* Header */}
         <div className="text-center mb-12 md:mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#0c4a6e] mb-4 md:mb-6">🌍 Lesson 10 – Languages & Countries</h1>
-          <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto px-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#0c4a6e] mb-4 md:mb-6">
+            🌍 Lesson 10 – Languages & Countries
+          </h1>
+          <SpeakSentence text="Lesson 10 – Languages and Countries" className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto px-4" voiceType="female">
             Talk to your friend and practice conversations about languages, countries, and daily life. Improve your communication skills.
-          </p>
+          </SpeakSentence>
         </div>
 
-        {/* TALK TO YOUR FRIEND */}
+        {/* TALK TO YOUR FRIEND - WITH GENDERED VOICES */}
         <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
-          <div className="bg-purple-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-xl md:text-2xl font-bold">💬 TALK TO YOUR FRIEND</h2>
-              <button 
-                onClick={() => toggleSection('talkToFriend')}
-                className="ml-4 p-2 rounded-full hover:bg-purple-600 transition"
-              >
-                {sections.talkToFriend ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
+          <div className="bg-purple-500 text-white py-4 px-6 md:px-8">
+            <h2 className="text-xl md:text-2xl font-bold">💬 TALK TO YOUR FRIEND</h2>
+            <p className="text-purple-100 text-sm mt-1">Click on any sentence to hear it with a natural American accent (Mike: Male Voice, Zoey: Female Voice)</p>
+          </div>
+          <div className="p-6 md:p-8">
+            <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-4 md:p-6">
+              <h3 className="text-lg md:text-xl font-bold text-purple-800 mb-4">
+                Practice this conversation between Zoey and Mike:
+              </h3>
+              
+              <div className="space-y-4 bg-white p-4 md:p-6 rounded-lg border border-purple-200">
+                {mainDialogue.map((line, index) => (
+                  <div key={index} className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
+                    <div className={`font-bold ${
+                      line.speaker === "Zoey" ? "text-pink-600" : "text-blue-600"
+                    }`}>
+                      {line.speaker}:
+                    </div>
+                    <div className="flex-1">
+                      <SpeakSentence text={line.text} voiceType={line.voiceType} className="text-gray-800 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                        {line.text}
+                      </SpeakSentence>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm text-purple-600 mt-4 text-center">
+                💡 Click on any sentence to hear it spoken clearly. Practice saying these lines with a partner!
+              </p>
             </div>
           </div>
-
-          {sections.talkToFriend && (
-            <div className="p-6 md:p-8">
-              <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-4 md:p-6 mb-6">
-                <h3 className="text-lg md:text-xl font-bold text-purple-800 mb-4">
-                  Practice this conversation between Zoey and Mike:
-                </h3>
-                
-                <div className="space-y-4 bg-white p-4 md:p-6 rounded-lg border border-purple-200">
-                  {mainDialogue.map((line, index) => (
-                    <div key={index} className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                      <div className={`font-bold ${
-                        line.speaker === "Zoey" ? "text-pink-600" : "text-blue-600"
-                      }`}>
-                        {line.speaker}:
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-gray-800">{line.text}</p>
-                        {line.audioSrc && <SimpleAudioPlayer src={line.audioSrc} />}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* TAKE A LOOK - VOCABULARY */}
+        {/* VOCABULARY SECTION */}
         <div className="bg-blue-50/80 border-2 border-blue-200 rounded-xl shadow-sm mb-8 md:mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-3 px-6 flex items-center justify-between">
             <div className="flex items-center">
@@ -855,18 +539,15 @@ export default function Lesson10LanguagesAndCountries() {
           {sections.vocabulary && (
             <div className="p-4">
               <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-4">
-                <h3 className="text-md font-semibold text-blue-800 mb-3">
-                  Essential vocabulary for this lesson:
-                </h3>
-                
                 <div className="grid md:grid-cols-2 gap-3">
                   {vocabulary.map((item, index) => (
                     <div key={index} className="bg-white/70 p-3 rounded-lg border border-blue-100 flex justify-between items-center">
                       <div>
-                        <p className="font-medium text-blue-700 text-sm">{item.word}</p>
+                        <SpeakText text={item.word} className="font-medium text-blue-700 text-sm" voiceType="female">
+                          {item.word}
+                        </SpeakText>
                         <p className="text-gray-600 text-xs">{item.translation}</p>
                       </div>
-                      {item.audioSrc && <SimpleAudioPlayer src={item.audioSrc} />}
                     </div>
                   ))}
                 </div>
@@ -875,7 +556,7 @@ export default function Lesson10LanguagesAndCountries() {
           )}
         </div>
 
-        {/* DRILLING PRACTICE - SUBSTITUTION PRACTICE I */}
+        {/* SUBSTITUTION PRACTICE I */}
         <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
           <div className="bg-green-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -893,7 +574,7 @@ export default function Lesson10LanguagesAndCountries() {
             <div className="p-6 md:p-8">
               <div className="bg-green-100 border-2 border-green-300 rounded-xl p-4 md:p-6">
                 <h3 className="text-lg md:text-xl font-bold text-green-800 mb-4">
-                  ✍️ Substitution Practice I – 3' - Click on the options to change the sentences:
+                  ✍️ Substitution Practice I – Click on the options to change the sentences:
                 </h3>
                 
                 <div className="space-y-6">
@@ -909,7 +590,9 @@ export default function Lesson10LanguagesAndCountries() {
                         </div>
                         
                         <div className="mb-3 p-3 bg-green-50 rounded-md">
-                          <p className="text-green-700 font-medium">{currentSentence}</p>
+                          <SpeakSentence text={currentSentence} className="text-green-700 font-medium" voiceType="female">
+                            {currentSentence}
+                          </SpeakSentence>
                         </div>
                         
                         <div className="flex flex-wrap gap-2">
@@ -923,7 +606,7 @@ export default function Lesson10LanguagesAndCountries() {
                                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                               }`}
                             >
-                              {option}
+                              <SpeakText text={option} voiceType="female">{option}</SpeakText>
                             </button>
                           ))}
                         </div>
@@ -954,16 +637,16 @@ export default function Lesson10LanguagesAndCountries() {
             <div className="p-6 md:p-8">
               <div className="bg-red-100 border-2 border-red-300 rounded-xl p-4 md:p-6">
                 <h3 className="text-lg md:text-xl font-bold text-red-800 mb-4">
-                  ⛔ Change into Negative – 2' - Transform to negative:
+                  ⛔ Change into Negative – Transform to negative:
                 </h3>
                 
                 <div className="space-y-4">
                   {negativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-red-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                        <p className="font-medium text-gray-700 flex-1">
+                        <SpeakSentence text={exercise.sentence} className="font-medium text-gray-700 flex-1" voiceType="female">
                           {exercise.sentence}
-                        </p>
+                        </SpeakSentence>
                       </div>
                       
                       <div className="flex flex-col sm:flex-row gap-2 mb-2">
@@ -983,10 +666,7 @@ export default function Lesson10LanguagesAndCountries() {
                       </div>
                       
                       {showAnswerResults[exercise.key] && (
-                        <AnswerResult 
-                          isCorrect={answerResults[exercise.key]} 
-                          correctAnswer={exercise.answer}
-                        />
+                        <AnswerResult isCorrect={answerResults[exercise.key]} correctAnswer={exercise.answer} />
                       )}
                     </div>
                   ))}
@@ -996,7 +676,7 @@ export default function Lesson10LanguagesAndCountries() {
           )}
         </div>
 
-        {/* DRILLING PRACTICE - SUBSTITUTION PRACTICE II */}
+        {/* SUBSTITUTION PRACTICE II */}
         <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
           <div className="bg-orange-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -1014,7 +694,7 @@ export default function Lesson10LanguagesAndCountries() {
             <div className="p-6 md:p-8">
               <div className="bg-orange-100 border-2 border-orange-300 rounded-xl p-4 md:p-6">
                 <h3 className="text-lg md:text-xl font-bold text-orange-800 mb-4">
-                  🔄 Substitution Practice II – 3' - Click to substitute:
+                  🔄 Substitution Practice II – Click to substitute:
                 </h3>
                 
                 <div className="space-y-6">
@@ -1023,7 +703,6 @@ export default function Lesson10LanguagesAndCountries() {
                       const cleanWord = word.replace('.', '').replace('?', '');
                       return exercise.options.includes(cleanWord) ? '{0}' : word;
                     }).join(' ');
-                    
                     const currentSentence = baseSentence.replace('{0}', exercise.options[exercise.currentIndex]);
                     
                     return (
@@ -1035,7 +714,9 @@ export default function Lesson10LanguagesAndCountries() {
                         </div>
                         
                         <div className="mb-3 p-3 bg-orange-50 rounded-md">
-                          <p className="text-orange-700 font-medium">{currentSentence}</p>
+                          <SpeakSentence text={currentSentence} className="text-orange-700 font-medium" voiceType="female">
+                            {currentSentence}
+                          </SpeakSentence>
                         </div>
                         
                         <div className="flex flex-wrap gap-2">
@@ -1049,7 +730,7 @@ export default function Lesson10LanguagesAndCountries() {
                                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                               }`}
                             >
-                              {option}
+                              <SpeakText text={option} voiceType="female">{option}</SpeakText>
                             </button>
                           ))}
                         </div>
@@ -1080,16 +761,16 @@ export default function Lesson10LanguagesAndCountries() {
             <div className="p-6 md:p-8">
               <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
                 <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">
-                  Change into Affirmative - 2' - Transform to affirmative:
+                  Change into Affirmative – Transform to affirmative:
                 </h3>
                 
                 <div className="space-y-4">
                   {affirmativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-teal-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                        <p className="font-medium text-gray-700 flex-1">
+                        <SpeakSentence text={exercise.sentence} className="font-medium text-gray-700 flex-1" voiceType="female">
                           {exercise.sentence}
-                        </p>
+                        </SpeakSentence>
                       </div>
                       
                       <div className="flex flex-col sm:flex-row gap-2 mb-2">
@@ -1109,10 +790,7 @@ export default function Lesson10LanguagesAndCountries() {
                       </div>
                       
                       {showAnswerResults[exercise.key] && (
-                        <AnswerResult 
-                          isCorrect={answerResults[exercise.key]} 
-                          correctAnswer={exercise.answer}
-                        />
+                        <AnswerResult isCorrect={answerResults[exercise.key]} correctAnswer={exercise.answer} />
                       )}
                     </div>
                   ))}
@@ -1140,16 +818,16 @@ export default function Lesson10LanguagesAndCountries() {
             <div className="p-6 md:p-8">
               <div className="bg-indigo-100 border-2 border-indigo-300 rounded-xl p-4 md:p-6">
                 <h3 className="text-lg md:text-xl font-bold text-indigo-800 mb-4">
-                  Change into Interrogative - 2' - Transform to questions:
+                  Change into Interrogative – Transform to questions:
                 </h3>
                 
                 <div className="space-y-4">
                   {interrogativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-indigo-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                        <p className="font-medium text-gray-700 flex-1">
+                        <SpeakSentence text={exercise.sentence} className="font-medium text-gray-700 flex-1" voiceType="female">
                           {exercise.sentence}
-                        </p>
+                        </SpeakSentence>
                       </div>
                       
                       <div className="flex flex-col sm:flex-row gap-2 mb-2">
@@ -1169,10 +847,7 @@ export default function Lesson10LanguagesAndCountries() {
                       </div>
                       
                       {showAnswerResults[exercise.key] && (
-                        <AnswerResult 
-                          isCorrect={answerResults[exercise.key]} 
-                          correctAnswer={exercise.answer}
-                        />
+                        <AnswerResult isCorrect={answerResults[exercise.key]} correctAnswer={exercise.answer} />
                       )}
                     </div>
                   ))}
@@ -1200,19 +875,16 @@ export default function Lesson10LanguagesAndCountries() {
             <div className="p-6 md:p-8">
               <div className="mb-6">
                 <h3 className="text-lg md:text-xl font-bold text-pink-800 mb-4">
-                  Unlock - 3' - Give examples of:
+                  Unlock – Give examples of:
                 </h3>
-                <p className="text-pink-600 mb-6">
-                  Practice writing about different topics to improve your communication skills.
-                </p>
               </div>
 
               <div className="space-y-6">
                 {unlockQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-pink-200 shadow-md">
-                    <h4 className="text-base md:text-lg font-bold text-pink-700 mb-3">
+                    <SpeakSentence text={question.question} className="text-base md:text-lg font-bold text-pink-700 mb-3" voiceType="female">
                       {question.question}
-                    </h4>
+                    </SpeakSentence>
                     
                     <textarea
                       value={writtenAnswers[`unlock-${question.id}`] || ""}
@@ -1239,7 +911,7 @@ export default function Lesson10LanguagesAndCountries() {
           )}
         </div>
 
-        {/* TUNE IN YOUR EARS - NOVA SEÇÃO COM VÍDEO */}
+        {/* TUNE IN YOUR EARS */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden mb-8 md:mb-10">
           <div className="bg-teal-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -1256,11 +928,10 @@ export default function Lesson10LanguagesAndCountries() {
           {sections.tuneIn && (
             <div className="p-6 md:p-8">
               <div className="mb-8 text-center">
-                <h3 className="text-xl md:text-2xl font-bold text-teal-700 mb-4">
+                <SpeakSentence text="Watch the video and answer the questions below" className="text-xl md:text-2xl font-bold text-teal-700 mb-4" voiceType="female">
                   Watch the video and answer the questions below:
-                </h3>
+                </SpeakSentence>
                
-                {/* Container do vídeo do YouTube */}
                 <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
                   <div className="relative w-full pt-[56.25%]">
                     <iframe
@@ -1272,139 +943,39 @@ export default function Lesson10LanguagesAndCountries() {
                     />
                   </div>
                 </div>
-
-                <div className="mt-4 text-sm text-teal-600">
-                  <p>Video: English Listening Practice - Daily Routines & Conversations</p>
-                </div>
               </div>
 
-              {/* Vocabulary Help */}
-              <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
-                <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">📖 Key Vocabulary from the Video:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Tips</span>
-                      <span className="text-teal-600">Dicas / conselhos</span>
+              {/* Key Vocabulary from the Video */}
+              <div className="mb-10 bg-white border-2 border-teal-200 rounded-xl p-6 shadow-md">
+                <h3 className="text-xl font-bold text-teal-700 mb-6 flex items-center gap-2">
+                  <span className="text-2xl">📖</span> Key Vocabulary from the Video
+                </h3>
+                <div className="grid md:grid-cols-2 gap-3">
+                  {videoKeyVocabulary.map((item, index) => (
+                    <div key={index} className="bg-teal-50 p-3 rounded-lg border border-teal-100 flex justify-between items-center hover:shadow-sm transition">
+                      <div className="flex-1">
+                        <SpeakText text={item.word} className="font-semibold text-teal-700 text-sm" voiceType="female">
+                          {item.word}
+                        </SpeakText>
+                        <p className="text-gray-600 text-xs mt-1">{item.translation}</p>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Perfection</span>
-                      <span className="text-teal-600">Perfeição</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">even native speakers</span>
-                      <span className="text-teal-600">até mesmo os nativos</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">goal</span>
-                      <span className="text-teal-600">Objetivo</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Habit</span>
-                      <span className="text-teal-600">Hábito</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">your own words</span>
-                      <span className="text-teal-600">suas próprias palavras</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">English-speaking group</span>
-                      <span className="text-teal-600">Grupo falante de Inglês</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">A mix of accents</span>
-                      <span className="text-teal-600">Uma mistura de sotaques</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Slangs</span>
-                      <span className="text-teal-600">Gírias</span>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">celebrate your progress</span>
-                      <span className="text-teal-600">Celebre o seu progresso</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">It's a piece of cake</span>
-                      <span className="text-teal-600">Isso é muito fácil</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">tone and emotion</span>
-                      <span className="text-teal-600">tom e emoção</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Sarcastic</span>
-                      <span className="text-teal-600">Sarcástico</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">It depends on</span>
-                      <span className="text-teal-600">Depende de</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">You'll be / You will be</span>
-                      <span className="text-teal-600">Você vai estar / Você estará</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">faster</span>
-                      <span className="text-teal-600">Mais rápido</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To turn on</span>
-                      <span className="text-teal-600">Ligar (um aparelho)</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To procrastinate</span>
-                      <span className="text-teal-600">Procrastinar</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">A must</span>
-                      <span className="text-teal-600">algo que você deve fazer</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">maybe you're ordering food</span>
-                      <span className="text-teal-600">Talvez você esteja pedindo comida</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Role-switching</span>
-                      <span className="text-teal-600">Troca de papeis (numa conversa)</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Confidence</span>
-                      <span className="text-teal-600">Confiança</span>
-                    </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Positive affirmations</span>
-                      <span className="text-teal-600">Afirmações positivas</span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
+                <p className="text-xs text-teal-600 mt-4 italic text-center">
+                  🔊 Click on any word to hear its pronunciation in an American English accent
+                </p>
               </div>
 
-              {/* Questions Section - REFORMULADAS com base no Key Vocabulary */}
               <div className="space-y-6 mb-8">
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-teal-200 shadow-md">
-                    <h4 className="text-base md:text-lg font-bold text-teal-700 mb-3">
+                    <SpeakSentence text={question.question} className="text-base md:text-lg font-bold text-teal-700 mb-3" voiceType="female">
                       {question.question}
                       {question.isPersonal && (
                         <span className="ml-2 text-sm font-normal text-teal-500">(Personal answer)</span>
                       )}
-                    </h4>
-                   
-                    {question.vocabulary && (
-                      <div className="mb-3 p-3 bg-teal-50 rounded-lg">
-                        <p className="text-sm font-medium text-teal-600 mb-1">Vocabulary hints:</p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {question.vocabulary.map((word, idx) => (
-                            <div key={idx} className="flex justify-between text-sm">
-                              <span className="text-teal-700 font-medium">{word.english}</span>
-                              <span className="text-teal-600">- {word.portuguese}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    </SpeakSentence>
 
                     <textarea
                       value={videoAnswers[question.id] || ""}
@@ -1437,18 +1008,6 @@ export default function Lesson10LanguagesAndCountries() {
                     )}
                   </div>
                 ))}
-              </div>
-
-              <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
-                <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">🎯 Listening Practice Tips:</h3>
-                <ul className="list-disc pl-5 space-y-2 text-teal-700 text-sm">
-                  <li>Watch the video at least twice - first for general understanding, then for details</li>
-                  <li>Pause the video to repeat phrases you hear</li>
-                  <li>Pay attention to pronunciation and intonation patterns</li>
-                  <li>Note down new vocabulary while watching</li>
-                  <li>Try to answer the questions without looking at the subtitles first</li>
-                  <li>Practice speaking your answers out loud to improve fluency</li>
-                </ul>
               </div>
             </div>
           )}

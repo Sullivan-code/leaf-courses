@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
-type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar';
+type SectionKey = 'verbs' | 'newWords' | 'speakLikeNative' | 'grammar';
 
-export default function LessonVerbsAndPlaces() {
+export default function Lesson9LanguagesAndCountries() {
   const router = useRouter();
   const [openDrills, setOpenDrills] = useState({
     verbs: false,
-    vocabulary: false,
-    usefulPhrases: false,
+    newWords: false,
+    speakLikeNative: false,
     grammar: false,
   });
 
@@ -22,7 +23,7 @@ export default function LessonVerbsAndPlaces() {
   };
 
   const playAudio = (text: string) => {
-    // Map specific texts to their corresponding GitHub audio URLs
+    // Map específico de textos para URLs do GitHub (igual ao da lição antiga)
     const audioMap: Record<string, string> = {
       'to live': 'https://github.com/Sullivan-code/english-audios/raw/main/to-live.mp3',
       'to understand': 'https://github.com/Sullivan-code/english-audios/raw/main/to-understand.mp3',
@@ -70,7 +71,6 @@ export default function LessonVerbsAndPlaces() {
       'where do you want to eat': 'https://github.com/Sullivan-code/english-audios/raw/main/where-do-you-want-to-eat.mp3'
     };
 
-    // Check if we have a direct mapping for this text
     const audioUrl = audioMap[text.toLowerCase()];
     
     if (audioUrl) {
@@ -78,7 +78,6 @@ export default function LessonVerbsAndPlaces() {
       const audio = new Audio(audioUrl);
       audio.play().catch(e => console.error("Erro ao reproduzir áudio:", e));
     } else {
-      // Fallback: try to format the text for the GitHub URL
       const formattedText = text
         .toLowerCase()
         .replace(/\s+/g, '-')
@@ -96,7 +95,7 @@ export default function LessonVerbsAndPlaces() {
     }
   };
 
-  // URLs das imagens locais
+  // URLs das imagens da lição antiga
   const mainImage = "/images/l9-main.jpg";
   const cityImage = "/images/BARCELONA-ESPANHA.jpg";
   const countryImage = "/images/BERLIN-ALEMANHA.jpg";
@@ -105,7 +104,7 @@ export default function LessonVerbsAndPlaces() {
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
       style={{
-        backgroundImage: `url("/images/l7-bgg.jpg")`,
+        backgroundImage: `url("/images/l9-main.jpg")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -120,31 +119,33 @@ export default function LessonVerbsAndPlaces() {
             Lesson 9 - Languages & Countries
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Aprenda a falar sobre onde mora e expressar compreensão em inglês. 🏠🌎
+            Learn to talk about where you live and express understanding in English. 🏠🌎
           </p>
           <div className="w-64 h-64 mx-auto">
-            <img
+            <Image
               src={mainImage}
               alt="People moving in and understanding different cultures"
+              width={256}
+              height={256}
               className="w-full h-full object-cover rounded-2xl shadow-md"
             />
           </div>
         </div>
 
-        {/* Seção 1 - Verbos com Drill */}
+        {/* Seção 1 - Verbs */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">VERBS</h2>
+              <h2 className="text-2xl font-bold">Verbs</h2>
               <p className="mt-2 text-blue-100 italic">
-                Clique nos verbos para ouvir a pronúncia e pratique suas formas
+                Click on the verbs to hear the pronunciation and practice their forms
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('verbs')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.verbs ? 'Ocultar Prática' : 'Mostrar Prática'}
+              {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -170,55 +171,65 @@ export default function LessonVerbsAndPlaces() {
             
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Nós não moramos aqui</span>. / lá / no Brasil</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I live in Brazil. / in Spain / in Italy</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu moro no Brasil. / na Espanha / na Itália</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eles não entendem espanhol</span>. / inglês / português</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you understand English? / Spanish / Portuguese</p>
+                  <p className="text-sm text-gray-500 mt-1">Você entende inglês? / espanhol / português</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Nós não queremos estudar português</span>. / inglês / espanhol</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">She lives in Germany. / in France / in Japan</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela mora na Alemanha. / na França / no Japão</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eles não querem morar lá</span>. / aqui / no exterior</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They don't understand that word. / this phrase / the question</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles não entendem aquela palavra. / esta frase / a pergunta</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Onde você mora?</span> / estuda / trabalha</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We want to live abroad. / in the USA / in Canada</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós queremos morar no exterior. / nos EUA / no Canadá</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Onde você estuda?</span> / trabalha / mora</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Does he understand this language? / that dialect / the teacher</p>
+                  <p className="text-sm text-gray-500 mt-1">Ele entende este idioma? / aquele dialeto / o professor</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Onde você quer morar?</span> / estudar / trabalhar</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I don't live alone. / with my family / with friends</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu não moro sozinho. / com minha família / com amigos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu moro sozinho</span>. / com amigos / com família</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you live in this city? / in that country / here</p>
+                  <p className="text-sm text-gray-500 mt-1">Você mora nesta cidade? / naquele país / aqui</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Ela entende essa palavra</span>. / aquela / esta</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We understand English very well. / a little / perfectly</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós entendemos inglês muito bem. / um pouco / perfeitamente</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Nós queremos viver no exterior</span>. / aqui / lá</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Where do you live? / study / work</p>
+                  <p className="text-sm text-gray-500 mt-1">Onde você mora? / estuda / trabalha</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Seção 2 - Vocabulário com Drill */}
+        {/* Seção 2 - New Words */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">NEW WORDS</h2>
+              <h2 className="text-2xl font-bold">New Words</h2>
               <p className="mt-2 text-blue-100 italic">
-                Clique em cada palavra para ouvir sua pronúncia correta
+                Click on each word to hear its correct pronunciation
               </p>
             </div>
             <button 
-              onClick={() => toggleDrill('vocabulary')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              onClick={() => toggleDrill('newWords')}
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.vocabulary ? 'Ocultar Prática' : 'Mostrar Prática'}
+              {openDrills.newWords ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -266,7 +277,7 @@ export default function LessonVerbsAndPlaces() {
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('brazil')} 
+                  onClick={() => playAudio('Brazil')} 
                   className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                 >
                   Brazil
@@ -302,7 +313,7 @@ export default function LessonVerbsAndPlaces() {
                   className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                 >
                   the United States of America (U.S.A.)
-                </button> = Os stados Unidos
+                </button> = Os Estados Unidos
               </li>
               <li>
                 <button 
@@ -354,57 +365,67 @@ export default function LessonVerbsAndPlaces() {
               </li>
             </ul>
             
-            {openDrills.vocabulary && (
+            {openDrills.newWords && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Meu colega de classe é da Alemanha</span>. / Espanha / Itália</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">My <span className="text-blue-600">classmate</span> is from Germany.</p>
+                  <p className="text-sm text-gray-500 mt-1">Meu colega de classe é da Alemanha.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu falo o idioma daquele país</span>. / desta cidade / do Brasil</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I speak the <span className="text-blue-600">language</span> of that country.</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu falo o idioma daquele país.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu não entendo esta palavra</span>. / aquela / essa</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I don't understand this <span className="text-blue-600">word</span>.</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu não entendo esta palavra.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você mora nesta cidade?</span> / naquela / aqui</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you live in this <span className="text-blue-600">city</span>?</p>
+                  <p className="text-sm text-gray-500 mt-1">Você mora nesta cidade?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eles querem morar naquele país</span>. / neste / no exterior</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They want to live in that <span className="text-blue-600">country</span>.</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles querem morar naquele país.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu moro no Brasil</span>. / Espanha / Itália</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I live in <span className="text-blue-600">Brazil</span>.</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu moro no Brasil.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você mora sozinho?</span> / com amigos / com família</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you live <span className="text-blue-600">alone</span>?</p>
+                  <p className="text-sm text-gray-500 mt-1">Você mora sozinho?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Onde você estuda?</span> / trabalha / mora</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Where</span> do you study?</p>
+                  <p className="text-sm text-gray-500 mt-1">Onde você estuda?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Nós queremos morar no exterior</span>. / aqui / lá</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We want to live <span className="text-blue-600">abroad</span>.</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós queremos morar no exterior.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu moro nesta cidade</span>. / naquela / no Brasil</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I live <span className="text-blue-600">in</span> this city.</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu moro nesta cidade.</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Seção 3 - Frases Úteis com Drill */}
+        {/* Seção 3 - Speak Like a Native */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">USEFUL PHRASES</h2>
+              <h2 className="text-2xl font-bold">Speak Like a Native</h2>
               <p className="mt-2 text-blue-100 italic">
-                Pratique frases comuns para falar sobre onde mora e compreensão
+                Practice common phrases to talk about where you live and understanding
               </p>
             </div>
             <button 
-              onClick={() => toggleDrill('usefulPhrases')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              onClick={() => toggleDrill('speakLikeNative')}
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.usefulPhrases ? 'Ocultar Prática' : 'Mostrar Prática'}
+              {openDrills.speakLikeNative ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -428,57 +449,67 @@ export default function LessonVerbsAndPlaces() {
               </li>
             </ul>
             
-            {openDrills.usefulPhrases && (
+            {openDrills.speakLikeNative && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu entendo aquela palavra em inglês</span>. / esta / essa</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I understand <span className="text-blue-600">that word in English</span>. / this phrase / the question</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu entendo aquela palavra em inglês. / esta frase / a pergunta</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu moro aqui, e você?</span> / lá / no Brasil</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I live <span className="text-blue-600">here</span>, what about you? / in Brazil / abroad</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu moro aqui, e você? / no Brasil / no exterior</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Nós queremos morar no exterior</span>. / aqui / lá</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We want to live <span className="text-blue-600">abroad</span>. / here / in Italy</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós queremos morar no exterior. / aqui / na Itália</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você mora sozinho?</span> / com amigos / com família</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you live <span className="text-blue-600">alone</span>? / with friends / with family</p>
+                  <p className="text-sm text-gray-500 mt-1">Você mora sozinho? / com amigos / com família</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu não entendo essa palavra</span>. / aquela / esta</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I don't understand <span className="text-blue-600">this word</span>. / that phrase / the teacher</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu não entendo esta palavra. / aquela frase / o professor</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você quer morar na Itália?</span> / Espanha / Alemanha</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you want to live in <span className="text-blue-600">Italy</span>? / Spain / Germany</p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer morar na Itália? / Espanha / Alemanha</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eles querem morar naquele país</span>. / neste / no Brasil</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They want to live in <span className="text-blue-600">that country</span>. / this city / Brazil</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles querem morar naquele país. / nesta cidade / no Brasil</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você quer morar nesta cidade?</span> / naquela / aqui</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you want to live in <span className="text-blue-600">this city</span>? / that country / here</p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer morar nesta cidade? / naquele país / aqui</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu estudo inglês aqui</span>. / lá / na escola</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I study English <span className="text-blue-600">here</span>. / at school / online</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu estudo inglês aqui. / na escola / online</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Onde você quer comer?</span> / estudar / morar</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Where do you want to <span className="text-blue-600">eat</span>? / study / live</p>
+                  <p className="text-sm text-gray-500 mt-1">Onde você quer comer? / estudar / morar</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Seção 4 - Gramática com Drill */}
+        {/* Seção 4 - Grammar */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">Grammar</h2>
               <p className="mt-2 text-blue-100 italic">
-                Estruturas para fazer perguntas e negações com do/does
+                Structures to make questions and negations with do/does
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('grammar')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.grammar ? 'Ocultar Prática' : 'Mostrar Prática'}
+              {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -536,56 +567,69 @@ export default function LessonVerbsAndPlaces() {
             
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Onde você mora?</span> / estuda / trabalha</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Where do you live</span>? / study / work</p>
+                  <p className="text-sm text-gray-500 mt-1">Onde você mora? / estuda / trabalha</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Onde ela mora?</span> / estuda / trabalha</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Where does she live</span>? / study / work</p>
+                  <p className="text-sm text-gray-500 mt-1">Onde ela mora? / estuda / trabalha</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Onde eles estudam?</span> / moram / trabalham</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Where do they study</span>? / live / work</p>
+                  <p className="text-sm text-gray-500 mt-1">Onde eles estudam? / moram / trabalham</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Onde ele estuda?</span> / mora / trabalha</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Where does he study</span>? / live / work</p>
+                  <p className="text-sm text-gray-500 mt-1">Onde ele estuda? / mora / trabalha</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você entende inglês?</span> / espanhol / português</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do you understand English</span>? / Spanish / Portuguese</p>
+                  <p className="text-sm text-gray-500 mt-1">Você entende inglês? / espanhol / português</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Ela entende espanhol?</span> / inglês / português</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Does she understand Spanish</span>? / English / Portuguese</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela entende espanhol? / inglês / português</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eles querem estudar?</span> / morar / trabalhar</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do they want to study</span>? / live / work</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles querem estudar? / morar / trabalhar</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Ele quer morar aqui?</span> / lá / no exterior</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Does he want to live here</span>? / there / abroad</p>
+                  <p className="text-sm text-gray-500 mt-1">Ele quer morar aqui? / lá / no exterior</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Nós entendemos esta palavra?</span> / aquela / essa</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do we understand this word</span>? / that / the phrase</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós entendemos esta palavra? / aquela / a frase</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Isso funciona?</span> / aquilo / este</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Does this work</span>? / that / it</p>
+                  <p className="text-sm text-gray-500 mt-1">Isso funciona? / aquilo / isto</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você mora sozinho?</span> / com amigos / com família</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do you live alone</span>? / with friends / with family</p>
+                  <p className="text-sm text-gray-500 mt-1">Você mora sozinho? / com amigos / com família</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Ela estuda aqui?</span> / lá / na escola</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Does she study here</span>? / there / at school</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela estuda aqui? / lá / na escola</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eles entendem essa língua?</span> / aquela / esta</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do they understand this language</span>? / that / the dialect</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles entendem este idioma? / aquele / o dialeto</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Seção 5 - Real Life Practice*/}
+        {/* Seção 5 - Make It Yours */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">REAL LIFE</h2>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
+            <h2 className="text-2xl font-bold">Make It Yours</h2>
             <p className="mt-2 text-blue-100 italic">
-              Substitua as palavras em azul para praticar a pronúncia em situações reais
+              Replace the blue words to practice pronunciation in real situations
             </p>
           </div>
           
@@ -602,12 +646,13 @@ export default function LessonVerbsAndPlaces() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          1. We <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          1. We <span 
+                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('want to live')}
                           >want to live</span> abroad.
                         </p>
@@ -624,12 +669,13 @@ export default function LessonVerbsAndPlaces() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          2. <span 
+                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('do you live')}
                           >Do you live</span> alone?
                         </p>
@@ -646,16 +692,17 @@ export default function LessonVerbsAndPlaces() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          3. I <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          3. I <span 
+                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('don-t understand')}
                           >don't understand</span> this word.
                         </p>
-                        <p className="text-sm text-gray-600">Eu não entendo essa palavra.</p>
+                        <p className="text-sm text-gray-600">Eu não entendo esta palavra.</p>
                       </div>
                     </div>
                   </div>
@@ -668,12 +715,13 @@ export default function LessonVerbsAndPlaces() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          4. <span 
+                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('do you want to live')}
                           >Do you want to live</span> in Italy?
                         </p>
@@ -690,12 +738,13 @@ export default function LessonVerbsAndPlaces() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          5. They <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          5. They <span 
+                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('want to live')}
                           >want to live</span> in that country.
                         </p>
@@ -712,12 +761,13 @@ export default function LessonVerbsAndPlaces() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          6. <span 
+                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('do you want to live')}
                           >Do you want to live</span> in this city?
                         </p>
@@ -734,12 +784,13 @@ export default function LessonVerbsAndPlaces() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          7. We <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          7. We <span 
+                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('don-t live')}
                           >don't live</span> here.
                         </p>
@@ -756,12 +807,13 @@ export default function LessonVerbsAndPlaces() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          8. They <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          8. They <span 
+                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('don-t understand')}
                           >don't understand</span> that language.
                         </p>
@@ -778,12 +830,13 @@ export default function LessonVerbsAndPlaces() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          9. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          9. <span 
+                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('where do you study')}
                           >Where do you study</span> English?
                         </p>
@@ -800,12 +853,13 @@ export default function LessonVerbsAndPlaces() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          10. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          10. <span 
+                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                             onClick={() => playAudio('where do you want to eat')}
                           >Where do you want to eat</span>?
                         </p>
@@ -819,27 +873,31 @@ export default function LessonVerbsAndPlaces() {
                 <div className="lg:w-1/3 flex flex-col gap-4">
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
                     <div className="relative h-64 w-full">
-                      <img
+                      <Image
                         src={cityImage}
-                        alt="Cidades"
+                        alt="Cities and places to live"
+                        width={300}
+                        height={256}
                         className="rounded-xl object-cover w-full h-full"
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
-                      Cidades e lugares para viver
+                      Cities and places to live
                     </p>
                   </div>
                   
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
                     <div className="relative h-64 w-full">
-                      <img
+                      <Image
                         src={countryImage}
-                        alt="Países"
+                        alt="Countries and different cultures"
+                        width={300}
+                        height={256}
                         className="rounded-xl object-cover w-full h-full"
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
-                      Países e culturas diferentes
+                      Countries and different cultures
                     </p>
                   </div>
                 </div>
@@ -848,25 +906,25 @@ export default function LessonVerbsAndPlaces() {
           </div>
         </div>
 
-        {/* Seção 6 - Check It Out (estilo print) */}
+        {/* Seção 6 - WRAP-UP */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-3xl font-bold">CHECK IT OUT!</h2>
+              <h2 className="text-3xl font-bold">WRAP-UP</h2>
               <p className="mt-2 text-blue-100 italic">
-                Pratique estruturas essenciais para falar sobre onde mora e compreensão
+                Practice essential structures to talk about where you live and understanding
               </p>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row">
-            {/* Coluna esquerda - Perguntas e respostas */}
+            {/* Coluna esquerda - Questions and answers */}
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
               <div className="mb-4">
-                <h3 className="font-bold text-lg mb-2 text-yellow-300">Respostas Simples:</h3>
+                <h3 className="font-bold text-lg mb-2 text-yellow-300">Simple Answers:</h3>
                 <p className="text-sm text-blue-200 mb-2">
-                  Use <span className="font-bold">"Yes, I do"</span> para respostas positivas e 
-                  <span className="font-bold"> "No, I don't"</span> para respostas negativas quando a pergunta começa com "Do you...".
+                  Use <span className="font-bold">"Yes, I do"</span> for positive answers and 
+                  <span className="font-bold"> "No, I don't"</span> for negative answers when the question starts with "Do you...".
                 </p>
               </div>
               <div className="flex items-center group">
@@ -921,23 +979,25 @@ export default function LessonVerbsAndPlaces() {
 
             {/* Coluna central - Imagem e balão */}
             <div className="bg-white flex-1 p-6 flex flex-col items-center justify-center text-xl relative">
-              <img
+              <Image
                 src={mainImage}
-                alt="Pessoa em casa"
+                alt="Person at home"
+                width={160}
+                height={160}
                 className="rounded-full w-40 h-40 object-cover mb-4"
               />
               <div className="bg-yellow-200 text-black px-4 py-2 rounded-xl shadow-md text-center">
                 Where do you live? <span className="font-bold">I live in Brazil!</span>
               </div>
               <div className="mt-4 text-center text-sm text-gray-600">
-                <p>Use <span className="font-bold">"do"</span> para perguntas e respostas simples</p>
-                <p>Exemplo: "Do you live here?" → "Yes, I <span className="font-bold">do</span>"</p>
+                <p>Use <span className="font-bold">"do"</span> for questions and simple answers</p>
+                <p>Example: "Do you live here?" → "Yes, I <span className="font-bold">do</span>"</p>
               </div>
             </div>
 
-            {/* Coluna direita - Preposições */}
+            {/* Coluna direita - Prepositions */}
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
-              <h3 className="font-bold text-lg mb-2">Preposições:</h3>
+              <h3 className="font-bold text-lg mb-2 text-yellow-300">Prepositions:</h3>
               <div className="flex items-center group">
                 <button 
                   onClick={() => playAudio("in brazil")}
@@ -990,21 +1050,21 @@ export default function LessonVerbsAndPlaces() {
           </div>
         </div>
 
-        {/* Botão para próxima lição */}
+        {/* Botões de navegação */}
         <div className="flex justify-center gap-4 mt-8">
           <button
-            onClick={() => router.push("/cursos/lesson9")}
-            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            onClick={() => router.push("/cursos/lesson8")}
+            className="inline-block rounded-full bg-gradient-to-r from-gray-500 to-gray-600 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-gray-600 hover:to-gray-800 active:animate-glow"
           >
-            &larr; Lição Anterior
+            &larr; Previous Lesson
           </button>
           <button
             onClick={() => router.push("/cursos/lesson10")}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
           >
-            Próxima Lição &rarr;
+            Next Lesson &rarr;
           </button>
-        </div>  
+        </div>
       </div>
     </div>
   );

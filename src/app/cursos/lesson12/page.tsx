@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle, CheckCircle, X } from "lucide-react";
+import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle, CheckCircle, X, VolumeX } from "lucide-react";
 
 // --- VERSÃO DO COMPONENTE (PARA FORÇAR ATUALIZAÇÃO) ---
-const COMPONENT_VERSION = "2.1.0";
+const COMPONENT_VERSION = "2.2.0";
 const BUILD_TIMESTAMP = "2026-03-22"; // Atualize esta data quando modificar
 
 // LISTENING EXERCISE DATA
@@ -391,13 +391,35 @@ const videoQuestions = [
 
 // DIALOGUE
 const thereAndAroundDialogue = [
-  { speaker: "A", text: "I want to book a flight, please.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
-  { speaker: "B", text: "Sure! Please, take a seat.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
-  { speaker: "A", text: "Do you want a round-trip ticket or a one-way ticket?", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
-  { speaker: "B", text: "A one-way ticket, please.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
-  { speaker: "A", text: "Thank you very much.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" },
-  { speaker: "B", text: "You're welcome.", audioSrc: "https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3" }
+  { speaker: "A", text: "I want to book a flight, please." },
+  { speaker: "B", text: "Sure! Please, take a seat." },
+  { speaker: "A", text: "Do you want a round-trip ticket or a one-way ticket?" },
+  { speaker: "B", text: "A one-way ticket, please." },
+  { speaker: "A", text: "Thank you very much." },
+  { speaker: "B", text: "You're welcome." }
 ];
+
+// Text-to-Speech function with American female voice
+const speakEnglish = (text: string) => {
+  if (!text || !/^[a-zA-Z\s\?\.,!']+$/.test(text.trim())) return;
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-US";
+  
+  const voices = window.speechSynthesis.getVoices();
+  const femaleAmericanVoice = voices.find(voice => 
+    voice.lang === "en-US" && (voice.name.includes("Female") || voice.name.includes("Samantha") || voice.name.includes("Google UK English Female"))
+  );
+  
+  if (femaleAmericanVoice) {
+    utterance.voice = femaleAmericanVoice;
+  }
+  
+  utterance.rate = 0.9;
+  utterance.pitch = 1.1;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
+};
 
 // SISTEMA DE AVALIAÇÃO DE RESPOSTAS
 const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
@@ -407,123 +429,92 @@ const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
   return normalize(userAnswer) === normalize(correctAnswer);
 };
 
-// COMPONENTE SIMPLE AUDIO PLAYER
-const SimpleAudioPlayer = ({ src }: { src: string }) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
+// COMPONENTE PARA FRASES EM INGLÊS COM CLIQUE PARA OUVIR
+const ClickToSpeak = ({ text, className = "" }: { text: string; className?: string }) => {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  
+  const handleSpeak = () => {
+    if (!text || !/^[a-zA-Z\s\?\.,!']+$/.test(text.trim())) return;
+    
+    setIsSpeaking(true);
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    
+    const voices = window.speechSynthesis.getVoices();
+    const femaleAmericanVoice = voices.find(voice => 
+      voice.lang === "en-US" && (voice.name.includes("Female") || voice.name.includes("Samantha") || voice.name.includes("Google UK English Female"))
+    );
+    
+    if (femaleAmericanVoice) {
+      utterance.voice = femaleAmericanVoice;
+    }
+    
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
+  
+  return (
+    <div 
+      onClick={handleSpeak}
+      className={`cursor-pointer group flex items-center gap-2 ${className}`}
+    >
+      <span className="hover:text-blue-600 transition-colors">{text}</span>
+      {isSpeaking ? (
+        <Volume2 size={16} className="text-green-500 animate-pulse" />
+      ) : (
+        <Volume2 size={14} className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+      )}
+    </div>
+  );
+};
+
+// COMPONENTE SIMPLE AUDIO PLAYER (sem áudio externo, usa TTS)
+const SimpleAudioPlayer = ({ text }: { text: string }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const playAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(err => console.error("Error playing audio:", err));
+    if (!text) return;
+    
+    setIsPlaying(true);
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    
+    const voices = window.speechSynthesis.getVoices();
+    const femaleAmericanVoice = voices.find(voice => 
+      voice.lang === "en-US" && (voice.name.includes("Female") || voice.name.includes("Samantha") || voice.name.includes("Google UK English Female"))
+    );
+    
+    if (femaleAmericanVoice) {
+      utterance.voice = femaleAmericanVoice;
     }
+    
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    
+    utterance.onend = () => setIsPlaying(false);
+    utterance.onerror = () => setIsPlaying(false);
+    
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
   };
 
   return (
     <div className="flex items-center gap-2">
       <button 
         onClick={playAudio}
-        className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 flex items-center gap-1 transition"
+        className={`p-2 rounded-full transition flex items-center gap-1 ${isPlaying ? 'bg-green-500' : 'bg-blue-500'} text-white hover:opacity-90`}
       >
-        <Volume2 size={14} />
-        <span className="text-xs">Play</span>
+        {isPlaying ? <Volume2 size={14} className="animate-pulse" /> : <Volume2 size={14} />}
+        <span className="text-xs">{isPlaying ? "Playing..." : "Listen"}</span>
       </button>
-      <audio ref={audioRef} src={src} preload="none" />
-    </div>
-  );
-};
-
-// COMPONENTE ADVANCED AUDIO PLAYER
-const AdvancedAudioPlayer = ({ src, startTime = 0 }: { src: string; startTime?: number }) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(startTime);
-  const [duration, setDuration] = useState(0);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = startTime;
-      
-      audioRef.current.addEventListener("loadedmetadata", () => {
-        setDuration(audioRef.current?.duration || 0);
-      });
-      
-      audioRef.current.addEventListener("timeupdate", () => {
-        setCurrentTime(audioRef.current?.currentTime || 0);
-      });
-      
-      audioRef.current.addEventListener("ended", () => {
-        setIsPlaying(false);
-      });
-    }
-  }, [startTime]);
-
-  const togglePlayPause = () => {
-    if (!audioRef.current) return;
-    
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch((err) => console.error("Audio error:", err));
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const resetAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = startTime;
-      setCurrentTime(startTime);
-      setIsPlaying(false);
-    }
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
-    setCurrentTime(newTime);
-    
-    if (audioRef.current) {
-      audioRef.current.currentTime = newTime;
-    }
-  };
-
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
-
-  return (
-    <div className="flex flex-col items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-      <div className="flex items-center gap-4 w-full">
-        <button 
-          onClick={togglePlayPause}
-          className={`p-2 rounded-full ${isPlaying ? 'bg-red-500' : 'bg-green-500'} text-white hover:opacity-90 transition`}
-        >
-          {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-        </button>
-        
-        <button 
-          onClick={resetAudio}
-          className="p-2 bg-gray-500 text-white rounded-full hover:bg-gray-600 transition"
-        >
-          <RotateCcw size={16} />
-        </button>
-        
-        <div className="flex-1">
-          <input
-            type="range"
-            min="0"
-            max={duration || 0}
-            value={currentTime}
-            onChange={handleSeek}
-            className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
-          />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
-        </div>
-      </div>
-      <audio ref={audioRef} src={src} preload="metadata" />
     </div>
   );
 };
@@ -564,6 +555,7 @@ export default function Lesson12LanguagesAndCountries() {
   const router = useRouter();
   
   const [isInitialized, setIsInitialized] = useState(false);
+  const [voicesLoaded, setVoicesLoaded] = useState(false);
   
   const [sections, setSections] = useState({
     listeningExercise: true,
@@ -587,10 +579,26 @@ export default function Lesson12LanguagesAndCountries() {
   const [listeningAnswers, setListeningAnswers] = useState<Record<number, string>>({});
   const [listeningResults, setListeningResults] = useState<Record<number, boolean | null>>({});
   
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  // Carregar vozes do TTS
+  useEffect(() => {
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        setVoicesLoaded(true);
+      }
+    };
+    
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
 
   const normalize = (text: string) =>
     text.toLowerCase().trim().replace(/[?.!,]/g, "").replace(/\s+/g, " ");
@@ -611,60 +619,6 @@ export default function Lesson12LanguagesAndCountries() {
 
   const handleVideoAnswerChange = (id: number, value: string) => {
     setVideoAnswers(prev => ({ ...prev, [id]: value }));
-  };
-
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
-
-  useEffect(() => {
-    if (!audioRef.current) {
-      const audio = new Audio("https://github.com/Sullivan-code/english-audios/raw/main/L12-listening.mp3");
-      audioRef.current = audio;
-      
-      audio.addEventListener("loadedmetadata", () => {
-        setDuration(audio.duration);
-      });
-      
-      audio.addEventListener("timeupdate", () => {
-        setCurrentTime(audio.currentTime);
-      });
-      
-      audio.addEventListener("ended", () => {
-        setIsPlaying(false);
-      });
-    }
-  }, []);
-
-  const togglePlayPause = () => {
-    if (!audioRef.current) return;
-    
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch((err) => console.error("Audio error:", err));
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const resetAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      setCurrentTime(0);
-      setIsPlaying(false);
-    }
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
-    setCurrentTime(newTime);
-    
-    if (audioRef.current) {
-      audioRef.current.currentTime = newTime;
-    }
   };
 
   useEffect(() => {
@@ -771,6 +725,32 @@ export default function Lesson12LanguagesAndCountries() {
     }));
   };
 
+  // Função para tocar o áudio de todas as sentenças em inglês do listening exercise
+  const playFullListeningAudio = () => {
+    const allSentences = listenItems.map(item => item.correctAnswer).join(". ");
+    speakEnglish(allSentences);
+    setIsPlaying(true);
+    
+    const utterance = new SpeechSynthesisUtterance(allSentences);
+    utterance.lang = "en-US";
+    const voices = window.speechSynthesis.getVoices();
+    const femaleAmericanVoice = voices.find(voice => 
+      voice.lang === "en-US" && (voice.name.includes("Female") || voice.name.includes("Samantha") || voice.name.includes("Google UK English Female"))
+    );
+    if (femaleAmericanVoice) utterance.voice = femaleAmericanVoice;
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    utterance.onend = () => setIsPlaying(false);
+    utterance.onerror = () => setIsPlaying(false);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopAudio = () => {
+    window.speechSynthesis.cancel();
+    setIsPlaying(false);
+  };
+
   if (!isInitialized) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -792,6 +772,7 @@ export default function Lesson12LanguagesAndCountries() {
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
             Listen and Practice conversations about travel, family, and daily activities. Improve your communication skills.
           </p>
+          <p className="text-sm text-gray-500 mt-2">🔊 Click on any English sentence to hear it spoken with an American female voice!</p>
         </div>
 
         {/* LISTENING EXERCISE */}
@@ -815,75 +796,54 @@ export default function Lesson12LanguagesAndCountries() {
                   Let's Practice Our Listening
                 </h3>
                 <p className="text-gray-600">
-                  Listen to the audio and write what you hear for each image below.
+                  Listen to the sentences by clicking on them, then write what you hear for each image below.
                 </p>
               </div>
 
               <div className="flex flex-col items-center justify-center mb-8 p-6 bg-white border-2 border-orange-300 rounded-2xl shadow-md">
-                <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-4">
                   <button
-                    onClick={togglePlayPause}
-                    className="flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-full hover:bg-orange-600 transition"
+                    onClick={playFullListeningAudio}
+                    disabled={isPlaying}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-full transition ${isPlaying ? 'bg-gray-400 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-600'} text-white`}
                   >
-                    {isPlaying ? (
-                      <>
-                        <Pause size={20} />
-                        <span className="font-semibold">Pause Audio</span>
-                      </>
-                    ) : (
-                      <>
-                        <Play size={20} />
-                        <span className="font-semibold">Play Full Audio</span>
-                      </>
-                    )}
+                    {isPlaying ? <Volume2 size={20} className="animate-pulse" /> : <Play size={20} />}
+                    <span className="font-semibold">{isPlaying ? "Playing All Sentences..." : "Play All Sentences"}</span>
                   </button>
                   
-                  <button
-                    onClick={resetAudio}
-                    className="flex items-center gap-2 bg-gray-500 text-white px-6 py-3 rounded-full hover:bg-gray-600 transition"
-                  >
-                    <RotateCcw size={20} />
-                    <span className="font-semibold">Reset Audio</span>
-                  </button>
+                  {isPlaying && (
+                    <button
+                      onClick={stopAudio}
+                      className="flex items-center gap-2 bg-red-500 text-white px-6 py-3 rounded-full hover:bg-red-600 transition"
+                    >
+                      <X size={20} />
+                      <span className="font-semibold">Stop</span>
+                    </button>
+                  )}
                 </div>
                 
-                <div className="w-full max-w-md mb-4">
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="text-xs font-medium text-gray-600">{formatTime(currentTime)}</span>
-                    <input
-                      type="range"
-                      min="0"
-                      max={duration || 0}
-                      value={currentTime}
-                      onChange={handleSeek}
-                      className="w-full h-2 bg-orange-200 rounded-lg appearance-none cursor-pointer"
-                    />
-                    <span className="text-xs font-medium text-gray-600">{formatTime(duration)}</span>
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-500">
-                    <span>Drag to seek</span>
-                    <span>Total: {formatTime(duration)}</span>
-                  </div>
-                </div>
-                
-                <p className="text-center text-gray-600 text-sm max-w-md">
-                  <span className="font-medium">Note:</span> This audio contains all 6 sentences. Listen carefully and write what you hear for each corresponding image.
+                <p className="text-center text-gray-600 text-sm max-w-md mt-4">
+                  <span className="font-medium">Note:</span> Click on any English sentence below to hear it individually with American female voice!
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {listenItems.map(item => (
                   <div key={item.id} className="border-2 border-orange-200 rounded-2xl p-6 shadow-md bg-white">
-                    <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
+                    <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center">
                       <img
                         src={item.image}
-                        alt="Listening image"
-                        className="object-cover w-full h-full"
+                        alt={`Listening exercise ${item.id}`}
+                        className="max-w-full max-h-full object-contain"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src = `https://via.placeholder.com/400x300/FFA500/FFFFFF?text=Image+${item.id}`;
                         }}
                       />
+                    </div>
+
+                    <div className="mb-3 p-3 bg-orange-50 rounded-md">
+                      <ClickToSpeak text={item.correctAnswer} className="text-orange-700 font-medium" />
                     </div>
 
                     <textarea
@@ -925,7 +885,7 @@ export default function Lesson12LanguagesAndCountries() {
                               <div>
                                 <span className="font-medium">Incorrect. </span>
                                 <span>The correct answer is: </span>
-                                <span className="font-medium">{item.correctAnswer}</span>
+                                <ClickToSpeak text={item.correctAnswer} className="font-medium inline" />
                               </div>
                             </>
                           )}
@@ -945,13 +905,12 @@ export default function Lesson12LanguagesAndCountries() {
               <div className="mt-8 bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-orange-800 mb-3">🎯 How to practice:</h3>
                 <ol className="list-decimal pl-5 space-y-2 text-orange-700">
-                  <li>Click <span className="font-semibold">"Play Full Audio"</span> to listen to all 6 sentences</li>
-                  <li>Use the slider to drag left/right and seek specific parts of the audio</li>
+                  <li>Click on the <span className="font-semibold">blue underlined sentence</span> to hear it spoken</li>
                   <li>Listen carefully and identify which sentence corresponds to each image</li>
                   <li>Write what you hear for each image in the text box below it</li>
                   <li>Click <span className="font-semibold">"Check Answer"</span> to see if you're correct</li>
                   <li>Click the <span className="font-semibold">X</span> button to close the answer feedback</li>
-                  <li>Use <span className="font-semibold">"Reset Audio"</span> to replay the audio from the beginning</li>
+                  <li>Use <span className="font-semibold">"Play All Sentences"</span> to hear everything continuously</li>
                 </ol>
               </div>
             </div>
@@ -992,7 +951,7 @@ export default function Lesson12LanguagesAndCountries() {
                         </div>
                         
                         <div className="mb-3 p-3 bg-green-50 rounded-md">
-                          <p className="text-green-700 font-medium">{currentSentence}</p>
+                          <ClickToSpeak text={currentSentence} className="text-green-700 font-medium" />
                         </div>
                         
                         <div className="flex flex-wrap gap-2">
@@ -1044,9 +1003,7 @@ export default function Lesson12LanguagesAndCountries() {
                   {negativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-red-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                        <p className="font-medium text-gray-700 flex-1">
-                          {exercise.sentence}
-                        </p>
+                        <ClickToSpeak text={exercise.sentence} className="font-medium text-gray-700 flex-1" />
                       </div>
                       
                       <div className="flex gap-2 mb-2">
@@ -1114,7 +1071,7 @@ export default function Lesson12LanguagesAndCountries() {
                         </div>
                         
                         <div className="mb-3 p-3 bg-orange-50 rounded-md">
-                          <p className="text-orange-700 font-medium">{currentSentence}</p>
+                          <ClickToSpeak text={currentSentence} className="text-orange-700 font-medium" />
                         </div>
                         
                         <div className="flex flex-wrap gap-2">
@@ -1166,9 +1123,7 @@ export default function Lesson12LanguagesAndCountries() {
                   {affirmativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-teal-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                        <p className="font-medium text-gray-700 flex-1">
-                          {exercise.sentence}
-                        </p>
+                        <ClickToSpeak text={exercise.sentence} className="font-medium text-gray-700 flex-1" />
                       </div>
                       
                       <div className="flex gap-2 mb-2">
@@ -1227,9 +1182,7 @@ export default function Lesson12LanguagesAndCountries() {
                   {interrogativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-indigo-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                        <p className="font-medium text-gray-700 flex-1">
-                          {exercise.sentence}
-                        </p>
+                        <ClickToSpeak text={exercise.sentence} className="font-medium text-gray-700 flex-1" />
                       </div>
                       
                       <div className="flex gap-2 mb-2">
@@ -1281,7 +1234,7 @@ export default function Lesson12LanguagesAndCountries() {
             <div className="p-8">
               <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-purple-800 mb-4">
-                  Listen to the dialogue about booking a flight:
+                  Listen to the dialogue about booking a flight (click on each line to hear it):
                 </h3>
                 
                 <div className="space-y-4 bg-white p-6 rounded-lg border border-purple-200">
@@ -1294,9 +1247,9 @@ export default function Lesson12LanguagesAndCountries() {
                           {line.speaker}:
                         </div>
                         <div className="flex-1">
-                          <p className="text-gray-800">{line.text}</p>
+                          <ClickToSpeak text={line.text} className="text-gray-800" />
                         </div>
-                        <SimpleAudioPlayer src={line.audioSrc} />
+                        <SimpleAudioPlayer text={line.text} />
                       </div>
                     </div>
                   ))}
@@ -1341,57 +1294,57 @@ export default function Lesson12LanguagesAndCountries() {
               </div>
 
               <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4">📖 Key Vocabulary:</h3>
+                <h3 className="text-xl font-bold text-teal-800 mb-4">📖 Key Vocabulary (click to hear pronunciation):</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To achieve</span>
+                      <ClickToSpeak text="To achieve" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Alcançar</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To be proud of</span>
+                      <ClickToSpeak text="To be proud of" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Ficar orgulhoso de</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Thrive</span>
+                      <ClickToSpeak text="Thrive" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Prosperar</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Self-confidence</span>
+                      <ClickToSpeak text="Self-confidence" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Autoconfiança</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Career growth</span>
+                      <ClickToSpeak text="Career growth" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Crescimento profissional</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Job market</span>
+                      <ClickToSpeak text="Job market" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Mercado de trabalho</span>
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Opportunity</span>
+                      <ClickToSpeak text="Opportunity" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Oportunidade</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Global</span>
+                      <ClickToSpeak text="Global" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Global</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Open doors</span>
+                      <ClickToSpeak text="Open doors" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Abrir portas</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">Promotions</span>
+                      <ClickToSpeak text="Promotions" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Promoções</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To participate</span>
+                      <ClickToSpeak text="To participate" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Participar</span>
                     </div>
                     <div className="flex justify-between items-center p-2 bg-white rounded-lg">
-                      <span className="font-medium text-teal-700">To share ideas</span>
+                      <ClickToSpeak text="To share ideas" className="font-medium text-teal-700" />
                       <span className="text-teal-600">Compartilhar ideias</span>
                     </div>
                   </div>
@@ -1402,7 +1355,7 @@ export default function Lesson12LanguagesAndCountries() {
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-teal-200 shadow-md">
                     <h4 className="text-lg font-bold text-teal-700 mb-3">
-                      {question.id}. {question.question}
+                      <ClickToSpeak text={question.question} className="inline" />
                       {question.isPersonal && (
                         <span className="ml-2 text-sm font-normal text-teal-500">(Personal answer)</span>
                       )}
@@ -1410,11 +1363,11 @@ export default function Lesson12LanguagesAndCountries() {
                    
                     {question.vocabulary && (
                       <div className="mb-3 p-3 bg-teal-50 rounded-lg">
-                        <p className="text-sm font-medium text-teal-600 mb-1">Vocabulary hints:</p>
+                        <p className="text-sm font-medium text-teal-600 mb-1">Vocabulary hints (click to hear):</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                           {question.vocabulary.map((word, idx) => (
                             <div key={idx} className="flex justify-between text-sm">
-                              <span className="text-teal-700 font-medium">{word.english}</span>
+                              <ClickToSpeak text={word.english} className="text-teal-700 font-medium" />
                               <span className="text-teal-600">- {word.portuguese}</span>
                             </div>
                           ))}
@@ -1468,14 +1421,14 @@ export default function Lesson12LanguagesAndCountries() {
               </div>
 
               <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4">🎯 How English Helps You Thrive:</h3>
+                <h3 className="text-xl font-bold text-teal-800 mb-4">🎯 How English Helps You Thrive (click to hear each point):</h3>
                 <ul className="list-disc pl-5 space-y-2 text-teal-700 text-sm">
-                  <li><span className="font-medium">Career Advancement:</span> English opens doors to international job opportunities and promotions</li>
-                  <li><span className="font-medium">Global Connections:</span> Connect with people from different countries and cultures</li>
-                  <li><span className="font-medium">Personal Growth:</span> Builds self-confidence and expands your worldview</li>
-                  <li><span className="font-medium">Education:</span> Access to global educational resources and study abroad programs</li>
-                  <li><span className="font-medium">Travel:</span> Communicate effectively when traveling internationally</li>
-                  <li><span className="font-medium">Cultural Exchange:</span> Share your ideas and learn from others worldwide</li>
+                  <li><ClickToSpeak text="Career Advancement: English opens doors to international job opportunities and promotions" className="font-medium" /></li>
+                  <li><ClickToSpeak text="Global Connections: Connect with people from different countries and cultures" className="font-medium" /></li>
+                  <li><ClickToSpeak text="Personal Growth: Builds self-confidence and expands your worldview" className="font-medium" /></li>
+                  <li><ClickToSpeak text="Education: Access to global educational resources and study abroad programs" className="font-medium" /></li>
+                  <li><ClickToSpeak text="Travel: Communicate effectively when traveling internationally" className="font-medium" /></li>
+                  <li><ClickToSpeak text="Cultural Exchange: Share your ideas and learn from others worldwide" className="font-medium" /></li>
                 </ul>
               </div>
             </div>
@@ -1503,7 +1456,7 @@ export default function Lesson12LanguagesAndCountries() {
                   Questions - Practice writing answers:
                 </h3>
                 <p className="text-pink-600 mb-6">
-                  Answer these questions to practice your communication skills.
+                  Answer these questions to practice your communication skills. Click on each question to hear it!
                 </p>
               </div>
 
@@ -1511,7 +1464,7 @@ export default function Lesson12LanguagesAndCountries() {
                 {unlockQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-pink-200 shadow-md">
                     <h4 className="text-lg font-bold text-pink-700 mb-3">
-                      {question.id}. {question.question}
+                      {question.id}. <ClickToSpeak text={question.question} className="inline" />
                     </h4>
                     
                     <textarea

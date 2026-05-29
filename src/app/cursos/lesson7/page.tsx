@@ -77,9 +77,9 @@ export default function LessonLanguagesAndCountries() {
       'Do you want to study in the afternoon': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/do-you-want-to-study-in-the-afternoon.mp3',
       
       // Despedidas
-      'bye_see_you': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/bye-see-you.mp3',
-      'see_you_later': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/see-you-later.mp3',
-      'good_night': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/good-night.mp3',
+      'bye see you': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/bye-see-you.mp3',
+      'see you later': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/see-you-later.mp3',
+      'good night': 'https://raw.githubusercontent.com/Sullivan-code/english-audios/main/good-night.mp3',
 
       // Alfabeto (A-Z)
       'A': 'https://github.com/Sullivan-code/english-audios/blob/main/A.mp3?raw=true',
@@ -110,12 +110,10 @@ export default function LessonLanguagesAndCountries() {
       'Z': 'https://github.com/Sullivan-code/english-audios/blob/main/Z.mp3?raw=true'
     };
 
-    // Verifica se existe áudio mapeado
     if (audioMap[word]) {
       const audio = new Audio(audioMap[word]);
       audio.play().catch(e => {
         console.error("Erro ao reproduzir áudio:", e);
-        // Fallback: tenta recarregar o áudio
         audio.load();
         audio.play().catch(e2 => console.error("Erro no fallback:", e2));
       });
@@ -129,7 +127,7 @@ export default function LessonLanguagesAndCountries() {
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
       style={{
-        backgroundImage: `url("/images/l7-bgg.jpg")`,
+        backgroundImage: `url("/images/lesson3-bg.jpg")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -141,10 +139,10 @@ export default function LessonLanguagesAndCountries() {
         {/* Título centralizado com imagem abaixo */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
-            📘 Lesson 7 – Languages & Countries
+            Lesson 7 - Languages & Countries
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Aprenda a falar sobre idiomas, países e praticar conversas em inglês. 🌍🗣️
+            Learn to talk about languages, countries and practice conversations in English. 🌍🗣️
           </p>
           <div className="w-64 h-64 mx-auto">
             <img
@@ -157,18 +155,18 @@ export default function LessonLanguagesAndCountries() {
 
         {/* Seção 1 - Verbos com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 Verbs</h2>
+              <h2 className="text-2xl font-bold">Verbs</h2>
               <p className="mt-2 text-blue-100 italic">
-                Clique nos verbos para ouvir a pronúncia e pratique suas formas
+                Click on the verbs to hear the pronunciation and practice their forms
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('verbs')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.verbs ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
@@ -194,29 +192,45 @@ export default function LessonLanguagesAndCountries() {
             
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">falar / <span className="text-blue-600">Eu falo</span>. / Você fala.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I speak Portuguese. / I study / I like</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu falo português. / Eu estudo / Eu gosto</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">estudar / <span className="text-blue-600">Eu estudo</span>. / Você estuda.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you study English? / Do you speak / Do you like</p>
+                  <p className="text-sm text-gray-500 mt-1">Você estuda inglês? / Você fala / Você gosta</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu não falo</span>. / estudo / gosto / quero</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We speak Spanish at school. / We study / We learn</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós falamos espanhol na escola. / Nós estudamos / Nós aprendemos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você fala?</span> / estuda / quer / prefere</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They study French there. / They speak / They want</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles estudam francês lá. / Eles falam / Eles querem</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">O que você estuda?</span> / fala / prefere / quer</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">She speaks Italian with her friend. / She studies / She likes</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela fala italiano com seu amigo. / Ela estuda / Ela gosta</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">O que você gosta?</span> / come / bebe</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I don't speak German. / I don't study / I don't like</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu não falo alemão. / Eu não estudo / Eu não gosto</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">O que você gosta de estudar?</span> / beber / comer</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Don't you speak English? / Don't you study / Don't you like</p>
+                  <p className="text-sm text-gray-500 mt-1">Você não fala inglês? / Você não estuda / Você não gosta</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">O que você quer estudar?</span> / falar / comer</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I like to study languages. / I want / I prefer</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu gosto de estudar idiomas. / Eu quero / Eu prefiro</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We want to speak English fluently. / We like / We love</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós queremos falar inglês fluentemente. / Nós gostamos / Nós adoramos</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you want to study with me? / Do you like / Do you prefer</p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer estudar comigo? / Você gosta / Você prefere</p>
                 </div>
               </div>
             )}
@@ -225,184 +239,114 @@ export default function LessonLanguagesAndCountries() {
 
         {/* Seção 2 - Vocabulário com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 New Words</h2>
+              <h2 className="text-2xl font-bold">New Vocabulary</h2>
               <p className="mt-2 text-blue-100 italic">
-                Clique em cada palavra para ouvir sua pronúncia correta
+                Click on each word to hear its correct pronunciation
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('vocabulary')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.vocabulary ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.vocabulary ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               <li>
-                <button 
-                  onClick={() => playAudio('Portuguese')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  Portuguese
-                </button> = português
+                <button onClick={() => playAudio('Portuguese')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">Portuguese</button> = português
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('English')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  English
-                </button> = inglês
+                <button onClick={() => playAudio('English')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">English</button> = inglês
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('French')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  French
-                </button> = francês
+                <button onClick={() => playAudio('French')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">French</button> = francês
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('Spanish')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  Spanish
-                </button> = espanhol
+                <button onClick={() => playAudio('Spanish')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">Spanish</button> = espanhol
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('Italian')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  Italian
-                </button> = italiano
+                <button onClick={() => playAudio('Italian')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">Italian</button> = italiano
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('German')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  German
-                </button> = alemão
+                <button onClick={() => playAudio('German')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">German</button> = alemão
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('friend')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  friend
-                </button> = amigo(a)
+                <button onClick={() => playAudio('friend')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">friend</button> = amigo(a)
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('teacher')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  teacher
-                </button> = professor(a)
+                <button onClick={() => playAudio('teacher')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">teacher</button> = professor(a)
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('my')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  my
-                </button> = meu(s), minha(s)
+                <button onClick={() => playAudio('my')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">my</button> = meu(s), minha(s)
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('your')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  your
-                </button> = seu(s), sua(s)
+                <button onClick={() => playAudio('your')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">your</button> = seu(s), sua(s)
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('we')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  we
-                </button> = nós
+                <button onClick={() => playAudio('we')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">we</button> = nós
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('they')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  they
-                </button> = eles, elas
+                <button onClick={() => playAudio('they')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">they</button> = eles, elas
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('here')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  here
-                </button> = aqui
+                <button onClick={() => playAudio('here')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">here</button> = aqui
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('there')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  there
-                </button> = lá
+                <button onClick={() => playAudio('there')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">there</button> = lá
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('too')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  too
-                </button> = também
+                <button onClick={() => playAudio('too')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">too</button> = também
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('with')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  with
-                </button> = com
+                <button onClick={() => playAudio('with')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">with</button> = com
               </li>
             </ul>
             
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Nós estudamos inglês de manhã</span>. / à tarde</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I speak <span className="text-blue-600 font-bold">Portuguese</span>. / English / Spanish</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu falo português. / inglês / espanhol</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eles não estudam francês na escola</span>. / italiano</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you study <span className="text-blue-600 font-bold">French</span>? / Italian / German</p>
+                  <p className="text-sm text-gray-500 mt-1">Você estuda francês? / italiano / alemão</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você fala alemão aqui?</span> / lá</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We like to speak <span className="text-blue-600 font-bold">English</span>. / Spanish / French</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós gostamos de falar inglês. / espanhol / francês</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu estudo alemão com meu amigo</span>. / com meu professor</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They study with their <span className="text-blue-600 font-bold">teacher</span>. / friend / classmates</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles estudam com seu professor. / amigo / colegas</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Elas falam português também</span>. / inglês</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I speak Italian with <span className="text-blue-600 font-bold">my</span> friend. / your / our</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu falo italiano com meu amigo. / seu / nosso</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você gosta de estudar espanhol?</span> / francês / italiano</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you study <span className="text-blue-600 font-bold">here</span> or there? / at school / at home</p>
+                  <p className="text-sm text-gray-500 mt-1">Você estuda aqui ou lá? / na escola / em casa</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Nós falamos inglês com seus amigos</span>. / com meu professor</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We speak English, <span className="text-blue-600 font-bold">too</span>. / also / as well</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós falamos inglês também. / também / igualmente</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu não estudo francês de manhã</span>. / à tarde</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you want to study <span className="text-blue-600 font-bold">with</span> me? / without / for</p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer estudar comigo? / sem / para</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eles estudam italiano aqui</span>. / lá</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">We</span> study French at school. / They / You</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós estudamos francês na escola. / Eles / Você</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você fala português na escola?</span> / inglês / espanhol</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">They</span> want to study German. / We / She</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles querem estudar alemão. / Nós / Ela</p>
                 </div>
               </div>
             )}
@@ -411,82 +355,70 @@ export default function LessonLanguagesAndCountries() {
 
         {/* Seção 3 - Frases Úteis com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 Useful Phrases</h2>
+              <h2 className="text-2xl font-bold">Slangs and Fluency</h2>
               <p className="mt-2 text-blue-100 italic">
-                Pratique frases comuns para conversas sobre idiomas
+                Practice common phrases to talk about languages
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('usefulPhrases')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.usefulPhrases ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.usefulPhrases ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
               <li>
-                <button 
-                  onClick={() => playAudio('I drink coffee in the morning')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  I drink coffee in the morning.
-                </button> = Eu bebo café de manhã.
+                <button onClick={() => playAudio('I drink coffee in the morning')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">I drink coffee in the morning.</button> = Eu bebo café de manhã.
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('You study English in the afternoon')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  You study English in the afternoon.
-                </button> = Você estuda inglês à tarde.
+                <button onClick={() => playAudio('You study English in the afternoon')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">You study English in the afternoon.</button> = Você estuda inglês à tarde.
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('I study English at school')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  I study English at school.
-                </button> = Eu estudo inglês na escola.
+                <button onClick={() => playAudio('I study English at school')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">I study English at school.</button> = Eu estudo inglês na escola.
               </li>
               <li>
-                <button 
-                  onClick={() => playAudio('Do you want to study with me')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  Do you want to study with me?
-                </button> = Você quer estudar comigo?
+                <button onClick={() => playAudio('Do you want to study with me')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">Do you want to study with me?</button> = Você quer estudar comigo?
               </li>
             </ul>
             
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do you want to eat with me?</span> / Você quer comer comigo? / estudar</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I drink <span className="text-blue-600 font-bold">coffee</span> in the morning. / tea / juice</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu bebo café de manhã. / chá / suco</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você gosta de beber café comigo?</span> / chá / suco</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">You study <span className="text-blue-600 font-bold">English</span> in the afternoon. / Spanish / French</p>
+                  <p className="text-sm text-gray-500 mt-1">Você estuda inglês à tarde. / espanhol / francês</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">I want to study with you</span>. / Eu quero estudar com você. / falar</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I study English <span className="text-blue-600 font-bold">at school</span>. / at home / online</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu estudo inglês na escola. / em casa / online</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu gosto de falar com você</span>. / com meus amigos / com meu professor</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you want to study <span className="text-blue-600 font-bold">with me</span>? / with us / with her</p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer estudar comigo? / conosco / com ela</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do you want to study English?</span> / Você quer estudar inglês? / espanhol / francês</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">I want to speak <span className="text-blue-600 font-bold">English fluently</span>. / Spanish / French</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu quero falar inglês fluentemente. / espanhol / francês</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você gosta de falar inglês aqui?</span> / lá / na escola</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you like to study <span className="text-blue-600 font-bold">languages</span>? / math / science</p>
+                  <p className="text-sm text-gray-500 mt-1">Você gosta de estudar idiomas? / matemática / ciências</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">I want to drink coffee in the morning</span>. / Eu quero beber café de manhã. / chá / suco</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We practice <span className="text-blue-600 font-bold">conversation</span> every day. / listening / writing</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós praticamos conversação todos os dias. / audição / escrita</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu gosto de estudar português na escola</span>. / inglês / espanhol</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">She wants to improve her <span className="text-blue-600 font-bold">pronunciation</span>. / vocabulary / grammar</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela quer melhorar sua pronúncia. / vocabulário / gramática</p>
                 </div>
               </div>
             )}
@@ -495,119 +427,96 @@ export default function LessonLanguagesAndCountries() {
 
         {/* Seção 4 - Gramática com Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 Grammar</h2>
+              <h2 className="text-2xl font-bold">Understand Grammar</h2>
               <p className="mt-2 text-blue-100 italic">
-                Estruturas para falar sobre idiomas com diferentes pessoas
+                Structures to talk about languages with different people
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('grammar')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.grammar ? 'Ocultar Exercício' : 'Mostrar Exercício'}
+              {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
             <div className="bg-blue-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
               <p>
-                <button 
-                  onClick={() => playAudio('We speak Italian at school')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  We speak Italian at school.
-                </button> = Nós falamos italiano na escola.
+                <button onClick={() => playAudio('We speak Italian at school')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">We speak Italian at school.</button> = Nós falamos italiano na escola.
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('We study Spanish here too')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  We study Spanish here, too.
-                </button> = Nós estudamos espanhol aqui também.
+                <button onClick={() => playAudio('We study Spanish here too')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">We study Spanish here, too.</button> = Nós estudamos espanhol aqui também.
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('They study French there')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  They study French there.
-                </button> = Eles estudam francês lá.
+                <button onClick={() => playAudio('They study French there')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">They study French there.</button> = Eles estudam francês lá.
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('They want to study here')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  They want to study here.
-                </button> = Eles querem estudar aqui.
+                <button onClick={() => playAudio('They want to study here')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">They want to study here.</button> = Eles querem estudar aqui.
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('We want to speak English')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  We want to speak English.
-                </button> = Nós queremos falar inglês.
+                <button onClick={() => playAudio('We want to speak English')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">We want to speak English.</button> = Nós queremos falar inglês.
               </p>
               <p>
-                <button 
-                  onClick={() => playAudio('They want to study German')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  They want to study German.
-                </button> = Eles querem estudar alemão.
+                <button onClick={() => playAudio('They want to study German')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">They want to study German.</button> = Eles querem estudar alemão.
               </p>
             </div>
             
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você estuda italiano aqui?</span> / alemão / inglês</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">We</span> speak Italian at school. / They / You</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós falamos italiano na escola. / Eles / Você</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">We study French here</span>. / Nós estudamos francês aqui. / italiano / português</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We study Spanish <span className="text-blue-600 font-bold">here</span>, too. / there / at home</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós estudamos espanhol aqui também. / lá / em casa</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você fala espanhol na escola?</span> / alemão / português</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They study French <span className="text-blue-600 font-bold">there</span>. / here / at school</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles estudam francês lá. / aqui / na escola</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">They study at school in the morning</span>. / Eles estudam na escola de manhã. / aqui / lá</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They <span className="text-blue-600 font-bold">want</span> to study here. / need / prefer</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles querem estudar aqui. / precisam / preferem</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Nós falamos inglês e alemão</span>. / Eu / Eles</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We want to speak <span className="text-blue-600 font-bold">English</span>. / Spanish / French</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós queremos falar inglês. / espanhol / francês</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Elas preferem falar inglês</span>. / querem / adoram</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They want to study <span className="text-blue-600 font-bold">German</span>. / Italian / Portuguese</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles querem estudar alemão. / italiano / português</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu gosto de falar com você</span>. / Eles / Nós</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Do you speak <span className="text-blue-600 font-bold">Spanish</span> with your friends? / English / French</p>
+                  <p className="text-sm text-gray-500 mt-1">Você fala espanhol com seus amigos? / inglês / francês</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Nós queremos estudar lá</span>. / aqui / na escola</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">Does she study <span className="text-blue-600 font-bold">Italian</span> at school? / German / French</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela estuda italiano na escola? / alemão / francês</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Elas falam italiano, também</span>. / português / Nós falamos</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">We don't speak <span className="text-blue-600 font-bold">German</span> at home. / French / Italian</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós não falamos alemão em casa. / francês / italiano</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu quero estudar espanhol com você</span>. / gosto / prefiro</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Você quer estudar com meu amigo?</span> / seu amigo / comigo</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">They don't study <span className="text-blue-600 font-bold">Portuguese</span> at school. / Spanish / English</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles não estudam português na escola. / espanhol / inglês</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Seção 5 - Real Life Practice*/}
+        {/* Seção 5 - Real Life Practice */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">🔹 Real Life</h2>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
+            <h2 className="text-2xl font-bold">Real Life Practice</h2>
             <p className="mt-2 text-blue-100 italic">
-              Substitua as palavras em azul para praticar a pronúncia em situações reais
+              Replace the blue words to practice pronunciation in real situations
             </p>
           </div>
           
@@ -624,7 +533,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -647,7 +556,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -670,7 +579,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -693,7 +602,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -716,7 +625,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -739,7 +648,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -762,7 +671,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -785,7 +694,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -808,7 +717,7 @@ export default function LessonLanguagesAndCountries() {
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 a1 1 0 010-1.415z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       </button>
                       <div>
@@ -830,12 +739,12 @@ export default function LessonLanguagesAndCountries() {
                     <div className="relative h-64 w-full">
                       <img
                         src="https://i.ibb.co/VcLcyCZk/l7-reallife-1.jpg"
-                        alt="Pessoas estudando idiomas"
+                        alt="People studying languages"
                         className="w-full h-full object-cover rounded-xl"
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
-                      Estudando idiomas com amigos
+                      Studying languages with friends
                     </p>
                   </div>
                   
@@ -843,12 +752,12 @@ export default function LessonLanguagesAndCountries() {
                     <div className="relative h-64 w-full">
                       <img
                         src="https://i.ibb.co/7xHnG0TG/l7-reallife-2.jpg"
-                        alt="Diferentes bandeiras e culturas"
+                        alt="Different flags and cultures"
                         className="w-full h-full object-cover rounded-xl"
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
-                      Diversidade de idiomas e culturas
+                      Diversity of languages and cultures
                     </p>
                   </div>
                 </div>
@@ -857,13 +766,13 @@ export default function LessonLanguagesAndCountries() {
           </div>
         </div>
 
-        {/* Seção 6 - Check It Out (nova versão) */}
+        {/* Seção 6 - Check It Out */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-3xl font-bold">CHECK IT OUT!</h2>
               <p className="mt-2 text-blue-100 italic">
-                Aprenda o alfabeto e pratique a soletração de palavras em inglês.
+                Learn the alphabet and practice spelling words in English.
               </p>
             </div>
           </div>
@@ -934,7 +843,7 @@ export default function LessonLanguagesAndCountries() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span>EXPLICAÇÃO</span>
+                    <span>EXPLANATION</span>
                   </button>
                 </div>
               </div>
@@ -943,7 +852,7 @@ export default function LessonLanguagesAndCountries() {
               {showExplanation && (
                 <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300 rounded-2xl animate-fadeIn shadow-lg">
                   <div className="flex justify-between items-start">
-                    <h3 className="text-2xl font-bold text-blue-800 mb-4 font-['Poppins']">📚 Sobre "me" e "you"</h3>
+                    <h3 className="text-2xl font-bold text-blue-800 mb-4 font-['Poppins']">📚 About "me" and "you"</h3>
                     <button 
                       onClick={() => setShowExplanation(false)}
                       className="text-blue-700 hover:text-blue-900 text-xl font-bold bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:shadow-lg transition-all"
@@ -954,16 +863,16 @@ export default function LessonLanguagesAndCountries() {
                   
                   <div className="space-y-4 text-gray-800">
                     <p className="text-lg font-['Poppins']">
-                      <span className="font-bold text-blue-700">Depois de preposições como "with"</span>, sempre usamos <span className="font-bold text-purple-700">pronomes oblíquos</span> (pronomes objeto).
+                      <span className="font-bold text-blue-700">After prepositions like "with"</span>, we always use <span className="font-bold text-purple-700">object pronouns</span>.
                     </p>
                     
                     <div className="bg-white p-5 rounded-xl border-l-4 border-blue-500 shadow-sm">
                       <p className="font-bold text-blue-700 mb-2 font-['Poppins'] flex items-center">
-                        <span className="mr-2">🎯</span> "Me" é a forma objeto de "I":
+                        <span className="mr-2">🎯</span> "Me" is the object form of "I":
                       </p>
                       <ul className="list-disc pl-6 space-y-2 font-['Poppins']">
-                        <li>I speak English. (sujeito: <span className="font-bold text-blue-600">I</span>)</li>
-                        <li>You speak with <span className="font-bold text-blue-600">me</span>. (objeto: <span className="font-bold text-blue-600">me</span>)</li>
+                        <li>I speak English. (subject: <span className="font-bold text-blue-600">I</span>)</li>
+                        <li>You speak with <span className="font-bold text-blue-600">me</span>. (object: <span className="font-bold text-blue-600">me</span>)</li>
                         <li>She studies with <span className="font-bold text-blue-600">me</span>.</li>
                         <li>They want to talk to <span className="font-bold text-blue-600">me</span>.</li>
                       </ul>
@@ -971,11 +880,11 @@ export default function LessonLanguagesAndCountries() {
                     
                     <div className="bg-white p-5 rounded-xl border-l-4 border-purple-500 shadow-sm">
                       <p className="font-bold text-purple-700 mb-2 font-['Poppins'] flex items-center">
-                        <span className="mr-2">✨</span> "You" permanece igual tanto no sujeito quanto no objeto:
+                        <span className="mr-2">✨</span> "You" stays the same for both subject and object:
                       </p>
                       <ul className="list-disc pl-6 space-y-2 font-['Poppins']">
-                        <li><span className="font-bold text-purple-600">You</span> are my friend. (sujeito: <span className="font-bold text-purple-600">You</span>)</li>
-                        <li>I speak with <span className="font-bold text-purple-600">you</span>. (objeto: <span className="font-bold text-purple-600">you</span>)</li>
+                        <li><span className="font-bold text-purple-600">You</span> are my friend. (subject: <span className="font-bold text-purple-600">You</span>)</li>
+                        <li>I speak with <span className="font-bold text-purple-600">you</span>. (object: <span className="font-bold text-purple-600">you</span>)</li>
                         <li>We study with <span className="font-bold text-purple-600">you</span>.</li>
                         <li>She likes to talk to <span className="font-bold text-purple-600">you</span>.</li>
                       </ul>
@@ -983,11 +892,11 @@ export default function LessonLanguagesAndCountries() {
                     
                     <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-5 rounded-xl border border-blue-300 shadow-sm">
                       <p className="font-bold text-blue-800 mb-3 font-['Poppins'] flex items-center">
-                        <span className="mr-2">💡</span> Regra importante:
+                        <span className="mr-2">💡</span> Important rule:
                       </p>
-                      <p className="font-['Poppins']">Após preposições (with, to, for, about, etc.) sempre usamos os pronomes objeto: <span className="font-bold">me, you, him, her, it, us, them</span>.</p>
+                      <p className="font-['Poppins']">After prepositions (with, to, for, about, etc.) we always use object pronouns: <span className="font-bold">me, you, him, her, it, us, them</span>.</p>
                       <div className="mt-3 p-3 bg-white rounded-lg border border-blue-200">
-                        <p className="text-sm text-blue-600 font-['Poppins'] italic">Exemplo: "I study English with <span className="font-bold">him</span> and <span className="font-bold">her</span>."</p>
+                        <p className="text-sm text-blue-600 font-['Poppins'] italic">Example: "I study English with <span className="font-bold">him</span> and <span className="font-bold">her</span>."</p>
                       </div>
                     </div>
 
@@ -996,7 +905,7 @@ export default function LessonLanguagesAndCountries() {
                         onClick={() => setShowExplanation(false)}
                         className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg font-['Poppins']"
                       >
-                        Fechar Explicação
+                        Close Explanation
                       </button>
                     </div>
                   </div>
@@ -1006,18 +915,19 @@ export default function LessonLanguagesAndCountries() {
           </div>
         </div>
 
+        {/* Botões de navegação */}
         <div className="flex justify-center gap-4 mt-8">
           <button
             onClick={() => router.push("/cursos/lesson6")}
-            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors font-['Poppins']"
+            className="inline-block rounded-full bg-gradient-to-r from-gray-500 to-gray-600 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-gray-600 hover:to-gray-800 active:animate-glow"
           >
-            &larr; Lição Anterior
+            &larr; Previous Lesson
           </button>
           <button
             onClick={() => router.push("/cursos/lesson8")}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors font-['Poppins']"
+            className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
           >
-            Próxima Lição &rarr;
+            Next Lesson &rarr;
           </button>
         </div>
       </div>

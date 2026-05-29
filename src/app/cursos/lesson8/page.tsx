@@ -329,15 +329,21 @@ const personalQuestions = [
 ];
 
 const videoQuestions = [
-  { id: 1, question: "What is the importance of listening when learning a second language?", isPersonal: false, vocabulary: [{ english: "", portuguese: "" }, { english: "", portuguese: "" }] },
-  { id: 2, question: "How did you learn your first language?", isPersonal: false, vocabulary: [{ english: "", portuguese: "" }, { english: "", portuguese: "" }, { english: "", portuguese: "" }] },
-  { id: 3, question: "How can you use listening to improve your English?", isPersonal: false, vocabulary: [{ english: "", portuguese: "" }, { english: "", portuguese: "" }, { english: "", portuguese: "" }] },
-  { id: 4, question: "What are the advantages of listening?", isPersonal: false, vocabulary: [{ english: "", portuguese: "" }, { english: "", portuguese: "" }, { english: " ", portuguese: "" }] },
-  { id: 5, question: "Learning English can be all about words, but it has a lot to do with feeling. What are you doing to know more about slangs, idioms and so on? ", isPersonal: false, vocabulary: [{ english: "", portuguese: "" }, { english: "", portuguese: "" }, { english: "", portuguese: "" }] },
-  { id: 6, question: "Do you think to understand all the words is important when you are watching something or catching the main idea is what really matters?", isPersonal: true, vocabulary: [{ english: "pre-made food", portuguese: "comida pré-feita" }, { english: "thoughts", portuguese: "pensamentos" }, { english: "to nap", portuguese: "tirar um cochilo" }] },
-  { id: 7, question: "Why is learning english with subtitles so important? ", isPersonal: true, vocabulary: [{ english: "pre-made food", portuguese: "comida pré-feita" }, { english: "thoughts", portuguese: "pensamentos" }, { english: "to nap", portuguese: "tirar um cochilo" }] },
-  { id: 8, question: "What do you need to do to be ready for real life situations like restaurants, ordering food, asking for directions in an-english speaking country?", isPersonal: true, vocabulary: [{ english: "pre-made food", portuguese: "comida pré-feita" }, { english: "thoughts", portuguese: "pensamentos" }, { english: "to nap", portuguese: "tirar um cochilo" }] }
+  { id: 1, question: "What is the importance of listening when learning a second language?", isPersonal: false, vocabulary: ["", ""] },
+  { id: 2, question: "How did you learn your first language?", isPersonal: false, vocabulary: ["", "", ""] },
+  { id: 3, question: "How can you use listening to improve your English?", isPersonal: false, vocabulary: ["", "", ""] },
+  { id: 4, question: "What are the advantages of listening?", isPersonal: false, vocabulary: ["", "", ""] },
+  { id: 5, question: "Learning English can be all about words, but it has a lot to do with feeling. What are you doing to know more about slangs, idioms and so on? ", isPersonal: false, vocabulary: ["", "", ""] },
+  { id: 6, question: "Do you think to understand all the words is important when you are watching something or catching the main idea is what really matters?", isPersonal: true, vocabulary: ["pre-made food", "thoughts", "to nap"] },
+  { id: 7, question: "Why is learning english with subtitles so important? ", isPersonal: true, vocabulary: ["pre-made food", "thoughts", "to nap"] },
+  { id: 8, question: "What do you need to do to be ready for real life situations like restaurants, ordering food, asking for directions in an-english speaking country?", isPersonal: true, vocabulary: ["pre-made food", "thoughts", "to nap"] }
 ];
+
+const vocabularyTranslations = {
+  "pre-made food": "comida pré-feita",
+  "thoughts": "pensamentos",
+  "to nap": "tirar um cochilo"
+};
 
 const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
   const normalize = (text: string) => text.toLowerCase().trim().replace(/[.,?!]/g, '');
@@ -503,7 +509,7 @@ export default function LessonLanguagesAndCountries() {
     setSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  const getCurrentSubs2Sentence = (exercise: typeof substitutionPractice2[0]) => {
+  const getCurrentSubs2Sentence = (exercise: typeof substitutionPractice2[0]): string => {
     const currentOption = exercise.options[exercise.currentIndex];
     if (exercise.specificSentences && exercise.specificSentences[currentOption as keyof typeof exercise.specificSentences]) {
       return exercise.specificSentences[currentOption as keyof typeof exercise.specificSentences];
@@ -984,4 +990,4 @@ export default function LessonLanguagesAndCountries() {
       </div>
     </div>
   );
-}
+} 

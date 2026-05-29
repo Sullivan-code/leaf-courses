@@ -1,181 +1,65 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCircle, VolumeX } from "lucide-react";
+import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle } from "lucide-react";
 
 // ============================================
-// COMPONENTE DE ÁUDIO POR VOZ NATURAL (Web Speech API)
+// SPEECH SYSTEM WITH AMERICAN VOICES
 // ============================================
 
-interface SpeakableTextProps {
+interface SpeakTextProps {
   text: string;
   children?: React.ReactNode;
   className?: string;
-  showIcon?: boolean;
-  iconPosition?: 'left' | 'right';
-  language?: string;
+  voiceType?: "female" | "male";
 }
 
-const SpeakableText = ({ 
-  text, 
-  children, 
-  className = "", 
-  showIcon = true, 
-  iconPosition = 'right',
-  language = 'en-US'
-}: SpeakableTextProps) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isSupported, setIsSupported] = useState(true);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-
-  useEffect(() => {
-    // Verificar se o navegador suporta a Web Speech API
-    if (!window.speechSynthesis) {
-      setIsSupported(false);
-      console.warn("Web Speech API não é suportada neste navegador");
-    }
-  }, []);
-
+// Speech component for text-to-speech with AMERICAN accent
+const SpeakText = ({ text, children, className = "", voiceType = "female" }: SpeakTextProps) => {
   const speak = () => {
-    if (!window.speechSynthesis) {
-      alert("Seu navegador não suporta áudio por voz. Tente Chrome, Edge ou Safari.");
-      return;
-    }
-
-    // Parar qualquer fala em andamento
-    window.speechSynthesis.cancel();
-
-    // Criar nova utterance
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = language;
-    utterance.rate = 0.9; // Velocidade: 0.1 a 10 (1 é normal)
-    utterance.pitch = 1.0; // Tom: 0 a 2
-    utterance.volume = 1.0; // Volume: 0 a 1
-
-    // Tentar usar voz feminina americana se disponível
-    const setVoice = () => {
-      const voices = window.speechSynthesis.getVoices();
-      // Preferir vozes femininas americanas
-      const preferredVoice = voices.find(v => 
-        v.lang === 'en-US' && (v.name.includes('Google UK') || v.name.includes('Samantha') || v.name.includes('Microsoft') || v.name.includes('Female'))
-      ) || voices.find(v => v.lang === 'en-US');
-      
-      if (preferredVoice) {
-        utterance.voice = preferredVoice;
-      }
-    };
-
-    // Carregar vozes disponíveis
-    if (window.speechSynthesis.getVoices().length > 0) {
-      setVoice();
-    } else {
-      window.speechSynthesis.onvoiceschanged = setVoice;
-    }
-
-    // Eventos
-    utterance.onstart = () => setIsPlaying(true);
-    utterance.onend = () => setIsPlaying(false);
-    utterance.onerror = () => {
-      setIsPlaying(false);
-      console.error("Erro ao reproduzir áudio");
-    };
-
-    utteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const stop = () => {
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-      setIsPlaying(false);
-    }
-  };
-
-  const handleClick = () => {
-    if (isPlaying) {
-      stop();
-    } else {
-      speak();
-    }
-  };
-
-  const content = children || text;
-
-  if (!isSupported) {
-    return <span className={className}>{content}</span>;
-  }
-
-  return (
-    <div
-      className={`group relative inline-flex items-center gap-2 cursor-pointer rounded-md px-1 transition-all duration-200 ${
-        isPlaying ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'
-      } ${className}`}
-      onClick={handleClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
-        }
-      }}
-      title={isPlaying ? "Clique para parar" : "Clique para ouvir a pronúncia"}
-    >
-      {showIcon && iconPosition === 'left' && (
-        <span className="opacity-60 group-hover:opacity-100 transition-opacity">
-          {isPlaying ? (
-            <VolumeX size={16} className="text-blue-500" />
-          ) : (
-            <Volume2 size={16} className="text-gray-400" />
-          )}
-        </span>
-      )}
-      
-      <span className={isPlaying ? 'font-medium' : ''}>
-        {content}
-      </span>
-      
-      {showIcon && iconPosition === 'right' && (
-        <span className="opacity-60 group-hover:opacity-100 transition-opacity">
-          {isPlaying ? (
-            <VolumeX size={16} className="text-blue-500 animate-pulse" />
-          ) : (
-            <Volume2 size={16} className="text-gray-400" />
-          )}
-        </span>
-      )}
-    </div>
-  );
-};
-
-// Componente para falar qualquer frase com botão de áudio
-const AudioButton = ({ text, className = "" }: { text: string; className?: string }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const speak = () => {
-    if (!window.speechSynthesis) {
-      alert("Seu navegador não suporta áudio por voz.");
-      return;
-    }
-
-    if (isPlaying) {
-      window.speechSynthesis.cancel();
-      setIsPlaying(false);
-      return;
-    }
-
+    if (!text || typeof window === 'undefined') return;
+    
+    // Cancel any ongoing speech
     window.speechSynthesis.cancel();
     
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
+    utterance.lang = 'en-US'; // American English
     utterance.rate = 0.9;
     utterance.pitch = 1.0;
     
-    utterance.onstart = () => setIsPlaying(true);
-    utterance.onend = () => setIsPlaying(false);
-    utterance.onerror = () => setIsPlaying(false);
+    // Get available voices
+    const voices = window.speechSynthesis.getVoices();
+    
+    // American female voices
+    const americanFemaleVoices = voices.filter(voice => 
+      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+      (voice.name.toLowerCase().includes('samantha') || 
+       voice.name.toLowerCase().includes('google us english') ||
+       voice.name.toLowerCase().includes('siri') ||
+       voice.name.toLowerCase().includes('female') ||
+       voice.name === 'Google US English' ||
+       voice.name === 'Samantha')
+    );
+    
+    // American male voices
+    const americanMaleVoices = voices.filter(voice => 
+      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+      (voice.name.toLowerCase().includes('google us english male') ||
+       voice.name.toLowerCase().includes('male') ||
+       voice.name === 'Google US English Male')
+    );
+    
+    // Fallback to any American voice
+    const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+    
+    if (voiceType === "female" && americanFemaleVoices.length > 0) {
+      utterance.voice = americanFemaleVoices[0];
+    } else if (voiceType === "male" && americanMaleVoices.length > 0) {
+      utterance.voice = americanMaleVoices[0];
+    } else if (americanVoices.length > 0) {
+      utterance.voice = americanVoices[0];
+    }
     
     window.speechSynthesis.speak(utterance);
   };
@@ -183,173 +67,235 @@ const AudioButton = ({ text, className = "" }: { text: string; className?: strin
   return (
     <button
       onClick={speak}
-      className={`p-2 rounded-full transition-all duration-200 ${
-        isPlaying 
-          ? 'bg-blue-500 text-white animate-pulse' 
-          : 'bg-blue-100 text-blue-600 hover:bg-blue-200'
-      } ${className}`}
-      title={isPlaying ? "Parar" : "Ouvir pronúncia"}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
+      title="Click to hear American pronunciation"
     >
-      {isPlaying ? <VolumeX size={18} /> : <Volume2 size={18} />}
+      {children || text}
+      <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+    </button>
+  );
+};
+
+// Component for pronouncing entire sentences with American accent
+const SpeakSentence = ({ text, children, className = "", voiceType = "female" }: SpeakTextProps) => {
+  return (
+    <button
+      onClick={() => {
+        const speechText = children && typeof children === 'string' ? children : text;
+        if (speechText && typeof window !== 'undefined') {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(speechText);
+          utterance.lang = 'en-US'; // American English
+          utterance.rate = 0.85;
+          utterance.pitch = 1.0;
+          
+          const voices = window.speechSynthesis.getVoices();
+          
+          // American female voices
+          const americanFemaleVoices = voices.filter(voice => 
+            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+            (voice.name.toLowerCase().includes('samantha') || 
+             voice.name.toLowerCase().includes('google us english') ||
+             voice.name === 'Google US English')
+          );
+          
+          // American male voices
+          const americanMaleVoices = voices.filter(voice => 
+            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+            (voice.name.toLowerCase().includes('google us english male') ||
+             voice.name === 'Google US English Male')
+          );
+          
+          const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+          
+          if (voiceType === "female" && americanFemaleVoices.length > 0) {
+            utterance.voice = americanFemaleVoices[0];
+          } else if (voiceType === "male" && americanMaleVoices.length > 0) {
+            utterance.voice = americanMaleVoices[0];
+          } else if (americanVoices.length > 0) {
+            utterance.voice = americanVoices[0];
+          }
+          
+          window.speechSynthesis.speak(utterance);
+        }
+      }}
+      className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors ${className}`}
+    >
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
     </button>
   );
 };
 
 // ============================================
-// DADOS DA LIÇÃO (mantidos como estavam)
+// LESSON DATA
 // ============================================
 
+// Vocabulary with audio (American accent)
+const vocabulary = [
+  { word: "a little", translation: "um pouco" },
+  { word: "I get", translation: "eu entendo" },
+  { word: "understand", translation: "entender" },
+  { word: "prefer", translation: "preferir" },
+  { word: "abroad", translation: "no exterior" },
+  { word: "alone", translation: "sozinho" },
+  { word: "classmate", translation: "colega de classe" },
+  { word: "teacher", translation: "professor" },
+  { word: "friend", translation: "amigo" }
+];
+
+// Main dialogue with American voices (Zoey - female American, Mike - male American)
+const mainDialogue = [
+  { speaker: "Zoey", text: "Hi, Mike.", voiceType: "female" as const },
+  { speaker: "Mike", text: "Hello, Zoey. What's up?", voiceType: "male" as const },
+  { speaker: "Zoey", text: "Mike, do you speak Spanish?", voiceType: "female" as const },
+  { speaker: "Mike", text: "A little.", voiceType: "male" as const },
+  { speaker: "Zoey", text: "I don't understand this word. Queso?", voiceType: "female" as const },
+  { speaker: "Mike", text: "Ah, queso is cheese.", voiceType: "male" as const },
+  { speaker: "Zoey", text: "Got it! Thank you. Where do you study Spanish?", voiceType: "female" as const },
+  { speaker: "Mike", text: "I study Spanish at LEAF. What about you?", voiceType: "male" as const },
+  { speaker: "Zoey", text: "I study alone. I want to live in Spain.", voiceType: "female" as const },
+  { speaker: "Mike", text: "Do you want to study Spanish with me?", voiceType: "male" as const },
+  { speaker: "Zoey", text: "Yes!", voiceType: "female" as const },
+  { speaker: "Mike", text: "Great! See you later!", voiceType: "male" as const },
+  { speaker: "Zoey", text: "See you!", voiceType: "female" as const }
+];
+
+// Substitution practice 1
 const substitutionPractice1 = [
   { 
     key: "subs-1", 
-    original: "Eles estudam inglês na escola. / Nós / Eu",
-    base: "{0} study English at school.",
-    options: ["They", "We", "I"],
+    original: "Eu entendo meu colega de classe. / meu amigo / professor",
+    base: "I understand my {0}.",
+    options: ["classmate", "friend", "teacher"],
     currentIndex: 0
   },
   { 
     key: "subs-2", 
-    original: "Você fala francês também? / alemão / italiano",
-    base: "Do you speak {0} too?",
-    options: ["French", "German", "Italian"],
+    original: "Nós moramos aqui. / neste país / nesta cidade",
+    base: "We live {0}.",
+    options: ["here", "in this country", "in this city"],
     currentIndex: 0
   },
   { 
     key: "subs-3", 
-    original: "Ela gosta de estudar com seu amigo. / seu professor / suas amigas",
-    base: "She likes to study with {0}.",
-    options: ["her friend", "her teacher", "her friends"],
+    original: "Eles preferem estudar sozinhos. / com você / comigo",
+    base: "They prefer to study {0}.",
+    options: ["alone", "with you", "with me"],
     currentIndex: 0
   },
   { 
     key: "subs-4", 
-    original: "Como se escreve 'milk'? / apple / butter",
-    base: "How do you spell '{0}'?",
-    options: ["milk", "apple", "butter"],
+    original: "Eu quero estudar inglês no exterior. / Nós / Eles",
+    base: "{0} want to study English abroad.",
+    options: ["I", "We", "They"],
     currentIndex: 0
   },
   { 
     key: "subs-5", 
-    original: "Nós preferimos estudar de manhã. / à tarde",
-    base: "We prefer to study {0}.",
-    options: ["in the morning", "in the afternoon"],
+    original: "Elas falam italiano. E você? / alemão / português",
+    base: "They speak {0}. And you?",
+    options: ["Italian", "German", "Portuguese"],
     currentIndex: 0
   }
 ];
 
+// Substitution practice 2
 const substitutionPractice2 = [
   { 
     key: "subs2-1", 
-    original: "Ele não quer beber suco no café da manhã. / água / leite",
-    correctAnswer: "He doesn't want to drink juice for breakfast.",
-    options: ["juice", "water", "milk"],
+    original: "Nós preferimos beber leite no café da manhã. / Eles / Eu",
+    correctAnswer: "We prefer to drink milk for breakfast.",
+    options: ["We", "They", "I"],
     currentIndex: 0
   },
   { 
     key: "subs2-2", 
-    original: "Eles preferem comer salada. / Eu / Nós",
-    correctAnswer: "They prefer to eat salad.",
-    options: ["They", "I", "We"],
+    original: "Qual é o seu nome? / sobrenome / nome completo",
+    correctAnswer: "What's {0}?",
+    options: ["your name", "your last name", "your full name"],
     currentIndex: 0
   },
   { 
     key: "subs2-3", 
-    original: "Nós queremos comer uma fatia de torta. / queijo / pão",
-    correctAnswer: "We want to eat a slice of pie.",
-    options: ["pie", "cheese", "bread"],
-    currentIndex: 0,
-    specificSentences: {
-      "pie": "We want to eat a slice of pie.",
-      "cheese": "We want to eat a slice of cheese.",
-      "bread": "We want to eat a slice of bread."
-    }
+    original: "Elas não estudam na escola de manhã. / Nós / Eu",
+    correctAnswer: "They don't study at school in the morning.",
+    options: ["They", "We", "I"],
+    currentIndex: 0
   },
   { 
     key: "subs2-4", 
-    original: "Ela ama comer batatas fritas. E você? / torradas / geléia",
-    correctAnswer: "She loves to eat french fries. And you?",
-    options: ["french fries", "toast", "jam"],
-    currentIndex: 0,
-    specificSentences: {
-      "french fries": "She loves to eat french fries. And you?",
-      "toast": "She loves to eat toast. And you?",
-      "jam": "She loves to eat jam. And you?"
-    }
+    original: "Onde você mora? / estuda / quer estudar",
+    correctAnswer: "Where do you {0}?",
+    options: ["live", "study", "want to study"],
+    currentIndex: 0
   },
   { 
     key: "subs2-5", 
-    original: "Eu não estudo português aqui. / lá / na escola",
-    correctAnswer: "I don't study Portuguese here.",
-    options: ["here", "there", "at school"],
-    currentIndex: 0,
-    specificSentences: {
-      "here": "I don't study Portuguese here.",
-      "there": "I don't study Portuguese there.",
-      "at school": "I don't study Portuguese at school."
-    }
+    original: "Você gosta de estudar nos Estados Unidos? / na Alemanha / no Brasil",
+    correctAnswer: "Do you like to study {0}?",
+    options: ["in the United States", "in Germany", "in Brazil"],
+    currentIndex: 0
   }
 ];
 
+// Negative exercises
 const negativeExercises = [
-  { key: "neg-1", sentence: "She studies French in the afternoon.", answer: "She doesn't study French in the afternoon." },
-  { key: "neg-2", sentence: "He eats bread and butter in the morning.", answer: "He doesn't eat bread and butter in the morning." },
-  { key: "neg-3", sentence: "They want to eat eggs for breakfast.", answer: "They don't want to eat eggs for breakfast." },
-  { key: "neg-4", sentence: "We drink a cup of tea in the afternoon.", answer: "We don't drink a cup of tea in the afternoon." },
-  { key: "neg-5", sentence: "He likes to eat fish.", answer: "He doesn't like to eat fish." },
-  { key: "neg-6", sentence: "She speaks English with her teacher.", answer: "She doesn't speak English with her teacher." }
+  { key: "neg-1", sentence: "I want to live in this country.", answer: "I don't want to live in this country." },
+  { key: "neg-2", sentence: "We speak Spanish at school.", answer: "We don't speak Spanish at school." },
+  { key: "neg-3", sentence: "I understand that word.", answer: "I don't understand that word." },
+  { key: "neg-4", sentence: "They like this city.", answer: "They don't like this city." },
+  { key: "neg-5", sentence: "We want to live in the U.S.A.", answer: "We don't want to live in the U.S.A." },
+  { key: "neg-6", sentence: "I speak this language.", answer: "I don't speak this language." }
 ];
 
+// Affirmative exercises
 const affirmativeExercises = [
-  { key: "aff-1", sentence: "He doesn't eat sausages for breakfast.", answer: "He eats sausages for breakfast." },
-  { key: "aff-2", sentence: "She doesn't like to drink apple juice.", answer: "She likes to drink apple juice." },
-  { key: "aff-3", sentence: "They don't eat salad for lunch.", answer: "They eat salad for lunch." },
-  { key: "aff-4", sentence: "He doesn't speak Portuguese at school.", answer: "He speaks Portuguese at school." },
-  { key: "aff-5", sentence: "We don't study with your teacher.", answer: "We study with your teacher." }
+  { key: "aff-1", sentence: "She doesn't understand that word.", answer: "She understands that word." },
+  { key: "aff-2", sentence: "He doesn't study Italian in the afternoon.", answer: "He studies Italian in the afternoon." },
+  { key: "aff-3", sentence: "They don't eat chicken sandwiches.", answer: "They eat chicken sandwiches." },
+  { key: "aff-4", sentence: "We don't speak Spanish with our classmates.", answer: "We speak Spanish with our classmates." },
+  { key: "aff-5", sentence: "It doesn't work properly.", answer: "It works properly." },
+  { key: "aff-6", sentence: "You don't study German with your teacher.", answer: "You study German with your teacher." }
 ];
 
+// Interrogative exercises
 const interrogativeExercises = [
-  { key: "int-1", sentence: "He speaks Italian with his friend.", answer: "Does he speak Italian with his friend?" },
-  { key: "int-2", sentence: "She prefers to study English.", answer: "Does she prefer to study English?" },
-  { key: "int-3", sentence: "They want to drink a glass of water.", answer: "Do they want to drink a glass of water?" },
-  { key: "int-4", sentence: "We want to study there.", answer: "Do we want to study there?" },
-  { key: "int-5", sentence: "He wants to eat beef.", answer: "Does he want to eat beef?" }
+  { key: "int-1", sentence: "She lives in Brazil with her friend.", answer: "Does she live in Brazil with her friend?" },
+  { key: "int-2", sentence: "They understand Spanish and Italian.", answer: "Do they understand Spanish and Italian?" },
+  { key: "int-3", sentence: "He prefers to study in the morning.", answer: "Does he prefer to study in the morning?" },
+  { key: "int-4", sentence: "You like to eat vegetables for lunch.", answer: "Do you like to eat vegetables for lunch?" },
+  { key: "int-5", sentence: "We want to speak with your teacher.", answer: "Do we want to speak with your teacher?" },
+  { key: "int-6", sentence: "It works very well.", answer: "Does it work very well?" }
 ];
 
-const personalQuestions = [
-  { id: 1, question: "Do you speak English with your friends from other countries?", placeholder: "Write about which languages you speak with international friends..." },
-  { id: 2, question: "How do you spell the name of your favorite country?", placeholder: "Spell the country name here..." },
-  { id: 3, question: "Do you prefer to study languages in the morning or afternoon?", placeholder: "Write your preference and explain why..." },
-  { id: 4, question: "What traditional food from another country do you like?", placeholder: "Describe a foreign dish you enjoy..." },
-  { id: 5, question: "Do you want to visit Germany or Italy? Why?", placeholder: "Explain your choice and reasons..." },
-  { id: 6, question: "Which language do you study at school besides Portuguese?", placeholder: "Tell about your language studies at school..." },
-  { id: 7, question: "What do you like to learn about different cultures?", placeholder: "Describe cultural aspects that interest you..." },
-  { id: 8, question: "Do you want to speak French with people from France?", placeholder: "Share your thoughts about speaking with native speakers..." },
-  { id: 9, question: 'How do you spell "Germany" in English?', placeholder: "Spell the country name..." },
-  { id: 10, question: 'How do you spell "Italy" in English?', placeholder: "Spell the country name..." }
+// Unlock questions
+const unlockQuestions = [
+  { id: 1, question: "Where do you want to live?", placeholder: "Write about places where you want to live..." },
+  { id: 2, question: "Which languages don't you understand?", placeholder: "List languages you don't understand and explain why..." },
+  { id: 3, question: "How do you greet your friends?", placeholder: "Describe different ways you greet friends..." },
+  { id: 4, question: "What do you like to eat for lunch and dinner?", placeholder: "Describe your favorite lunch and dinner foods..." }
 ];
 
+// Video questions
 const videoQuestions = [
-  { id: 1, question: "What is the importance of listening when learning a second language?", isPersonal: false, vocabulary: ["", ""] },
-  { id: 2, question: "How did you learn your first language?", isPersonal: false, vocabulary: ["", "", ""] },
-  { id: 3, question: "How can you use listening to improve your English?", isPersonal: false, vocabulary: ["", "", ""] },
-  { id: 4, question: "What are the advantages of listening?", isPersonal: false, vocabulary: ["", "", ""] },
-  { id: 5, question: "Learning English can be all about words, but it has a lot to do with feeling. What are you doing to know more about slangs, idioms and so on? ", isPersonal: false, vocabulary: ["", "", ""] },
-  { id: 6, question: "Do you think to understand all the words is important when you are watching something or catching the main idea is what really matters?", isPersonal: true, vocabulary: ["pre-made food", "thoughts", "to nap"] },
-  { id: 7, question: "Why is learning english with subtitles so important? ", isPersonal: true, vocabulary: ["pre-made food", "thoughts", "to nap"] },
-  { id: 8, question: "What do you need to do to be ready for real life situations like restaurants, ordering food, asking for directions in an-english speaking country?", isPersonal: true, vocabulary: ["pre-made food", "thoughts", "to nap"] }
+  { id: "video-1", question: "According to the video, what are some practical TIPS to improve your English listening skills?", isPersonal: false },
+  { id: "video-2", question: "The speaker mentions that even NATIVE SPEAKERS make mistakes. Why is it important not to focus on PERFECTION when learning English?", isPersonal: false },
+  { id: "video-3", question: "What GOALS and HABITS does the speaker suggest for creating a daily English practice routine?", isPersonal: false },
+  { id: "video-4", question: "How can you practice English in YOUR OWN WORDS and join an ENGLISH-SPEAKING GROUP to improve your CONFIDENCE?", isPersonal: true },
+  { id: "video-5", question: "How can we be exposed to different accents to improve our listening skills?", isPersonal: false },
+  { id: "video-6", question: "How can learning expressions like 'piece of cake' help you sound more natural?", isPersonal: false },
+  { id: "video-7", question: "How does TONE AND EMOTION in conversations affect meaning?", isPersonal: false },
+  { id: "video-8", question: "Why is it important to CELEBRATE YOUR PROGRESS and use POSITIVE AFFIRMATIONS when learning English?", isPersonal: true }
 ];
 
-const vocabularyTranslations = {
-  "pre-made food": "comida pré-feita",
-  "thoughts": "pensamentos",
-  "to nap": "tirar um cochilo"
-};
-
+// Helper function to check answers
 const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
   const normalize = (text: string) => text.toLowerCase().trim().replace(/[.,?!]/g, '');
   return normalize(userAnswer) === normalize(correctAnswer);
 };
 
+// Answer result component
 const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correctAnswer: string }) => {
   if (isCorrect) {
     return (
@@ -362,65 +308,103 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
   return (
     <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-md">
       <XCircle size={16} className="text-red-600" />
-      <span className="text-sm text-red-700"><span className="font-medium">Expected:</span> {correctAnswer}</span>
+      <span className="text-sm text-red-700">
+        <span className="font-medium">Expected:</span> {correctAnswer}
+      </span>
     </div>
   );
 };
 
-const countryLanguageMap: Record<string, { language: string; spelling: string }> = {
-  "https://i.ibb.co/kskr0zmq/german-flag.jpg": { language: "German", spelling: "G-E-R-M-A-N-Y" },
-  "https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg": { language: "Portuguese", spelling: "B-R-A-Z-I-L" },
-  "https://i.ibb.co/21VkwN19/spanish-fla.jpg": { language: "Spanish", spelling: "S-P-A-I-N" },
-  "https://i.ibb.co/7xnjGkDN/italian-flag.jpg": { language: "Italian", spelling: "I-T-A-L-Y" },
-  "https://i.ibb.co/qLL8CKv5/american-flag.jpg": { language: "English", spelling: "U-N-I-T-E-D S-T-A-T-E-S" },
-  "https://i.ibb.co/dwjk9s3S/france-flag.jpg": { language: "French", spelling: "F-R-A-N-C-E" }
-};
+// Dialogue line component with individual audio buttons
+const DialogueLine = ({ speaker, text, voiceType }: { speaker: string; text: string; voiceType: "female" | "male" }) => {
+  const speakLine = () => {
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      utterance.pitch = 1.0;
+      
+      const voices = window.speechSynthesis.getVoices();
+      
+      const americanFemaleVoices = voices.filter(voice => 
+        (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+        (voice.name.toLowerCase().includes('samantha') || 
+         voice.name.toLowerCase().includes('google us english') ||
+         voice.name === 'Google US English')
+      );
+      
+      const americanMaleVoices = voices.filter(voice => 
+        (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+        (voice.name.toLowerCase().includes('google us english male') ||
+         voice.name === 'Google US English Male')
+      );
+      
+      const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+      
+      if (voiceType === "female" && americanFemaleVoices.length > 0) {
+        utterance.voice = americanFemaleVoices[0];
+      } else if (voiceType === "male" && americanMaleVoices.length > 0) {
+        utterance.voice = americanMaleVoices[0];
+      } else if (americanVoices.length > 0) {
+        utterance.voice = americanVoices[0];
+      }
+      
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
-const foodSpellingMap: Record<string, { food: string; spelling: string }> = {
-  "https://i.ibb.co/8LF0pHjv/yogurt.jpg": { food: "yogurt", spelling: "Y-O-G-U-R-T" },
-  "https://i.ibb.co/99zBTC4q/sandwich.jpg": { food: "sandwich", spelling: "S-A-N-D-W-I-C-H" },
-  "https://i.ibb.co/W4kNfZ2F/cookies.jpg": { food: "cookies", spelling: "C-O-O-K-I-E-S" },
-  "https://i.ibb.co/pjYHqBsc/juice.jpg": { food: "juice", spelling: "J-U-I-C-E" },
-  "https://i.ibb.co/jvg8bfKY/orange-juice.jpg": { food: "orange juice", spelling: "O-R-A-N-G-E J-U-I-C-E" },
-  "https://i.ibb.co/HfCPk3qD/friends.jpg": { food: "friends", spelling: "F-R-I-E-N-D-S" }
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+      <div className={`font-bold min-w-[70px] ${speaker === "Zoey" ? "text-pink-600" : "text-blue-600"}`}>
+        {speaker}:
+      </div>
+      <div className="flex-1 flex items-center gap-3 flex-wrap">
+        <span className="text-gray-800">{text}</span>
+        <button
+          onClick={speakLine}
+          className="flex items-center gap-1 px-2 py-1 bg-blue-100 hover:bg-blue-200 rounded-full transition-colors text-blue-700 text-sm"
+        >
+          <Volume2 size={14} />
+          <span>Hear {speaker}</span>
+        </button>
+      </div>
+    </div>
+  );
 };
 
 // ============================================
-// COMPONENTE PRINCIPAL DA LIÇÃO
+// MAIN LESSON COMPONENT
 // ============================================
 
-export default function LessonLanguagesAndCountries() {
+export default function Lesson10LanguagesAndCountries() {
   const router = useRouter();
   
+  // State for sections
   const [sections, setSections] = useState({
-    speakNow: true,
+    talkToFriend: true,
+    vocabulary: true,
     substitution1: true,
     negative: true,
     substitution2: true,
     affirmative: true,
     interrogative: true,
-    questions: true,
+    unlock: true,
     tuneIn: true
   });
-
-  const [selectedFlag, setSelectedFlag] = useState("https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg");
-  const [selectedFood, setSelectedFood] = useState("https://i.ibb.co/8LF0pHjv/yogurt.jpg");
+  
+  // State for exercises
   const [subs1Exercises, setSubs1Exercises] = useState(substitutionPractice1);
   const [subs2Exercises, setSubs2Exercises] = useState(substitutionPractice2);
   const [writtenAnswers, setWrittenAnswers] = useState<Record<string, string>>({});
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
-  const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
-  const [videoAnswerResults, setVideoAnswerResults] = useState<Record<number, boolean>>({});
-  const [showVideoAnswerResults, setShowVideoAnswerResults] = useState<Record<number, boolean>>({});
-  const [practiceDialogs, setPracticeDialogs] = useState([
-    { question: "Do you want to speak Portuguese or Spanish with me?", response: "I want to speak Portuguese with you.", highlighted: ["Portuguese", "Spanish", "Portuguese"] },
-    { question: "How do you spell 'yogurt'?", response: "Y-O-G-U-R-T", highlighted: ["yogurt", "Y", "O", "G", "U", "R", "T"] }
-  ]);
+  const [videoAnswers, setVideoAnswers] = useState<Record<string, string>>({});
+  const [showVideoAnswerResults, setShowVideoAnswerResults] = useState<Record<string, boolean>>({});
 
-  // Carregar dados salvos
+  // Load saved answers
   useEffect(() => {
-    const savedAnswers = localStorage.getItem("lesson8Answers");
+    const savedAnswers = localStorage.getItem("lesson10Answers");
     if (savedAnswers) {
       try {
         const data = JSON.parse(savedAnswers);
@@ -428,80 +412,82 @@ export default function LessonLanguagesAndCountries() {
         setSubs2Exercises(data.subs2Exercises || substitutionPractice2);
         setWrittenAnswers(data.writtenAnswers || {});
         setVideoAnswers(data.videoAnswers || {});
-        setAnswerResults(data.answerResults || {});
-        setShowAnswerResults(data.showAnswerResults || {});
-        setVideoAnswerResults(data.videoAnswerResults || {});
-        setShowVideoAnswerResults(data.showVideoAnswerResults || {});
-        if (data.selectedFlag) setSelectedFlag(data.selectedFlag);
-        if (data.selectedFood) setSelectedFood(data.selectedFood);
-        if (data.sections) setSections(data.sections);
       } catch (error) {
-        console.error("Erro ao carregar respostas salvas:", error);
+        console.error("Error loading saved answers:", error);
       }
+    }
+    
+    // Initialize voices
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.getVoices();
     }
   }, []);
 
-  // Atualizar diálogos
-  useEffect(() => {
-    const countryInfo = countryLanguageMap[selectedFlag];
-    const foodInfo = foodSpellingMap[selectedFood];
-    const availableLanguages = Object.values(countryLanguageMap).map(info => info.language).filter(lang => lang !== countryInfo?.language);
-    const randomLanguage = availableLanguages.length > 0 ? availableLanguages[Math.floor(Math.random() * availableLanguages.length)] : "Spanish";
-    
-    if (countryInfo && foodInfo) {
-      setPracticeDialogs([
-        { question: `Do you want to speak ${countryInfo.language} or ${randomLanguage} with me?`, response: `I want to speak ${countryInfo.language} with you.`, highlighted: [countryInfo.language, randomLanguage, countryInfo.language] },
-        { question: `How do you spell '${foodInfo.food}'?`, response: foodInfo.spelling, highlighted: [foodInfo.food, ...foodInfo.spelling.split(' ')] }
-      ]);
-    }
-  }, [selectedFlag, selectedFood]);
-
   const saveAllAnswers = () => {
-    const data = { subs1Exercises, subs2Exercises, writtenAnswers, videoAnswers, answerResults, showAnswerResults, videoAnswerResults, showVideoAnswerResults, selectedFlag, selectedFood, sections, lastUpdated: new Date().toISOString() };
-    localStorage.setItem("lesson8Answers", JSON.stringify(data));
-    alert("✅ Todas as suas respostas foram salvas com sucesso!");
+    const data = {
+      subs1Exercises,
+      subs2Exercises,
+      writtenAnswers,
+      videoAnswers,
+      lastUpdated: new Date().toISOString()
+    };
+    localStorage.setItem("lesson10Answers", JSON.stringify(data));
+    alert("All answers saved successfully to your browser!");
   };
 
   const clearAllAnswers = () => {
-    if (confirm("Tem certeza que deseja limpar TODAS as suas respostas?")) {
-      setSubs1Exercises(substitutionPractice1);
-      setSubs2Exercises(substitutionPractice2);
+    if (confirm("Are you sure you want to clear all your answers?")) {
       setWrittenAnswers({});
       setVideoAnswers({});
       setAnswerResults({});
       setShowAnswerResults({});
-      setVideoAnswerResults({});
       setShowVideoAnswerResults({});
-      setSelectedFlag("https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg");
-      setSelectedFood("https://i.ibb.co/8LF0pHjv/yogurt.jpg");
-      localStorage.removeItem("lesson8Answers");
-      alert("Todas as respostas foram limpas.");
+      localStorage.removeItem("lesson10Answers");
+      alert("All answers cleared!");
     }
   };
 
+  // Handlers
   const handleSubs1OptionClick = (exerciseKey: string, optionIndex: number) => {
-    setSubs1Exercises(prev => prev.map(exercise => exercise.key === exerciseKey ? { ...exercise, currentIndex: optionIndex } : exercise));
+    setSubs1Exercises(prev => prev.map(exercise => 
+      exercise.key === exerciseKey ? { ...exercise, currentIndex: optionIndex } : exercise
+    ));
   };
 
   const handleSubs2OptionClick = (exerciseKey: string, optionIndex: number) => {
-    setSubs2Exercises(prev => prev.map(exercise => exercise.key === exerciseKey ? { ...exercise, currentIndex: optionIndex } : exercise));
+    setSubs2Exercises(prev => prev.map(exercise => 
+      exercise.key === exerciseKey ? { ...exercise, currentIndex: optionIndex } : exercise
+    ));
   };
 
   const handleWrittenAnswerChange = (key: string, value: string) => {
     setWrittenAnswers(prev => ({ ...prev, [key]: value }));
   };
 
+  const handleVideoAnswerChange = (key: string, value: string) => {
+    setVideoAnswers(prev => ({ ...prev, [key]: value }));
+  };
+
   const handleCheckAnswer = (exerciseKey: string, userAnswer: string, correctAnswer: string) => {
     const isCorrect = checkAnswer(userAnswer, correctAnswer);
     setAnswerResults(prev => ({ ...prev, [exerciseKey]: isCorrect }));
     setShowAnswerResults(prev => ({ ...prev, [exerciseKey]: true }));
+    
+    // Pronounce the correct answer with American accent
+    if (typeof window !== 'undefined' && !isCorrect) {
+      const utterance = new SpeechSynthesisUtterance(correctAnswer);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      
+      const voices = window.speechSynthesis.getVoices();
+      const americanVoice = voices.find(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+      if (americanVoice) utterance.voice = americanVoice;
+      
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
-  const handleVideoAnswerChange = (questionId: number, answer: string) => {
-    setVideoAnswers(prev => ({ ...prev, [questionId]: answer }));
-  };
-
-  const checkVideoAnswer = (questionId: number) => {
+  const checkVideoAnswer = (questionId: string) => {
     setShowVideoAnswerResults(prev => ({ ...prev, [questionId]: true }));
   };
 
@@ -509,141 +495,103 @@ export default function LessonLanguagesAndCountries() {
     setSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  const getCurrentSubs2Sentence = (exercise: typeof substitutionPractice2[0]): string => {
-    const currentOption = exercise.options[exercise.currentIndex];
-    if (exercise.specificSentences && exercise.specificSentences[currentOption as keyof typeof exercise.specificSentences]) {
-      return exercise.specificSentences[currentOption as keyof typeof exercise.specificSentences];
-    }
-    const words = exercise.correctAnswer.split(' ');
-    const baseWords = words.map(word => {
-      const cleanWord = word.replace('.', '').replace(',', '').replace('?', '').replace('!', '');
-      const matchingOption = exercise.options.find(opt => opt.toLowerCase() === cleanWord.toLowerCase());
-      return matchingOption ? '{0}' : word;
-    });
-    return baseWords.join(' ').replace('{0}', currentOption);
-  };
-
-  const flagImages = [
-    "https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg",
-    "https://i.ibb.co/7xnjGkDN/italian-flag.jpg",
-    "https://i.ibb.co/21VkwN19/spanish-fla.jpg",
-    "https://i.ibb.co/kskr0zmq/german-flag.jpg",
-    "https://i.ibb.co/qLL8CKv5/american-flag.jpg",
-    "https://i.ibb.co/dwjk9s3S/france-flag.jpg"
-  ];
-
-  const foodImages = [
-    "https://i.ibb.co/8LF0pHjv/yogurt.jpg",
-    "https://i.ibb.co/99zBTC4q/sandwich.jpg",
-    "https://i.ibb.co/W4kNfZ2F/cookies.jpg",
-    "https://i.ibb.co/pjYHqBsc/juice.jpg",
-    "https://i.ibb.co/jvg8bfKY/orange-juice.jpg",
-    "https://i.ibb.co/HfCPk3qD/friends.jpg"
-  ];
-
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/world-map-bg.jpg')` }}>
-      <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
+    <div className="min-h-screen py-16 px-4 sm:px-6 relative overflow-hidden">
+      {/* Background */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat z-0"
+        style={{ 
+          backgroundImage: `url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2833&q=80')`,
+        }}
+      />
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-0" />
+      
+      <div className="relative z-10 max-w-5xl mx-auto bg-white bg-opacity-95 backdrop-blur-sm rounded-[40px] p-6 md:p-10 shadow-2xl">
         
-        {/* TÍTULO */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">🌍 Lesson 8 – Languages and Countries</h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            Practice speaking about languages, countries, and international communication. <strong>Click on any text to hear pronunciation!</strong> 🎧
-          </p>
+        {/* Header */}
+        <div className="text-center mb-12 md:mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#0c4a6e] mb-4 md:mb-6">
+            🌍 Lesson 10 – Languages & Countries
+          </h1>
+          <SpeakSentence text="Talk to your friend and practice conversations about languages, countries, and daily life. Improve your communication skills." voiceType="female">
+            Talk to your friend and practice conversations about languages, countries, and daily life. Improve your communication skills.
+          </SpeakSentence>
         </div>
 
-        {/* SPEAK RIGHT NOW */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* TALK TO YOUR FRIEND - WITH INDIVIDUAL AMERICAN VOICES FOR MIKE AND ZOEY */}
+        <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-purple-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🗣️ SPEAK RIGHT NOW</h2>
-              <button onClick={() => toggleSection('speakNow')} className="ml-4 p-2 rounded-full hover:bg-white/20 transition">
-                {sections.speakNow ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              <h2 className="text-xl md:text-2xl font-bold">💬 TALK TO YOUR FRIEND</h2>
+              <button 
+                onClick={() => toggleSection('talkToFriend')}
+                className="ml-4 p-2 rounded-full hover:bg-purple-600 transition"
+              >
+                {sections.talkToFriend ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.speakNow && (
-            <div className="p-8">
-              {/* Galeria de Bandeiras */}
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-blue-800 mb-4">🌍 Countries and Flags - Click to select</h3>
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
-                  {flagImages.map((src, index) => (
-                    <div key={index} className={`relative w-full aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden cursor-pointer border-2 transition-all duration-200 ${selectedFlag === src ? 'border-blue-500 shadow-md scale-105' : 'border-gray-300 hover:border-blue-300'}`} onClick={() => setSelectedFlag(src)}>
-                      <Image src={src} alt={`Flag ${index + 1}`} fill className="object-cover" sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 16vw" />
-                    </div>
+          {sections.talkToFriend && (
+            <div className="p-6 md:p-8">
+              <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-purple-800 mb-4">
+                  Practice this conversation between Zoey and Mike:
+                </h3>
+                <p className="text-purple-600 text-sm mb-4 flex items-center gap-2">
+                  <Volume2 size={14} /> Click the "Hear" button next to each line to listen to the American pronunciation
+                </p>
+                
+                <div className="space-y-2 bg-white p-4 md:p-6 rounded-lg border border-purple-200">
+                  {mainDialogue.map((line, index) => (
+                    <DialogueLine 
+                      key={index}
+                      speaker={line.speaker}
+                      text={line.text}
+                      voiceType={line.voiceType}
+                    />
                   ))}
                 </div>
-              </div>
-
-              {/* Diálogos de Prática COM ÁUDIO */}
-              <div className="space-y-6 mb-8">
-                <div className="bg-white p-4 rounded-xl border-2 border-blue-200 shadow-sm">
-                  <div className="flex flex-col md:flex-row gap-4 items-start">
-                    <div className="w-full md:w-32 flex-shrink-0">
-                      <div className="relative w-32 h-32 rounded-lg overflow-hidden border-2 mx-auto">
-                        <Image src={selectedFlag} alt="Selected flag" fill className="object-cover" />
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="space-y-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <div className="space-y-1">
-                          <p className="text-sm font-semibold text-blue-700 flex items-center gap-2">
-                            Question: <AudioButton text={practiceDialogs[0].question} />
-                          </p>
-                          <SpeakableText text={practiceDialogs[0].question} className="text-gray-800" />
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-sm font-semibold text-green-700 flex items-center gap-2">
-                            Response: <AudioButton text={practiceDialogs[0].response} />
-                          </p>
-                          <SpeakableText text={practiceDialogs[0].response} className="text-green-700" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-xl border-2 border-blue-200 shadow-sm">
-                  <div className="flex flex-col md:flex-row gap-4 items-start">
-                    <div className="w-full md:w-32 flex-shrink-0">
-                      <div className="relative w-32 h-32 rounded-lg overflow-hidden border-2 mx-auto">
-                        <Image src={selectedFood} alt="Selected food" fill className="object-cover" />
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="space-y-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <div className="space-y-1">
-                          <p className="text-sm font-semibold text-blue-700 flex items-center gap-2">
-                            Question: <AudioButton text={practiceDialogs[1].question} />
-                          </p>
-                          <SpeakableText text={practiceDialogs[1].question} className="text-gray-800" />
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-sm font-semibold text-green-700 flex items-center gap-2">
-                            Response: <AudioButton text={practiceDialogs[1].response} />
-                          </p>
-                          <div className="text-lg font-mono bg-white p-2 rounded border border-blue-200">
-                            {practiceDialogs[1].response.split(' ').map((letter, index) => (
-                              <SpeakableText key={index} text={letter.replace('-', '')} className="text-red-600 font-bold inline-block mx-px" showIcon={false} />
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                
+                <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                  <p className="text-sm text-purple-700 flex items-center gap-2">
+                    <span className="font-semibold">🎤 Voice Actors:</span>
+                    <span className="text-pink-600">Zoey (American Female)</span>
+                    <span> & </span>
+                    <span className="text-blue-600">Mike (American Male)</span>
+                  </p>
                 </div>
               </div>
+            </div>
+          )}
+        </div>
 
-              {/* Galeria de Comidas */}
-              <div>
-                <h3 className="text-xl font-bold text-blue-800 mb-4">🍽️ International Foods - Click to select</h3>
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                  {foodImages.map((src, index) => (
-                    <div key={index} className={`relative w-full aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden cursor-pointer border-2 transition-all duration-200 ${selectedFood === src ? 'border-blue-500 shadow-md scale-105' : 'border-gray-300 hover:border-blue-300'}`} onClick={() => setSelectedFood(src)}>
-                      <Image src={src} alt={`Food ${index + 1}`} fill className="object-cover" />
+        {/* VOCABULARY SECTION */}
+        <div className="bg-blue-50/80 border-2 border-blue-200 rounded-xl shadow-sm mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-blue-500 text-white py-3 px-6 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-lg font-bold">📘 VOCABULARY</h2>
+              <button 
+                onClick={() => toggleSection('vocabulary')}
+                className="ml-3 p-1 rounded-full hover:bg-blue-600 transition"
+              >
+                {sections.vocabulary ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.vocabulary && (
+            <div className="p-4">
+              <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-4">
+                <div className="grid md:grid-cols-2 gap-3">
+                  {vocabulary.map((item, index) => (
+                    <div key={index} className="bg-white/70 p-3 rounded-lg border border-blue-100 flex justify-between items-center">
+                      <div>
+                        <SpeakText text={item.word} voiceType="female" className="font-medium text-blue-700 text-sm">
+                          {item.word}
+                        </SpeakText>
+                        <p className="text-gray-600 text-xs">{item.translation}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -652,38 +600,57 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* SUBSTITUTION PRACTICE 1 COM ÁUDIO */}
-        <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* SUBSTITUTION PRACTICE I */}
+        <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-green-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔄 SUBSTITUTION PRACTICE I</h2>
-              <button onClick={() => toggleSection('substitution1')} className="ml-4 p-2 rounded-full hover:bg-white/20 transition">
+              <h2 className="text-xl md:text-2xl font-bold">🔄 SUBSTITUTION PRACTICE I</h2>
+              <button 
+                onClick={() => toggleSection('substitution1')}
+                className="ml-4 p-2 rounded-full hover:bg-green-600 transition"
+              >
                 {sections.substitution1 ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
           {sections.substitution1 && (
-            <div className="p-8">
-              <div className="bg-green-100 border-2 border-green-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-green-800 mb-4 flex items-center gap-2">
+            <div className="p-6 md:p-8">
+              <div className="bg-green-100 border-2 border-green-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-green-800 mb-4">
                   ✍️ Substitution Practice I – Click on the options to change the sentences:
-                  <AudioButton text="Substitution Practice I - Click on the options to change the sentences" />
                 </h3>
                 
                 <div className="space-y-6">
                   {subs1Exercises.map((exercise) => {
                     const currentSentence = exercise.base.replace('{0}', exercise.options[exercise.currentIndex]);
+                    
                     return (
                       <div key={exercise.key} className="bg-white p-4 rounded-lg border border-green-200">
-                        <SpeakableText text={exercise.original} className="text-green-600 font-medium mb-2 block" />
-                        <div className="mb-3 p-3 bg-green-50 rounded-md">
-                          <SpeakableText text={currentSentence} className="text-green-700 font-medium" />
+                        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-3">
+                          <p className="font-medium text-gray-700 flex-1">
+                            <span className="text-green-600">{exercise.original}</span>
+                          </p>
                         </div>
+                        
+                        <div className="mb-3 p-3 bg-green-50 rounded-md">
+                          <SpeakSentence text={currentSentence} voiceType="female" className="text-green-700 font-medium">
+                            {currentSentence}
+                          </SpeakSentence>
+                        </div>
+                        
                         <div className="flex flex-wrap gap-2">
                           {exercise.options.map((option, index) => (
-                            <button key={index} onClick={() => handleSubs1OptionClick(exercise.key, index)} className={`px-3 py-1 rounded-md text-sm font-medium transition ${exercise.currentIndex === index ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>
-                              <SpeakableText text={option} showIcon={false} />
+                            <button
+                              key={index}
+                              onClick={() => handleSubs1OptionClick(exercise.key, index)}
+                              className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+                                exercise.currentIndex === index
+                                  ? 'bg-green-500 text-white'
+                                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                              }`}
+                            >
+                              <SpeakText text={option} voiceType="female">{option}</SpeakText>
                             </button>
                           ))}
                         </div>
@@ -696,34 +663,55 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* CHANGE INTO NEGATIVE COM ÁUDIO */}
-        <div className="bg-red-50 border-2 border-red-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-red-500 to-orange-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* CHANGE INTO NEGATIVE */}
+        <div className="bg-red-50 border-2 border-red-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-red-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">➖ CHANGE INTO NEGATIVE</h2>
-              <button onClick={() => toggleSection('negative')} className="ml-4 p-2 rounded-full hover:bg-white/20 transition">
+              <h2 className="text-xl md:text-2xl font-bold">➖ CHANGE INTO NEGATIVE</h2>
+              <button 
+                onClick={() => toggleSection('negative')}
+                className="ml-4 p-2 rounded-full hover:bg-red-600 transition"
+              >
                 {sections.negative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
           {sections.negative && (
-            <div className="p-8">
-              <div className="bg-red-100 border-2 border-red-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-red-800 mb-4 flex items-center gap-2">
+            <div className="p-6 md:p-8">
+              <div className="bg-red-100 border-2 border-red-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-red-800 mb-4">
                   ⛔ Change into Negative – Transform to negative:
-                  <AudioButton text="Change into Negative - Transform to negative" />
                 </h3>
                 
                 <div className="space-y-4">
                   {negativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-red-200">
-                      <SpeakableText text={exercise.sentence} className="text-gray-700 mb-2 block" />
-                      <div className="flex gap-2 mb-2">
-                        <input type="text" placeholder="Write negative form..." value={writtenAnswers[exercise.key] || ""} onChange={(e) => handleWrittenAnswerChange(exercise.key, e.target.value)} className="flex-1 px-3 py-2 border border-red-300 rounded-md text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent" />
-                        <button onClick={() => handleCheckAnswer(exercise.key, writtenAnswers[exercise.key] || "", exercise.answer)} className="bg-red-500 text-white py-2 px-3 rounded-md hover:bg-red-600 transition text-sm">Check</button>
+                      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+                        <SpeakSentence text={exercise.sentence} voiceType="female" className="font-medium text-gray-700 flex-1">
+                          {exercise.sentence}
+                        </SpeakSentence>
                       </div>
-                      {showAnswerResults[exercise.key] && <AnswerResult isCorrect={answerResults[exercise.key]} correctAnswer={exercise.answer} />}
+                      
+                      <div className="flex flex-col sm:flex-row gap-2 mb-2">
+                        <input
+                          type="text"
+                          placeholder="Write negative form..."
+                          value={writtenAnswers[exercise.key] || ""}
+                          onChange={(e) => handleWrittenAnswerChange(exercise.key, e.target.value)}
+                          className="flex-1 px-3 py-2 border border-red-300 rounded-md text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                        />
+                        <button
+                          onClick={() => handleCheckAnswer(exercise.key, writtenAnswers[exercise.key] || "", exercise.answer)}
+                          className="bg-red-500 text-white py-2 px-3 rounded-md hover:bg-red-600 transition text-sm"
+                        >
+                          Check
+                        </button>
+                      </div>
+                      
+                      {showAnswerResults[exercise.key] && (
+                        <AnswerResult isCorrect={answerResults[exercise.key]} correctAnswer={exercise.answer} />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -732,38 +720,61 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* SUBSTITUTION PRACTICE 2 COM ÁUDIO */}
-        <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* SUBSTITUTION PRACTICE II */}
+        <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-orange-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔄 SUBSTITUTION PRACTICE II</h2>
-              <button onClick={() => toggleSection('substitution2')} className="ml-4 p-2 rounded-full hover:bg-white/20 transition">
+              <h2 className="text-xl md:text-2xl font-bold">🔄 SUBSTITUTION PRACTICE II</h2>
+              <button 
+                onClick={() => toggleSection('substitution2')}
+                className="ml-4 p-2 rounded-full hover:bg-orange-600 transition"
+              >
                 {sections.substitution2 ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
           {sections.substitution2 && (
-            <div className="p-8">
-              <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-purple-800 mb-4 flex items-center gap-2">
+            <div className="p-6 md:p-8">
+              <div className="bg-orange-100 border-2 border-orange-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-orange-800 mb-4">
                   🔄 Substitution Practice II – Click to substitute:
-                  <AudioButton text="Substitution Practice Two - Click to substitute" />
                 </h3>
                 
                 <div className="space-y-6">
                   {subs2Exercises.map((exercise) => {
-                    const currentSentence = getCurrentSubs2Sentence(exercise);
+                    const baseSentence = exercise.correctAnswer.split(' ').map(word => {
+                      const cleanWord = word.replace('.', '').replace('?', '');
+                      return exercise.options.includes(cleanWord) ? '{0}' : word;
+                    }).join(' ');
+                    const currentSentence = baseSentence.replace('{0}', exercise.options[exercise.currentIndex]);
+                    
                     return (
-                      <div key={exercise.key} className="bg-white p-4 rounded-lg border border-purple-200">
-                        <SpeakableText text={exercise.original} className="text-purple-600 font-medium mb-2 block" />
-                        <div className="mb-3 p-3 bg-purple-50 rounded-md">
-                          <SpeakableText text={currentSentence} className="text-purple-700 font-medium" />
+                      <div key={exercise.key} className="bg-white p-4 rounded-lg border border-orange-200">
+                        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-3">
+                          <p className="font-medium text-gray-700 flex-1">
+                            <span className="text-orange-600">{exercise.original}</span>
+                          </p>
                         </div>
+                        
+                        <div className="mb-3 p-3 bg-orange-50 rounded-md">
+                          <SpeakSentence text={currentSentence} voiceType="female" className="text-orange-700 font-medium">
+                            {currentSentence}
+                          </SpeakSentence>
+                        </div>
+                        
                         <div className="flex flex-wrap gap-2">
                           {exercise.options.map((option, index) => (
-                            <button key={index} onClick={() => handleSubs2OptionClick(exercise.key, index)} className={`px-3 py-1 rounded-md text-sm font-medium transition ${exercise.currentIndex === index ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>
-                              <SpeakableText text={option} showIcon={false} />
+                            <button
+                              key={index}
+                              onClick={() => handleSubs2OptionClick(exercise.key, index)}
+                              className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+                                exercise.currentIndex === index
+                                  ? 'bg-orange-500 text-white'
+                                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                              }`}
+                            >
+                              <SpeakText text={option} voiceType="female">{option}</SpeakText>
                             </button>
                           ))}
                         </div>
@@ -776,34 +787,55 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* CHANGE INTO AFFIRMATIVE COM ÁUDIO */}
-        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* CHANGE INTO AFFIRMATIVE */}
+        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-teal-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">➕ CHANGE INTO AFFIRMATIVE</h2>
-              <button onClick={() => toggleSection('affirmative')} className="ml-4 p-2 rounded-full hover:bg-white/20 transition">
+              <h2 className="text-xl md:text-2xl font-bold">➕ CHANGE INTO AFFIRMATIVE</h2>
+              <button 
+                onClick={() => toggleSection('affirmative')}
+                className="ml-4 p-2 rounded-full hover:bg-teal-600 transition"
+              >
                 {sections.affirmative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
           {sections.affirmative && (
-            <div className="p-8">
-              <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4 flex items-center gap-2">
-                  Change into Affirmative - Transform to affirmative:
-                  <AudioButton text="Change into Affirmative - Transform to affirmative" />
+            <div className="p-6 md:p-8">
+              <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">
+                  Change into Affirmative – Transform to affirmative:
                 </h3>
                 
                 <div className="space-y-4">
                   {affirmativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-teal-200">
-                      <SpeakableText text={exercise.sentence} className="text-gray-700 mb-2 block" />
-                      <div className="flex gap-2 mb-2">
-                        <input type="text" placeholder="Write affirmative form..." value={writtenAnswers[`aff-${exercise.key}`] || ""} onChange={(e) => handleWrittenAnswerChange(`aff-${exercise.key}`, e.target.value)} className="flex-1 px-3 py-2 border border-teal-300 rounded-md text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
-                        <button onClick={() => handleCheckAnswer(`aff-${exercise.key}`, writtenAnswers[`aff-${exercise.key}`] || "", exercise.answer)} className="bg-teal-500 text-white py-2 px-3 rounded-md hover:bg-teal-600 transition text-sm">Check</button>
+                      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+                        <SpeakSentence text={exercise.sentence} voiceType="female" className="font-medium text-gray-700 flex-1">
+                          {exercise.sentence}
+                        </SpeakSentence>
                       </div>
-                      {showAnswerResults[`aff-${exercise.key}`] && <AnswerResult isCorrect={answerResults[`aff-${exercise.key}`]} correctAnswer={exercise.answer} />}
+                      
+                      <div className="flex flex-col sm:flex-row gap-2 mb-2">
+                        <input
+                          type="text"
+                          placeholder="Write affirmative form..."
+                          value={writtenAnswers[exercise.key] || ""}
+                          onChange={(e) => handleWrittenAnswerChange(exercise.key, e.target.value)}
+                          className="flex-1 px-3 py-2 border border-teal-300 rounded-md text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        />
+                        <button
+                          onClick={() => handleCheckAnswer(exercise.key, writtenAnswers[exercise.key] || "", exercise.answer)}
+                          className="bg-teal-500 text-white py-2 px-3 rounded-md hover:bg-teal-600 transition text-sm"
+                        >
+                          Check
+                        </button>
+                      </div>
+                      
+                      {showAnswerResults[exercise.key] && (
+                        <AnswerResult isCorrect={answerResults[exercise.key]} correctAnswer={exercise.answer} />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -812,34 +844,55 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* CHANGE INTO INTERROGATIVE COM ÁUDIO */}
-        <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-orange-500 to-amber-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* CHANGE INTO INTERROGATIVE */}
+        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-indigo-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">❓ CHANGE INTO INTERROGATIVE</h2>
-              <button onClick={() => toggleSection('interrogative')} className="ml-4 p-2 rounded-full hover:bg-white/20 transition">
+              <h2 className="text-xl md:text-2xl font-bold">❓ CHANGE INTO INTERROGATIVE</h2>
+              <button 
+                onClick={() => toggleSection('interrogative')}
+                className="ml-4 p-2 rounded-full hover:bg-indigo-600 transition"
+              >
                 {sections.interrogative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
           {sections.interrogative && (
-            <div className="p-8">
-              <div className="bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-orange-800 mb-4 flex items-center gap-2">
-                  Change into Interrogative - Transform to questions:
-                  <AudioButton text="Change into Interrogative - Transform to questions" />
+            <div className="p-6 md:p-8">
+              <div className="bg-indigo-100 border-2 border-indigo-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-indigo-800 mb-4">
+                  Change into Interrogative – Transform to questions:
                 </h3>
                 
                 <div className="space-y-4">
                   {interrogativeExercises.map((exercise) => (
-                    <div key={exercise.key} className="bg-white p-4 rounded-lg border border-orange-200">
-                      <SpeakableText text={exercise.sentence} className="text-gray-700 mb-2 block" />
-                      <div className="flex gap-2 mb-2">
-                        <input type="text" placeholder="Write question form..." value={writtenAnswers[`int-${exercise.key}`] || ""} onChange={(e) => handleWrittenAnswerChange(`int-${exercise.key}`, e.target.value)} className="flex-1 px-3 py-2 border border-orange-300 rounded-md text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
-                        <button onClick={() => handleCheckAnswer(`int-${exercise.key}`, writtenAnswers[`int-${exercise.key}`] || "", exercise.answer)} className="bg-orange-500 text-white py-2 px-3 rounded-md hover:bg-orange-600 transition text-sm">Check</button>
+                    <div key={exercise.key} className="bg-white p-4 rounded-lg border border-indigo-200">
+                      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+                        <SpeakSentence text={exercise.sentence} voiceType="female" className="font-medium text-gray-700 flex-1">
+                          {exercise.sentence}
+                        </SpeakSentence>
                       </div>
-                      {showAnswerResults[`int-${exercise.key}`] && <AnswerResult isCorrect={answerResults[`int-${exercise.key}`]} correctAnswer={exercise.answer} />}
+                      
+                      <div className="flex flex-col sm:flex-row gap-2 mb-2">
+                        <input
+                          type="text"
+                          placeholder="Write question form..."
+                          value={writtenAnswers[exercise.key] || ""}
+                          onChange={(e) => handleWrittenAnswerChange(exercise.key, e.target.value)}
+                          className="flex-1 px-3 py-2 border border-indigo-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        />
+                        <button
+                          onClick={() => handleCheckAnswer(exercise.key, writtenAnswers[exercise.key] || "", exercise.answer)}
+                          className="bg-indigo-500 text-white py-2 px-3 rounded-md hover:bg-indigo-600 transition text-sm"
+                        >
+                          Check
+                        </button>
+                      </div>
+                      
+                      {showAnswerResults[exercise.key] && (
+                        <AnswerResult isCorrect={answerResults[exercise.key]} correctAnswer={exercise.answer} />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -848,146 +901,173 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* QUESTIONS COM ÁUDIO */}
-        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
-          <div className="bg-gradient-to-r from-indigo-500 to-blue-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* UNLOCK */}
+        <div className="bg-pink-50 border-2 border-pink-200 rounded-[30px] shadow-lg overflow-hidden mb-8 md:mb-10">
+          <div className="bg-pink-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">💬 QUESTIONS ABOUT LANGUAGES & COUNTRIES</h2>
-              <button onClick={() => toggleSection('questions')} className="ml-4 p-2 rounded-full hover:bg-white/20 transition">
-                {sections.questions ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              <h2 className="text-xl md:text-2xl font-bold">🔓 UNLOCK</h2>
+              <button 
+                onClick={() => toggleSection('unlock')}
+                className="ml-4 p-2 rounded-full hover:bg-pink-600 transition"
+              >
+                {sections.unlock ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.questions && (
-            <div className="p-8">
+          {sections.unlock && (
+            <div className="p-6 md:p-8">
               <div className="mb-6">
-                <h3 className="text-xl font-bold text-indigo-800 mb-4 flex items-center gap-2">
-                  Answer these personal questions about languages and countries:
-                  <AudioButton text="Answer these personal questions about languages and countries" />
+                <h3 className="text-lg md:text-xl font-bold text-pink-800 mb-4">
+                  Unlock – Give examples of:
                 </h3>
               </div>
 
               <div className="space-y-6">
-                {personalQuestions.map((question) => (
-                  <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-indigo-200 shadow-md">
-                    <h4 className="text-lg font-bold text-indigo-700 mb-3 flex items-start gap-2">
-                      <SpeakableText text={question.question} className="flex-1" />
-                      <AudioButton text={question.question} />
-                    </h4>
-                    <textarea value={writtenAnswers[`q-${question.id}`] || ""} onChange={(e) => handleWrittenAnswerChange(`q-${question.id}`, e.target.value)} placeholder={question.placeholder} className="w-full h-24 p-3 border border-indigo-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none" />
+                {unlockQuestions.map((question) => (
+                  <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-pink-200 shadow-md">
+                    <SpeakSentence text={question.question} voiceType="female" className="text-base md:text-lg font-bold text-pink-700 mb-3">
+                      {question.question}
+                    </SpeakSentence>
+                    
+                    <textarea
+                      value={writtenAnswers[`unlock-${question.id}`] || ""}
+                      onChange={(e) => handleWrittenAnswerChange(`unlock-${question.id}`, e.target.value)}
+                      placeholder={question.placeholder}
+                      className="w-full h-24 p-3 border border-pink-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
+                    />
                   </div>
                 ))}
               </div>
 
-              <div className="mt-8 bg-indigo-100 border-2 border-indigo-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-indigo-800 mb-4">💡 Writing Tips for International Topics:</h3>
-                <ul className="list-disc pl-5 space-y-2 text-indigo-700 text-sm">
-                  <li>Use specific country names and language names in your answers</li>
-                  <li>Practice using different pronouns: he, she, they, we</li>
-                  <li>Describe cultural differences and similarities</li>
-                  <li>Mention traditional foods from different countries</li>
-                  <li>Talk about your language learning experiences</li>
+              <div className="mt-8 bg-pink-100 border-2 border-pink-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-pink-800 mb-4">💡 Writing Tips for Communication:</h3>
+                <ul className="list-disc pl-5 space-y-2 text-pink-700 text-sm">
+                  <li>Be specific about places, languages, and foods</li>
+                  <li>Use complete sentences to practice grammar</li>
+                  <li>Describe your preferences and reasons</li>
+                  <li>Practice different ways to greet people</li>
+                  <li>Talk about your daily routines and habits</li>
+                  <li>Save your answers to track your progress in communication</li>
                 </ul>
               </div>
             </div>
           )}
         </div>
 
-        {/* TUNE IN YOUR EARS COM ÁUDIO */}
-        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
-          <div className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* TUNE IN YOUR EARS */}
+        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden mb-8 md:mb-10">
+          <div className="bg-teal-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
-              <button onClick={() => toggleSection('tuneIn')} className="ml-4 p-2 rounded-full hover:bg-white/20 transition">
+              <h2 className="text-xl md:text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
+              <button
+                onClick={() => toggleSection('tuneIn')}
+                className="ml-4 p-2 rounded-full hover:bg-teal-600 transition"
+              >
                 {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
           {sections.tuneIn && (
-            <div className="p-8">
+            <div className="p-6 md:p-8">
               <div className="mb-8 text-center">
-                <h3 className="text-2xl font-bold text-teal-700 mb-4">Watch the video and answer the questions below:</h3>
+                <SpeakSentence text="Watch the video and answer the questions below" voiceType="female" className="text-xl md:text-2xl font-bold text-teal-700 mb-4">
+                  Watch the video and answer the questions below:
+                </SpeakSentence>
+               
                 <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
-                  <div className="aspect-w-16 aspect-h-9">
-                    <iframe src="https://www.youtube.com/embed/2FdrSYbwbXM" title="English Listening Practice" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="w-full h-[400px] md:h-[500px]" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4 flex items-center gap-2">
-                  📖 Key Vocabulary from the Video:
-                  <AudioButton text="Key Vocabulary from the Video" />
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    {["Trick - Truque / Técnica", "The easiest way - O jeito mais fácil", "Have you ever heard? - Você já ouviu?", "over time - ao passar do tempo", "Habit - Hábito", "To have fun - Se divertir", "Accents - Sotaques", "A mix of accents - Uma mistura de sotaques", "Slangs - Gírias"].map((item, i) => (
-                      <div key={i} className="flex justify-between items-center p-2 bg-white rounded-lg">
-                        <SpeakableText text={item.split(' - ')[0]} className="font-medium text-teal-700" />
-                        <span className="text-teal-600">{item.split(' - ')[1]}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="space-y-3">
-                    {["Kind - Tipo", "It's a piece of cake - Isso é muito fácil", "tone and emotion - tom e emoção", "Sarcastic - Sarcástico", "It depends on - Depende de", "You'll be / You will be - Você vai estar", "Probably not - Provavelmente não", "To turn on - Ligar", "To procrastinate - Procrastinar", "A must - algo que você deve fazer"].map((item, i) => (
-                      <div key={i} className="flex justify-between items-center p-2 bg-white rounded-lg">
-                        <SpeakableText text={item.split(' - ')[0]} className="font-medium text-teal-700" />
-                        <span className="text-teal-600">{item.split(' - ')[1]}</span>
-                      </div>
-                    ))}
+                  <div className="relative w-full pt-[56.25%]">
+                    <iframe
+                      src="https://www.youtube.com/embed/q5JxLYzO5k4?list=PLc0_DKGuWp_2GK_ZyY81hiV_vdMaUmezE&index=40"
+                      title="English Listening Practice - Daily Routines & Conversations"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute top-0 left-0 w-full h-full"
+                    />
                   </div>
                 </div>
               </div>
 
               <div className="space-y-6 mb-8">
                 {videoQuestions.map((question) => (
-                  <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-teal-200 shadow-md">
-                    <h4 className="text-lg font-bold text-teal-700 mb-3 flex items-start gap-2">
-                      <SpeakableText text={question.question} className="flex-1" />
-                      <AudioButton text={question.question} />
-                      {question.isPersonal && <span className="text-sm font-normal text-teal-500">(Personal answer)</span>}
-                    </h4>
-                    <textarea value={videoAnswers[question.id] || ""} onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)} placeholder="Write your answer here..." className="w-full h-24 p-3 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none" />
-                    <div className="flex gap-3 mt-3">
-                      <button onClick={() => checkVideoAnswer(question.id)} className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition font-medium">Check Answer</button>
-                      <button onClick={() => handleVideoAnswerChange(question.id, "")} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md transition">Clear</button>
+                  <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-teal-200 shadow-md">
+                    <SpeakSentence text={question.question} voiceType="female" className="text-base md:text-lg font-bold text-teal-700 mb-3">
+                      {question.question}
+                      {question.isPersonal && (
+                        <span className="ml-2 text-sm font-normal text-teal-500">(Personal answer)</span>
+                      )}
+                    </SpeakSentence>
+
+                    <textarea
+                      value={videoAnswers[question.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)}
+                      placeholder="Write your answer here..."
+                      className="w-full h-24 p-3 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                    />
+
+                    <div className="flex flex-col sm:flex-row gap-3 mt-3">
+                      <button
+                        onClick={() => checkVideoAnswer(question.id)}
+                        className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition font-medium"
+                      >
+                        Check Answer
+                      </button>
+                      <button
+                        onClick={() => handleVideoAnswerChange(question.id, "")}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md transition"
+                      >
+                        Clear
+                      </button>
                     </div>
+
                     {showVideoAnswerResults[question.id] && question.isPersonal && (
                       <div className="mt-3 p-3 bg-teal-50 border border-teal-200 rounded-md">
-                        <p className="text-sm text-teal-700"><span className="font-medium">Note:</span> This is a personal question. Your answer has been saved for practice.</p>
+                        <p className="text-sm text-teal-700">
+                          <span className="font-medium">Note:</span> This is a personal question. Your answer has been saved for practice.
+                        </p>
                       </div>
                     )}
                   </div>
                 ))}
               </div>
-
-              <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4">🎯 Listening Practice Tips:</h3>
-                <ul className="list-disc pl-5 space-y-2 text-teal-700 text-sm">
-                  <li>Watch the video at least twice - first for general understanding, then for details</li>
-                  <li>Pause the video to repeat phrases you hear</li>
-                  <li>Pay attention to pronunciation and intonation patterns</li>
-                  <li>Note down new vocabulary while watching</li>
-                </ul>
-              </div>
             </div>
           )}
         </div>
 
-        {/* Botões de Salvar e Navegação */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-8">
-          <div className="flex gap-4">
-            <button onClick={saveAllAnswers} className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 flex items-center gap-2">💾 Save All My Answers</button>
-            <button onClick={clearAllAnswers} className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full text-sm transition duration-300">Clear All</button>
+        {/* Save Button and Navigation */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <button
+              onClick={saveAllAnswers}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 md:px-8 rounded-full text-base md:text-lg transition duration-300 flex items-center justify-center gap-2"
+            >
+              <span>💾</span> Save All My Answers
+            </button>
+            <button
+              onClick={clearAllAnswers}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full text-sm transition duration-300"
+            >
+              Clear All
+            </button>
           </div>
+
           <div className="flex gap-4">
-            <button onClick={() => router.push("/cursos/lesson7")} className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors">&larr; Previous Lesson</button>
-            <button onClick={() => router.push("/cursos/lesson9")} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">Next Lesson &rarr;</button>
+            <button
+              onClick={() => router.push("/cursos/lesson9")}
+              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 md:px-8 rounded-full transition-colors text-sm md:text-base"
+            >
+              &larr; Previous Lesson
+            </button>
+            <button
+              onClick={() => router.push("/cursos/lesson11")}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 md:px-8 rounded-full transition-colors text-sm md:text-base"
+            >
+              Next Lesson &rarr;
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}

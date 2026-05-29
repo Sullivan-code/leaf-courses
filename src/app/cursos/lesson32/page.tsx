@@ -5,45 +5,202 @@ import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCircle, ChevronLeft, ChevronRight } from "lucide-react";
 
-// Listen items com imagens e respostas corretas atualizadas
+// ============================================
+// SPEECH SYSTEM WITH AMERICAN FEMALE VOICE (ZOEY'S VOICE)
+// ============================================
+
+interface SpeakTextProps {
+  text: string;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+// Speech component for text-to-speech with American Female voice
+const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
+  const speak = () => {
+    if (!text || typeof window === 'undefined') return;
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; // American English
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    
+    // Get available voices
+    const voices = window.speechSynthesis.getVoices();
+    
+    // American female voices (same as Zoey)
+    const americanFemaleVoices = voices.filter(voice => 
+      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+      (voice.name.toLowerCase().includes('samantha') || 
+       voice.name.toLowerCase().includes('google us english') ||
+       voice.name.toLowerCase().includes('siri') ||
+       voice.name.toLowerCase().includes('female') ||
+       voice.name === 'Google US English' ||
+       voice.name === 'Samantha')
+    );
+    
+    // Fallback to any American voice
+    const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+    
+    if (americanFemaleVoices.length > 0) {
+      utterance.voice = americanFemaleVoices[0];
+    } else if (americanVoices.length > 0) {
+      utterance.voice = americanVoices[0];
+    }
+    
+    window.speechSynthesis.speak(utterance);
+  };
+
+  return (
+    <button
+      onClick={speak}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
+      title="Click to hear American pronunciation"
+    >
+      {children || text}
+      <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+    </button>
+  );
+};
+
+// Component for pronouncing entire sentences with American female voice
+const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
+  return (
+    <button
+      onClick={() => {
+        const speechText = children && typeof children === 'string' ? children : text;
+        if (speechText && typeof window !== 'undefined') {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(speechText);
+          utterance.lang = 'en-US';
+          utterance.rate = 0.85;
+          utterance.pitch = 1.0;
+          
+          const voices = window.speechSynthesis.getVoices();
+          
+          const americanFemaleVoices = voices.filter(voice => 
+            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+            (voice.name.toLowerCase().includes('samantha') || 
+             voice.name.toLowerCase().includes('google us english') ||
+             voice.name === 'Google US English')
+          );
+          
+          const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+          
+          if (americanFemaleVoices.length > 0) {
+            utterance.voice = americanFemaleVoices[0];
+          } else if (americanVoices.length > 0) {
+            utterance.voice = americanVoices[0];
+          }
+          
+          window.speechSynthesis.speak(utterance);
+        }
+      }}
+      className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors ${className}`}
+    >
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
+    </button>
+  );
+};
+
+// ============================================
+// IMAGES FOR LISTEN AND NUMBER (Pexels/Unsplash URLs)
+// ============================================
+
 const listenItems = [
   { 
     key: "presentation", 
     label: "Homem apresentando ideias em um quadro cheio de post-its", 
-    image: "/images/lesson32/presentation.jpg", 
+    image: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 3
   },
   { 
     key: "meeting", 
     label: "Pessoas em reunião em uma sala de vidro", 
-    image: "/images/lesson32/meeting.jpg", 
+    image: "https://images.pexels.com/photos/3182763/pexels-photo-3182763.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 1
   },
   { 
     key: "deadline", 
     label: "Relógio com a palavra Deadline", 
-    image: "/images/lesson32/deadline.jpg", 
+    image: "https://images.pexels.com/photos/3930039/pexels-photo-3930039.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 2
   },
   { 
     key: "group-students", 
     label: "Grupo de jovens caminhando juntos (estudantes)", 
-    image: "/images/lesson32/group-students.jpg", 
+    image: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 6
   },
   { 
     key: "learn-spanish", 
     label: "Quadro com Learn Spanish", 
-    image: "/images/lesson32/learn-spanish.jpg", 
+    image: "https://images.pexels.com/photos/4144223/pexels-photo-4144223.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 5
   },
   { 
     key: "studying-tired", 
     label: "Pessoa estudando com muitos livros e parecendo cansada", 
-    image: "/images/lesson32/studying-tired.jpg", 
+    image: "https://images.pexels.com/photos/4145120/pexels-photo-4145120.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 4
   },
 ];
+
+// Images for Photo Descriptions
+const descriptionPhotos = [
+  {
+    id: 1,
+    image: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=600",
+    title: "Pessoas se formando na faculdade",
+    description: "Um grupo de estudantes está usando beca e chapéu de formatura. Eles estão sorrindo e comemorando. Algumas pessoas estão jogando o chapéu para cima. É o dia da formatura.",
+    questions: [
+      "When do you finish college?",
+      "Are you going to graduate this year?",
+      "How do you feel about finishing college?"
+    ]
+  },
+  {
+    id: 2,
+    image: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600",
+    title: "Pessoa organizando metas",
+    description: "Uma estudante está olhando para um mural cheio de post-its coloridos. Ela está planejando suas metas para o semestre.",
+    questions: [
+      "What do you want to start next semester?",
+      "Do you have a lot of classes this semester?",
+      "Is this semester difficult?"
+    ]
+  },
+  {
+    id: 3,
+    image: "https://images.pexels.com/photos/6863173/pexels-photo-6863173.jpeg?auto=compress&cs=tinysrgb&w=600",
+    title: "Carteira de trabalho",
+    description: "Uma carteira de trabalho azul está sobre uma mesa de madeira. Ela representa emprego, trabalho formal e início de carreira.",
+    questions: [
+      "When do you want to start working?",
+      "Do you need a job next year?",
+      "Do you want to start a new career?"
+    ]
+  },
+  {
+    id: 4,
+    image: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=600",
+    title: "Estudante com diploma",
+    description: "Uma jovem está segurando um diploma e sorrindo. Ela parece orgulhosa e feliz.",
+    questions: [
+      "When do you want to finish your course?",
+      "Do you want to finish it this year?",
+      "What do you want to do after that?"
+    ]
+  }
+];
+
+// ============================================
+// LESSON DATA
+// ============================================
 
 // Drilling Practice 1 - Frases em português com substituição
 const drillingExercises1 = [
@@ -220,163 +377,48 @@ const specialWords = [
   { word: "graduate", meaning: "se formar" },
 ];
 
-// Imagens para as fotos de descrição
-const descriptionPhotos = [
-  {
-    id: 1,
-    image: "/images/lesson32/graduation.jpg",
-    title: "Pessoas se formando na faculdade",
-    description: "Um grupo de estudantes está usando beca e chapéu de formatura. Eles estão sorrindo e comemorando. Algumas pessoas estão jogando o chapéu para cima. É o dia da formatura.",
-    questions: [
-      "When do you finish college?",
-      "Are you going to graduate this year?",
-      "How do you feel about finishing college?"
-    ]
-  },
-  {
-    id: 2,
-    image: "/images/lesson32/goals-planning.jpg",
-    title: "Pessoa organizando metas",
-    description: "Uma estudante está olhando para um mural cheio de post-its coloridos. Ela está planejando suas metas para o semestre.",
-    questions: [
-      "What do you want to start next semester?",
-      "Do you have a lot of classes this semester?",
-      "Is this semester difficult?"
-    ]
-  },
-  {
-    id: 3,
-    image: "/images/lesson32/work-card.jpg",
-    title: "Carteira de trabalho",
-    description: "Uma carteira de trabalho azul está sobre uma mesa de madeira. Ela representa emprego, trabalho formal e início de carreira.",
-    questions: [
-      "When do you want to start working?",
-      "Do you need a job next year?",
-      "Do you want to start a new career?"
-    ]
-  },
-  {
-    id: 4,
-    image: "/images/lesson32/diploma.jpg",
-    title: "Estudante com diploma",
-    description: "Uma jovem está segurando um diploma e sorrindo. Ela parece orgulhosa e feliz.",
-    questions: [
-      "When do you want to finish your course?",
-      "Do you want to finish it this year?",
-      "What do you want to do after that?"
-    ]
-  }
+// Key Vocabulary from Video for Tune In Your Ears
+const keyVocabulary = [
+  { word: "tips", meaning: "dicas / conselhos" },
+  { word: "improve", meaning: "melhorar" },
+  { word: "listening skills", meaning: "habilidades de compreensão auditiva" },
+  { word: "native speakers", meaning: "falantes nativos" },
+  { word: "perfection", meaning: "perfeição" },
+  { word: "goals", meaning: "objetivos" },
+  { word: "habits", meaning: "hábitos" },
+  { word: "your own words", meaning: "suas próprias palavras" },
+  { word: "English-speaking group", meaning: "grupo falante de inglês" },
+  { word: "confidence", meaning: "confiança" },
+  { word: "a mix of accents", meaning: "uma mistura de sotaques" },
+  { word: "slangs", meaning: "gírias" },
+  { word: "it's a piece of cake", meaning: "é muito fácil" },
+  { word: "tone and emotion", meaning: "tom e emoção" },
+  { word: "sarcastic", meaning: "sarcástico" },
+  { word: "it depends on", meaning: "depende de" },
+  { word: "celebrate your progress", meaning: "celebre o seu progresso" },
+  { word: "positive affirmations", meaning: "afirmações positivas" }
 ];
 
-interface AudioPlayerProps {
-  src: string;
-  compact?: boolean;
-}
+// Video Questions
+const videoQuestions = [
+  { id: "video-1", question: "According to the video, what are some practical TIPS to improve your English listening skills?", isPersonal: false },
+  { id: "video-2", question: "The speaker mentions that even NATIVE SPEAKERS make mistakes. Why is it important not to focus on PERFECTION when learning English?", isPersonal: false },
+  { id: "video-3", question: "What GOALS and HABITS does the speaker suggest for creating a daily English practice routine?", isPersonal: false },
+  { id: "video-4", question: "How can you practice English in YOUR OWN WORDS and join an ENGLISH-SPEAKING GROUP to improve your CONFIDENCE?", isPersonal: true },
+  { id: "video-5", question: "How can we be exposed to different accents to improve our listening skills?", isPersonal: false },
+  { id: "video-6", question: "How can learning expressions like 'piece of cake' help you sound more natural?", isPersonal: false },
+  { id: "video-7", question: "How does TONE AND EMOTION in conversations affect meaning?", isPersonal: false },
+  { id: "video-8", question: "Why is it important to CELEBRATE YOUR PROGRESS and use POSITIVE AFFIRMATIONS when learning English?", isPersonal: true }
+];
 
-const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressBarRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const audio = audioRef.current || new Audio(src);
-    if (!audioRef.current) audioRef.current = audio;
-    else audio.src = src;
-
-    const updateProgress = () => {
-      if (audio.duration) {
-        setProgress((audio.currentTime / audio.duration) * 100);
-      }
-    };
-
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setProgress(100);
-    };
-
-    audio.addEventListener("timeupdate", updateProgress);
-    audio.addEventListener("ended", handleEnded);
-
-    return () => {
-      audio.removeEventListener("timeupdate", updateProgress);
-      audio.removeEventListener("ended", handleEnded);
-      audio.pause();
-    };
-  }, [src]);
-
-  const togglePlayPause = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play().catch((err) => console.error("Audio error:", err));
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const resetAudio = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      setIsPlaying(false);
-      setProgress(0);
-    }
-  };
-
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || !progressBarRef.current) return;
-    
-    const rect = progressBarRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const width = rect.width;
-    const percent = offsetX / width;
-    audio.currentTime = percent * audio.duration;
-    setProgress(percent * 100);
-  };
-
-  return (
-    <div className={`flex items-center gap-2 ${compact ? "ml-2" : ""}`}>
-      <button 
-        onClick={togglePlayPause} 
-        className={`${compact ? "p-1" : "p-2"} bg-blue-500 text-white rounded-full hover:bg-blue-600`}
-      >
-        {isPlaying ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
-      </button>
-      <button 
-        onClick={resetAudio} 
-        className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600`}
-      >
-        <RotateCcw size={compact ? 12 : 16} />
-      </button>
-      
-      {!compact && (
-        <div 
-          ref={progressBarRef}
-          className="w-20 h-1 bg-gray-300 rounded-full overflow-hidden cursor-pointer"
-          onClick={handleProgressClick}
-        >
-          <div 
-            className="h-full bg-blue-500 transition-all duration-200" 
-            style={{ width: `${progress}%` }} 
-          />
-        </div>
-      )}
-      
-      <audio ref={audioRef} src={src} preload="auto" />
-    </div>
-  );
+// Helper function to check answers
+const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
+  const normalize = (text: string) => text.toLowerCase().trim().replace(/[.,?!]/g, '');
+  return normalize(userAnswer) === normalize(correctAnswer);
 };
 
-interface AnswerResultProps {
-  isCorrect: boolean;
-  correctAnswer: string;
-}
-
-const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
+// Answer result component
+const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correctAnswer: string }) => {
   if (isCorrect) {
     return (
       <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md">
@@ -385,7 +427,6 @@ const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
       </div>
     );
   }
-
   return (
     <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-md">
       <XCircle size={16} className="text-red-600" />
@@ -395,6 +436,10 @@ const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
     </div>
   );
 };
+
+// ============================================
+// MAIN LESSON COMPONENT
+// ============================================
 
 export default function Lesson32() {
   const router = useRouter();
@@ -430,6 +475,10 @@ export default function Lesson32() {
   const [showSpeakResult, setShowSpeakResult] = useState(false);
   const [speakResult, setSpeakResult] = useState(false);
   
+  // Estados para respostas do vídeo
+  const [videoAnswers, setVideoAnswers] = useState<Record<string, string>>({});
+  const [showVideoResults, setShowVideoResults] = useState<Record<string, boolean>>({});
+  
   // Estados para controle de expansão das seções
   const [sections, setSections] = useState({
     listen: true,
@@ -439,7 +488,8 @@ export default function Lesson32() {
     affirmative: true,
     speak: true,
     photos: true,
-    specialWords: true
+    specialWords: true,
+    tuneIn: true
   });
 
   // ==============================
@@ -451,32 +501,22 @@ export default function Lesson32() {
       try {
         const data = JSON.parse(savedAnswers);
         
-        // Restaurar respostas de escuta
         if (data.listenAnswers) setListenAnswers(data.listenAnswers);
         if (data.showListenResults) setShowListenResults(data.showListenResults);
         if (data.listenResults) setListenResults(data.listenResults);
-        
-        // Restaurar frases de drilling
         if (data.drilling1Sentences) setDrilling1Sentences(data.drilling1Sentences);
         if (data.drilling2Sentences) setDrilling2Sentences(data.drilling2Sentences);
-        
-        // Restaurar exercícios de negativo
         if (data.negativeEx) setNegativeEx(data.negativeEx);
         if (data.negativeResults) setNegativeResults(data.negativeResults);
         if (data.showNegativeResults) setShowNegativeResults(data.showNegativeResults);
-        
-        // Restaurar exercícios de afirmativo
         if (data.affirmativeEx) setAffirmativeEx(data.affirmativeEx);
         if (data.affirmativeResults) setAffirmativeResults(data.affirmativeResults);
         if (data.showAffirmativeResults) setShowAffirmativeResults(data.showAffirmativeResults);
-        
-        // Restaurar Speak
         if (data.currentCardIndex !== undefined) setCurrentCardIndex(data.currentCardIndex);
         if (data.speakUserAnswer) setSpeakUserAnswer(data.speakUserAnswer);
         if (data.showSpeakResult !== undefined) setShowSpeakResult(data.showSpeakResult);
         if (data.speakResult !== undefined) setSpeakResult(data.speakResult);
-        
-        // Restaurar estado das seções
+        if (data.videoAnswers) setVideoAnswers(data.videoAnswers);
         if (data.sections) setSections(data.sections);
         
         console.log("Dados carregados do localStorage para Lesson 32");
@@ -484,12 +524,17 @@ export default function Lesson32() {
         console.error("Erro ao carregar respostas salvas:", error);
       }
     }
+    
+    // Initialize voices
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.getVoices();
+    }
   }, []);
 
   // ==============================
   // SISTEMA DE PERSISTÊNCIA - SALVAMENTO
   // ==============================
-  const saveAllAnswers = async () => {
+  const saveAllAnswers = () => {
     const data = {
       listenAnswers,
       showListenResults,
@@ -506,6 +551,7 @@ export default function Lesson32() {
       speakUserAnswer,
       showSpeakResult,
       speakResult,
+      videoAnswers,
       sections,
       lastUpdated: new Date().toISOString(),
       lessonName: "Lesson 32 - Output",
@@ -514,36 +560,33 @@ export default function Lesson32() {
     
     try {
       localStorage.setItem("lesson32Answers", JSON.stringify(data));
-      alert("✅ Todas as suas respostas foram salvas com sucesso!\nVocê pode voltar a qualquer momento e elas estarão aqui.");
+      alert("✅ Todas as suas respostas foram salvas com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar respostas:", error);
-      alert("❌ Erro ao salvar as respostas. Por favor, tente novamente.");
+      alert("❌ Erro ao salvar as respostas.");
     }
   };
 
   // Função para limpar todas as respostas
   const clearAllAnswers = () => {
-    if (confirm("Tem certeza que deseja limpar TODAS as suas respostas? Esta ação não pode ser desfeita.")) {
+    if (confirm("Tem certeza que deseja limpar TODAS as suas respostas?")) {
       setListenAnswers({});
       setShowListenResults({});
       setListenResults({});
-      
       setDrilling1Sentences(Object.fromEntries(drillingExercises1.map(ex => [ex.id, ex.english])));
       setDrilling2Sentences(Object.fromEntries(drillingExercises2.map(ex => [ex.id, ex.english])));
-      
       setNegativeEx(negativeExercises.map(ex => ({ ...ex, userAnswer: "" })));
       setNegativeResults({});
       setShowNegativeResults({});
-      
       setAffirmativeEx(affirmativeExercises.map(ex => ({ ...ex, userAnswer: "" })));
       setAffirmativeResults({});
       setShowAffirmativeResults({});
-      
       setCurrentCardIndex(0);
       setSpeakUserAnswer("");
       setShowSpeakResult(false);
       setSpeakResult(false);
-      
+      setVideoAnswers({});
+      setShowVideoResults({});
       localStorage.removeItem("lesson32Answers");
       alert("Todas as respostas foram limpas.");
     }
@@ -553,10 +596,8 @@ export default function Lesson32() {
   // FUNÇÕES DE MANIPULAÇÃO
   // ==============================
   
-  // Funções para o Listen
   const handleListenSelect = (key: string, number: number) => {
     setListenAnswers(prev => ({ ...prev, [key]: number }));
-    // Esconder o resultado quando o usuário muda a resposta
     setShowListenResults(prev => ({ ...prev, [key]: false }));
   };
 
@@ -566,11 +607,8 @@ export default function Lesson32() {
     setShowListenResults(prev => ({ ...prev, [key]: true }));
   };
 
-  // Funções para os exercícios de negativo
   const handleNegativeChange = (id: number, value: string) => {
-    setNegativeEx(prev => 
-      prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex)
-    );
+    setNegativeEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
     setShowNegativeResults(prev => ({ ...prev, [id]: false }));
   };
 
@@ -583,11 +621,8 @@ export default function Lesson32() {
     }
   };
 
-  // Funções para os exercícios de afirmativo
   const handleAffirmativeChange = (id: number, value: string) => {
-    setAffirmativeEx(prev => 
-      prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex)
-    );
+    setAffirmativeEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
     setShowAffirmativeResults(prev => ({ ...prev, [id]: false }));
   };
 
@@ -600,7 +635,6 @@ export default function Lesson32() {
     }
   };
 
-  // Função para o Speak Right Now
   const handleSpeakCheck = () => {
     const currentCard = speakCards[currentCardIndex];
     const isCorrect = speakUserAnswer.toLowerCase().includes(currentCard.answer.toLowerCase()) || 
@@ -609,7 +643,6 @@ export default function Lesson32() {
     setShowSpeakResult(true);
   };
 
-  // Função para navegar entre os cards
   const nextCard = () => {
     setCurrentCardIndex((prev) => (prev + 1) % speakCards.length);
     setSpeakUserAnswer("");
@@ -622,31 +655,49 @@ export default function Lesson32() {
     setShowSpeakResult(false);
   };
 
-  // Função para alternar expansão de seções
+  const handleVideoAnswerChange = (id: string, value: string) => {
+    setVideoAnswers(prev => ({ ...prev, [id]: value }));
+    setShowVideoResults(prev => ({ ...prev, [id]: false }));
+  };
+
+  const checkVideoAnswer = (id: string) => {
+    setShowVideoResults(prev => ({ ...prev, [id]: true }));
+  };
+
   const toggleSection = (section: keyof typeof sections) => {
-    setSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
+    setSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
   const currentCard = speakCards[currentCardIndex];
 
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/lesson32/background.jpg')` }}>
-      <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">📘 LESSON 32 – OUTPUT</h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+    <div className="min-h-screen py-16 px-4 sm:px-6 relative overflow-hidden">
+      {/* Background */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat z-0"
+        style={{ 
+          backgroundImage: `url('https://images.pexels.com/photos/4145120/pexels-photo-4145120.jpeg?auto=compress&cs=tinysrgb&w=1200')`,
+        }}
+      />
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-0" />
+      
+      <div className="relative z-10 max-w-5xl mx-auto bg-white bg-opacity-95 backdrop-blur-sm rounded-[40px] p-6 md:p-10 shadow-2xl">
+        
+        {/* Header */}
+        <div className="text-center mb-12 md:mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#0c4a6e] mb-4 md:mb-6">
+            📘 LESSON 32 – OUTPUT
+          </h1>
+          <SpeakSentence text="Listen, practice speaking, and complete the exercises to improve your English!" className="text-xl text-gray-700 max-w-3xl mx-auto">
             🎧 Listen, practice speaking, and complete the exercises to improve your English!
-          </p>
+          </SpeakSentence>
         </div>
 
         {/* LISTEN AND NUMBER */}
-        <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-purple-600 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-purple-600 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🎧 LISTEN AND NUMBER</h2>
+              <h2 className="text-xl md:text-2xl font-bold">🎧 LISTEN AND NUMBER</h2>
               <button 
                 onClick={() => toggleSection('listen')}
                 className="ml-4 p-2 rounded-full hover:bg-purple-700 transition"
@@ -654,16 +705,15 @@ export default function Lesson32() {
                 {sections.listen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
-            <AudioPlayer src="/audios/lesson32/listen.mp3" />
           </div>
 
           {sections.listen && (
-            <div className="p-8">
-              <p className="text-purple-700 mb-6 italic">
+            <div className="p-6 md:p-8">
+              <SpeakSentence text="Listen and number the images according to the audio. Click buttons 1-6 to select your answer." className="text-purple-700 mb-6 italic">
                 Ouça e numere as imagens de acordo com o áudio. Clique nos botões de 1 a 6 para selecionar sua resposta.
-              </p>
+              </SpeakSentence>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {listenItems.map((item) => (
                   <div key={item.key} className="bg-white rounded-xl shadow-md border border-purple-200 overflow-hidden">
                     <div className="relative h-48 w-full">
@@ -672,6 +722,7 @@ export default function Lesson32() {
                         alt={item.label}
                         fill
                         className="object-cover"
+                        unoptimized
                       />
                     </div>
                     
@@ -679,7 +730,7 @@ export default function Lesson32() {
                       <p className="text-sm text-gray-600 mb-3 line-clamp-2">{item.label}</p>
                       
                       <div className="mb-3">
-                        <p className="text-xs text-gray-500 mb-1">Selecione o número:</p>
+                        <p className="text-xs text-gray-500 mb-1">Select number:</p>
                         <div className="flex flex-wrap gap-2 justify-center">
                           {[1, 2, 3, 4, 5, 6].map((num) => (
                             <button
@@ -703,7 +754,7 @@ export default function Lesson32() {
                           className="flex-1 bg-purple-500 text-white py-2 rounded-md hover:bg-purple-600 transition"
                           disabled={listenAnswers[item.key] === undefined}
                         >
-                          Verificar
+                          Check
                         </button>
                         <button
                           onClick={() => {
@@ -712,7 +763,7 @@ export default function Lesson32() {
                           }}
                           className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
                         >
-                          Limpar
+                          Clear
                         </button>
                       </div>
                       
@@ -730,25 +781,25 @@ export default function Lesson32() {
               </div>
               
               <div className="mt-6 bg-purple-100 border-2 border-purple-300 rounded-xl p-4">
-                <h3 className="text-lg font-bold text-purple-800 mb-2">Respostas Corretas:</h3>
+                <h3 className="text-lg font-bold text-purple-800 mb-2">Correct Answers:</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-purple-700">
-                  <span className="bg-white px-3 py-1 rounded-full text-center">A: 3 (Apresentação)</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-center">B: 1 (Reunião)</span>
+                  <span className="bg-white px-3 py-1 rounded-full text-center">A: 3 (Presentation)</span>
+                  <span className="bg-white px-3 py-1 rounded-full text-center">B: 1 (Meeting)</span>
                   <span className="bg-white px-3 py-1 rounded-full text-center">C: 2 (Deadline)</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-center">D: 6 (Grupo de estudantes)</span>
+                  <span className="bg-white px-3 py-1 rounded-full text-center">D: 6 (Group of students)</span>
                   <span className="bg-white px-3 py-1 rounded-full text-center">E: 5 (Learn Spanish)</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-center">F: 4 (Estudando cansado)</span>
+                  <span className="bg-white px-3 py-1 rounded-full text-center">F: 4 (Studying tired)</span>
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* DRILLING PRACTICE 1 - Substitution */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* DRILLING PRACTICE 1 */}
+        <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-blue-600 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🗣 DRILLING PRACTICE 1 - Substitution</h2>
+              <h2 className="text-xl md:text-2xl font-bold">🗣 DRILLING PRACTICE 1 - Substitution</h2>
               <button 
                 onClick={() => toggleSection('drilling1')}
                 className="ml-4 p-2 rounded-full hover:bg-blue-700 transition"
@@ -759,10 +810,10 @@ export default function Lesson32() {
           </div>
 
           {sections.drilling1 && (
-            <div className="p-8">
-              <p className="text-blue-700 mb-4 italic">
+            <div className="p-6 md:p-8">
+              <SpeakSentence text="Click on the words below to substitute the highlighted term in the English sentence." className="text-blue-700 mb-4 italic">
                 Clique nas palavras abaixo para substituir o termo destacado na frase em inglês.
-              </p>
+              </SpeakSentence>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {drillingExercises1.map((exercise) => (
@@ -770,8 +821,10 @@ export default function Lesson32() {
                     <p className="text-sm text-gray-500 mb-1">Português:</p>
                     <p className="text-md text-gray-700 mb-3">{exercise.portuguese}</p>
                     
-                    <p className="text-sm text-gray-500 mb-1">Inglês:</p>
-                    <p className="text-lg font-bold text-blue-700 mb-4">{drilling1Sentences[exercise.id]}</p>
+                    <p className="text-sm text-gray-500 mb-1">English:</p>
+                    <SpeakSentence text={drilling1Sentences[exercise.id]} className="text-lg font-bold text-blue-700 mb-4">
+                      {drilling1Sentences[exercise.id]}
+                    </SpeakSentence>
                     
                     <div className="flex flex-wrap gap-2 mb-3">
                       {exercise.substitutions.map((sub, idx) => (
@@ -782,8 +835,6 @@ export default function Lesson32() {
                               ...prev,
                               [exercise.id]: sub.phrase
                             }));
-                            const audio = new Audio(`/audios/lesson32/substitution1-${exercise.id}-${idx}.mp3`);
-                            audio.play().catch(e => console.log("Audio error:", e));
                           }}
                           className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition flex items-center gap-1"
                         >
@@ -803,7 +854,7 @@ export default function Lesson32() {
                         Reset
                       </button>
                     </div>
-                    <p className="text-xs text-gray-500">Clique nas palavras para mudar a frase e ouvir a pronúncia</p>
+                    <p className="text-xs text-gray-500">Click on words to change the sentence and hear pronunciation</p>
                   </div>
                 ))}
               </div>
@@ -812,10 +863,10 @@ export default function Lesson32() {
         </div>
 
         {/* NEGATIVE SENTENCES */}
-        <div className="bg-red-50 border-2 border-red-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-red-600 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-red-50 border-2 border-red-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-red-600 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 Change into Negative</h2>
+              <h2 className="text-xl md:text-2xl font-bold">🔹 Change into Negative</h2>
               <button 
                 onClick={() => toggleSection('negative')}
                 className="ml-4 p-2 rounded-full hover:bg-red-700 transition"
@@ -826,12 +877,14 @@ export default function Lesson32() {
           </div>
 
           {sections.negative && (
-            <div className="p-8">
+            <div className="p-6 md:p-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {negativeEx.map((exercise) => (
                   <div key={exercise.id} className="bg-white p-6 rounded-xl border border-red-200 shadow-md">
                     <p className="text-md font-medium text-gray-700 mb-2">Affirmative:</p>
-                    <p className="text-lg font-bold text-gray-900 mb-4">{exercise.affirmative}</p>
+                    <SpeakSentence text={exercise.affirmative} className="text-lg font-bold text-gray-900 mb-4">
+                      {exercise.affirmative}
+                    </SpeakSentence>
                     
                     <p className="text-md font-medium text-gray-700 mb-2">Your negative:</p>
                     <textarea
@@ -871,11 +924,11 @@ export default function Lesson32() {
           )}
         </div>
 
-        {/* DRILLING PRACTICE 2 - Substitution */}
-        <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-green-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* DRILLING PRACTICE 2 */}
+        <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-green-600 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🗣 DRILLING PRACTICE 2 - Substitution</h2>
+              <h2 className="text-xl md:text-2xl font-bold">🗣 DRILLING PRACTICE 2 - Substitution</h2>
               <button 
                 onClick={() => toggleSection('drilling2')}
                 className="ml-4 p-2 rounded-full hover:bg-green-700 transition"
@@ -886,16 +939,18 @@ export default function Lesson32() {
           </div>
 
           {sections.drilling2 && (
-            <div className="p-8">
-              <p className="text-green-700 mb-4 italic">
+            <div className="p-6 md:p-8">
+              <SpeakSentence text="Click on the words below to substitute the highlighted term in the English sentence." className="text-green-700 mb-4 italic">
                 Clique nas palavras abaixo para substituir o termo destacado na frase em inglês.
-              </p>
+              </SpeakSentence>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {drillingExercises2.map((exercise) => (
                   <div key={exercise.id} className="bg-white p-6 rounded-xl border border-green-200 shadow-md">
-                    <p className="text-sm text-gray-500 mb-1">Inglês:</p>
-                    <p className="text-lg font-bold text-green-700 mb-4">{drilling2Sentences[exercise.id]}</p>
+                    <p className="text-sm text-gray-500 mb-1">English:</p>
+                    <SpeakSentence text={drilling2Sentences[exercise.id]} className="text-lg font-bold text-green-700 mb-4">
+                      {drilling2Sentences[exercise.id]}
+                    </SpeakSentence>
                     
                     <div className="flex flex-wrap gap-2 mb-3">
                       {exercise.substitutions.map((sub, idx) => (
@@ -906,8 +961,6 @@ export default function Lesson32() {
                               ...prev,
                               [exercise.id]: sub.phrase
                             }));
-                            const audio = new Audio(`/audios/lesson32/substitution2-${exercise.id}-${idx}.mp3`);
-                            audio.play().catch(e => console.log("Audio error:", e));
                           }}
                           className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm hover:bg-green-200 transition flex items-center gap-1"
                         >
@@ -927,7 +980,7 @@ export default function Lesson32() {
                         Reset
                       </button>
                     </div>
-                    <p className="text-xs text-gray-500">Clique nas palavras para mudar a frase e ouvir a pronúncia</p>
+                    <p className="text-xs text-gray-500">Click on words to change the sentence and hear pronunciation</p>
                   </div>
                 ))}
               </div>
@@ -936,10 +989,10 @@ export default function Lesson32() {
         </div>
 
         {/* AFFIRMATIVE SENTENCES */}
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-yellow-600 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-yellow-600 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 Change into Affirmative</h2>
+              <h2 className="text-xl md:text-2xl font-bold">🔹 Change into Affirmative</h2>
               <button 
                 onClick={() => toggleSection('affirmative')}
                 className="ml-4 p-2 rounded-full hover:bg-yellow-700 transition"
@@ -950,12 +1003,14 @@ export default function Lesson32() {
           </div>
 
           {sections.affirmative && (
-            <div className="p-8">
+            <div className="p-6 md:p-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {affirmativeEx.map((exercise) => (
                   <div key={exercise.id} className="bg-white p-6 rounded-xl border border-yellow-200 shadow-md">
                     <p className="text-md font-medium text-gray-700 mb-2">Negative:</p>
-                    <p className="text-lg font-bold text-gray-900 mb-4">{exercise.negative}</p>
+                    <SpeakSentence text={exercise.negative} className="text-lg font-bold text-gray-900 mb-4">
+                      {exercise.negative}
+                    </SpeakSentence>
                     
                     <p className="text-md font-medium text-gray-700 mb-2">Your affirmative:</p>
                     <textarea
@@ -996,10 +1051,10 @@ export default function Lesson32() {
         </div>
 
         {/* SPEAK RIGHT NOW */}
-        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-teal-600 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-teal-600 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🎤 SPEAK RIGHT NOW</h2>
+              <h2 className="text-xl md:text-2xl font-bold">🎤 SPEAK RIGHT NOW</h2>
               <button 
                 onClick={() => toggleSection('speak')}
                 className="ml-4 p-2 rounded-full hover:bg-teal-700 transition"
@@ -1010,7 +1065,7 @@ export default function Lesson32() {
           </div>
 
           {sections.speak && (
-            <div className="p-8">
+            <div className="p-6 md:p-8">
               <div className="bg-white p-6 rounded-xl border-2 border-teal-200 shadow-md mb-6">
                 <div className="flex items-center justify-between mb-6">
                   <button
@@ -1034,13 +1089,17 @@ export default function Lesson32() {
                 
                 <div className="mb-6 p-4 bg-teal-100 rounded-lg">
                   <p className="text-sm text-teal-700 mb-1">Question:</p>
-                  <p className="text-xl font-bold text-teal-800">{currentCard.question}</p>
+                  <SpeakSentence text={currentCard.question} className="text-xl font-bold text-teal-800">
+                    {currentCard.question}
+                  </SpeakSentence>
                   <p className="text-sm text-teal-600 mt-1">{currentCard.translation}</p>
                 </div>
                 
                 <div className="mb-4 p-4 bg-gray-50 rounded-lg">
                   <p className="text-sm text-gray-700 mb-1">Example answer:</p>
-                  <p className="text-lg text-gray-800 italic">{currentCard.answer}</p>
+                  <SpeakSentence text={currentCard.answer} className="text-lg text-gray-800 italic">
+                    {currentCard.answer}
+                  </SpeakSentence>
                   <p className="text-xs text-gray-500 mt-1">{currentCard.answerTranslation}</p>
                 </div>
                 
@@ -1070,15 +1129,6 @@ export default function Lesson32() {
                   >
                     Clear
                   </button>
-                  <button
-                    onClick={() => {
-                      const audio = new Audio('/audios/lesson32/example-answer.mp3');
-                      audio.play().catch(e => console.log("Audio error:", e));
-                    }}
-                    className="px-4 bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md transition flex items-center gap-2"
-                  >
-                    <Volume2 size={18} />
-                  </button>
                 </div>
                 
                 {showSpeakResult && (
@@ -1095,10 +1145,10 @@ export default function Lesson32() {
         </div>
 
         {/* SPECIAL WORDS */}
-        <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-orange-600 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-orange-600 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">📚 SPECIAL WORDS</h2>
+              <h2 className="text-xl md:text-2xl font-bold">📚 SPECIAL WORDS</h2>
               <button 
                 onClick={() => toggleSection('specialWords')}
                 className="ml-4 p-2 rounded-full hover:bg-orange-700 transition"
@@ -1109,27 +1159,20 @@ export default function Lesson32() {
           </div>
 
           {sections.specialWords && (
-            <div className="p-8">
-              <p className="text-orange-700 mb-4 italic">
+            <div className="p-6 md:p-8">
+              <SpeakSentence text="Specific vocabulary to talk about education and deadlines:" className="text-orange-700 mb-4 italic">
                 Vocabulário específico para falar sobre educação e prazos:
-              </p>
+              </SpeakSentence>
               
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {specialWords.map((item, idx) => (
                   <div key={idx} className="bg-white p-3 rounded-lg border border-orange-200 shadow-sm hover:shadow-md transition">
-                    <button
-                      onClick={() => {
-                        const audio = new Audio(`/audios/lesson32/special-${item.word.replace(/\s+/g, '-')}.mp3`);
-                        audio.play().catch(e => console.log("Audio error:", e));
-                      }}
-                      className="w-full text-left flex items-center justify-between"
-                    >
-                      <div>
-                        <p className="font-bold text-orange-700">{item.word}</p>
-                        <p className="text-sm text-gray-600">{item.meaning}</p>
-                      </div>
-                      <Volume2 size={16} className="text-orange-400" />
-                    </button>
+                    <div className="w-full text-left">
+                      <SpeakText text={item.word} className="font-bold text-orange-700">
+                        {item.word}
+                      </SpeakText>
+                      <p className="text-sm text-gray-600">{item.meaning}</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1138,10 +1181,10 @@ export default function Lesson32() {
         </div>
 
         {/* PHOTO DESCRIPTIONS */}
-        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-indigo-600 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-indigo-600 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">📸 PHOTO DESCRIPTIONS</h2>
+              <h2 className="text-xl md:text-2xl font-bold">📸 PHOTO DESCRIPTIONS</h2>
               <button 
                 onClick={() => toggleSection('photos')}
                 className="ml-4 p-2 rounded-full hover:bg-indigo-700 transition"
@@ -1152,7 +1195,7 @@ export default function Lesson32() {
           </div>
 
           {sections.photos && (
-            <div className="p-8">
+            <div className="p-6 md:p-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {descriptionPhotos.map((photo) => (
                   <div key={photo.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -1162,6 +1205,7 @@ export default function Lesson32() {
                         alt={photo.title}
                         fill
                         className="object-cover"
+                        unoptimized
                       />
                     </div>
                     
@@ -1172,20 +1216,11 @@ export default function Lesson32() {
                       <h4 className="font-medium text-gray-800 mb-2">Discussion Questions:</h4>
                       <ul className="list-disc pl-5 space-y-1 text-indigo-600">
                         {photo.questions.map((q, idx) => (
-                          <li key={idx}>{q}</li>
+                          <li key={idx}>
+                            <SpeakSentence text={q}>{q}</SpeakSentence>
+                          </li>
                         ))}
                       </ul>
-                      
-                      <button
-                        onClick={() => {
-                          const audio = new Audio(`/audios/lesson32/photo${photo.id}-questions.mp3`);
-                          audio.play().catch(e => console.log("Audio error:", e));
-                        }}
-                        className="mt-4 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-4 py-2 rounded-md transition flex items-center gap-2"
-                      >
-                        <Volume2 size={18} />
-                        Hear Questions
-                      </button>
                     </div>
                   </div>
                 ))}
@@ -1194,12 +1229,110 @@ export default function Lesson32() {
           )}
         </div>
 
+        {/* TUNE IN YOUR EARS - With Key Vocabulary Audio */}
+        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
+          <div className="bg-teal-600 text-white py-4 px-6 md:px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-xl md:text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
+              <button
+                onClick={() => toggleSection('tuneIn')}
+                className="ml-4 p-2 rounded-full hover:bg-teal-700 transition"
+              >
+                {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.tuneIn && (
+            <div className="p-6 md:p-8">
+              <div className="mb-8 text-center">
+                <SpeakSentence text="Watch the video and answer the questions below" className="text-xl md:text-2xl font-bold text-teal-700 mb-4">
+                  Watch the video and answer the questions below:
+                </SpeakSentence>
+               
+                <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
+                  <div className="relative w-full pt-[56.25%]">
+                    <iframe
+                      src="https://www.youtube.com/embed/q5JxLYzO5k4?list=PLc0_DKGuWp_2GK_ZyY81hiV_vdMaUmezE&index=40"
+                      title="English Listening Practice - Daily Routines & Conversations"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute top-0 left-0 w-full h-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* KEY VOCABULARY FROM THE VIDEO */}
+              <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">📖 KEY VOCABULARY FROM THE VIDEO:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {keyVocabulary.map((item, idx) => (
+                    <div key={idx} className="bg-white p-3 rounded-lg border border-teal-200 shadow-sm hover:shadow-md transition flex justify-between items-center">
+                      <div>
+                        <SpeakText text={item.word} className="font-bold text-teal-700">
+                          {item.word}
+                        </SpeakText>
+                        <p className="text-sm text-gray-600">{item.meaning}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Video Questions */}
+              <div className="space-y-6 mb-8">
+                {videoQuestions.map((question) => (
+                  <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-teal-200 shadow-md">
+                    <SpeakSentence text={question.question} className="text-base md:text-lg font-bold text-teal-700 mb-3">
+                      {question.question}
+                      {question.isPersonal && (
+                        <span className="ml-2 text-sm font-normal text-teal-500">(Personal answer)</span>
+                      )}
+                    </SpeakSentence>
+
+                    <textarea
+                      value={videoAnswers[question.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)}
+                      placeholder="Write your answer here..."
+                      className="w-full h-24 p-3 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                    />
+
+                    <div className="flex flex-col sm:flex-row gap-3 mt-3">
+                      <button
+                        onClick={() => checkVideoAnswer(question.id)}
+                        className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition font-medium"
+                      >
+                        Check Answer
+                      </button>
+                      <button
+                        onClick={() => handleVideoAnswerChange(question.id, "")}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md transition"
+                      >
+                        Clear
+                      </button>
+                    </div>
+
+                    {showVideoResults[question.id] && question.isPersonal && (
+                      <div className="mt-3 p-3 bg-teal-50 border border-teal-200 rounded-md">
+                        <p className="text-sm text-teal-700">
+                          <span className="font-medium">Note:</span> This is a personal question. Your answer has been saved for practice.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Save Button and Navigation */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-8">
-          <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <button
               onClick={saveAllAnswers}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 flex items-center gap-2"
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 md:px-8 rounded-full text-base md:text-lg transition duration-300 flex items-center justify-center gap-2"
             >
               <span>💾</span> Save All My Answers
             </button>
@@ -1213,16 +1346,16 @@ export default function Lesson32() {
 
           <div className="flex gap-4">
             <button
-              onClick={() => router.push("/cursos")}
-              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+              onClick={() => router.push("/cursos/lesson31")}
+              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 md:px-8 rounded-full transition-colors text-sm md:text-base"
             >
-              &larr; Voltar aos Cursos
+              &larr; Previous Lesson
             </button>
             <button
               onClick={() => router.push("/cursos/lesson33")}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 md:px-8 rounded-full transition-colors text-sm md:text-base"
             >
-              Próxima Lição &rarr;
+              Next Lesson &rarr;
             </button>
           </div>
         </div>

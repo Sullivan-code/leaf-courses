@@ -16,7 +16,7 @@ export default function Home() {
           style={{ backgroundImage: 'url("/images/mainpage.png")' }}
         >
           {/* Overlay escuro para melhor contraste do texto */}
-          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-black/0"></div>
         </div>
 
         {/* Conteúdo sobreposto à imagem */}
@@ -162,8 +162,8 @@ export default function Home() {
               />
             </div>
             <div className="relative z-10">
-              <h2 className="text-3xl font-bold mb-8">Meu Público</h2>
-              <ul className="list-disc pl-6 text-xl space-y-4">
+              <h2 className="text-3xl font-bold mb-8 group-hover:text-white transition-colors duration-300">Meu Público</h2>
+              <ul className="list-disc pl-6 text-xl space-y-4 group-hover:text-white transition-colors duration-300">
                 <li>Profissionais de T.I</li>
                 <li>Engenheiros de Software</li>
                 <li>Profissionais de Saúde</li>
@@ -176,7 +176,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative bg-white rounded-2xl shadow-xl p-8 border-2 border-[#bfdbfe] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all duration-300 overflow-hidden group">
+          {/* Metodologia LEAF - COM EFEITO ROXO NO HOVER */}
+          <div className="relative bg-white rounded-2xl shadow-xl p-8 border-2 border-[#bfdbfe] hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-700 hover:text-white transition-all duration-300 overflow-hidden group">
             <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300">
               <Image
                 src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
@@ -186,8 +187,8 @@ export default function Home() {
               />
             </div>
             <div className="relative z-10">
-              <h2 className="text-3xl font-bold mb-8">Metodologia LEAF</h2>
-              <div className="space-y-5 text-xl">
+              <h2 className="text-3xl font-bold mb-8 group-hover:text-white transition-colors duration-300">Metodologia LEAF</h2>
+              <div className="space-y-5 text-xl group-hover:text-white transition-colors duration-300">
                 <p>✅ Foco em conversação e fluência</p>
                 <p>✅ Situações reais do ambiente profissional</p>
                 <p>✅ Vocabulário técnico por área de atuação</p>
@@ -214,8 +215,8 @@ export default function Home() {
             <h2 className="text-3xl font-bold mb-12 text-[#000000] text-center">Planos de Estudo</h2>
             <div className="grid md:grid-cols-3 gap-8 items-stretch">
               {/* Plano Turma */}
-              <div className="border-2 border-[#bfdbfe] rounded-xl p-8 bg-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:scale-105 transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300">
+              <div className="border-2 border-[#bfdbfe] rounded-xl p-8 bg-white hover:shadow-2xl transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300">
                   <Image
                     src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
                     alt="Group class"
@@ -234,14 +235,14 @@ export default function Home() {
                     <li>Atividades de conversação com estrangeiros</li>
                   </ul>
                 </div>
-                <button className="w-full bg-white text-blue-600 py-4 rounded-xl font-bold text-xl transition-all duration-300 group-hover:bg-yellow-300 group-hover:text-black mt-auto relative z-10">
+                <button className="w-full bg-white text-gray-600 py-4 rounded-xl font-bold text-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-gray-400 hover:to-gray-600 hover:text-white hover:scale-105 mt-auto relative z-10">
                   Inscreva-se
                 </button>
               </div>
 
               {/* Plano Individual */}
-              <div className="border-2 border-[#bfdbfe] rounded-xl p-8 bg-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:scale-105 transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300">
+              <div className="border-2 border-[#bfdbfe] rounded-xl p-8 bg-white hover:shadow-2xl transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300">
                   <Image
                     src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
                     alt="Individual class"
@@ -259,14 +260,14 @@ export default function Home() {
                     <li>Conteúdos com filmes, séries & Podcasts</li>
                   </ul>
                 </div>
-                <button className="w-full bg-white text-blue-600 py-4 rounded-xl font-bold text-xl transition-all duration-300 group-hover:bg-green-300 group-hover:text-black mt-auto relative z-10">
+                <button className="w-full bg-white text-amber-600 py-4 rounded-xl font-bold text-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-400 hover:to-yellow-600 hover:text-white hover:scale-105 mt-auto relative z-10">
                   Inscreva-se
                 </button>
               </div>
 
               {/* Plano Diamante */}
-              <div className="border-2 border-[#bfdbfe] rounded-xl p-8 bg-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:scale-105 transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300">
+              <div className="border-2 border-[#bfdbfe] rounded-xl p-8 bg-white hover:shadow-2xl transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300">
                   <Image
                     src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
                     alt="Premium class"
@@ -285,7 +286,7 @@ export default function Home() {
                     <li>Conteúdo extra para estudar durante a semana</li>
                   </ul>
                 </div>
-                <button className="w-full bg-white text-blue-600 py-4 rounded-xl font-bold text-xl transition-all duration-300 group-hover:bg-sky-300 group-hover:text-black mt-auto relative z-10">
+                <button className="w-full bg-white text-sky-500 py-4 rounded-xl font-bold text-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-sky-400 hover:to-blue-500 hover:text-white hover:scale-105 mt-auto relative z-10">
                   Inscreva-se
                 </button>
               </div>

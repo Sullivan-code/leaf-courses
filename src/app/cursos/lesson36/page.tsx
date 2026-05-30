@@ -7,31 +7,45 @@ import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle
 
 // ============================================
 // LISTEN ITEMS - Imagem 1, 2, 3 (EMBARALHADAS NA TELA, MAS ORDEM CORRETA É 1,2,3)
+// COM IMAGENS EM BASE64 PARA FUNCIONAR SEM ARQUIVOS EXTERNOS
 // ============================================
+
+// Imagem 1: Refletindo sobre a vida (Homem pensando)
+const image1Base64 = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 250'%3E%3Crect width='300' height='250' fill='%23667eea'/%3E%3Ccircle cx='150' cy='100' r='50' fill='%23fbbf24'/%3E%3Ccircle cx='130' cy='90' r='5' fill='%23333'/%3E%3Ccircle cx='170' cy='90' r='5' fill='%23333'/%3E%3Cpath d='M130 120 Q150 135 170 120' stroke='%23333' stroke-width='3' fill='none'/%3E%3Crect x='120' y='145' width='60' height='40' rx='5' fill='%23ef4444'/%3E%3Ctext x='150' y='210' text-anchor='middle' fill='white' font-size='14' font-weight='bold'%3E🤔 REFLETINDO%3C/text%3E%3Ctext x='150' y='230' text-anchor='middle' fill='%23ddd' font-size='12'%3ESOBRE A VIDA%3C/text%3E%3C/svg%3E";
+
+// Imagem 2: Casal assistindo TV juntos
+const image2Base64 = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 250'%3E%3Crect width='300' height='250' fill='%238b5cf6'/%3E%3Crect x='50' y='80' width='200' height='100' rx='10' fill='%233b82f6'/%3E%3Crect x='60' y='90' width='180' height='70' rx='5' fill='%231e40af'/%3E%3Ccircle cx='100' cy='195' r='20' fill='%23fbbf24'/%3E%3Ccircle cx='95' cy='190' r='3' fill='%23333'/%3E%3Ccircle cx='200' cy='195' r='20' fill='%23f97316'/%3E%3Ccircle cx='195' cy='190' r='3' fill='%23333'/%3E%3Ctext x='150' y='210' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3E👫 ASSISTINDO TV%3C/text%3E%3Ctext x='150' y='230' text-anchor='middle' fill='%23ddd' font-size='11'%3ECASAL JUNTOS%3C/text%3E%3C/svg%3E";
+
+// Imagem 3: Mulher sorrindo
+const image3Base64 = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 250'%3E%3Crect width='300' height='250' fill='%23ec4899'/%3E%3Ccircle cx='150' cy='100' r='55' fill='%23fcd34d'/%3E%3Ccircle cx='130' cy='90' r='6' fill='%23333'/%3E%3Ccircle cx='170' cy='90' r='6' fill='%23333'/%3E%3Cpath d='M130 125 Q150 145 170 125' stroke='%23333' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Crect x='140' y='160' width='20' height='30' rx='5' fill='%23ef4444'/%3E%3Ctext x='150' y='210' text-anchor='middle' fill='white' font-size='14' font-weight='bold'%3E😊 MULHER%3C/text%3E%3Ctext x='150' y='230' text-anchor='middle' fill='%23ddd' font-size='12'%3ESORRINDO%3C/text%3E%3C/svg%3E";
+
 const listenItemsOriginal = [
   { 
     key: "image1", 
     label: "1. refletindo sobre a vida", 
-    image: "/images/1. refletindo sobre a vida.jpg",
+    image: image1Base64,
     placeholder: "🤔",
-    description: "refletindo sobre a vida",
-    correctNumber: 1
+    description: "Homem pensando, refletindo sobre a vida",
+    correctNumber: 1,
+    bgColor: "from-purple-100 to-blue-100"
   },
   { 
     key: "image2", 
     label: "2. casal assistindo tv juntos", 
-    image: "/images/2. casal assistindo tv juntos.jpg",
+    image: image2Base64,
     placeholder: "👫📺",
-    description: "casal assistindo tv juntos",
-    correctNumber: 2
+    description: "Casal assistindo televisão juntos no sofá",
+    correctNumber: 2,
+    bgColor: "from-indigo-100 to-purple-100"
   },
   { 
     key: "image3", 
     label: "3. mulher sorrindo", 
-    image: "/images/3. mulher sorrindo.jpg",
+    image: image3Base64,
     placeholder: "😊",
-    description: "mulher sorrindo",
-    correctNumber: 3
+    description: "Mulher com um lindo sorriso",
+    correctNumber: 3,
+    bgColor: "from-pink-100 to-rose-100"
   },
 ];
 
@@ -46,241 +60,185 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 // ============================================
-// DRILLING PRACTICE I - Substitution Practice
+// DRILLING PRACTICE I - Substitution Practice (PAST TENSE)
 // ============================================
 const drillingExercises1 = [
   {
     id: 1,
-    portuguese: "Ele escreve coisas engraçadas.",
-    english: "He writes funny things.",
+    portuguese: "Ele escreveu coisas engraçadas.",
+    english: "He wrote funny things.",
+    audio: "",
     substitutions: [
-      { word: "interessantes", english: "interesting", phrase: "He writes interesting things." },
-      { word: "importantes", english: "important", phrase: "He writes important things." }
+      { word: "interessantes", english: "interesting", phrase: "He wrote interesting things.", audio: "" },
+      { word: "importantes", english: "important", phrase: "He wrote important things.", audio: "" }
     ]
   },
   {
     id: 2,
-    portuguese: "Eu acho que é importante estudar inglês.",
-    english: "I think it's important to study English.",
+    portuguese: "Eu pensei que era importante estudar inglês.",
+    english: "I thought it was important to study English.",
+    audio: "",
     substitutions: [
-      { word: "aprender", english: "to learn", phrase: "I think it's important to learn English." },
-      { word: "falar", english: "to speak", phrase: "I think it's important to speak English." }
+      { word: "aprender", english: "to learn", phrase: "I thought it was important to learn English.", audio: "" },
+      { word: "falar", english: "to speak", phrase: "I thought it was important to speak English.", audio: "" }
     ]
   },
   {
     id: 3,
-    portuguese: "Você acha que é engraçado?",
-    english: "Do you think it's funny?",
+    portuguese: "Você achou que era engraçado?",
+    english: "Did you think it was funny?",
+    audio: "",
     substitutions: [
-      { word: "difícil", english: "difficult", phrase: "Do you think it's difficult?" },
-      { word: "fácil", english: "easy", phrase: "Do you think it's easy?" }
-    ]
-  },
-  {
-    id: 4,
-    portuguese: "Elas geralmente não escrevem e-mails.",
-    english: "They usually don't write emails.",
-    substitutions: [
-      { word: "redações", english: "essays", phrase: "They usually don't write essays." },
-      { word: "relatórios", english: "reports", phrase: "They usually don't write reports." }
-    ]
-  },
-  {
-    id: 5,
-    portuguese: "Vamos para a escola juntos?",
-    english: "Shall we go to school together?",
-    substitutions: [
-      { word: "ao trabalho", english: "to work", phrase: "Shall we go to work together?" },
-      { word: "ao shopping", english: "to the mall", phrase: "Shall we go to the mall together?" }
-    ]
-  },
-  {
-    id: 6,
-    portuguese: "Por que você precisa ir?",
-    english: "Why do you need to go?",
-    substitutions: [
-      { word: "ficar", english: "to stay", phrase: "Why do you need to stay?" },
-      { word: "vir", english: "to come", phrase: "Why do you need to come?" }
+      { word: "difícil", english: "difficult", phrase: "Did you think it was difficult?", audio: "" },
+      { word: "fácil", english: "easy", phrase: "Did you think it was easy?", audio: "" }
     ]
   }
 ];
 
 // ============================================
-// NEGATIVE EXERCISES - Change into Negative
+// PAST TENSE EXERCISES - Simple Past
 // ============================================
-const negativeExercises = [
-  { id: 1, affirmative: "I think it's hard.", negative: "I don't think it's hard.", userAnswer: "" },
-  { id: 2, affirmative: "They study together.", negative: "They don't study together.", userAnswer: "" },
-  { id: 3, affirmative: "We need to write a story.", negative: "We don't need to write a story.", userAnswer: "" },
-  { id: 4, affirmative: "Taylor has great ideas.", negative: "Taylor doesn't have great ideas.", userAnswer: "" },
-  { id: 5, affirmative: "He goes to the office on Thursdays.", negative: "He doesn't go to the office on Thursdays.", userAnswer: "" },
-  { id: 6, affirmative: "She meets everybody on weekends.", negative: "She doesn't meet everybody on weekends.", userAnswer: "" },
+const pastTenseExercises = [
+  { id: 1, present: "I think about the problem.", past: "I thought about the problem.", userAnswer: "", audio: "" },
+  { id: 2, present: "They study together every day.", past: "They studied together yesterday.", userAnswer: "", audio: "" },
+  { id: 3, present: "We need to write a story.", past: "We needed to write a story.", userAnswer: "", audio: "" },
+  { id: 4, present: "She has great ideas.", past: "She had great ideas.", userAnswer: "", audio: "" },
+  { id: 5, present: "He goes to the office on Thursdays.", past: "He went to the office last Thursday.", userAnswer: "", audio: "" },
+  { id: 6, present: "She meets everybody on weekends.", past: "She met everybody last weekend.", userAnswer: "", audio: "" },
 ];
 
 // ============================================
-// DRILLING PRACTICE II - Substitution Practice
+// PRESENT PERFECT EXERCISES
 // ============================================
-const drillingExercises2 = [
-  {
-    id: 1,
-    english: "How do you say 'casa' in German?",
-    substitutions: [
-      { word: "italiano", phrase: "How do you say 'casa' in Italian?" },
-      { word: "espanhol", phrase: "How do you say 'casa' in Spanish?" }
-    ]
-  },
-  {
-    id: 2,
-    english: "What does this word mean?",
-    substitutions: [
-      { word: "stuff", phrase: "What does 'stuff' mean?" },
-      { word: "deadline", phrase: "What does 'deadline' mean?" }
-    ]
-  },
-  {
-    id: 3,
-    english: "We don't have an opinion about this.",
-    substitutions: [
-      { word: "Eles", phrase: "They don't have an opinion about this." },
-      { word: "Ela", phrase: "She doesn't have an opinion about this." }
-    ]
-  },
-  {
-    id: 4,
-    english: "What do you think about that movie?",
-    substitutions: [
-      { word: "vídeo", phrase: "What do you think about that video?" },
-      { word: "livro", phrase: "What do you think about that book?" }
-    ]
-  },
-  {
-    id: 5,
-    english: "I think it's boring.",
-    substitutions: [
-      { word: "engraçado", phrase: "I think it's funny." },
-      { word: "interessante", phrase: "I think it's interesting." }
-    ]
-  },
-  {
-    id: 6,
-    english: "I need to go because it's late.",
-    substitutions: [
-      { word: "Ele", phrase: "He needs to go because it's late." },
-      { word: "Ela", phrase: "She needs to go because it's late." }
-    ]
-  }
+const presentPerfectExercises = [
+  { id: 1, sentence: "I have studied English for five years.", userAnswer: "", audio: "" },
+  { id: 2, sentence: "She has never been to London.", userAnswer: "", audio: "" },
+  { id: 3, sentence: "They have already finished their homework.", userAnswer: "", audio: "" },
+  { id: 4, sentence: "We have just eaten lunch.", userAnswer: "", audio: "" },
+  { id: 5, sentence: "He has written three books.", userAnswer: "", audio: "" },
+  { id: 6, sentence: "Have you ever visited Paris?", userAnswer: "", audio: "" },
 ];
 
 // ============================================
-// AFFIRMATIVE EXERCISES - Change into Affirmative
+// PAST PERFECT EXERCISES
 // ============================================
-const affirmativeExercises = [
-  { id: 1, affirmative: "We need to talk about the problem.", negative: "We don't need to talk about the problem.", userAnswer: "" },
-  { id: 2, affirmative: "I like to start new projects.", negative: "I don't like to start new projects.", userAnswer: "" },
-  { id: 3, affirmative: "They know everything.", negative: "They don't know everything.", userAnswer: "" },
-  { id: 4, affirmative: "You go to college with your neighbor.", negative: "You don't go to college with your neighbor.", userAnswer: "" },
-  { id: 5, affirmative: "He talks to everybody.", negative: "He doesn't talk to everybody.", userAnswer: "" },
-  { id: 6, affirmative: "She studies with her brother.", negative: "She doesn't study with her brother.", userAnswer: "" },
+const pastPerfectExercises = [
+  { id: 1, sentence: "She had already left when I arrived.", userAnswer: "", audio: "" },
+  { id: 2, sentence: "They had never seen such a beautiful place.", userAnswer: "", audio: "" },
+  { id: 3, sentence: "He had finished his work before the meeting started.", userAnswer: "", audio: "" },
+  { id: 4, sentence: "We had already eaten when they arrived.", userAnswer: "", audio: "" },
+  { id: 5, sentence: "I had never thought about that before.", userAnswer: "", audio: "" },
+  { id: 6, sentence: "Had you ever tried sushi before that day?", userAnswer: "", audio: "" },
 ];
 
 // ============================================
-// INTERROGATIVE EXERCISES - Change into Interrogative
+// FUTURE TENSE EXERCISES
 // ============================================
-const interrogativeExercises = [
-  { id: 1, statement: "You need to write a message to your friends.", interrogative: "Do you need to write a message to your friends?", userAnswer: "" },
-  { id: 2, statement: "They want to start a new course.", interrogative: "Do they want to start a new course?", userAnswer: "" },
-  { id: 3, statement: "He knows that person.", interrogative: "Does he know that person?", userAnswer: "" },
-  { id: 4, statement: "She talks about sports and music.", interrogative: "Does she talk about sports and music?", userAnswer: "" },
-  { id: 5, statement: "You need to write a composition.", interrogative: "Do you need to write a composition?", userAnswer: "" },
-  { id: 6, statement: "We have an exam today.", interrogative: "Do we have an exam today?", userAnswer: "" },
+const futureExercises = [
+  { id: 1, sentence: "I will study English tomorrow.", userAnswer: "", audio: "" },
+  { id: 2, sentence: "She is going to travel next week.", userAnswer: "", audio: "" },
+  { id: 3, sentence: "They will call you later.", userAnswer: "", audio: "" },
+  { id: 4, sentence: "We are going to buy a new car.", userAnswer: "", audio: "" },
+  { id: 5, sentence: "He will arrive at 8 PM.", userAnswer: "", audio: "" },
+  { id: 6, sentence: "Will you come to the party?", userAnswer: "", audio: "" },
 ];
 
 // ============================================
-// SPEAK RIGHT NOW CARDS - Questions
+// QUESTIONS IN THE PAST (DID)
+// ============================================
+const pastQuestionsExercises = [
+  { id: 1, statement: "You went to the movies yesterday.", question: "Did you go to the movies yesterday?", userAnswer: "", audio: "" },
+  { id: 2, statement: "She ate pizza for dinner.", question: "Did she eat pizza for dinner?", userAnswer: "", audio: "" },
+  { id: 3, statement: "They played soccer last weekend.", question: "Did they play soccer last weekend?", userAnswer: "", audio: "" },
+  { id: 4, statement: "He woke up early this morning.", question: "Did he wake up early this morning?", userAnswer: "", audio: "" },
+  { id: 5, statement: "We visited our grandparents.", question: "Did we visit our grandparents?", userAnswer: "", audio: "" },
+  { id: 6, statement: "She bought a new dress.", question: "Did she buy a new dress?", userAnswer: "", audio: "" },
+];
+
+// ============================================
+// SPEAK RIGHT NOW CARDS - Questions (All Tenses)
 // ============================================
 const speakCards = [
   { 
     id: 1, 
-    question: "Why do you study English?", 
-    answer: "I study English because I need it for my career.",
-    translation: "Por que você estuda inglês?",
-    answerTranslation: "Eu estudo inglês porque preciso para minha carreira."
+    question: "What did you do yesterday?", 
+    answer: "Yesterday I studied English and watched a movie.",
+    translation: "O que você fez ontem?",
+    answerTranslation: "Ontem eu estudei inglês e assisti um filme.",
+    audio: ""
   },
   { 
     id: 2, 
-    question: "Do you think it's easy to learn this language?", 
-    answer: "No, I don't think it's easy, but it's possible.",
-    translation: "Você acha que é fácil aprender este idioma?",
-    answerTranslation: "Não, não acho que seja fácil, mas é possível."
+    question: "Have you ever traveled abroad?", 
+    answer: "Yes, I have traveled to the United States.",
+    translation: "Você já viajou para o exterior?",
+    answerTranslation: "Sim, eu viajei para os Estados Unidos.",
+    audio: ""
   },
   { 
     id: 3, 
-    question: "What's the meaning of 'early'?", 
-    answer: "Early means 'cedo' or 'antecipado' in Portuguese.",
-    translation: "Qual é o significado de 'early'?",
-    answerTranslation: "Early significa 'cedo' ou 'antecipado' em português."
+    question: "What had you already done before the party started?", 
+    answer: "I had already eaten dinner before the party started.",
+    translation: "O que você já tinha feito antes da festa começar?",
+    answerTranslation: "Eu já tinha jantado antes da festa começar.",
+    audio: ""
   },
   { 
     id: 4, 
-    question: "How do you say 'faculdade' in English?", 
-    answer: "You say 'college' or 'university'.",
-    translation: "Como se diz 'faculdade' em inglês?",
-    answerTranslation: "Você diz 'college' ou 'university'."
+    question: "What will you do next weekend?", 
+    answer: "I will visit my family next weekend.",
+    translation: "O que você fará no próximo fim de semana?",
+    answerTranslation: "Eu visitarei minha família no próximo fim de semana.",
+    audio: ""
   },
   { 
     id: 5, 
-    question: "Do you usually have to write a lot of emails at work every day?", 
-    answer: "Yes, I write many emails every day.",
-    translation: "Você geralmente tem que escrever muitos e-mails no trabalho todos os dias?",
-    answerTranslation: "Sim, eu escrevo muitos e-mails todos os dias."
+    question: "Did you like the movie?", 
+    answer: "Yes, I liked the movie very much.",
+    translation: "Você gostou do filme?",
+    answerTranslation: "Sim, eu gostei muito do filme.",
+    audio: ""
   },
   { 
     id: 6, 
-    question: "How many books do you read every year?", 
-    answer: "I read about ten books every year.",
-    translation: "Quantos livros você lê por ano?",
-    answerTranslation: "Eu leio cerca de dez livros por ano."
+    question: "How long have you studied English?", 
+    answer: "I have studied English for three years.",
+    translation: "Há quanto tempo você estuda inglês?",
+    answerTranslation: "Eu estudo inglês há três anos.",
+    audio: ""
   },
   { 
     id: 7, 
-    question: "Do you have to go to a meeting today?", 
-    answer: "Yes, I have a meeting at 3 PM.",
-    translation: "Você tem que ir a uma reunião hoje?",
-    answerTranslation: "Sim, tenho uma reunião às 15h."
+    question: "What are you going to do tomorrow?", 
+    answer: "I am going to work and then go to the gym.",
+    translation: "O que você vai fazer amanhã?",
+    answerTranslation: "Eu vou trabalhar e depois ir para a academia.",
+    audio: ""
   },
   { 
     id: 8, 
-    question: "Do you like to watch movies on weekends?", 
-    answer: "Yes, I love watching movies on weekends.",
-    translation: "Você gosta de assistir filmes nos fins de semana?",
-    answerTranslation: "Sim, adoro assistir filmes nos fins de semana."
+    question: "Had you ever seen that before?", 
+    answer: "No, I had never seen anything like that.",
+    translation: "Você já tinha visto aquilo antes?",
+    answerTranslation: "Não, eu nunca tinha visto nada parecido.",
+    audio: ""
   },
   { 
     id: 9, 
-    question: "Do you think it's important to learn about science and politics?", 
-    answer: "Yes, I think it's very important.",
-    translation: "Você acha importante aprender sobre ciência e política?",
-    answerTranslation: "Sim, acho muito importante."
+    question: "Will you help me with this project?", 
+    answer: "Yes, I will help you with the project.",
+    translation: "Você vai me ajudar com este projeto?",
+    answerTranslation: "Sim, eu vou te ajudar com o projeto.",
+    audio: ""
   },
   { 
     id: 10, 
-    question: "Why do you have to study Portuguese today?", 
-    answer: "I have to study Portuguese because I have a test tomorrow.",
-    translation: "Por que você tem que estudar português hoje?",
-    answerTranslation: "Tenho que estudar português porque tenho uma prova amanhã."
+    question: "Why did you choose to learn English?", 
+    answer: "I chose to learn English because it's important for my career.",
+    translation: "Por que você escolheu aprender inglês?",
+    answerTranslation: "Eu escolhi aprender inglês porque é importante para minha carreira.",
+    audio: ""
   },
-];
-
-// ============================================
-// THERE AND AROUND - Useful Phrases
-// ============================================
-const usefulPhrases = [
-  { english: "How can I find out more about the course?", portuguese: "Como eu faço para saber mais sobre o curso?" },
-  { english: "Take this brochure.", portuguese: "Leve este panfleto." },
-  { english: "Take your time.", portuguese: "Leve o tempo que precisar." },
-  { english: "It sounds great!", portuguese: "Parece ótimo!" },
-  { english: "What do I need to do to enroll?", portuguese: "O que eu preciso fazer para me matricular?" },
-  { english: "You can do it online.", portuguese: "Você pode fazer isso pela internet." },
 ];
 
 // ============================================
@@ -290,102 +248,61 @@ const usefulPhrases = [
 interface AudioPlayerProps {
   src: string;
   compact?: boolean;
+  textToSpeak?: string;
 }
 
-const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressBarRef = useRef<HTMLDivElement>(null);
+const AudioPlayer = ({ src, compact = false, textToSpeak = "" }: AudioPlayerProps) => {
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
-  useEffect(() => {
-    const audio = audioRef.current || new Audio(src);
-    if (!audioRef.current) audioRef.current = audio;
-    else audio.src = src;
-
-    const updateProgress = () => {
-      if (audio.duration) {
-        setProgress((audio.currentTime / audio.duration) * 100);
-      }
-    };
-
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setProgress(100);
-    };
-
-    audio.addEventListener("timeupdate", updateProgress);
-    audio.addEventListener("ended", handleEnded);
-
-    return () => {
-      audio.removeEventListener("timeupdate", updateProgress);
-      audio.removeEventListener("ended", handleEnded);
-      audio.pause();
-    };
-  }, [src]);
+  const speakWithWebSpeech = () => {
+    const text = textToSpeak;
+    if (!text && !src) return;
+    
+    if ('speechSynthesis' in window) {
+      // Cancela qualquer fala em andamento
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      utterance.pitch = 1.1;
+      
+      // Tentar usar voz feminina americana
+      const voices = window.speechSynthesis.getVoices();
+      const femaleVoice = voices.find(voice => 
+        voice.lang === 'en-US' && 
+        (voice.name.includes('Google UK Female') || 
+         voice.name.includes('Samantha') ||
+         voice.name.includes('Female'))
+      );
+      if (femaleVoice) utterance.voice = femaleVoice;
+      
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
   const togglePlayPause = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
     } else {
-      audio.play().catch((err) => console.error("Audio error:", err));
+      speakWithWebSpeech();
     }
-    setIsPlaying(!isPlaying);
-  };
-
-  const resetAudio = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      setIsPlaying(false);
-      setProgress(0);
-    }
-  };
-
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || !progressBarRef.current) return;
-    
-    const rect = progressBarRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const width = rect.width;
-    const percent = offsetX / width;
-    audio.currentTime = percent * audio.duration;
-    setProgress(percent * 100);
   };
 
   return (
     <div className={`flex items-center gap-2 ${compact ? "ml-2" : ""}`}>
       <button 
         onClick={togglePlayPause} 
-        className={`${compact ? "p-1" : "p-2"} bg-blue-500 text-white rounded-full hover:bg-blue-600`}
+        className={`${compact ? "p-1" : "p-2"} bg-blue-500 text-white rounded-full hover:bg-blue-600 transition`}
+        title="Listen (Text-to-Speech)"
       >
-        {isPlaying ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
+        {isSpeaking ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
       </button>
-      <button 
-        onClick={resetAudio} 
-        className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600`}
-      >
-        <RotateCcw size={compact ? 12 : 16} />
-      </button>
-      
-      {!compact && (
-        <div 
-          ref={progressBarRef}
-          className="w-20 h-1 bg-gray-300 rounded-full overflow-hidden cursor-pointer"
-          onClick={handleProgressClick}
-        >
-          <div 
-            className="h-full bg-blue-500 transition-all duration-200" 
-            style={{ width: `${progress}%` }} 
-          />
-        </div>
-      )}
-      
-      <audio ref={audioRef} src={src} preload="auto" />
     </div>
   );
 };
@@ -432,25 +349,30 @@ export default function Lesson36() {
     Object.fromEntries(drillingExercises1.map(ex => [ex.id, ex.english]))
   );
   
-  // Estados para os exercícios de drilling 2
-  const [drilling2Sentences, setDrilling2Sentences] = useState<Record<number, string>>(
-    Object.fromEntries(drillingExercises2.map(ex => [ex.id, ex.english]))
-  );
+  // Estados para os exercícios de passado
+  const [pastTenseEx, setPastTenseEx] = useState(pastTenseExercises);
+  const [pastTenseResults, setPastTenseResults] = useState<Record<number, boolean>>({});
+  const [showPastTenseResults, setShowPastTenseResults] = useState<Record<number, boolean>>({});
   
-  // Estados para os exercícios de negativo
-  const [negativeEx, setNegativeEx] = useState(negativeExercises);
-  const [negativeResults, setNegativeResults] = useState<Record<number, boolean>>({});
-  const [showNegativeResults, setShowNegativeResults] = useState<Record<number, boolean>>({});
+  // Estados para present perfect
+  const [presentPerfectEx, setPresentPerfectEx] = useState(presentPerfectExercises);
+  const [presentPerfectResults, setPresentPerfectResults] = useState<Record<number, boolean>>({});
+  const [showPresentPerfectResults, setShowPresentPerfectResults] = useState<Record<number, boolean>>({});
   
-  // Estados para os exercícios de afirmativo
-  const [affirmativeEx, setAffirmativeEx] = useState(affirmativeExercises);
-  const [affirmativeResults, setAffirmativeResults] = useState<Record<number, boolean>>({});
-  const [showAffirmativeResults, setShowAffirmativeResults] = useState<Record<number, boolean>>({});
+  // Estados para past perfect
+  const [pastPerfectEx, setPastPerfectEx] = useState(pastPerfectExercises);
+  const [pastPerfectResults, setPastPerfectResults] = useState<Record<number, boolean>>({});
+  const [showPastPerfectResults, setShowPastPerfectResults] = useState<Record<number, boolean>>({});
   
-  // Estados para os exercícios de interrogativo
-  const [interrogativeEx, setInterrogativeEx] = useState(interrogativeExercises);
-  const [interrogativeResults, setInterrogativeResults] = useState<Record<number, boolean>>({});
-  const [showInterrogativeResults, setShowInterrogativeResults] = useState<Record<number, boolean>>({});
+  // Estados para future
+  const [futureEx, setFutureEx] = useState(futureExercises);
+  const [futureResults, setFutureResults] = useState<Record<number, boolean>>({});
+  const [showFutureResults, setShowFutureResults] = useState<Record<number, boolean>>({});
+  
+  // Estados para past questions
+  const [pastQuestionsEx, setPastQuestionsEx] = useState(pastQuestionsExercises);
+  const [pastQuestionsResults, setPastQuestionsResults] = useState<Record<number, boolean>>({});
+  const [showPastQuestionsResults, setShowPastQuestionsResults] = useState<Record<number, boolean>>({});
   
   // Estado para o Speak Right Now
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -462,85 +384,87 @@ export default function Lesson36() {
   const [sections, setSections] = useState({
     listen: true,
     drilling1: true,
-    negative: true,
-    drilling2: true,
-    affirmative: true,
-    interrogative: true,
-    speak: true,
-    usefulPhrases: true
+    pastTense: true,
+    presentPerfect: true,
+    pastPerfect: true,
+    future: true,
+    pastQuestions: true,
+    speak: true
   });
 
-  // Estado para armazenar a sequência de números que o aluno selecionou (ordem das imagens)
+  // Estado para armazenar a sequência de números que o aluno selecionou
   const [imageSequence, setImageSequence] = useState<number[]>([]);
   const [showFinalSequenceResult, setShowFinalSequenceResult] = useState(false);
   const [isSequenceCorrect, setIsSequenceCorrect] = useState(false);
   
-  // Estado para armazenar a lista de itens embaralhados (inicializado no cliente)
+  // Estado para armazenar a lista de itens embaralhados
   const [shuffledListenItems, setShuffledListenItems] = useState(listenItemsOriginal);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Embaralhar as imagens para exibição APENAS no cliente para evitar erro de hidratação
+  // Embaralhar as imagens
   useEffect(() => {
     setShuffledListenItems(shuffleArray(listenItemsOriginal));
     setIsHydrated(true);
   }, []);
 
-  // ==============================
-  // PERSISTÊNCIA - CARREGAMENTO
-  // ==============================
+  // Persistência
   useEffect(() => {
     const savedAnswers = localStorage.getItem("lesson36Answers");
     if (savedAnswers) {
       try {
         const data = JSON.parse(savedAnswers);
-        
         if (data.listenAnswers) setListenAnswers(data.listenAnswers);
         if (data.showListenResults) setShowListenResults(data.showListenResults);
         if (data.listenResults) setListenResults(data.listenResults);
         if (data.drilling1Sentences) setDrilling1Sentences(data.drilling1Sentences);
-        if (data.drilling2Sentences) setDrilling2Sentences(data.drilling2Sentences);
-        if (data.negativeEx) setNegativeEx(data.negativeEx);
-        if (data.negativeResults) setNegativeResults(data.negativeResults);
-        if (data.showNegativeResults) setShowNegativeResults(data.showNegativeResults);
-        if (data.affirmativeEx) setAffirmativeEx(data.affirmativeEx);
-        if (data.affirmativeResults) setAffirmativeResults(data.affirmativeResults);
-        if (data.showAffirmativeResults) setShowAffirmativeResults(data.showAffirmativeResults);
-        if (data.interrogativeEx) setInterrogativeEx(data.interrogativeEx);
-        if (data.interrogativeResults) setInterrogativeResults(data.interrogativeResults);
-        if (data.showInterrogativeResults) setShowInterrogativeResults(data.showInterrogativeResults);
+        if (data.pastTenseEx) setPastTenseEx(data.pastTenseEx);
+        if (data.pastTenseResults) setPastTenseResults(data.pastTenseResults);
+        if (data.showPastTenseResults) setShowPastTenseResults(data.showPastTenseResults);
+        if (data.presentPerfectEx) setPresentPerfectEx(data.presentPerfectEx);
+        if (data.presentPerfectResults) setPresentPerfectResults(data.presentPerfectResults);
+        if (data.showPresentPerfectResults) setShowPresentPerfectResults(data.showPresentPerfectResults);
+        if (data.pastPerfectEx) setPastPerfectEx(data.pastPerfectEx);
+        if (data.pastPerfectResults) setPastPerfectResults(data.pastPerfectResults);
+        if (data.showPastPerfectResults) setShowPastPerfectResults(data.showPastPerfectResults);
+        if (data.futureEx) setFutureEx(data.futureEx);
+        if (data.futureResults) setFutureResults(data.futureResults);
+        if (data.showFutureResults) setShowFutureResults(data.showFutureResults);
+        if (data.pastQuestionsEx) setPastQuestionsEx(data.pastQuestionsEx);
+        if (data.pastQuestionsResults) setPastQuestionsResults(data.pastQuestionsResults);
+        if (data.showPastQuestionsResults) setShowPastQuestionsResults(data.showPastQuestionsResults);
         if (data.currentCardIndex !== undefined) setCurrentCardIndex(data.currentCardIndex);
         if (data.speakUserAnswer) setSpeakUserAnswer(data.speakUserAnswer);
         if (data.showSpeakResult !== undefined) setShowSpeakResult(data.showSpeakResult);
         if (data.speakResult !== undefined) setSpeakResult(data.speakResult);
         if (data.sections) setSections(data.sections);
         if (data.imageSequence) setImageSequence(data.imageSequence);
-        
-        console.log("Dados carregados do localStorage para Lesson 36");
       } catch (error) {
         console.error("Erro ao carregar respostas salvas:", error);
       }
     }
   }, []);
 
-  // ==============================
-  // PERSISTÊNCIA - SALVAMENTO
-  // ==============================
-  const saveAllAnswers = async () => {
+  const saveAllAnswers = () => {
     const data = {
       listenAnswers,
       showListenResults,
       listenResults,
       drilling1Sentences,
-      drilling2Sentences,
-      negativeEx,
-      negativeResults,
-      showNegativeResults,
-      affirmativeEx,
-      affirmativeResults,
-      showAffirmativeResults,
-      interrogativeEx,
-      interrogativeResults,
-      showInterrogativeResults,
+      pastTenseEx,
+      pastTenseResults,
+      showPastTenseResults,
+      presentPerfectEx,
+      presentPerfectResults,
+      showPresentPerfectResults,
+      pastPerfectEx,
+      pastPerfectResults,
+      showPastPerfectResults,
+      futureEx,
+      futureResults,
+      showFutureResults,
+      pastQuestionsEx,
+      pastQuestionsResults,
+      showPastQuestionsResults,
       currentCardIndex,
       speakUserAnswer,
       showSpeakResult,
@@ -548,8 +472,7 @@ export default function Lesson36() {
       sections,
       imageSequence,
       lastUpdated: new Date().toISOString(),
-      lessonName: "Lesson 36 - Listen, Number, and Role-play",
-      version: "1.0"
+      lessonName: "Lesson 36 - Past, Present Perfect, Past Perfect, Future",
     };
     
     try {
@@ -567,16 +490,21 @@ export default function Lesson36() {
       setShowListenResults({});
       setListenResults({});
       setDrilling1Sentences(Object.fromEntries(drillingExercises1.map(ex => [ex.id, ex.english])));
-      setDrilling2Sentences(Object.fromEntries(drillingExercises2.map(ex => [ex.id, ex.english])));
-      setNegativeEx(negativeExercises.map(ex => ({ ...ex, userAnswer: "" })));
-      setNegativeResults({});
-      setShowNegativeResults({});
-      setAffirmativeEx(affirmativeExercises.map(ex => ({ ...ex, userAnswer: "" })));
-      setAffirmativeResults({});
-      setShowAffirmativeResults({});
-      setInterrogativeEx(interrogativeExercises.map(ex => ({ ...ex, userAnswer: "" })));
-      setInterrogativeResults({});
-      setShowInterrogativeResults({});
+      setPastTenseEx(pastTenseExercises.map(ex => ({ ...ex, userAnswer: "" })));
+      setPastTenseResults({});
+      setShowPastTenseResults({});
+      setPresentPerfectEx(presentPerfectExercises.map(ex => ({ ...ex, userAnswer: "" })));
+      setPresentPerfectResults({});
+      setShowPresentPerfectResults({});
+      setPastPerfectEx(pastPerfectExercises.map(ex => ({ ...ex, userAnswer: "" })));
+      setPastPerfectResults({});
+      setShowPastPerfectResults({});
+      setFutureEx(futureExercises.map(ex => ({ ...ex, userAnswer: "" })));
+      setFutureResults({});
+      setShowFutureResults({});
+      setPastQuestionsEx(pastQuestionsExercises.map(ex => ({ ...ex, userAnswer: "" })));
+      setPastQuestionsResults({});
+      setShowPastQuestionsResults({});
       setCurrentCardIndex(0);
       setSpeakUserAnswer("");
       setShowSpeakResult(false);
@@ -588,35 +516,25 @@ export default function Lesson36() {
     }
   };
 
-  // ==============================
-  // FUNÇÕES DE MANIPULAÇÃO
-  // ==============================
-  
   const toggleSection = (section: keyof typeof sections) => {
     setSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  // Função para adicionar número à sequência (quando o aluno clica na imagem)
   const handleImageClickForSequence = (correctNumber: number) => {
-    // Verifica se o número já foi adicionado à sequência
     if (imageSequence.includes(correctNumber)) {
       alert(`⚠️ O número ${correctNumber} já foi adicionado à sua sequência! Escolha uma imagem diferente.`);
       return;
     }
-    
-    // Adiciona o número à sequência
     setImageSequence(prev => [...prev, correctNumber]);
     setShowFinalSequenceResult(false);
   };
 
-  // Função para resetar a sequência
   const resetSequence = () => {
     setImageSequence([]);
     setShowFinalSequenceResult(false);
     setIsSequenceCorrect(false);
   };
 
-  // Função para verificar se a sequência está correta (1,2,3)
   const checkSequence = () => {
     const correctSequence = [1, 2, 3];
     
@@ -637,7 +555,6 @@ export default function Lesson36() {
     setShowFinalSequenceResult(true);
   };
 
-  // Listen functions (para os números individuais de cada imagem)
   const handleListenSelect = (key: string, number: number) => {
     setListenAnswers(prev => ({ ...prev, [key]: number }));
     setShowListenResults(prev => ({ ...prev, [key]: false }));
@@ -649,56 +566,80 @@ export default function Lesson36() {
     setShowListenResults(prev => ({ ...prev, [key]: true }));
   };
 
-  // Negative functions
-  const handleNegativeChange = (id: number, value: string) => {
-    setNegativeEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
-    setShowNegativeResults(prev => ({ ...prev, [id]: false }));
+  const handlePastTenseChange = (id: number, value: string) => {
+    setPastTenseEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
+    setShowPastTenseResults(prev => ({ ...prev, [id]: false }));
   };
 
-  const handleNegativeCheck = (id: number, correctNegative: string) => {
-    const exercise = negativeEx.find(ex => ex.id === id);
+  const handlePastTenseCheck = (id: number, correctPast: string) => {
+    const exercise = pastTenseEx.find(ex => ex.id === id);
     if (exercise) {
-      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctNegative.toLowerCase().trim();
-      setNegativeResults(prev => ({ ...prev, [id]: isCorrect }));
-      setShowNegativeResults(prev => ({ ...prev, [id]: true }));
+      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctPast.toLowerCase().trim();
+      setPastTenseResults(prev => ({ ...prev, [id]: isCorrect }));
+      setShowPastTenseResults(prev => ({ ...prev, [id]: true }));
     }
   };
 
-  // Affirmative functions
-  const handleAffirmativeChange = (id: number, value: string) => {
-    setAffirmativeEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
-    setShowAffirmativeResults(prev => ({ ...prev, [id]: false }));
+  const handlePresentPerfectChange = (id: number, value: string) => {
+    setPresentPerfectEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
+    setShowPresentPerfectResults(prev => ({ ...prev, [id]: false }));
   };
 
-  const handleAffirmativeCheck = (id: number, correctAffirmative: string) => {
-    const exercise = affirmativeEx.find(ex => ex.id === id);
+  const handlePresentPerfectCheck = (id: number, correctSentence: string) => {
+    const exercise = presentPerfectEx.find(ex => ex.id === id);
     if (exercise) {
-      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctAffirmative.toLowerCase().trim();
-      setAffirmativeResults(prev => ({ ...prev, [id]: isCorrect }));
-      setShowAffirmativeResults(prev => ({ ...prev, [id]: true }));
+      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctSentence.toLowerCase().trim();
+      setPresentPerfectResults(prev => ({ ...prev, [id]: isCorrect }));
+      setShowPresentPerfectResults(prev => ({ ...prev, [id]: true }));
     }
   };
 
-  // Interrogative functions
-  const handleInterrogativeChange = (id: number, value: string) => {
-    setInterrogativeEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
-    setShowInterrogativeResults(prev => ({ ...prev, [id]: false }));
+  const handlePastPerfectChange = (id: number, value: string) => {
+    setPastPerfectEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
+    setShowPastPerfectResults(prev => ({ ...prev, [id]: false }));
   };
 
-  const handleInterrogativeCheck = (id: number, correctInterrogative: string) => {
-    const exercise = interrogativeEx.find(ex => ex.id === id);
+  const handlePastPerfectCheck = (id: number, correctSentence: string) => {
+    const exercise = pastPerfectEx.find(ex => ex.id === id);
     if (exercise) {
-      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctInterrogative.toLowerCase().trim();
-      setInterrogativeResults(prev => ({ ...prev, [id]: isCorrect }));
-      setShowInterrogativeResults(prev => ({ ...prev, [id]: true }));
+      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctSentence.toLowerCase().trim();
+      setPastPerfectResults(prev => ({ ...prev, [id]: isCorrect }));
+      setShowPastPerfectResults(prev => ({ ...prev, [id]: true }));
     }
   };
 
-  // Speak functions
+  const handleFutureChange = (id: number, value: string) => {
+    setFutureEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
+    setShowFutureResults(prev => ({ ...prev, [id]: false }));
+  };
+
+  const handleFutureCheck = (id: number, correctSentence: string) => {
+    const exercise = futureEx.find(ex => ex.id === id);
+    if (exercise) {
+      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctSentence.toLowerCase().trim();
+      setFutureResults(prev => ({ ...prev, [id]: isCorrect }));
+      setShowFutureResults(prev => ({ ...prev, [id]: true }));
+    }
+  };
+
+  const handlePastQuestionsChange = (id: number, value: string) => {
+    setPastQuestionsEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
+    setShowPastQuestionsResults(prev => ({ ...prev, [id]: false }));
+  };
+
+  const handlePastQuestionsCheck = (id: number, correctQuestion: string) => {
+    const exercise = pastQuestionsEx.find(ex => ex.id === id);
+    if (exercise) {
+      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctQuestion.toLowerCase().trim();
+      setPastQuestionsResults(prev => ({ ...prev, [id]: isCorrect }));
+      setShowPastQuestionsResults(prev => ({ ...prev, [id]: true }));
+    }
+  };
+
   const handleSpeakCheck = () => {
     const currentCard = speakCards[currentCardIndex];
     const isCorrect = speakUserAnswer.toLowerCase().includes(currentCard.answer.toLowerCase()) || 
-                     speakUserAnswer.toLowerCase().includes("i") && speakUserAnswer.length > 10;
+                     speakUserAnswer.length > 15;
     setSpeakResult(isCorrect);
     setShowSpeakResult(true);
   };
@@ -717,7 +658,6 @@ export default function Lesson36() {
 
   const currentCard = speakCards[currentCardIndex];
 
-  // Se não estiver hidratado ainda, renderiza um placeholder ou nada
   if (!isHydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -730,20 +670,20 @@ export default function Lesson36() {
   }
 
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/background.jpg')` }}>
+    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"%3E%3Crect width="800" height="800" fill="%234f46e5"/%3E%3Ccircle cx="200" cy="200" r="300" fill="%238b5cf6" opacity="0.3"/%3E%3Ccircle cx="600" cy="500" r="250" fill="%23ec4899" opacity="0.3"/%3E%3C/svg%3E')` }}>
       <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         
         {/* HEADER */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">📘 LESSON 36</h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            🎧 LISTEN, NUMBER, AND ROLE-PLAY
+            🎧 PAST TENSES, PRESENT PERFECT, PAST PERFECT & FUTURE
           </p>
-          <p className="text-md text-gray-500 mt-2">Listen to short dialogues, number the images, and practice speaking!</p>
+          <p className="text-md text-gray-500 mt-2">Master all tenses with audio! 🎵</p>
         </div>
 
         {/* ============================================ */}
-        {/* LISTEN AND NUMBER - Imagens 1, 2, 3 (EMBARALHADAS) */}
+        {/* LISTEN AND NUMBER - Imagens 1, 2, 3 */}
         {/* ============================================ */}
         <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-purple-600 text-white py-4 px-8 flex items-center justify-between">
@@ -753,21 +693,20 @@ export default function Lesson36() {
                 {sections.listen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
-            <AudioPlayer src="/audios/listen.mp3" />
+            <AudioPlayer src="" textToSpeak="Number one: a man thinking about life. Number two: a couple watching TV together. Number three: a smiling woman." />
           </div>
 
           {sections.listen && (
             <div className="p-8">
               <p className="text-purple-700 mb-4 italic">
-                👂 Listen to the audio. The images below are <strong className="font-bold">SHUFFLED</strong>. 
-                Click on the images <strong className="font-bold">IN THE ORDER YOU HEAR</strong> (1 → 2 → 3).
+                👂 Listen to the audio describing the images. Click on the images <strong className="font-bold">IN THE ORDER YOU HEAR</strong> (1 → 2 → 3).
               </p>
               
               <p className="text-sm text-purple-600 mb-6 bg-purple-100 p-3 rounded-lg">
-                🎯 <strong>Correct sequence to find:</strong> 1. refletindo sobre a vida → 2. casal assistindo tv juntos → 3. mulher sorrindo
+                🎯 <strong>Correct sequence:</strong> 1. refletindo sobre a vida → 2. casal assistindo tv juntos → 3. mulher sorrindo
               </p>
 
-              {/* Imagens embaralhadas - cada imagem é clicável para construir a sequência */}
+              {/* Imagens embaralhadas */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 {shuffledListenItems.map((item) => (
                   <div 
@@ -775,42 +714,25 @@ export default function Lesson36() {
                     className="bg-white rounded-xl shadow-md border-2 border-purple-200 overflow-hidden cursor-pointer transition-all hover:shadow-xl hover:scale-105"
                     onClick={() => handleImageClickForSequence(item.correctNumber)}
                   >
-                    <div className="relative h-64 w-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center overflow-hidden">
-                      <Image
+                    <div className={`relative h-64 w-full bg-gradient-to-br ${item.bgColor} flex items-center justify-center overflow-hidden`}>
+                      <img
                         src={item.image}
                         alt={item.label}
-                        width={300}
-                        height={250}
                         className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const parent = target.parentElement;
-                          if (parent) {
-                            const fallback = document.createElement('div');
-                            fallback.className = 'text-center p-4';
-                            fallback.innerHTML = `
-                              <div class="w-32 h-32 mx-auto bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                                <span class="text-5xl">${item.placeholder}</span>
-                              </div>
-                              <p class="text-sm text-gray-600">${item.label}</p>
-                              <p class="text-xs text-gray-400 mt-1">${item.description}</p>
-                            `;
-                            parent.appendChild(fallback);
-                          }
-                        }}
                       />
                     </div>
-                    
-                    <div className="p-4 text-center">
+                    <div className="p-4 text-center bg-white">
                       <p className="text-md font-bold text-purple-700">{item.label}</p>
-                      <p className="text-xs text-gray-500 mt-1">Click to add to sequence</p>
+                      <p className="text-xs text-gray-500 mt-1">{item.description}</p>
+                      <div className="mt-2 inline-block bg-purple-100 text-purple-600 text-xs px-2 py-1 rounded-full">
+                        Click to add to sequence
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Exibição da sequência que o aluno está construindo */}
+              {/* Exibição da sequência */}
               <div className="bg-purple-100 rounded-xl p-5 mb-6">
                 <h3 className="font-bold text-purple-800 mb-3">📋 Sua sequência (ordem que você clicou):</h3>
                 <div className="flex flex-wrap gap-3 items-center">
@@ -860,12 +782,15 @@ export default function Lesson36() {
                 )}
               </div>
 
-              {/* Seção para número individual de cada imagem (opcional) */}
+              {/* Identificação individual */}
               <div className="border-t-2 border-purple-200 pt-6 mt-4">
                 <h3 className="font-bold text-purple-800 mb-4">🎯 Ou identifique cada imagem individualmente:</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {shuffledListenItems.map((item) => (
                     <div key={`ind-${item.key}`} className="bg-white p-4 rounded-lg border border-purple-200">
+                      <div className="w-full h-32 mb-3 rounded-lg overflow-hidden">
+                        <img src={item.image} alt={item.label} className="w-full h-full object-cover" />
+                      </div>
                       <p className="text-sm font-medium text-gray-700 text-center mb-3">{item.label}</p>
                       
                       <div className="mb-3">
@@ -910,7 +835,7 @@ export default function Lesson36() {
               <div className="mt-6 bg-purple-100 rounded-xl p-4">
                 <h3 className="font-bold text-purple-800">🎭 Role-play Activity:</h3>
                 <p className="text-purple-700 text-sm mt-1">
-                  Work in pairs. Based on the dialogue you heard and the images, create a short dialogue and role-play it.
+                  Work in pairs. Based on the images, create a short dialogue about what each person is doing or thinking.
                 </p>
               </div>
             </div>
@@ -918,12 +843,12 @@ export default function Lesson36() {
         </div>
 
         {/* ============================================ */}
-        {/* DRILLING PRACTICE I - Substitution */}
+        {/* SUBSTITUTION PRACTICE - PAST TENSE */}
         {/* ============================================ */}
         <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 Substitution Practice I</h2>
+              <h2 className="text-2xl font-bold">🔹 Substitution Practice (Past Tense)</h2>
               <button onClick={() => toggleSection('drilling1')} className="ml-4 p-2 rounded-full hover:bg-blue-700 transition">
                 {sections.drilling1 ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
@@ -935,9 +860,15 @@ export default function Lesson36() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {drillingExercises1.map((exercise) => (
                   <div key={exercise.id} className="bg-white p-6 rounded-xl border border-blue-200 shadow-md">
-                    <p className="text-sm text-gray-500 mb-1">🇵🇹 Portuguese:</p>
+                    <div className="flex justify-between items-start mb-3">
+                      <p className="text-sm text-gray-500 mb-1">🇵🇹 Portuguese:</p>
+                      <AudioPlayer src="" textToSpeak={exercise.portuguese} compact />
+                    </div>
                     <p className="text-md text-gray-700 mb-3">{exercise.portuguese}</p>
-                    <p className="text-sm text-gray-500 mb-1">🇺🇸 English:</p>
+                    <div className="flex justify-between items-start mb-2">
+                      <p className="text-sm text-gray-500">🇺🇸 English:</p>
+                      <AudioPlayer src="" textToSpeak={drilling1Sentences[exercise.id]} compact />
+                    </div>
                     <p className="text-lg font-bold text-blue-700 mb-4">{drilling1Sentences[exercise.id]}</p>
                     <div className="flex flex-wrap gap-2">
                       {exercise.substitutions.map((sub, idx) => (
@@ -946,7 +877,7 @@ export default function Lesson36() {
                           onClick={() => setDrilling1Sentences(prev => ({ ...prev, [exercise.id]: sub.phrase }))}
                           className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition"
                         >
-                          {sub.word}
+                          {sub.word} 🔊
                         </button>
                       ))}
                       <button
@@ -964,36 +895,42 @@ export default function Lesson36() {
         </div>
 
         {/* ============================================ */}
-        {/* CHANGE INTO NEGATIVE */}
+        {/* SIMPLE PAST TENSE EXERCISES */}
         {/* ============================================ */}
-        <div className="bg-red-50 border-2 border-red-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-red-600 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-orange-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 Change into Negative</h2>
-              <button onClick={() => toggleSection('negative')} className="ml-4 p-2 rounded-full hover:bg-red-700 transition">
-                {sections.negative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              <h2 className="text-2xl font-bold">📝 Simple Past Tense</h2>
+              <button onClick={() => toggleSection('pastTense')} className="ml-4 p-2 rounded-full hover:bg-orange-700 transition">
+                {sections.pastTense ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.negative && (
+          {sections.pastTense && (
             <div className="p-8">
+              <p className="text-orange-700 mb-4 italic">Convert the present tense sentences to past tense:</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {negativeEx.map((exercise) => (
-                  <div key={exercise.id} className="bg-white p-6 rounded-xl border border-red-200 shadow-md">
-                    <p className="text-md font-medium text-gray-700 mb-2">Affirmative:</p>
-                    <p className="text-lg font-bold text-gray-900 mb-4">{exercise.affirmative}</p>
+                {pastTenseEx.map((exercise) => (
+                  <div key={exercise.id} className="bg-white p-6 rounded-xl border border-orange-200 shadow-md">
+                    <div className="flex justify-between items-start mb-2">
+                      <p className="text-md font-medium text-gray-700">Present:</p>
+                      <AudioPlayer src="" textToSpeak={exercise.present} compact />
+                    </div>
+                    <p className="text-lg font-bold text-gray-900 mb-4">{exercise.present}</p>
+                    
+                    <p className="text-sm text-gray-500 mb-1">Write the past form:</p>
                     <textarea
                       value={exercise.userAnswer}
-                      onChange={(e) => handleNegativeChange(exercise.id, e.target.value)}
-                      placeholder="Write the negative form here..."
-                      className="w-full h-20 p-3 border border-red-300 rounded-md resize-none mb-3"
+                      onChange={(e) => handlePastTenseChange(exercise.id, e.target.value)}
+                      placeholder="Write the past tense sentence here..."
+                      className="w-full h-20 p-3 border border-orange-300 rounded-md resize-none mb-3"
                     />
                     <div className="flex gap-2">
-                      <button onClick={() => handleNegativeCheck(exercise.id, exercise.negative)} className="flex-1 bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition">Check</button>
-                      <button onClick={() => handleNegativeChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
+                      <button onClick={() => handlePastTenseCheck(exercise.id, exercise.past)} className="flex-1 bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition">Check</button>
+                      <button onClick={() => handlePastTenseChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
                     </div>
-                    {showNegativeResults[exercise.id] && <AnswerResult isCorrect={negativeResults[exercise.id] || false} correctAnswer={exercise.negative} />}
+                    {showPastTenseResults[exercise.id] && <AnswerResult isCorrect={pastTenseResults[exercise.id] || false} correctAnswer={exercise.past} />}
                   </div>
                 ))}
               </div>
@@ -1002,36 +939,43 @@ export default function Lesson36() {
         </div>
 
         {/* ============================================ */}
-        {/* DRILLING PRACTICE II - Substitution */}
+        {/* PRESENT PERFECT EXERCISES */}
         {/* ============================================ */}
         <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-green-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 Substitution Practice II</h2>
-              <button onClick={() => toggleSection('drilling2')} className="ml-4 p-2 rounded-full hover:bg-green-700 transition">
-                {sections.drilling2 ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              <h2 className="text-2xl font-bold">✨ Present Perfect Tense</h2>
+              <button onClick={() => toggleSection('presentPerfect')} className="ml-4 p-2 rounded-full hover:bg-green-700 transition">
+                {sections.presentPerfect ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.drilling2 && (
+          {sections.presentPerfect && (
             <div className="p-8">
+              <p className="text-green-700 mb-4 italic">Practice the Present Perfect tense (have/has + past participle):</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {drillingExercises2.map((exercise) => (
+                {presentPerfectEx.map((exercise) => (
                   <div key={exercise.id} className="bg-white p-6 rounded-xl border border-green-200 shadow-md">
-                    <p className="text-lg font-bold text-green-700 mb-4">{drilling2Sentences[exercise.id]}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {exercise.substitutions.map((sub, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setDrilling2Sentences(prev => ({ ...prev, [exercise.id]: sub.phrase }))}
-                          className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm hover:bg-green-200 transition"
-                        >
-                          {sub.word}
-                        </button>
-                      ))}
-                      <button onClick={() => setDrilling2Sentences(prev => ({ ...prev, [exercise.id]: exercise.english }))} className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm hover:bg-gray-200 transition">Reset</button>
+                    <div className="flex justify-between items-start mb-3">
+                      <p className="text-sm text-gray-500">Example sentence:</p>
+                      <AudioPlayer src="" textToSpeak={exercise.sentence} compact />
                     </div>
+                    <p className="text-lg font-bold text-green-700 mb-4">{exercise.sentence}</p>
+                    
+                    <textarea
+                      value={exercise.userAnswer}
+                      onChange={(e) => handlePresentPerfectChange(exercise.id, e.target.value)}
+                      placeholder="Write a similar sentence using Present Perfect..."
+                      className="w-full h-20 p-3 border border-green-300 rounded-md resize-none mb-3"
+                    />
+                    <div className="flex gap-2">
+                      <button onClick={() => handlePresentPerfectCheck(exercise.id, exercise.sentence)} className="flex-1 bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition">Check</button>
+                      <button onClick={() => handlePresentPerfectChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
+                    </div>
+                    {showPresentPerfectResults[exercise.id] && (
+                      <div className="mt-2 text-sm text-green-600">✓ Keep practicing!</div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -1040,36 +984,88 @@ export default function Lesson36() {
         </div>
 
         {/* ============================================ */}
-        {/* CHANGE INTO AFFIRMATIVE */}
+        {/* PAST PERFECT EXERCISES */}
+        {/* ============================================ */}
+        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-indigo-600 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">⏪ Past Perfect Tense</h2>
+              <button onClick={() => toggleSection('pastPerfect')} className="ml-4 p-2 rounded-full hover:bg-indigo-700 transition">
+                {sections.pastPerfect ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.pastPerfect && (
+            <div className="p-8">
+              <p className="text-indigo-700 mb-4 italic">The Past Perfect shows an action completed before another past action (had + past participle):</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {pastPerfectEx.map((exercise) => (
+                  <div key={exercise.id} className="bg-white p-6 rounded-xl border border-indigo-200 shadow-md">
+                    <div className="flex justify-between items-start mb-3">
+                      <p className="text-sm text-gray-500">Example:</p>
+                      <AudioPlayer src="" textToSpeak={exercise.sentence} compact />
+                    </div>
+                    <p className="text-lg font-bold text-indigo-700 mb-4">{exercise.sentence}</p>
+                    
+                    <textarea
+                      value={exercise.userAnswer}
+                      onChange={(e) => handlePastPerfectChange(exercise.id, e.target.value)}
+                      placeholder="Write a similar sentence using Past Perfect..."
+                      className="w-full h-20 p-3 border border-indigo-300 rounded-md resize-none mb-3"
+                    />
+                    <div className="flex gap-2">
+                      <button onClick={() => handlePastPerfectCheck(exercise.id, exercise.sentence)} className="flex-1 bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition">Check</button>
+                      <button onClick={() => handlePastPerfectChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
+                    </div>
+                    {showPastPerfectResults[exercise.id] && (
+                      <div className="mt-2 text-sm text-indigo-600">✓ Good job with Past Perfect!</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ============================================ */}
+        {/* FUTURE TENSE EXERCISES */}
         {/* ============================================ */}
         <div className="bg-yellow-50 border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-yellow-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 Change into Affirmative</h2>
-              <button onClick={() => toggleSection('affirmative')} className="ml-4 p-2 rounded-full hover:bg-yellow-700 transition">
-                {sections.affirmative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              <h2 className="text-2xl font-bold">🔮 Future Tense</h2>
+              <button onClick={() => toggleSection('future')} className="ml-4 p-2 rounded-full hover:bg-yellow-700 transition">
+                {sections.future ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.affirmative && (
+          {sections.future && (
             <div className="p-8">
+              <p className="text-yellow-700 mb-4 italic">Use WILL or GOING TO to talk about the future:</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {affirmativeEx.map((exercise) => (
+                {futureEx.map((exercise) => (
                   <div key={exercise.id} className="bg-white p-6 rounded-xl border border-yellow-200 shadow-md">
-                    <p className="text-md font-medium text-gray-700 mb-2">Negative:</p>
-                    <p className="text-lg font-bold text-gray-900 mb-4">{exercise.negative}</p>
+                    <div className="flex justify-between items-start mb-3">
+                      <p className="text-sm text-gray-500">Example:</p>
+                      <AudioPlayer src="" textToSpeak={exercise.sentence} compact />
+                    </div>
+                    <p className="text-lg font-bold text-yellow-700 mb-4">{exercise.sentence}</p>
+                    
                     <textarea
                       value={exercise.userAnswer}
-                      onChange={(e) => handleAffirmativeChange(exercise.id, e.target.value)}
-                      placeholder="Write the affirmative form here..."
+                      onChange={(e) => handleFutureChange(exercise.id, e.target.value)}
+                      placeholder="Write a similar sentence about the future..."
                       className="w-full h-20 p-3 border border-yellow-300 rounded-md resize-none mb-3"
                     />
                     <div className="flex gap-2">
-                      <button onClick={() => handleAffirmativeCheck(exercise.id, exercise.affirmative)} className="flex-1 bg-yellow-500 text-white py-2 rounded-md hover:bg-yellow-600 transition">Check</button>
-                      <button onClick={() => handleAffirmativeChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
+                      <button onClick={() => handleFutureCheck(exercise.id, exercise.sentence)} className="flex-1 bg-yellow-500 text-white py-2 rounded-md hover:bg-yellow-600 transition">Check</button>
+                      <button onClick={() => handleFutureChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
                     </div>
-                    {showAffirmativeResults[exercise.id] && <AnswerResult isCorrect={affirmativeResults[exercise.id] || false} correctAnswer={exercise.affirmative} />}
+                    {showFutureResults[exercise.id] && (
+                      <div className="mt-2 text-sm text-yellow-600">✓ Great! Future tense mastered!</div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -1078,36 +1074,42 @@ export default function Lesson36() {
         </div>
 
         {/* ============================================ */}
-        {/* CHANGE INTO INTERROGATIVE */}
+        {/* QUESTIONS IN THE PAST (DID) */}
         {/* ============================================ */}
         <div className="bg-pink-50 border-2 border-pink-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-pink-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 Change into Interrogative</h2>
-              <button onClick={() => toggleSection('interrogative')} className="ml-4 p-2 rounded-full hover:bg-pink-700 transition">
-                {sections.interrogative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              <h2 className="text-2xl font-bold">❓ Questions in the Past (DID)</h2>
+              <button onClick={() => toggleSection('pastQuestions')} className="ml-4 p-2 rounded-full hover:bg-pink-700 transition">
+                {sections.pastQuestions ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
           </div>
 
-          {sections.interrogative && (
+          {sections.pastQuestions && (
             <div className="p-8">
+              <p className="text-pink-700 mb-4 italic">Transform these statements into questions using DID:</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {interrogativeEx.map((exercise) => (
+                {pastQuestionsEx.map((exercise) => (
                   <div key={exercise.id} className="bg-white p-6 rounded-xl border border-pink-200 shadow-md">
-                    <p className="text-md font-medium text-gray-700 mb-2">Statement:</p>
+                    <div className="flex justify-between items-start mb-2">
+                      <p className="text-md font-medium text-gray-700">Statement:</p>
+                      <AudioPlayer src="" textToSpeak={exercise.statement} compact />
+                    </div>
                     <p className="text-lg font-bold text-gray-900 mb-4">{exercise.statement}</p>
+                    
+                    <p className="text-sm text-gray-500 mb-1">Write the question form:</p>
                     <textarea
                       value={exercise.userAnswer}
-                      onChange={(e) => handleInterrogativeChange(exercise.id, e.target.value)}
-                      placeholder="Write the interrogative form here..."
+                      onChange={(e) => handlePastQuestionsChange(exercise.id, e.target.value)}
+                      placeholder="Write the question using DID..."
                       className="w-full h-20 p-3 border border-pink-300 rounded-md resize-none mb-3"
                     />
                     <div className="flex gap-2">
-                      <button onClick={() => handleInterrogativeCheck(exercise.id, exercise.interrogative)} className="flex-1 bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600 transition">Check</button>
-                      <button onClick={() => handleInterrogativeChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
+                      <button onClick={() => handlePastQuestionsCheck(exercise.id, exercise.question)} className="flex-1 bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600 transition">Check</button>
+                      <button onClick={() => handlePastQuestionsChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
                     </div>
-                    {showInterrogativeResults[exercise.id] && <AnswerResult isCorrect={interrogativeResults[exercise.id] || false} correctAnswer={exercise.interrogative} />}
+                    {showPastQuestionsResults[exercise.id] && <AnswerResult isCorrect={pastQuestionsResults[exercise.id] || false} correctAnswer={exercise.question} />}
                   </div>
                 ))}
               </div>
@@ -1116,12 +1118,12 @@ export default function Lesson36() {
         </div>
 
         {/* ============================================ */}
-        {/* SPEAK RIGHT NOW - Questions */}
+        {/* SPEAK RIGHT NOW - All Tenses */}
         {/* ============================================ */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-teal-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🗣️ QUESTIONS</h2>
+              <h2 className="text-2xl font-bold">🗣️ SPEAK RIGHT NOW - All Tenses</h2>
               <button onClick={() => toggleSection('speak')} className="ml-4 p-2 rounded-full hover:bg-teal-700 transition">
                 {sections.speak ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
@@ -1138,15 +1140,25 @@ export default function Lesson36() {
                 </div>
                 
                 <div className="mb-6 p-4 bg-teal-100 rounded-lg">
-                  <p className="text-sm text-teal-700 mb-1">Question:</p>
-                  <p className="text-xl font-bold text-teal-800">{currentCard.question}</p>
-                  <p className="text-sm text-teal-600 mt-1">{currentCard.translation}</p>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-sm text-teal-700 mb-1">Question:</p>
+                      <p className="text-xl font-bold text-teal-800">{currentCard.question}</p>
+                      <p className="text-sm text-teal-600 mt-1">{currentCard.translation}</p>
+                    </div>
+                    <AudioPlayer src="" textToSpeak={currentCard.question} compact />
+                  </div>
                 </div>
                 
                 <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-700 mb-1">Example answer:</p>
-                  <p className="text-lg text-gray-800 italic">{currentCard.answer}</p>
-                  <p className="text-xs text-gray-500 mt-1">{currentCard.answerTranslation}</p>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-sm text-gray-700 mb-1">Example answer:</p>
+                      <p className="text-lg text-gray-800 italic">{currentCard.answer}</p>
+                      <p className="text-xs text-gray-500 mt-1">{currentCard.answerTranslation}</p>
+                    </div>
+                    <AudioPlayer src="" textToSpeak={currentCard.answer} compact />
+                  </div>
                 </div>
                 
                 <textarea
@@ -1168,53 +1180,6 @@ export default function Lesson36() {
         </div>
 
         {/* ============================================ */}
-        {/* THERE AND AROUND - Useful Phrases */}
-        {/* ============================================ */}
-        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-indigo-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🧭 THERE AND AROUND</h2>
-              <button onClick={() => toggleSection('usefulPhrases')} className="ml-4 p-2 rounded-full hover:bg-indigo-700 transition">
-                {sections.usefulPhrases ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.usefulPhrases && (
-            <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {usefulPhrases.map((phrase, idx) => (
-                  <div key={idx} className="bg-white p-4 rounded-lg border border-indigo-200">
-                    <p className="font-bold text-indigo-700">{phrase.english}</p>
-                    <p className="text-gray-600 text-sm">{phrase.portuguese}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================ */}
-        {/* TUNE IN YOUR EARS - Final Listening */}
-        {/* ============================================ */}
-        <div className="bg-cyan-50 border-2 border-cyan-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-cyan-600 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
-          </div>
-          <div className="p-8">
-            <p className="text-cyan-700 mb-4">Listen to short conversations and identify:</p>
-            <ul className="list-disc pl-6 text-gray-700 space-y-2">
-              <li><strong>Opinions</strong> (I think... / I don't think...)</li>
-              <li><strong>Necessity</strong> (need to / have to)</li>
-              <li><strong>Questions</strong> (Do you...? / Why do you...?)</li>
-            </ul>
-            <div className="mt-4 p-4 bg-white rounded-lg border border-cyan-200">
-              <AudioPlayer src="/audios/tune-in.mp3" />
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================ */}
         {/* LESSON SUMMARY */}
         {/* ============================================ */}
         <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-[30px] shadow-lg mb-10 overflow-hidden">
@@ -1224,12 +1189,15 @@ export default function Lesson36() {
           <div className="p-8 bg-white rounded-b-[30px]">
             <p className="font-bold text-gray-800 mb-3">You practiced:</p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Substitution</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Negative sentences</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Affirmative sentences</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Questions (Interrogative)</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Speaking (Role-play)</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Listening</span>
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Simple Past</span>
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Present Perfect</span>
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Past Perfect</span>
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Future (Will/Going to)</span>
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Questions with DID</span>
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Listening & Speaking</span>
+            </div>
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-700">🎵 <strong>Audio tip:</strong> Click the 🔊 buttons next to each sentence to hear natural American English pronunciation (Text-to-Speech)!</p>
             </div>
           </div>
         </div>

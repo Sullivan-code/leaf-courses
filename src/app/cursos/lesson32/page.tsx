@@ -139,7 +139,7 @@ const listenItems = [
   { 
     key: "learn-spanish", 
     label: "Alunos com a bandeira da Espanha estudando espanhol", 
-    image: "https://images.pexels.com/photos/9699619/pexels-photo-9699619.jpeg?auto=compress&cs=tinysrgb&w=600", 
+    image: "https://images.pexels.com/photos/4050303/pexels-photo-4050303.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 5
   },
   { 
@@ -202,15 +202,15 @@ const descriptionPhotos = [
 // LESSON DATA
 // ============================================
 
-// Drilling Practice 1 - Frases em português com substituição (com opções em inglês também)
+// Drilling Practice 1 - Frases em português com substituição (apenas palavras em inglês nos botões)
 const drillingExercises1 = [
   {
     id: 1,
     portuguese: "Eu quero aprender mais sobre negócios.",
     english: "I want to learn more about business.",
     substitutions: [
-      { word: "biologia", english: "biology", phrase: "I want to learn more about biology." },
-      { word: "esse assunto", english: "this subject", phrase: "I want to learn more about this subject." }
+      { word: "biology", phrase: "I want to learn more about biology." },
+      { word: "this subject", phrase: "I want to learn more about this subject." }
     ]
   },
   {
@@ -218,8 +218,8 @@ const drillingExercises1 = [
     portuguese: "Eles têm que terminar esta tarefa.",
     english: "They have to finish this task.",
     substitutions: [
-      { word: "este curso", english: "this course", phrase: "They have to finish this course." },
-      { word: "este projeto", english: "this project", phrase: "They have to finish this project." }
+      { word: "this course", phrase: "They have to finish this course." },
+      { word: "this project", phrase: "They have to finish this project." }
     ]
   },
   {
@@ -227,8 +227,8 @@ const drillingExercises1 = [
     portuguese: "Nós aprendemos muitas coisas na faculdade.",
     english: "We learn many things in college.",
     substitutions: [
-      { word: "no ensino médio", english: "in high school", phrase: "We learn many things in high school." },
-      { word: "lá", english: "there", phrase: "We learn many things there." }
+      { word: "in high school", phrase: "We learn many things in high school." },
+      { word: "there", phrase: "We learn many things there." }
     ]
   },
   {
@@ -236,8 +236,8 @@ const drillingExercises1 = [
     portuguese: "Eu tenho uma aula de português em cinco minutos.",
     english: "I have a Portuguese class in five minutes.",
     substitutions: [
-      { word: "10", english: "ten", phrase: "I have a Portuguese class in ten minutes." },
-      { word: "15", english: "fifteen", phrase: "I have a Portuguese class in fifteen minutes." }
+      { word: "ten", phrase: "I have a Portuguese class in ten minutes." },
+      { word: "fifteen", phrase: "I have a Portuguese class in fifteen minutes." }
     ]
   },
   {
@@ -245,8 +245,8 @@ const drillingExercises1 = [
     portuguese: "Você tem uma reunião agora?",
     english: "Do you have a meeting now?",
     substitutions: [
-      { word: "esta tarde", english: "this afternoon", phrase: "Do you have a meeting this afternoon?" },
-      { word: "esta manhã", english: "this morning", phrase: "Do you have a meeting this morning?" }
+      { word: "this afternoon", phrase: "Do you have a meeting this afternoon?" },
+      { word: "this morning", phrase: "Do you have a meeting this morning?" }
     ]
   }
 ];
@@ -823,8 +823,8 @@ export default function Lesson32() {
 
           {sections.drilling1 && (
             <div className="p-6 md:p-8">
-              <SpeakSentence text="Click on the words below to substitute the highlighted term in the English sentence." className="text-blue-700 mb-4 italic">
-                Clique nas palavras abaixo para substituir o termo destacado na frase em inglês.
+              <SpeakSentence text="Click on the English words below to substitute the highlighted term in the English sentence." className="text-blue-700 mb-4 italic">
+                Clique nas palavras em inglês abaixo para substituir o termo destacado na frase em inglês.
               </SpeakSentence>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -851,7 +851,7 @@ export default function Lesson32() {
                           className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition flex items-center gap-1"
                         >
                           <Volume2 size={14} />
-                          {sub.word} / {sub.english}
+                          {sub.word}
                         </button>
                       ))}
                       <button
@@ -866,7 +866,7 @@ export default function Lesson32() {
                         Reset
                       </button>
                     </div>
-                    <p className="text-xs text-gray-500">Click on words (Português/English) to change the sentence and hear pronunciation</p>
+                    <p className="text-xs text-gray-500">Click on English words to change the sentence and hear pronunciation</p>
                   </div>
                 ))}
               </div>

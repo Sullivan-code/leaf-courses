@@ -11,6 +11,108 @@ import {
   AlertCircle, Zap
 } from "lucide-react";
 
+// ============================================
+// SPEECH SYSTEM WITH AMERICAN FEMALE VOICE (ZOEY'S VOICE)
+// ============================================
+
+interface SpeakTextProps {
+  text: string;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+// Speech component for text-to-speech with American Female voice
+const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
+  const speak = () => {
+    if (!text || typeof window === 'undefined') return;
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; // American English
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    
+    // Get available voices
+    const voices = window.speechSynthesis.getVoices();
+    
+    // American female voices (same as Zoey)
+    const americanFemaleVoices = voices.filter(voice => 
+      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+      (voice.name.toLowerCase().includes('samantha') || 
+       voice.name.toLowerCase().includes('google us english') ||
+       voice.name.toLowerCase().includes('siri') ||
+       voice.name.toLowerCase().includes('female') ||
+       voice.name === 'Google US English' ||
+       voice.name === 'Samantha')
+    );
+    
+    // Fallback to any American voice
+    const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+    
+    if (americanFemaleVoices.length > 0) {
+      utterance.voice = americanFemaleVoices[0];
+    } else if (americanVoices.length > 0) {
+      utterance.voice = americanVoices[0];
+    }
+    
+    window.speechSynthesis.speak(utterance);
+  };
+
+  return (
+    <button
+      onClick={speak}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
+      title="Click to hear American pronunciation"
+    >
+      {children || text}
+      <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+    </button>
+  );
+};
+
+// Component for pronouncing entire sentences with American female voice
+const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
+  return (
+    <button
+      onClick={() => {
+        const speechText = children && typeof children === 'string' ? children : text;
+        if (speechText && typeof window !== 'undefined') {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(speechText);
+          utterance.lang = 'en-US';
+          utterance.rate = 0.85;
+          utterance.pitch = 1.0;
+          
+          const voices = window.speechSynthesis.getVoices();
+          
+          const americanFemaleVoices = voices.filter(voice => 
+            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+            (voice.name.toLowerCase().includes('samantha') || 
+             voice.name.toLowerCase().includes('google us english') ||
+             voice.name === 'Google US English')
+          );
+          
+          const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+          
+          if (americanFemaleVoices.length > 0) {
+            utterance.voice = americanFemaleVoices[0];
+          } else if (americanVoices.length > 0) {
+            utterance.voice = americanVoices[0];
+          }
+          
+          window.speechSynthesis.speak(utterance);
+        }
+      }}
+      className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors ${className}`}
+    >
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
+    </button>
+  );
+};
+
 // ==============================
 // CONFIGURAÇÃO DA LIÇÃO
 // ==============================
@@ -44,90 +146,91 @@ const keyVocabulary = [
 // DADOS DA LIÇÃO - PRONÚNCIA (COM HE/SHE/IT)
 // ==============================
 const pronunciationItems = [
-  { word: "milk", phrase: "I drink coffee with milk.", example: "I drink coffee with milk every morning.", audio: "/audios/lesson34/milk.mp3", icon: Coffee },
-  { word: "book", phrase: "I like this book.", example: "I like this book very much.", audio: "/audios/lesson34/book.mp3", icon: BookOpen },
-  { word: "homework", phrase: "I have homework today.", example: "I have homework today after school.", audio: "/audios/lesson34/homework.mp3", icon: BookOpen },
-  { word: "project", phrase: "I need to finish this project.", example: "I need to finish this project by Friday.", audio: "/audios/lesson34/project.mp3", icon: Briefcase },
-  { word: "what", phrase: "What do you want?", example: "What do you want for breakfast?", audio: "/audios/lesson34/what.mp3", icon: null },
-  { word: "breakfast", phrase: "What do you eat for breakfast?", example: "What do you eat for breakfast on weekdays?", audio: "/audios/lesson34/breakfast.mp3", icon: Utensils },
-  { word: "cup", phrase: "I want a cup of tea.", example: "I want a cup of tea, please.", audio: "/audios/lesson34/cup.mp3", icon: Coffee },
-  { word: "soup", phrase: "Do you like soup?", example: "Do you like soup or salad?", audio: "/audios/lesson34/soup.mp3", icon: Utensils },
-  { word: "job", phrase: "Do you like your job?", example: "Do you like your job at the hospital?", audio: "/audios/lesson34/job.mp3", icon: Briefcase },
-  { word: "cab", phrase: "I need a cab.", example: "I need a cab to go to the airport.", audio: "/audios/lesson34/cab.mp3", icon: null },
-  { word: "food", phrase: "We need to buy some food.", example: "We need to buy some food for the party.", audio: "/audios/lesson34/food.mp3", icon: Utensils },
-  { word: "good", phrase: "Good job.", example: "Good job on the presentation!", audio: "/audios/lesson34/good.mp3", icon: null },
-  { word: "bad", phrase: "It's bad.", example: "The weather is bad today.", audio: "/audios/lesson34/bad.mp3", icon: null },
-  { word: "everything", phrase: "I know everything about the project.", example: "I know everything about the project details.", audio: "/audios/lesson34/everything.mp3", icon: null },
-  { word: "thing", phrase: "I have to buy one more thing.", example: "I have to buy one more thing at the store.", audio: "/audios/lesson34/thing.mp3", icon: null },
-  { word: "he", phrase: "He works every day.", example: "He works at the hospital.", audio: "/audios/lesson34/he.mp3", icon: Users },
-  { word: "she", phrase: "She likes music.", example: "She likes classical music.", audio: "/audios/lesson34/she.mp3", icon: Music },
-  { word: "it", phrase: "It is sunny today.", example: "It is sunny and hot.", audio: "/audios/lesson34/it.mp3", icon: Sun },
-  { word: "car", phrase: "He drives a car.", example: "He drives a red car.", audio: "/audios/lesson34/car.mp3", icon: Car },
-  { word: "loves", phrase: "She loves coffee.", example: "She loves coffee in the morning.", audio: "/audios/lesson34/loves.mp3", icon: Heart },
+  { word: "milk", phrase: "I drink coffee with milk every morning.", example: "I have already drunk two cups of coffee today.", audio: "/audios/lesson34/milk.mp3", icon: Coffee },
+  { word: "book", phrase: "I have read that book before.", example: "She has never read a book by that author.", audio: "/audios/lesson34/book.mp3", icon: BookOpen },
+  { word: "homework", phrase: "I have already finished my homework.", example: "Have you done your homework yet?", audio: "/audios/lesson34/homework.mp3", icon: BookOpen },
+  { word: "project", phrase: "We have been working on this project for three weeks.", example: "I will present the project tomorrow morning.", audio: "/audios/lesson34/project.mp3", icon: Briefcase },
+  { word: "what", phrase: "What did you do last weekend?", example: "What have you learned so far in this course?", audio: "/audios/lesson34/what.mp3", icon: null },
+  { word: "breakfast", phrase: "What did you eat for breakfast this morning?", example: "I have already had breakfast, thank you.", audio: "/audios/lesson34/breakfast.mp3", icon: Utensils },
+  { word: "cup", phrase: "I would like a cup of hot tea, please.", example: "She has drunk three cups of coffee today.", audio: "/audios/lesson34/cup.mp3", icon: Coffee },
+  { word: "soup", phrase: "Did you like the soup I made yesterday?", example: "I have never tried this type of soup before.", audio: "/audios/lesson34/soup.mp3", icon: Utensils },
+  { word: "job", phrase: "Did you enjoy your previous job?", example: "I have worked at this company for five years now.", audio: "/audios/lesson34/job.mp3", icon: Briefcase },
+  { word: "cab", phrase: "I took a cab to the airport yesterday.", example: "Have you ever taken a cab alone at night?", audio: "/audios/lesson34/cab.mp3", icon: null },
+  { word: "food", phrase: "What kind of food did you eat when you were in Italy?", example: "I have never tasted such delicious food before.", audio: "/audios/lesson34/food.mp3", icon: Utensils },
+  { word: "good", phrase: "That was a really good movie we watched last night.", example: "I have had a good feeling about this project since the beginning.", audio: "/audios/lesson34/good.mp3", icon: null },
+  { word: "bad", phrase: "The weather was really bad when we arrived in London.", example: "I have never had such a bad experience at a restaurant.", audio: "/audios/lesson34/bad.mp3", icon: null },
+  { word: "everything", phrase: "Did you remember to bring everything we need for the trip?", example: "I have already told you everything I know about this situation.", audio: "/audios/lesson34/everything.mp3", icon: null },
+  { word: "thing", phrase: "The most important thing I have learned this year is patience.", example: "I will do the right thing when the time comes.", audio: "/audios/lesson34/thing.mp3", icon: null },
+  { word: "he", phrase: "He has lived in New York since 2015.", example: "Did he call you back yesterday?", audio: "/audios/lesson34/he.mp3", icon: Users },
+  { word: "she", phrase: "She has never traveled outside her country before.", example: "Where did she go after the meeting ended?", audio: "/audios/lesson34/she.mp3", icon: Music },
+  { word: "it", phrase: "It has been raining all day long.", example: "Did it snow last winter in your city?", audio: "/audios/lesson34/it.mp3", icon: Sun },
+  { word: "car", phrase: "I have never driven such an expensive car before.", example: "Did you sell your old car last month?", audio: "/audios/lesson34/car.mp3", icon: Car },
+  { word: "loves", phrase: "She has always loved classical music since she was a child.", example: "Did he love the gift you gave him for his birthday?", audio: "/audios/lesson34/loves.mp3", icon: Heart },
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - SUBSTITUTION PRACTICE I
+// DADOS DA LIÇÃO - SUBSTITUTION PRACTICE I (WITH PAST, FUTURE, PRESENT PERFECT)
 // ==============================
 const substitutionPracticeI = [
   {
     id: 1,
-    english: "The test starts now.",
-    portuguese: "A prova começa agora.",
+    english: "I have already finished my homework.",
+    portuguese: "Eu já terminei minha lição de casa.",
     substitutions: [
-      { word: "The test", options: ["The test", "The movie", "The meeting"] },
-      { word: "now", options: ["now", "in a few minutes"] }
+      { word: "have already finished", options: ["have already finished", "finished", "will finish"] },
+      { word: "my homework", options: ["my homework", "my project", "my assignment"] }
     ],
-    currentText: "The test starts now."
+    currentText: "I have already finished my homework."
   },
   {
     id: 2,
-    english: "The project ends next week.",
-    portuguese: "O projeto termina na próxima semana.",
+    english: "Did you visit your grandmother last weekend?",
+    portuguese: "Você visitou sua avó no fim de semana passado?",
     substitutions: [
-      { word: "next week", options: ["next week", "next month", "next year"] }
+      { word: "last weekend", options: ["last weekend", "yesterday", "last month"] },
+      { word: "your grandmother", options: ["your grandmother", "your parents", "your best friend"] }
     ],
-    currentText: "The project ends next week."
+    currentText: "Did you visit your grandmother last weekend?"
   },
   {
     id: 3,
-    english: "She works here every day.",
-    portuguese: "Ela trabalha aqui todos os dias.",
+    english: "She has never been to Europe before.",
+    portuguese: "Ela nunca esteve na Europa antes.",
     substitutions: [
-      { word: "every day", options: ["every day", "during the week", "all day"] },
-      { word: "She", options: ["She", "He"] }
+      { word: "She", options: ["She", "He", "They"] },
+      { word: "Europe", options: ["Europe", "Asia", "South America"] }
     ],
-    currentText: "She works here every day."
+    currentText: "She has never been to Europe before."
   },
   {
     id: 4,
-    english: "She wants to know more about this subject.",
-    portuguese: "Ela quer saber mais sobre este assunto.",
+    english: "We will start the meeting as soon as the manager arrives.",
+    portuguese: "Nós começaremos a reunião assim que o gerente chegar.",
     substitutions: [
-      { word: "know", options: ["know", "learn", "understand"] },
-      { word: "She", options: ["She", "He", "It"] }
+      { word: "the meeting", options: ["the meeting", "the presentation", "the workshop"] },
+      { word: "as soon as", options: ["as soon as", "after", "before"] }
     ],
-    currentText: "She wants to know more about this subject."
+    currentText: "We will start the meeting as soon as the manager arrives."
   },
   {
     id: 5,
-    english: "He likes to talk about religion.",
-    portuguese: "Ele gosta de falar sobre religião.",
+    english: "What did you learn in class yesterday?",
+    portuguese: "O que você aprendeu na aula ontem?",
     substitutions: [
-      { word: "religion", options: ["religion", "music", "business"] },
-      { word: "He", options: ["He", "She"] }
+      { word: "in class", options: ["in class", "at work", "during the training"] },
+      { word: "yesterday", options: ["yesterday", "last week", "on Tuesday"] }
     ],
-    currentText: "He likes to talk about religion."
+    currentText: "What did you learn in class yesterday?"
   },
   {
     id: 6,
-    english: "It is a good idea.",
-    portuguese: "É uma boa ideia.",
+    english: "I will have finished this report by the end of the day.",
+    portuguese: "Eu terei terminado este relatório até o final do dia.",
     substitutions: [
-      { word: "good", options: ["good", "great", "excellent"] },
-      { word: "It", options: ["It", "This", "That"] }
+      { word: "this report", options: ["this report", "this presentation", "this proposal"] },
+      { word: "by the end of the day", options: ["by the end of the day", "by tomorrow morning", "by Friday"] }
     ],
-    currentText: "It is a good idea."
+    currentText: "I will have finished this report by the end of the day."
   }
 ];
 
@@ -137,147 +240,154 @@ const substitutionPracticeI = [
 const substitutionPracticeII = [
   {
     id: 1,
-    english: "Let's talk about fashion!",
-    portuguese: "Vamos conversar sobre moda!",
+    english: "Have you ever tried Japanese food before?",
+    portuguese: "Você já experimentou comida japonesa antes?",
     substitutions: [
-      { word: "fashion", options: ["fashion", "sports", "music"] }
+      { word: "Japanese food", options: ["Japanese food", "Mexican food", "Italian food"] },
+      { word: "Have you ever", options: ["Have you ever", "Did you ever", "Will you ever"] }
     ],
-    currentText: "Let's talk about fashion!"
+    currentText: "Have you ever tried Japanese food before?"
   },
   {
     id: 2,
-    english: "He talks with his father about politics.",
-    portuguese: "Ele conversa com o pai dele sobre política.",
+    english: "Where did you go after the party ended last Saturday?",
+    portuguese: "Onde você foi depois que a festa terminou no sábado passado?",
     substitutions: [
-      { word: "politics", options: ["politics", "business", "movies"] },
-      { word: "He", options: ["He", "She"] }
+      { word: "after the party ended", options: ["after the party ended", "when the movie finished", "after the game was over"] },
+      { word: "last Saturday", options: ["last Saturday", "last Friday", "last Sunday"] }
     ],
-    currentText: "He talks with his father about politics."
+    currentText: "Where did you go after the party ended last Saturday?"
   },
   {
     id: 3,
-    english: "I don't have an opinion about it.",
-    portuguese: "Eu não tenho uma opinião sobre isso.",
+    english: "They will move to a new apartment next month.",
+    portuguese: "Eles vão se mudar para um apartamento novo no próximo mês.",
     substitutions: [
-      { word: "it", options: ["it", "this problem", "this subject"] }
+      { word: "They", options: ["They", "We", "She and her husband"] },
+      { word: "next month", options: ["next month", "next week", "next year"] }
     ],
-    currentText: "I don't have an opinion about it."
+    currentText: "They will move to a new apartment next month."
   },
   {
     id: 4,
-    english: "What time does your class start?",
-    portuguese: "A que horas sua aula começa?",
+    english: "I have known my best friend since we were in elementary school.",
+    portuguese: "Eu conheço meu melhor amigo desde que estávamos no ensino fundamental.",
     substitutions: [
-      { word: "your", options: ["your", "his", "her"] }
+      { word: "my best friend", options: ["my best friend", "my colleague", "my neighbor"] },
+      { word: "since we were", options: ["since we were", "since I was", "since she was"] }
     ],
-    currentText: "What time does your class start?"
+    currentText: "I have known my best friend since we were in elementary school."
   },
   {
     id: 5,
-    english: "What do you watch on TV?",
-    portuguese: "O que você assiste na TV?",
+    english: "How long did you wait for the bus this morning?",
+    portuguese: "Quanto tempo você esperou pelo ônibus esta manhã?",
     substitutions: [
-      { word: "on TV", options: ["on TV", "on your cell phone", "on your tablet"] }
+      { word: "for the bus", options: ["for the bus", "for the train", "for the taxi"] },
+      { word: "this morning", options: ["this morning", "yesterday afternoon", "last night"] }
     ],
-    currentText: "What do you watch on TV?"
+    currentText: "How long did you wait for the bus this morning?"
   },
   {
     id: 6,
-    english: "She loves to read books.",
-    portuguese: "Ela ama ler livros.",
+    english: "She will call you back as soon as she finishes her meeting.",
+    portuguese: "Ela vai te ligar de volta assim que terminar a reunião dela.",
     substitutions: [
-      { word: "She", options: ["She", "He"] },
-      { word: "books", options: ["books", "magazines", "novels"] }
+      { word: "She", options: ["She", "He", "My manager"] },
+      { word: "her meeting", options: ["her meeting", "her presentation", "her appointment"] }
     ],
-    currentText: "She loves to read books."
+    currentText: "She will call you back as soon as she finishes her meeting."
   },
   {
     id: 7,
-    english: "It rains a lot here.",
-    portuguese: "Chove muito aqui.",
+    english: "I have never seen such a beautiful sunset in my entire life.",
+    portuguese: "Eu nunca vi um pôr do sol tão bonito em toda a minha vida.",
     substitutions: [
-      { word: "rains", options: ["rains", "snows", "is sunny"] },
-      { word: "here", options: ["here", "in winter", "in spring"] }
+      { word: "such a beautiful sunset", options: ["such a beautiful sunset", "such an amazing view", "such a wonderful place"] },
+      { word: "in my entire life", options: ["in my entire life", "in all my years", "since I was a child"] }
     ],
-    currentText: "It rains a lot here."
+    currentText: "I have never seen such a beautiful sunset in my entire life."
   }
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - AFFIRMATIVE PRACTICE
+// DADOS DA LIÇÃO - AFFIRMATIVE PRACTICE (NEGATIVE TO AFFIRMATIVE)
 // ==============================
 const affirmativePractice = [
   {
     id: 1,
-    english: "She doesn't study English.",
-    portuguese: "Ela não estuda inglês.",
-    affirmative: "She studies English.",
+    english: "She hasn't finished her homework yet.",
+    portuguese: "Ela ainda não terminou a lição de casa dela.",
+    affirmative: "She has already finished her homework.",
     substitutions: [
       { word: "She", options: ["She", "He"] },
-      { word: "English", options: ["English", "Spanish", "French"] }
+      { word: "her homework", options: ["her homework", "her project", "her assignment"] }
     ],
-    currentText: "She doesn't study English."
+    currentText: "She hasn't finished her homework yet."
   },
   {
     id: 2,
-    english: "He doesn't like coffee.",
-    portuguese: "Ele não gosta de café.",
-    affirmative: "He likes coffee.",
+    english: "They didn't enjoy the movie last night.",
+    portuguese: "Eles não gostaram do filme ontem à noite.",
+    affirmative: "They really enjoyed the movie last night.",
     substitutions: [
-      { word: "He", options: ["He", "She"] },
-      { word: "coffee", options: ["coffee", "tea", "juice"] }
+      { word: "They", options: ["They", "We"] },
+      { word: "the movie", options: ["the movie", "the concert", "the play"] }
     ],
-    currentText: "He doesn't like coffee."
+    currentText: "They didn't enjoy the movie last night."
   },
   {
     id: 3,
-    english: "They don't work on weekends.",
-    portuguese: "Eles não trabalham nos fins de semana.",
-    affirmative: "They work on weekends.",
+    english: "I won't be able to attend the conference tomorrow.",
+    portuguese: "Eu não poderei assistir à conferência amanhã.",
+    affirmative: "I will be able to attend the conference tomorrow.",
     substitutions: [
-      { word: "on weekends", options: ["on weekends", "on Mondays", "on Fridays"] }
+      { word: "the conference", options: ["the conference", "the workshop", "the seminar"] },
+      { word: "tomorrow", options: ["tomorrow", "next week", "on Monday"] }
     ],
-    currentText: "They don't work on weekends."
+    currentText: "I won't be able to attend the conference tomorrow."
   },
   {
     id: 4,
-    english: "It doesn't work properly.",
-    portuguese: "Isso não funciona corretamente.",
-    affirmative: "It works properly.",
+    english: "He has never traveled outside his country before.",
+    portuguese: "Ele nunca viajou para fora do seu país antes.",
+    affirmative: "He has traveled to many different countries before.",
     substitutions: [
-      { word: "properly", options: ["properly", "well", "fast"] }
+      { word: "He", options: ["He", "She"] },
+      { word: "many different countries", options: ["many different countries", "several places in Europe", "a few cities in Asia"] }
     ],
-    currentText: "It doesn't work properly."
+    currentText: "He has never traveled outside his country before."
   },
   {
     id: 5,
-    english: "She doesn't have a car.",
-    portuguese: "Ela não tem carro.",
-    affirmative: "She has a car.",
+    english: "We didn't see anything interesting at the museum.",
+    portuguese: "Nós não vimos nada interessante no museu.",
+    affirmative: "We saw many interesting things at the museum.",
     substitutions: [
-      { word: "a car", options: ["a car", "a bike", "a motorcycle"] }
+      { word: "at the museum", options: ["at the museum", "at the art gallery", "at the exhibition"] },
+      { word: "We", options: ["We", "They"] }
     ],
-    currentText: "She doesn't have a car."
+    currentText: "We didn't see anything interesting at the museum."
   }
 ];
 
 // ==============================
-// DADOS DA LIÇÃO - QUESTIONS
+// DADOS DA LIÇÃO - QUESTIONS (COM DID, WILL, PRESENT PERFECT)
 // ==============================
 const conversationQuestions = [
-  { id: "a", question: "Do you have a minute to talk to me?", icon: Users },
-  { id: "b", question: "Do you like to watch sports on TV?", icon: Tv },
-  { id: "c", question: "Where do you have to go tonight?", icon: Home },
-  { id: "d", question: "What do you usually talk to your friends about?", icon: Users },
-  { id: "e", question: "What do you usually watch on your tablet?", icon: Smartphone },
-  { id: "f", question: "Do you have to study for an exam this week?", icon: BookOpen },
-  { id: "g", question: "What time does your English class start?", icon: BookOpen },
-  { id: "h", question: "Does your teacher like to talk about music?", icon: Users },
-  { id: "i", question: "Does your father / mother usually meet his / her friends on weekends?", icon: Users },
-  { id: "j", question: "Does your wife / husband have to speak English at work?", icon: Briefcase },
-  { id: "k", question: "Does he like to play soccer?", icon: Users },
-  { id: "l", question: "Does she enjoy cooking?", icon: Utensils },
-  { id: "m", question: "Is it going to rain today?", icon: Sun },
+  { id: "a", question: "What did you do last weekend?", icon: Users },
+  { id: "b", question: "Have you ever traveled to another country?", icon: Home },
+  { id: "c", question: "Where will you go on your next vacation?", icon: Sun },
+  { id: "d", question: "How long have you been studying English?", icon: BookOpen },
+  { id: "e", question: "Did you watch any good movies recently?", icon: Tv },
+  { id: "f", question: "What will you do after you finish this course?", icon: Target },
+  { id: "g", question: "Have you ever met someone famous?", icon: Users },
+  { id: "h", question: "What time did you wake up this morning?", icon: Clock },
+  { id: "i", question: "Will you work in a different city in the future?", icon: Briefcase },
+  { id: "j", question: "How many books have you read this year?", icon: BookOpen },
+  { id: "k", question: "Did you enjoy your previous job?", icon: Briefcase },
+  { id: "l", question: "What will you have for dinner tonight?", icon: Utensils },
+  { id: "m", question: "Have you already finished all your tasks for today?", icon: Check },
 ];
 
 // ==============================
@@ -471,100 +581,31 @@ interface SubstitutionExerciseProps {
 }
 
 const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps) => {
-  const [currentText, setCurrentText] = useState(exercise.english);
+  const [currentText, setCurrentText] = useState(exercise.currentText || exercise.english);
   const [showPortuguese, setShowPortuguese] = useState(false);
-  const [lastReplaced, setLastReplaced] = useState<{ oldWord: string, newWord: string } | null>(null);
 
   const handleSubstitution = (oldWord: string, newWord: string) => {
     let newText = currentText;
     
-    if (oldWord === "a car" && (newWord === "a bike" || newWord === "a motorcycle")) {
-      newText = newText.replace(/\ba car\b/i, newWord);
-    }
-    else if (oldWord === "a car" && newWord === "a car") {
-      // Do nothing
-    }
-    else if (oldWord === "a car") {
-      const vowelSounds = ['a', 'e', 'i', 'o', 'u'];
-      const firstLetter = newWord.toLowerCase().charAt(0);
-      const article = vowelSounds.includes(firstLetter) ? 'an' : 'a';
-      newText = newText.replace(/\ba car\b/i, `${article} ${newWord.replace(/^(a|an)\s+/i, '')}`);
-    }
-    else if (oldWord === "on TV" && (newWord === "on your cell phone" || newWord === "on your tablet")) {
-      newText = newText.replace(/\bon TV\b/i, newWord);
-    }
-    else if (oldWord === "your" && (newWord === "his" || newWord === "her")) {
-      newText = newText.replace(/\byour\b/i, newWord);
-    }
-    else if (["He", "She", "It", "This", "That"].includes(oldWord) && ["He", "She", "It", "This", "That"].includes(newWord)) {
-      const regex = new RegExp(`\\b${oldWord}\\b`, 'gi');
-      newText = newText.replace(regex, (match: string) => {
-        if (match === match.toUpperCase()) return newWord.toUpperCase();
-        if (match === match.toLowerCase()) return newWord.toLowerCase();
-        if (match.charAt(0) === match.charAt(0).toUpperCase()) {
-          return newWord.charAt(0).toUpperCase() + newWord.slice(1).toLowerCase();
-        }
-        return newWord;
-      });
-    }
-    else if (oldWord === "know" && (newWord === "learn" || newWord === "understand")) {
-      newText = newText.replace(/\bknow\b/i, newWord);
-    }
-    else if (oldWord === "religion" && (newWord === "music" || newWord === "business")) {
-      newText = newText.replace(/\breligion\b/i, newWord);
-    }
-    else if (oldWord === "good" && (newWord === "great" || newWord === "excellent")) {
-      newText = newText.replace(/\bgood\b/i, newWord);
-    }
-    else if (oldWord === "books" && (newWord === "magazines" || newWord === "novels")) {
-      newText = newText.replace(/\bbooks\b/i, newWord);
-    }
-    else if (oldWord === "rains" && (newWord === "snows" || newWord === "is sunny")) {
-      newText = newText.replace(/\brains\b/i, newWord);
-    }
-    else if (oldWord === "here" && (newWord === "in winter" || newWord === "in spring")) {
-      newText = newText.replace(/\bhere\b/i, newWord);
-    }
-    else if (oldWord === "properly" && (newWord === "well" || newWord === "fast")) {
-      newText = newText.replace(/\bproperly\b/i, newWord);
-    }
-    else if (oldWord === "on weekends" && (newWord === "on Mondays" || newWord === "on Fridays")) {
-      newText = newText.replace(/\bon weekends\b/i, newWord);
-    }
-    else if (oldWord === "English" && (newWord === "Spanish" || newWord === "French")) {
-      newText = newText.replace(/\bEnglish\b/i, newWord);
-    }
-    else if (oldWord === "coffee" && (newWord === "tea" || newWord === "juice")) {
-      newText = newText.replace(/\bcoffee\b/i, newWord);
-    }
-    else if (oldWord === "every day" && (newWord === "during the week" || newWord === "all day")) {
-      newText = newText.replace(/\bevery day\b/i, newWord);
-    }
-    else if (oldWord === "now" && newWord === "in a few minutes") {
-      newText = newText.replace(/\bnow\b/i, newWord);
-    }
-    else if (oldWord === "next week" && (newWord === "next month" || newWord === "next year")) {
-      newText = newText.replace(/\bnext week\b/i, newWord);
-    }
-    else if (oldWord === "The test" && (newWord === "The movie" || newWord === "The meeting")) {
-      newText = newText.replace(/\bThe test\b/i, newWord);
-    }
-    else if (oldWord === "it" && (newWord === "this problem" || newWord === "this subject")) {
-      newText = newText.replace(/\bit\b/gi, newWord);
-    }
-    else if (oldWord === "fashion" && (newWord === "sports" || newWord === "music")) {
-      newText = newText.replace(/\bfashion\b/i, newWord);
-    }
-    else if (oldWord === "politics" && (newWord === "business" || newWord === "movies")) {
-      newText = newText.replace(/\bpolitics\b/i, newWord);
-    }
-    else {
+    // Handle specific word replacements
+    if (oldWord === "have already finished" && newWord === "finished") {
+      newText = newText.replace(/have already finished/i, "finished");
+    } else if (oldWord === "have already finished" && newWord === "will finish") {
+      newText = newText.replace(/have already finished/i, "will finish");
+    } else if (oldWord === "Have you ever" && newWord === "Did you ever") {
+      newText = newText.replace(/Have you ever/i, "Did you ever");
+    } else if (oldWord === "Have you ever" && newWord === "Will you ever") {
+      newText = newText.replace(/Have you ever/i, "Will you ever");
+    } else if (oldWord === "since we were" && newWord === "since I was") {
+      newText = newText.replace(/since we were/i, "since I was");
+    } else if (oldWord === "since we were" && newWord === "since she was") {
+      newText = newText.replace(/since we were/i, "since she was");
+    } else {
       const regex = new RegExp(`\\b${oldWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
       newText = newText.replace(regex, newWord);
     }
 
     setCurrentText(newText);
-    setLastReplaced({ oldWord, newWord });
     onUpdate(exercise.id, newText);
   };
 
@@ -587,9 +628,9 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
   };
 
   const resetToOriginal = () => {
-    setCurrentText(exercise.english);
-    onUpdate(exercise.id, exercise.english);
-    setLastReplaced(null);
+    const originalText = exercise.currentText || exercise.english;
+    setCurrentText(originalText);
+    onUpdate(exercise.id, originalText);
   };
 
   return (
@@ -613,9 +654,9 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
       </div>
 
       <div className="mb-4">
-        <p className="text-2xl font-bold text-gray-800 mb-2">
+        <SpeakSentence text={currentText} className="text-2xl font-bold text-gray-800 mb-2 block">
           {currentText}
-        </p>
+        </SpeakSentence>
         {showPortuguese && (
           <p className="text-lg text-gray-600 italic border-l-4 pl-3" 
              style={{ borderColor: LESSON_THEME_COLOR }}>
@@ -643,7 +684,9 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
                     style={currentWord === option ? { backgroundColor: LESSON_THEME_COLOR, color: 'white' } : {}}
                     disabled={currentWord === option}
                   >
-                    {option}
+                    <SpeakText text={option} className="inline">
+                      {option}
+                    </SpeakText>
                   </button>
                 ))}
               </div>
@@ -688,7 +731,7 @@ const InteractiveQuestion = ({ id, question, icon: Icon, value, onChange, onClea
         {Icon && <Icon className="mt-1" style={{ color: LESSON_THEME_COLOR }} size={24} />}
         <h4 className="text-lg font-medium text-gray-800 flex-1">
           <span className="font-bold mr-2" style={{ color: LESSON_THEME_COLOR }}>{id}.</span>
-          {question}
+          <SpeakSentence text={question}>{question}</SpeakSentence>
         </h4>
       </div>
 
@@ -847,6 +890,13 @@ export default function Lesson34TuneYourEars() {
     }
   };
 
+  // Initialize voices on component mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
+
   return (
     <div className="min-h-screen py-16 px-4 md:px-6 bg-cover bg-center bg-fixed relative"
          style={{ backgroundImage: `url('${BACKGROUND_IMAGE}')` }}>
@@ -865,9 +915,9 @@ export default function Lesson34TuneYourEars() {
           </h1>
           <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-gray-800">{LESSON_TITLE}</h2>
           <h3 className="text-xl text-gray-600 mb-4">{LESSON_SUBTITLE}</h3>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+          <SpeakSentence text="Practice slow listening, shadowing technique, and reflect on your English learning journey." className="text-xl text-gray-700 max-w-3xl mx-auto">
             Practice slow listening, shadowing technique, and reflect on your English learning journey.
-          </p>
+          </SpeakSentence>
           
           <div className="flex flex-wrap justify-center gap-4 mt-8">
             <button
@@ -943,12 +993,16 @@ export default function Lesson34TuneYourEars() {
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2">
                           {Icon && <Icon size={20} style={{ color: LESSON_THEME_COLOR }} />}
-                          <h4 className="text-xl font-bold" style={{ color: LESSON_THEME_COLOR }}>{item.word}</h4>
+                          <SpeakText text={item.word} className="text-xl font-bold" style={{ color: LESSON_THEME_COLOR }}>
+                            {item.word}
+                          </SpeakText>
                         </div>
                         <AudioPlayer src={item.audio} compact />
                       </div>
-                      <p className="text-gray-700 mb-1 font-medium">{item.phrase}</p>
-                      <p className="text-gray-500 italic text-sm border-l-2 pl-2" style={{ borderColor: LESSON_THEME_COLOR }}>
+                      <SpeakSentence text={item.phrase} className="text-gray-700 mb-1 font-medium block">
+                        {item.phrase}
+                      </SpeakSentence>
+                      <p className="text-gray-500 italic text-sm border-l-2 pl-2 mt-1" style={{ borderColor: LESSON_THEME_COLOR }}>
                         {item.example}
                       </p>
                     </div>
@@ -959,7 +1013,7 @@ export default function Lesson34TuneYourEars() {
           )}
         </div>
 
-        {/* SEÇÃO 2: SUBSTITUTION PRACTICE I */}
+        {/* SEÇÃO 2: SUBSTITUTION PRACTICE I (WITH PAST, FUTURE, PRESENT PERFECT) */}
         <div className="mb-16 bg-gradient-to-br from-purple-50 to-pink-50 border-2 rounded-3xl shadow-lg overflow-hidden"
              style={{ borderColor: "#a855f7" }}>
           <div className="py-5 px-8 flex justify-between items-center bg-gradient-to-r from-purple-500 to-pink-500">
@@ -976,6 +1030,9 @@ export default function Lesson34TuneYourEars() {
           
           {expandedSections.substitution1 && (
             <div className="p-8">
+              <SpeakSentence text="Practice with Present Perfect, Past Simple (DID), and Future (WILL). Click on any option to replace the highlighted word." className="text-purple-700 mb-6 italic block">
+                Practice with Present Perfect, Past Simple (DID), and Future (WILL). Click on any option to replace the highlighted word.
+              </SpeakSentence>
               <div className="space-y-6">
                 {substitutionPracticeI.map((exercise) => (
                   <SubstitutionExercise
@@ -1006,6 +1063,9 @@ export default function Lesson34TuneYourEars() {
           
           {expandedSections.substitution2 && (
             <div className="p-8">
+              <SpeakSentence text="Continue practicing with more complex sentences using different tenses." className="text-green-700 mb-6 italic block">
+                Continue practicing with more complex sentences using different tenses.
+              </SpeakSentence>
               <div className="space-y-6">
                 {substitutionPracticeII.map((exercise) => (
                   <SubstitutionExercise
@@ -1036,9 +1096,9 @@ export default function Lesson34TuneYourEars() {
           
           {expandedSections.affirmative && (
             <div className="p-8">
-              <p className="text-amber-700 mb-6 italic font-medium">
+              <SpeakSentence text="Transform these negative sentences into affirmative sentences by replacing words." className="text-amber-700 mb-6 italic block">
                 Transform these negative sentences into affirmative sentences by replacing words.
-              </p>
+              </SpeakSentence>
               <div className="space-y-6">
                 {affirmativePractice.map((exercise) => (
                   <SubstitutionExercise
@@ -1052,7 +1112,7 @@ export default function Lesson34TuneYourEars() {
           )}
         </div>
 
-        {/* SEÇÃO 5: CONVERSATION QUESTIONS */}
+        {/* SEÇÃO 5: CONVERSATION QUESTIONS (WITH DID, WILL, PRESENT PERFECT) */}
         <div className="mb-16 bg-gradient-to-br from-indigo-50 to-violet-50 border-2 rounded-3xl shadow-lg overflow-hidden"
              style={{ borderColor: "#6366f1" }}>
           <div className="py-5 px-8 flex justify-between items-center bg-gradient-to-r from-indigo-500 to-violet-500">
@@ -1069,9 +1129,9 @@ export default function Lesson34TuneYourEars() {
           
           {expandedSections.questions && (
             <div className="p-8">
-              <p className="text-indigo-700 mb-6 italic">
-                Practice answering these questions to improve your conversation skills.
-              </p>
+              <SpeakSentence text="Practice answering these questions using Past Simple (DID), Present Perfect, and Future (WILL)." className="text-indigo-700 mb-6 italic block">
+                Practice answering these questions using Past Simple (DID), Present Perfect, and Future (WILL).
+              </SpeakSentence>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {conversationQuestions.map((item) => (
@@ -1092,8 +1152,9 @@ export default function Lesson34TuneYourEars() {
                   <Volume2 size={20} /> 💡 Tips for Answering:
                 </h3>
                 <ul className="list-disc pl-5 space-y-2 text-indigo-700">
-                  <li>Try to answer in complete sentences</li>
-                  <li>Use vocabulary from this lesson when possible</li>
+                  <li>Use Past Simple (DID) for completed past actions: "I went to the beach last weekend."</li>
+                  <li>Use Present Perfect for experiences: "I have visited Japan twice."</li>
+                  <li>Use Future (WILL) for predictions and plans: "I will travel to Europe next year."</li>
                   <li>Be honest about your own experiences</li>
                   <li>Practice saying your answers out loud</li>
                 </ul>
@@ -1123,17 +1184,21 @@ export default function Lesson34TuneYourEars() {
                 <h3 className="text-2xl font-bold text-cyan-700 mb-4">
                   {tuneYourEarsVideo.title}
                 </h3>
-                <p className="text-cyan-600 mb-6">{tuneYourEarsVideo.description}</p>
+                <SpeakSentence text={tuneYourEarsVideo.description} className="text-cyan-600 mb-6 block">
+                  {tuneYourEarsVideo.description}
+                </SpeakSentence>
                 
                 {/* SHADOWING EXPLANATION */}
                 <div className="bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6 mb-8 text-left">
                   <h4 className="text-lg font-bold text-cyan-800 mb-2 flex items-center gap-2">
                     <Headphones size={20} /> What is Shadowing?
                   </h4>
-                  <p className="text-cyan-700">{tuneYourEarsVideo.shadowingExplanation}</p>
-                  <p className="text-cyan-600 text-sm mt-2 italic">
+                  <SpeakSentence text={tuneYourEarsVideo.shadowingExplanation} className="text-cyan-700 block">
+                    {tuneYourEarsVideo.shadowingExplanation}
+                  </SpeakSentence>
+                  <SpeakSentence text="How to practice: Listen to a short phrase → Pause the video → Repeat exactly what you heard → Focus on rhythm and intonation" className="text-cyan-600 text-sm mt-2 italic block">
                     How to practice: Listen to a short phrase → Pause the video → Repeat exactly what you heard → Focus on rhythm and intonation
-                  </p>
+                  </SpeakSentence>
                 </div>
                 
                 <div className="bg-black rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
@@ -1149,7 +1214,7 @@ export default function Lesson34TuneYourEars() {
                 </div>
               </div>
 
-              {/* KEY VOCABULARY FROM THE VIDEO - AGORA DENTRO DO TUNE IN YOUR EARS */}
+              {/* KEY VOCABULARY FROM THE VIDEO */}
               <div className="mb-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-cyan-800 mb-4 flex items-center gap-2">
                   <BookOpen size={20} /> 📖 Key Vocabulary from the Video:
@@ -1161,7 +1226,9 @@ export default function Lesson34TuneYourEars() {
                       <div key={idx} className="flex items-center justify-between p-3 bg-white rounded-lg hover:shadow-md transition-all">
                         <div className="flex items-center gap-2">
                           {Icon && <Icon size={16} style={{ color: LESSON_THEME_COLOR }} />}
-                          <span className="font-medium text-cyan-700">{item.english}</span>
+                          <SpeakText text={item.english} className="font-medium text-cyan-700">
+                            {item.english}
+                          </SpeakText>
                         </div>
                         <span className="text-cyan-600 text-sm">{item.portuguese}</span>
                       </div>
@@ -1173,15 +1240,17 @@ export default function Lesson34TuneYourEars() {
               {/* REFLECTION QUESTIONS */}
               <div className="space-y-8">
                 <h3 className="text-xl font-bold text-center text-cyan-700">Reflection Questions</h3>
-                <p className="text-center text-gray-600 -mt-4">
+                <SpeakSentence text="Answer these questions honestly to reflect on your English learning journey." className="text-center text-gray-600 -mt-4 block">
                   Answer these questions honestly to reflect on your English learning journey.
-                </p>
+                </SpeakSentence>
                 
                 {tuneYourEarsVideo.questions.map((q) => (
                   <div key={q.id} className="bg-white p-6 rounded-xl border-2 shadow-md"
                        style={{ borderColor: `${LESSON_THEME_COLOR}30` }}>
                     <h4 className="text-lg font-bold mb-3" style={{ color: LESSON_THEME_COLOR }}>
-                      Question {q.id}: {q.question}
+                      <SpeakSentence text={`Question ${q.id}: ${q.question}`}>
+                        Question {q.id}: {q.question}
+                      </SpeakSentence>
                     </h4>
 
                     <textarea
@@ -1234,12 +1303,12 @@ export default function Lesson34TuneYourEars() {
                   <Headphones size={20} /> 🎯 Listening & Shadowing Tips:
                 </h3>
                 <ul className="list-disc pl-5 space-y-2 text-cyan-700">
-                  <li>Listen first without looking at the questions</li>
-                  <li>Practice shadowing: pause after each sentence and repeat</li>
-                  <li>Use your mistakes as fuel - learn from them</li>
-                  <li>Set a timer for daily practice (15-25 minutes is enough)</li>
-                  <li>Remember: progress happens step by step, not overnight</li>
-                  <li>Write down new vocabulary and review it regularly</li>
+                  <SpeakSentence text="Listen first without looking at the questions" className="block">Listen first without looking at the questions</SpeakSentence>
+                  <SpeakSentence text="Practice shadowing: pause after each sentence and repeat" className="block">Practice shadowing: pause after each sentence and repeat</SpeakSentence>
+                  <SpeakSentence text="Use your mistakes as fuel - learn from them" className="block">Use your mistakes as fuel - learn from them</SpeakSentence>
+                  <SpeakSentence text="Set a timer for daily practice (15-25 minutes is enough)" className="block">Set a timer for daily practice (15-25 minutes is enough)</SpeakSentence>
+                  <SpeakSentence text="Remember: progress happens step by step, not overnight" className="block">Remember: progress happens step by step, not overnight</SpeakSentence>
+                  <SpeakSentence text="Write down new vocabulary and review it regularly" className="block">Write down new vocabulary and review it regularly</SpeakSentence>
                 </ul>
               </div>
             </div>
@@ -1265,10 +1334,10 @@ export default function Lesson34TuneYourEars() {
           
           <div className="flex gap-4">
             <button
-              onClick={() => router.push("/cursos")}
+              onClick={() => router.push("/cursos/lesson33")}
               className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-full transition font-medium shadow-md"
             >
-              &larr; Back to Courses
+              &larr; Previous Lesson
             </button>
             <button
               onClick={() => router.push(`/cursos/lesson${LESSON_NUMBER + 1}`)}
@@ -1282,7 +1351,9 @@ export default function Lesson34TuneYourEars() {
         
         <div className="mt-8 text-center text-gray-500 text-sm">
           <p>Lesson {LESSON_NUMBER}: {LESSON_TITLE} - {LESSON_SUBTITLE} • Interactive English Practice • All answers are saved in your browser</p>
-          <p className="mt-1">🎧 Remember: Tune your ears, practice shadowing, and keep going step by step!</p>
+          <SpeakSentence text="Remember: Tune your ears, practice shadowing, and keep going step by step!" className="mt-1">
+            🎧 Remember: Tune your ears, practice shadowing, and keep going step by step!
+          </SpeakSentence>
         </div>
       </div>
     </div>

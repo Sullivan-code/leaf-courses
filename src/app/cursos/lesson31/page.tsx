@@ -1,9 +1,261 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Volume2 } from "lucide-react";
 
 type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar';
+
+interface NoteModalState {
+  isOpen: boolean;
+  sectionTitle: string;
+  noteContent: string;
+}
+
+// ============================================
+// SPEECH SYSTEM WITH AMERICAN FEMALE VOICE (ZOEY'S VOICE)
+// ============================================
+
+interface SpeakTextProps {
+  text: string;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+// Component for individual word pronunciation
+const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
+  const speak = () => {
+    if (!text || typeof window === 'undefined') return;
+    
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    
+    const voices = window.speechSynthesis.getVoices();
+    
+    const americanFemaleVoices = voices.filter(voice => 
+      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+      (voice.name.toLowerCase().includes('samantha') || 
+       voice.name.toLowerCase().includes('google us english') ||
+       voice.name.toLowerCase().includes('siri') ||
+       voice.name.toLowerCase().includes('female') ||
+       voice.name === 'Google US English' ||
+       voice.name === 'Samantha')
+    );
+    
+    const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+    
+    if (americanFemaleVoices.length > 0) {
+      utterance.voice = americanFemaleVoices[0];
+    } else if (americanVoices.length > 0) {
+      utterance.voice = americanVoices[0];
+    }
+    
+    window.speechSynthesis.speak(utterance);
+  };
+
+  return (
+    <button
+      onClick={speak}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
+      title="Click to hear American pronunciation"
+    >
+      {children || text}
+      <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+    </button>
+  );
+};
+
+// Component for pronouncing entire sentences
+const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
+  return (
+    <button
+      onClick={() => {
+        const speechText = children && typeof children === 'string' ? children : text;
+        if (speechText && typeof window !== 'undefined') {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(speechText);
+          utterance.lang = 'en-US';
+          utterance.rate = 0.85;
+          utterance.pitch = 1.0;
+          
+          const voices = window.speechSynthesis.getVoices();
+          
+          const americanFemaleVoices = voices.filter(voice => 
+            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+            (voice.name.toLowerCase().includes('samantha') || 
+             voice.name.toLowerCase().includes('google us english') ||
+             voice.name === 'Google US English')
+          );
+          
+          const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+          
+          if (americanFemaleVoices.length > 0) {
+            utterance.voice = americanFemaleVoices[0];
+          } else if (americanVoices.length > 0) {
+            utterance.voice = americanVoices[0];
+          }
+          
+          window.speechSynthesis.speak(utterance);
+        }
+      }}
+      className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors ${className}`}
+    >
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
+    </button>
+  );
+};
+
+// Componente de Modal para Anotações
+function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
+  isOpen: boolean;
+  onClose: () => void;
+  sectionTitle: string;
+  initialNote: string;
+  onSave: (note: string) => void;
+}) {
+  const [note, setNote] = useState(initialNote);
+
+  if (!isOpen) return null;
+
+  const handleSave = () => {
+    onSave(note);
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fadeIn">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6">
+          <h3 className="text-xl font-bold">📝 Anotações - {sectionTitle}</h3>
+          <p className="text-sm text-blue-100 mt-1">Escreva suas observações, dúvidas ou traduções</p>
+        </div>
+        
+        <div className="p-6">
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Escreva aqui suas anotações...
+- Traduções importantes
+- Dúvidas para o professor
+- Exemplos pessoais
+- Dicas de memorização"
+            className="w-full h-64 p-4 border border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none"
+          />
+        </div>
+        
+        <div className="flex justify-end gap-3 p-6 pt-0">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full hover:from-purple-600 hover:to-purple-800 transition-all duration-300"
+          >
+            Salvar Anotação
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Componente de Ícone de Lápis
+function PencilIcon({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="ml-3 text-gray-400 hover:text-blue-500 transition-colors focus:outline-none"
+      aria-label="Fazer anotações"
+      title="Clique para fazer anotações"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+      </svg>
+    </button>
+  );
+}
+
+// Componente CheckItOutHorizontal
+function CheckItOutHorizontal() {
+  return (
+    <div className="w-full mx-auto border-2 border-gray-800 rounded-lg overflow-hidden shadow-lg">
+      {/* HEADER */}
+      <div className="flex items-center justify-between px-6 py-3 bg-white border-b-2 border-gray-800">
+        <h2 className="text-xl font-bold tracking-widest text-gray-900">
+          CHECK IT OUT!
+        </h2>
+        <div className="flex items-center gap-3 text-gray-600">
+          <span className="cursor-pointer hover:text-gray-900">≡</span>
+          <span className="cursor-pointer hover:text-gray-900">✕</span>
+          <span className="cursor-pointer hover:text-gray-900">▶</span>
+        </div>
+      </div>
+
+      {/* CONTENT */}
+      <div className="grid grid-cols-1 md:grid-cols-2 text-sm">
+        {/* COLUMN 1 - Time Expressions */}
+        <div className="bg-green-700 text-white p-6 space-y-3">
+          <h3 className="font-bold text-yellow-300 mb-2">TIME EXPRESSIONS</h3>
+          <SpeakSentence text="in a minute" className="block cursor-pointer hover:opacity-70">
+            • in a minute
+          </SpeakSentence>
+          <SpeakSentence text="in an hour" className="block cursor-pointer hover:opacity-70">
+            • in an hour
+          </SpeakSentence>
+          <SpeakSentence text="in five minutes" className="block cursor-pointer hover:opacity-70">
+            • in five minutes
+          </SpeakSentence>
+          <SpeakSentence text="in two hours" className="block cursor-pointer hover:opacity-70">
+            • in two hours
+          </SpeakSentence>
+          <SpeakSentence text="I'll start in a minute." className="block cursor-pointer hover:opacity-70 mt-4 pt-4 border-t border-green-600">
+            • I'll start in a minute.
+          </SpeakSentence>
+          <SpeakSentence text="We finish in two hours." className="block cursor-pointer hover:opacity-70">
+            • We finish in two hours.
+          </SpeakSentence>
+        </div>
+
+        {/* COLUMN 2 - Question Patterns */}
+        <div className="bg-red-700 text-white p-6 space-y-3">
+          <h3 className="font-bold text-yellow-300 mb-2">QUESTION PATTERNS</h3>
+          <SpeakSentence text="What do you want to study?" className="block cursor-pointer hover:opacity-70">
+            • What do you want to study?
+          </SpeakSentence>
+          <SpeakSentence text="When do they start?" className="block cursor-pointer hover:opacity-70">
+            • When do they start?
+          </SpeakSentence>
+          <SpeakSentence text="Where do we have the meeting?" className="block cursor-pointer hover:opacity-70">
+            • Where do we have the meeting?
+          </SpeakSentence>
+          <SpeakSentence text="What time do you finish?" className="block cursor-pointer hover:opacity-70">
+            • What time do you finish?
+          </SpeakSentence>
+          <div className="mt-4 pt-4 border-t border-red-600">
+            <h4 className="font-bold text-yellow-300 mb-2">MEETING EXPRESSIONS</h4>
+            <SpeakSentence text="to go to the meeting" className="block cursor-pointer hover:opacity-70">
+              • to go to the meeting
+            </SpeakSentence>
+            <SpeakSentence text="to speak at the meeting" className="block cursor-pointer hover:opacity-70">
+              • to speak at the meeting
+            </SpeakSentence>
+            <SpeakSentence text="I need to study for an exam." className="block cursor-pointer hover:opacity-70">
+              • I need to study for an exam.
+            </SpeakSentence>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Lesson31StartFinish() {
   const router = useRouter();
@@ -13,8 +265,14 @@ export default function Lesson31StartFinish() {
     usefulPhrases: false,
     grammar: false,
   });
-  const [showNegativeExplanation, setShowNegativeExplanation] = useState(false);
-  const [showQuestionsExplanation, setShowQuestionsExplanation] = useState(false);
+  
+  const [noteModal, setNoteModal] = useState<NoteModalState>({
+    isOpen: false,
+    sectionTitle: '',
+    noteContent: '',
+  });
+  
+  const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills({
@@ -23,19 +281,27 @@ export default function Lesson31StartFinish() {
     });
   };
 
-  const playAudio = (text: string) => {
-    const formattedText = text
-      .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^\w\s-]/g, '')
-      .replace(/'/g, '')
-      .trim();
-    
-    console.log('Trying to play audio:', `/audios/${formattedText}.mp3`);
-    
-    const audio = new Audio(`/audios/${formattedText}.mp3`);
-    audio.play().catch(e => console.error("Error playing audio:", e));
+  const openNoteModal = (sectionTitle: string) => {
+    setNoteModal({
+      isOpen: true,
+      sectionTitle,
+      noteContent: savedNotes[sectionTitle] || '',
+    });
   };
+
+  const saveNote = (note: string) => {
+    setSavedNotes(prev => ({
+      ...prev,
+      [noteModal.sectionTitle]: note,
+    }));
+  };
+
+  // Initialize voices
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
 
   // Image URLs
   const mainImage = "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
@@ -113,12 +379,12 @@ export default function Lesson31StartFinish() {
         
         {/* Centered title with image below */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-[#0c4a6e] mb-6">
+          <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
             ⏰ Lesson 31 - START / FINISH
           </h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Learn to talk about beginnings, endings, deadlines, and daily schedules.
-          </p>
+          <SpeakSentence text="Learn to talk about beginnings, endings, deadlines, and daily schedules." className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
+            📚 Learn to talk about beginnings, endings, deadlines, and daily schedules.
+          </SpeakSentence>
           <div className="w-64 h-64 mx-auto">
             <img
               src={mainImage}
@@ -130,75 +396,93 @@ export default function Lesson31StartFinish() {
 
         {/* Section 1 - Verbs with Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold">🔹 Verbs</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Clique nos verbos para ouvir a pronúncia e praticar suas formas
-              </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 VERBS</h2>
+              <PencilIcon onClick={() => openNoteModal('Verbs')} />
             </div>
             <button 
               onClick={() => toggleDrill('verbs')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.verbs ? 'Hide Practice' : 'Show Practice'}
+              {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
+            <SpeakSentence text="Click on the verbs to hear the pronunciation and practice their forms" className="text-md text-gray-600 mb-4 italic">
+              🎧 Click on the verbs to hear the pronunciation and practice their forms
+            </SpeakSentence>
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
               {verbs.map((verb, index) => (
                 <li key={index}>
-                  <button 
-                    onClick={() => playAudio(verb.english)} 
-                    className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                  >
+                  <SpeakText text={verb.english} className="text-blue-600 font-bold">
                     {verb.english}
-                  </button> = {verb.portuguese}
+                  </SpeakText> = {verb.portuguese}
                 </li>
               ))}
             </ul>
             
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('start')}>start</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I start')}>I start</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('You start')}>You start</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We start')}>We start</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    1. <SpeakText text="start" className="text-blue-600 font-bold">start</SpeakText> / <SpeakText text="I start" className="text-blue-600 font-bold">I start</SpeakText>. / <SpeakText text="You start" className="text-blue-600 font-bold">You start</SpeakText>. / <SpeakText text="We start" className="text-blue-600 font-bold">We start</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 começar / eu começo / você começa / nós começamos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I want to start')}>I want to start</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I need to start')}>need</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I have to start')}>have to</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    2. <SpeakText text="I want to start" className="text-blue-600 font-bold">I want to start</SpeakText>. / <SpeakText text="I need to start" className="text-blue-600 font-bold">need</SpeakText> / <SpeakText text="I have to start" className="text-blue-600 font-bold">have to</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eu quero começar / eu preciso começar / eu tenho que começar</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('When do you start')}>When do you start</span>? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('When does he start')}>he</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('When does she start')}>she</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    3. <SpeakText text="When do you start" className="text-blue-600 font-bold">When do you start</SpeakText>? / <SpeakText text="When does he start" className="text-blue-600 font-bold">he</SpeakText> / <SpeakText text="When does she start" className="text-blue-600 font-bold">she</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 quando você começa? / quando ele começa? / quando ela começa?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('finish')}>finish</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I finish')}>I finish</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('You finish')}>You finish</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They finish')}>They finish</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    4. <SpeakText text="finish" className="text-blue-600 font-bold">finish</SpeakText> / <SpeakText text="I finish" className="text-blue-600 font-bold">I finish</SpeakText>. / <SpeakText text="You finish" className="text-blue-600 font-bold">You finish</SpeakText>. / <SpeakText text="They finish" className="text-blue-600 font-bold">They finish</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 terminar / eu termino / você termina / eles terminam</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I finish college this year')}>I finish college this year</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I finish high school this year')}>high school</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I finish the course this year')}>the course</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    5. <SpeakText text="I finish college this year" className="text-blue-600 font-bold">I finish college this year</SpeakText>. / <SpeakText text="I finish high school this year" className="text-blue-600 font-bold">high school</SpeakText> / <SpeakText text="I finish the course this year" className="text-blue-600 font-bold">the course</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eu termino a faculdade este ano / o ensino médio / o curso</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you finish at five')}>Do you finish at five</span>? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Does he finish at five')}>Does he</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Does she finish at five')}>Does she</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    6. <SpeakText text="Do you finish at five" className="text-blue-600 font-bold">Do you finish at five</SpeakText>? / <SpeakText text="Does he finish at five" className="text-blue-600 font-bold">Does he</SpeakText> / <SpeakText text="Does she finish at five" className="text-blue-600 font-bold">Does she</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 você termina às cinco? / ele termina? / ela termina?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('What time do you finish')}>What time do you finish</span>? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('What time does he finish')}>he</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('What time does she finish')}>she</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    7. <SpeakText text="What time do you finish" className="text-blue-600 font-bold">What time do you finish</SpeakText>? / <SpeakText text="What time does he finish" className="text-blue-600 font-bold">he</SpeakText> / <SpeakText text="What time does she finish" className="text-blue-600 font-bold">she</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 que horas você termina? / ele termina? / ela termina?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I do not start today')}>I do not start today</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('You do not start today')}>You</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They do not start today')}>They</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    8. <SpeakText text="I do not start today" className="text-blue-600 font-bold">I do not start today</SpeakText>. / <SpeakText text="You do not start today" className="text-blue-600 font-bold">You</SpeakText> / <SpeakText text="They do not start today" className="text-blue-600 font-bold">They</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eu não começo hoje / você não começa / eles não começam</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">9. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('He does not finish today')}>He does not finish today</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('He does not finish tomorrow')}>tomorrow</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('He does not finish this week')}>this week</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    9. <SpeakText text="He does not finish today" className="text-blue-600 font-bold">He does not finish today</SpeakText>. / <SpeakText text="He does not finish tomorrow" className="text-blue-600 font-bold">tomorrow</SpeakText> / <SpeakText text="He does not finish this week" className="text-blue-600 font-bold">this week</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 ele não termina hoje / amanhã / esta semana</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">10. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you want to start now')}>Do you want to start now</span>? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you want to finish now')}>finish</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you want to study now')}>study</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    10. <SpeakText text="Do you want to start now" className="text-blue-600 font-bold">Do you want to start now</SpeakText>? / <SpeakText text="Do you want to finish now" className="text-blue-600 font-bold">finish</SpeakText> / <SpeakText text="Do you want to study now" className="text-blue-600 font-bold">study</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 você quer começar agora? / terminar? / estudar?</p>
                 </div>
               </div>
@@ -208,31 +492,29 @@ export default function Lesson31StartFinish() {
 
         {/* Section 2 - Vocabulary with Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold">🔹 New Words</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Clique em cada palavra para ouvir sua pronúncia correta
-              </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 NEW WORDS</h2>
+              <PencilIcon onClick={() => openNoteModal('New Words')} />
             </div>
             <button 
               onClick={() => toggleDrill('vocabulary')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.vocabulary ? 'Hide Practice' : 'Show Practice'}
+              {openDrills.vocabulary ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
+            <SpeakSentence text="Click on each word to hear its correct pronunciation" className="text-md text-gray-600 mb-4 italic">
+              🎧 Click on each word to hear its correct pronunciation
+            </SpeakSentence>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {newWords.map((word, index) => (
                 <div key={index} className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-                  <button 
-                    onClick={() => playAudio(word.english)} 
-                    className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors text-left w-full"
-                  >
+                  <SpeakText text={word.english} className="text-blue-600 font-bold cursor-pointer text-left w-full block">
                     {word.english}
-                  </button>
+                  </SpeakText>
                   <div className="text-gray-600 text-sm mt-1">{word.portuguese}</div>
                 </div>
               ))}
@@ -240,32 +522,46 @@ export default function Lesson31StartFinish() {
             
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I start college this year')}>I start college this year</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I start high school this year')}>high school</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I start a course this year')}>a course</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    1. <SpeakText text="I start college this year" className="text-blue-600 font-bold">I start college this year</SpeakText>. / <SpeakText text="I start high school this year" className="text-blue-600 font-bold">high school</SpeakText> / <SpeakText text="I start a course this year" className="text-blue-600 font-bold">a course</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eu começo a faculdade este ano / o ensino médio / um curso</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We have a meeting')}>We have a meeting</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We have a project')}>a project</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We have a task')}>a task</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    2. <SpeakText text="We have a meeting" className="text-blue-600 font-bold">We have a meeting</SpeakText>. / <SpeakText text="We have a project" className="text-blue-600 font-bold">a project</SpeakText> / <SpeakText text="We have a task" className="text-blue-600 font-bold">a task</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 nós temos uma reunião / um projeto / uma tarefa</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('The exam is next week')}>The exam is next week</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('The exam is next month')}>next month</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('The exam is next semester')}>next semester</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    3. <SpeakText text="The exam is next week" className="text-blue-600 font-bold">The exam is next week</SpeakText>. / <SpeakText text="The exam is next month" className="text-blue-600 font-bold">next month</SpeakText> / <SpeakText text="The exam is next semester" className="text-blue-600 font-bold">next semester</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 a prova é na próxima semana / no próximo mês / no próximo semestre</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I have one hour')}>I have one hour</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I have one minute')}>one minute</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I have a deadline')}>a deadline</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    4. <SpeakText text="I have one hour" className="text-blue-600 font-bold">I have one hour</SpeakText>. / <SpeakText text="I have one minute" className="text-blue-600 font-bold">one minute</SpeakText> / <SpeakText text="I have a deadline" className="text-blue-600 font-bold">a deadline</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eu tenho uma hora / um minuto / um prazo</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I want to study business')}>I want to study business</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I want to study everything')}>everything</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('That is great')}>That is great</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    5. <SpeakText text="I want to study business" className="text-blue-600 font-bold">I want to study business</SpeakText>. / <SpeakText text="I want to study everything" className="text-blue-600 font-bold">everything</SpeakText> / <SpeakText text="That is great" className="text-blue-600 font-bold">That is great</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eu quero estudar negócios / tudo / isso é ótimo</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you have a deadline this week')}>Do you have a deadline this week</span>? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you have a meeting this week')}>a meeting</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you have an exam this week')}>an exam</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    6. <SpeakText text="Do you have a deadline this week" className="text-blue-600 font-bold">Do you have a deadline this week</SpeakText>? / <SpeakText text="Do you have a meeting this week" className="text-blue-600 font-bold">a meeting</SpeakText> / <SpeakText text="Do you have an exam this week" className="text-blue-600 font-bold">an exam</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 você tem um prazo esta semana? / uma reunião? / uma prova?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We need to finish the project')}>We need to finish the project</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We need to finish the task')}>the task</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We need to finish the course')}>the course</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    7. <SpeakText text="We need to finish the project" className="text-blue-600 font-bold">We need to finish the project</SpeakText>. / <SpeakText text="We need to finish the task" className="text-blue-600 font-bold">the task</SpeakText> / <SpeakText text="We need to finish the course" className="text-blue-600 font-bold">the course</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 nós precisamos terminar o projeto / a tarefa / o curso</p>
                 </div>
               </div>
@@ -275,31 +571,29 @@ export default function Lesson31StartFinish() {
 
         {/* Section 3 - Useful Phrases with Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold">🔹 Useful Phrases</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Pratique frases comuns para falar sobre começos e finais
-              </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 USEFUL PHRASES</h2>
+              <PencilIcon onClick={() => openNoteModal('Useful Phrases')} />
             </div>
             <button 
               onClick={() => toggleDrill('usefulPhrases')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.usefulPhrases ? 'Hide Practice' : 'Show Practice'}
+              {openDrills.usefulPhrases ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
+            <SpeakSentence text="Practice common phrases to talk about beginnings and endings" className="text-md text-gray-600 mb-4 italic">
+              💬 Practice common phrases to talk about beginnings and endings
+            </SpeakSentence>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               {usefulPhrases.map((phrase, index) => (
                 <div key={index} className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <button 
-                    onClick={() => playAudio(phrase.english)} 
-                    className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors text-lg mb-2"
-                  >
+                  <SpeakSentence text={phrase.english} className="text-blue-600 font-bold cursor-pointer text-lg mb-2 block">
                     {phrase.english}
-                  </button>
+                  </SpeakSentence>
                   <div className="text-gray-600">{phrase.portuguese}</div>
                 </div>
               ))}
@@ -307,24 +601,28 @@ export default function Lesson31StartFinish() {
             
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I start a new course this morning')}>I start a new course this morning</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    1. <SpeakText text="I start a new course this morning" className="text-blue-600 font-bold">I start a new course this morning</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu começo um novo curso hoje de manhã.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I do my homework on weekends')}>I do my homework on weekends</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    2. <SpeakText text="I do my homework on weekends" className="text-blue-600 font-bold">I do my homework on weekends</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu faço minha lição de casa nos fins de semana.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Let us start')}>Let's start</span>!</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    3. <SpeakText text="Let's start" className="text-blue-600 font-bold">Let's start</SpeakText>!
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 Vamos começar!</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you have to go downtown this morning')}>Do you have to go downtown this morning</span>?</p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Você tem que ir ao centro hoje de manhã?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Let us finish')}>Let's finish</span>! / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Let us study')}>Let's study</span>!</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    4. <SpeakText text="Let's finish" className="text-blue-600 font-bold">Let's finish</SpeakText>! / <SpeakText text="Let's study" className="text-blue-600 font-bold">Let's study</SpeakText>!
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 Vamos terminar! / Vamos estudar!</p>
                 </div>
               </div>
@@ -334,31 +632,29 @@ export default function Lesson31StartFinish() {
 
         {/* Section 4 - Grammar with Drill */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold">🔹 Grammar</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Want to / Need to / Have to + verb
-              </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 GRAMMAR</h2>
+              <PencilIcon onClick={() => openNoteModal('Grammar')} />
             </div>
             <button 
               onClick={() => toggleDrill('grammar')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {openDrills.grammar ? 'Hide Practice' : 'Show Practice'}
+              {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
+            <SpeakSentence text="Want to / Need to / Have to + verb" className="text-md text-gray-600 mb-4 italic">
+              📚 Want to / Need to / Have to + verb
+            </SpeakSentence>
             <div className="bg-blue-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
               {grammarExamples.map((example, index) => (
                 <div key={index} className="p-3 bg-white rounded-lg">
-                  <button 
-                    onClick={() => playAudio(example.english)} 
-                    className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors text-left w-full"
-                  >
+                  <SpeakSentence text={example.english} className="text-blue-600 font-bold cursor-pointer text-left w-full block">
                     {example.english}
-                  </button>
+                  </SpeakSentence>
                   <div className="text-gray-600 text-sm mt-1">{example.portuguese}</div>
                 </div>
               ))}
@@ -366,28 +662,40 @@ export default function Lesson31StartFinish() {
             
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I really want to study business')}>I really want to study business</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I really want to study math')}>math</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I really want to study geography')}>geography</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    1. <SpeakText text="I really want to study business" className="text-blue-600 font-bold">I really want to study business</SpeakText>. / <SpeakText text="I really want to study math" className="text-blue-600 font-bold">math</SpeakText> / <SpeakText text="I really want to study geography" className="text-blue-600 font-bold">geography</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eu realmente quero estudar negócios / matemática / geografia</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We do not want to start this task')}>We do not want to start this task</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We do not want to start next week')}>next week</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We do not want to start next month')}>next month</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    2. <SpeakText text="We do not want to start this task" className="text-blue-600 font-bold">We do not want to start this task</SpeakText>. / <SpeakText text="We do not want to start next week" className="text-blue-600 font-bold">next week</SpeakText> / <SpeakText text="We do not want to start next month" className="text-blue-600 font-bold">next month</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 nós não queremos começar esta tarefa / na próxima semana / no próximo mês</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you have a minute')}>Do you have a minute</span>? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do they have a minute')}>they</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do we have a minute')}>we</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    3. <SpeakText text="Do you have a minute" className="text-blue-600 font-bold">Do you have a minute</SpeakText>? / <SpeakText text="Do they have a minute" className="text-blue-600 font-bold">they</SpeakText> / <SpeakText text="Do we have a minute" className="text-blue-600 font-bold">we</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 você tem um minuto? / eles têm? / nós temos?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I need to study for an exam')}>I need to study for an exam</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I need to study for a test')}>a test</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I need to study for a project')}>a project</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    4. <SpeakText text="I need to study for an exam" className="text-blue-600 font-bold">I need to study for an exam</SpeakText>. / <SpeakText text="I need to study for a test" className="text-blue-600 font-bold">a test</SpeakText> / <SpeakText text="I need to study for a project" className="text-blue-600 font-bold">a project</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eu preciso estudar para uma prova / um teste / um projeto</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">5. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('She wants to start the course')}>She wants to start the course</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('She wants to finish the course')}>finish</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('She wants to take the course')}>take</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    5. <SpeakText text="She wants to start the course" className="text-blue-600 font-bold">She wants to start the course</SpeakText>. / <SpeakText text="She wants to finish the course" className="text-blue-600 font-bold">finish</SpeakText> / <SpeakText text="She wants to take the course" className="text-blue-600 font-bold">take</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 ela quer começar o curso / terminar / fazer</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium text-gray-800">6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They have to finish the project')}>They have to finish the project</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They have to start the project')}>start</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They have to present the project')}>present</span>.</p>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    6. <SpeakText text="They have to finish the project" className="text-blue-600 font-bold">They have to finish the project</SpeakText>. / <SpeakText text="They have to start the project" className="text-blue-600 font-bold">start</SpeakText> / <SpeakText text="They have to present the project" className="text-blue-600 font-bold">present</SpeakText>.
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eles têm que terminar o projeto / começar / apresentar</p>
                 </div>
               </div>
@@ -397,11 +705,14 @@ export default function Lesson31StartFinish() {
 
         {/* Section 5 - Real Life Practice */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">🔹 Real Life Practice</h2>
-            <p className="mt-2 text-blue-100 italic">
-              Pratique situações reais sobre começos, finais, prazos e estudos
-            </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 REAL LIFE</h2>
+              <PencilIcon onClick={() => openNoteModal('Real Life Practice')} />
+            </div>
+            <div className="text-sm text-blue-100">
+              Replace the blue words to practice
+            </div>
           </div>
           
           <div className="p-8">
@@ -412,22 +723,11 @@ export default function Lesson31StartFinish() {
                   {realLifeSentences.map((sentence, index) => (
                     <div key={index} className="group">
                       <div className="flex items-start">
-                        <button 
-                          onClick={() => playAudio(sentence.english)} 
-                          className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
-                          aria-label="Play audio"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
-                          </svg>
-                        </button>
-                        <div>
-                          <p className="text-lg font-medium">
-                            {index + 1}. {sentence.english}
-                          </p>
-                          <p className="text-sm text-gray-600">{sentence.portuguese}</p>
-                        </div>
+                        <SpeakSentence text={sentence.english} className="text-lg font-medium">
+                          {index + 1}. {sentence.english}
+                        </SpeakSentence>
                       </div>
+                      <p className="text-sm text-gray-600 mt-1 ml-6">{sentence.portuguese}</p>
                     </div>
                   ))}
                 </div>
@@ -478,220 +778,30 @@ export default function Lesson31StartFinish() {
           </div>
         </div>
 
-        {/* Section 6 - Check It Out! (print style) */}
+        {/* Section 6 - Check It Out! */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-3xl font-bold">🔹 CHECK IT OUT!</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Time Expressions & Question Patterns
-              </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 CHECK IT OUT!</h2>
+              <PencilIcon onClick={() => openNoteModal('Check It Out')} />
             </div>
+            <p className="text-sm text-blue-100">
+              Time Expressions & Question Patterns
+            </p>
           </div>
-
-          <div className="flex flex-col md:flex-row">
-            {/* Left column - Time Expressions */}
-            <div className="bg-green-800 text-white flex-1 p-6 space-y-4 text-lg">
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-lg text-yellow-300">TIME EXPRESSIONS</h3>
-                  <button 
-                    onClick={() => setShowNegativeExplanation(!showNegativeExplanation)}
-                    className="text-xs bg-green-700 hover:bg-green-600 text-white px-3 py-1 rounded-full transition-colors"
-                  >
-                    {showNegativeExplanation ? 'Hide Explanation' : 'Show Explanation'}
-                  </button>
-                </div>
-                {showNegativeExplanation && (
-                  <div className="mb-4 p-4 bg-green-700 rounded-lg border border-green-600">
-                    <p className="text-yellow-200 text-sm font-medium mb-2">⏱️ Expressões de Tempo:</p>
-                    <ul className="text-green-200 text-sm list-disc pl-4 space-y-1">
-                      <li>in a minute = em um minuto</li>
-                      <li>in an hour = em uma hora</li>
-                      <li>in five minutes = em cinco minutos</li>
-                      <li>in two hours = em duas horas</li>
-                      <li>next = próximo(a) (next week, next month)</li>
-                      <li>this = este/esta (this year, this week)</li>
-                    </ul>
-                  </div>
-                )}
-                
-                <div className="space-y-3">
-                  <div className="p-3 bg-green-700 rounded-lg">
-                    <p className="font-bold text-lg">in a minute</p>
-                    <p className="text-green-200 text-sm">em um minuto</p>
-                  </div>
-                  
-                  <div className="p-3 bg-green-700 rounded-lg">
-                    <p className="font-bold text-lg">in an hour</p>
-                    <p className="text-green-200 text-sm">em uma hora</p>
-                  </div>
-                  
-                  <div className="p-3 bg-green-700 rounded-lg">
-                    <p className="font-bold text-lg">in five minutes</p>
-                    <p className="text-green-200 text-sm">em cinco minutos</p>
-                  </div>
-                  
-                  <div className="p-3 bg-green-700 rounded-lg">
-                    <p className="font-bold text-lg">in two hours</p>
-                    <p className="text-green-200 text-sm">em duas horas</p>
-                  </div>
-                  
-                  <div className="p-3 bg-green-700 rounded-lg">
-                    <p className="font-bold text-lg">I'll start in a minute.</p>
-                    <p className="text-green-200 text-sm">Eu começo em um minuto.</p>
-                  </div>
-                  
-                  <div className="p-3 bg-green-700 rounded-lg">
-                    <p className="font-bold text-lg">We finish in two hours.</p>
-                    <p className="text-green-200 text-sm">Nós terminamos em duas horas.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Image for time expressions */}
-              <div className="mt-6 pt-6 border-t border-green-600">
-                <div className="bg-green-700 rounded-lg overflow-hidden">
-                  <img
-                    src={projectImage}
-                    alt="Time management"
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <p className="text-yellow-200 text-sm font-medium">⏰ Talking About Time</p>
-                    <p className="text-green-200 text-xs">in a minute, in an hour, next week</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right column - Question Patterns */}
-            <div className="bg-red-800 text-white flex-1 p-6 space-y-4 text-lg">
-              <div className="space-y-6">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-lg text-yellow-300">QUESTION PATTERNS</h3>
-                    <button 
-                      onClick={() => setShowQuestionsExplanation(!showQuestionsExplanation)}
-                      className="text-xs bg-red-700 hover:bg-red-600 text-white px-3 py-1 rounded-full transition-colors"
-                    >
-                      {showQuestionsExplanation ? 'Hide Explanation' : 'Show Explanation'}
-                    </button>
-                  </div>
-                  {showQuestionsExplanation && (
-                    <div className="mb-4 p-4 bg-red-700 rounded-lg border border-red-600">
-                      <p className="text-yellow-200 text-sm font-medium mb-2">❓ Padrões de Perguntas:</p>
-                      <ul className="text-red-200 text-sm list-disc pl-4 space-y-1">
-                        <li>What do you...? = O que você...?</li>
-                        <li>When do they...? = Quando eles...?</li>
-                        <li>Where do we...? = Onde nós...?</li>
-                        <li>What time do you...? = Que horas você...?</li>
-                        <li>Sempre usar do/does para perguntas</li>
-                      </ul>
-                    </div>
-                  )}
-                  
-                  <div className="grid grid-cols-1 gap-3">
-                    <div className="p-3 bg-red-700 rounded-lg">
-                      <p className="font-bold text-lg">What do you want to study?</p>
-                      <p className="text-red-200 text-sm">O que você quer estudar?</p>
-                    </div>
-                    <div className="p-3 bg-red-700 rounded-lg">
-                      <p className="font-bold text-lg">When do they start?</p>
-                      <p className="text-red-200 text-sm">Quando eles começam?</p>
-                    </div>
-                    <div className="p-3 bg-red-700 rounded-lg">
-                      <p className="font-bold text-lg">Where do we have the meeting?</p>
-                      <p className="text-red-200 text-sm">Onde nós temos a reunião?</p>
-                    </div>
-                    <div className="p-3 bg-red-700 rounded-lg">
-                      <p className="font-bold text-lg">What time do you finish?</p>
-                      <p className="text-red-200 text-sm">Que horas você termina?</p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Meeting Expressions */}
-                <div className="pt-6 border-t border-red-600">
-                  <h4 className="font-bold text-lg text-yellow-300 mb-3">MEETING EXPRESSIONS</h4>
-                  
-                  <div className="grid grid-cols-1 gap-3">
-                    <div className="p-3 bg-red-700 rounded-lg">
-                      <p className="font-bold">to go to the meeting</p>
-                      <p className="text-red-200 text-sm">ir para a reunião</p>
-                    </div>
-                    
-                    <div className="p-3 bg-red-700 rounded-lg">
-                      <p className="font-bold">to speak at the meeting</p>
-                      <p className="text-red-200 text-sm">falar na reunião</p>
-                    </div>
-                    
-                    <div className="p-3 bg-red-700 rounded-lg">
-                      <p className="font-bold">I need to study for an exam.</p>
-                      <p className="text-red-200 text-sm">Eu preciso estudar para uma prova.</p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Polite Interaction */}
-                <div className="mt-6 pt-6 border-t border-red-600">
-                  <div className="p-4 bg-red-700 rounded-lg">
-                    <h5 className="font-bold text-yellow-200 mb-3">💬 POLITE INTERACTION</h5>
-                    <div className="space-y-3">
-                      <div className="p-3 bg-red-800 rounded">
-                        <p className="font-medium">Excuse me! May I come in?</p>
-                        <p className="text-red-200 text-sm">Com licença! Posso entrar?</p>
-                      </div>
-                      <div className="p-3 bg-red-800 rounded">
-                        <p className="font-medium">Sure! Come in!</p>
-                        <p className="text-red-200 text-sm">Claro! Entre!</p>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 p-3 bg-red-900 rounded-md">
-                      <h6 className="font-bold text-yellow-100 mb-2">🎯 Mini Speaking Practice:</h6>
-                      <div className="flex items-start mb-2">
-                        <div>
-                          <p className="font-medium text-sm">Ask: <span className="text-yellow-200">When do you start work?</span></p>
-                          <p className="text-red-200 text-xs">Answer: I start at 9 AM.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <div>
-                          <p className="font-medium text-sm">Ask: <span className="text-yellow-200">Do you have a deadline?</span></p>
-                          <p className="text-red-200 text-xs">Answer: Yes, I do. / No, I don't.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Image for grammar */}
-              <div className="mt-6 pt-6 border-t border-red-600">
-                <div className="bg-red-700 rounded-lg overflow-hidden">
-                  <img
-                    src={grammarImage}
-                    alt="Grammar practice"
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <p className="text-yellow-200 text-sm font-medium">📚 Question Patterns</p>
-                    <p className="text-red-200 text-xs">What, When, Where, What time</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          
+          <div className="p-6">
+            <CheckItOutHorizontal />
           </div>
         </div>
 
         {/* Final Activity - Speaking */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
             <h2 className="text-2xl font-bold">🔹 FINAL ACTIVITY - SPEAKING</h2>
-            <p className="mt-2 text-blue-100 italic">
-              Responda em inglês:
-            </p>
+            <SpeakSentence text="Answer in English:" className="mt-2 text-blue-100 italic">
+              🗣️ Answer in English:
+            </SpeakSentence>
           </div>
           
           <div className="p-8">
@@ -726,7 +836,7 @@ export default function Lesson31StartFinish() {
           </div>
         </div>
 
-        {/* Next lesson button */}
+        {/* Navigation buttons */}
         <div className="flex justify-center gap-4 mt-8">
           <button
             onClick={() => router.push("/cursos/lesson30")}
@@ -742,6 +852,48 @@ export default function Lesson31StartFinish() {
           </button>
         </div>  
       </div>
+
+      {/* Modal de Anotações */}
+      <NoteModal
+        isOpen={noteModal.isOpen}
+        onClose={() => setNoteModal(prev => ({ ...prev, isOpen: false }))}
+        sectionTitle={noteModal.sectionTitle}
+        initialNote={noteModal.noteContent}
+        onSave={saveNote}
+      />
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes glow {
+          0% {
+            box-shadow: 0 0 5px rgba(59,130,246,0.5);
+          }
+          50% {
+            box-shadow: 0 0 20px rgba(139,92,246,0.8);
+          }
+          100% {
+            box-shadow: 0 0 5px rgba(59,130,246,0.5);
+          }
+        }
+        
+        .active\\:animate-glow:active {
+          animation: glow 0.5s ease-out;
+        }
+      `}</style>
     </div>
   );
 }

@@ -126,25 +126,25 @@ const listenItems = [
   },
   { 
     key: "deadline", 
-    label: "Relógio com a palavra Deadline", 
-    image: "https://images.pexels.com/photos/3930039/pexels-photo-3930039.jpeg?auto=compress&cs=tinysrgb&w=600", 
+    label: "Ampulheta e calendário - símbolos de PRAZO / DEADLINE", 
+    image: "https://images.pexels.com/photos/7130552/pexels-photo-7130552.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 2
   },
   { 
     key: "group-students", 
-    label: "Grupo de jovens caminhando juntos (estudantes)", 
+    label: "Grupo de jovens caminhando juntos no corredor da faculdade", 
     image: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 6
   },
   { 
     key: "learn-spanish", 
-    label: "Quadro com Learn Spanish", 
-    image: "https://images.pexels.com/photos/4144223/pexels-photo-4144223.jpeg?auto=compress&cs=tinysrgb&w=600", 
+    label: "Alunos com a bandeira da Espanha estudando espanhol", 
+    image: "https://images.pexels.com/photos/9699619/pexels-photo-9699619.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 5
   },
   { 
     key: "studying-tired", 
-    label: "Pessoa estudando com muitos livros e parecendo cansada", 
+    label: "Alunos estudando duro, cansados e exaustos com muitos livros", 
     image: "https://images.pexels.com/photos/4145120/pexels-photo-4145120.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 4
   },
@@ -202,7 +202,7 @@ const descriptionPhotos = [
 // LESSON DATA
 // ============================================
 
-// Drilling Practice 1 - Frases em português com substituição
+// Drilling Practice 1 - Frases em português com substituição (com opções em inglês também)
 const drillingExercises1 = [
   {
     id: 1,
@@ -375,6 +375,8 @@ const specialWords = [
   { word: "semester", meaning: "semestre" },
   { word: "term", meaning: "período" },
   { word: "graduate", meaning: "se formar" },
+  { word: "deadline", meaning: "prazo final / data limite" },
+  { word: "due date", meaning: "data de vencimento" },
 ];
 
 // Key Vocabulary from Video for Tune In Your Ears
@@ -713,6 +715,16 @@ export default function Lesson32() {
                 Ouça e numere as imagens de acordo com o áudio. Clique nos botões de 1 a 6 para selecionar sua resposta.
               </SpeakSentence>
               
+              {/* Audio Player */}
+              <div className="mb-8 bg-white rounded-xl p-4 shadow-md border border-purple-200">
+                <p className="text-purple-700 font-medium mb-2">🎵 Listen to the audio:</p>
+                <audio controls className="w-full">
+                  <source src="https://github.com/Sullivan-code/english-audios/blob/main/listenandnumberl32.mp3?raw=true" type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+                <p className="text-xs text-gray-500 mt-2">Click play to listen and number the images from 1 to 6</p>
+              </div>
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {listenItems.map((item) => (
                   <div key={item.key} className="bg-white rounded-xl shadow-md border border-purple-200 overflow-hidden">
@@ -839,7 +851,7 @@ export default function Lesson32() {
                           className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition flex items-center gap-1"
                         >
                           <Volume2 size={14} />
-                          {sub.word}
+                          {sub.word} / {sub.english}
                         </button>
                       ))}
                       <button
@@ -854,7 +866,7 @@ export default function Lesson32() {
                         Reset
                       </button>
                     </div>
-                    <p className="text-xs text-gray-500">Click on words to change the sentence and hear pronunciation</p>
+                    <p className="text-xs text-gray-500">Click on words (Português/English) to change the sentence and hear pronunciation</p>
                   </div>
                 ))}
               </div>

@@ -43,16 +43,16 @@ export default function RootLayout({
             <div className="min-h-screen">
               <Navbar />
 
-              <main className="py-8">
-                {/* container to center the content */}
-                <div className="max-w-7xl mx-auto px-4">
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <main className="py-0">
+                {/* Removido o container e padding para permitir conteúdo full-width */}
+                <div className="w-full">
+                  <div className="w-full">
                     {/* Sidebar commented out */}
                     {/* <div className="hidden lg:block lg:col-span-3">
                       Sidebar
                     </div> */}
-                    <div className="lg:col-span-12 flex justify-center">
-                      {/* Content centered */}
+                    <div className="w-full">
+                      {/* Content full width - sem centralização forçada */}
                       <div className="w-full">
                         {children}
                       </div>

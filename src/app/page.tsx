@@ -7,64 +7,86 @@ export default function Home() {
   const { user } = useUser();
 
   return (
-    <div className="relative w-full min-h-screen bg-[#ffffff]">
-      {/* Header Section */}
-      <div className="relative z-10 pt-24 pb-16 px-4 text-center">
-        <h1 className="text-5xl font-bold mb-8 text-[#000000]">
-          Eric Sullivan - Fundador da LEAF - Inglês para Fluência Real.
-        </h1>
-        <p className="text-2xl text-[#333] max-w-3xl mx-auto mb-8">
-          Bem-vindo ao curso que vai transformar sua relação com o inglês!
-          Você está preparado para finalmente mudar a sua vida com o inglês ou
-          vai apenas assistir a gente mudando a nossa?
-        </p>
-        
-        {/* Container do Botão/Avatar */}
-        <div className="inline-flex items-center justify-center">
-          <SignedIn>
-            <div className="relative group">
-              {/* Container redondo para a imagem do perfil */}
-              <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 p-0.5">
-                {user?.imageUrl ? (
-                  <div className="w-full h-full rounded-full overflow-hidden">
-                    <Image
-                      src={user.imageUrl}
-                      alt="Foto do perfil"
-                      width={64}
-                      height={64}
-                      className="w-full h-full object-cover"
-                      unoptimized
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full h-full rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
-                    <span className="text-white text-lg font-bold">
-                      {user?.firstName?.[0] || user?.username?.[0] || "U"}
-                    </span>
-                  </div>
-                )}
-              </div>
-              
-              {/* Badge de usuário online */}
-              <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
-              
-              {/* Tooltip com nome do usuário */}
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-                {user?.firstName || user?.username || "Usuário"}
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-800"></div>
-              </div>
-            </div>
-          </SignedIn>
+    <div className="relative w-full bg-[#ffffff]">
+      {/* Hero Section com imagem de fundo em tela cheia - SEM BORDAS E SEM MARGENS */}
+      <div className="relative w-full min-h-screen">
+        {/* Imagem de fundo - cobre toda a largura e altura sem perder qualidade */}
+        <div 
+          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url("/images/mainpage.png")' }}
+        >
+          {/* Overlay escuro para melhor contraste do texto */}
+          <div className="absolute inset-0 bg-black/40"></div>
+        </div>
+
+        {/* Conteúdo sobreposto à imagem */}
+        <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
+          {/* Texto principal - título - movido mais para baixo */}
+          <div className="text-center max-w-5xl mx-auto mt-32 md:mt-40 lg:mt-48">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 text-white drop-shadow-lg leading-tight">
+              Eric Sullivan - Fundador da LEAF - Inglês para Fluência Real.
+            </h1>
+          </div>
           
-          <SignedOut>
-            <div className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-40 transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow">
-              <SignInButton />
-            </div>
-          </SignedOut>
+          {/* Container do Botão/Avatar */}
+          <div className="inline-flex items-center justify-center mt-6">
+            <SignedIn>
+              <div className="relative group">
+                {/* Container redondo para a imagem do perfil - TAMANHO INTERMEDIÁRIO */}
+                <div className="w-14 h-14 md:w-20 md:h-20 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 p-0.5">
+                  {user?.imageUrl ? (
+                    <div className="w-full h-full rounded-full overflow-hidden">
+                      <Image
+                        src={user.imageUrl}
+                        alt="Foto do perfil"
+                        width={80}
+                        height={80}
+                        className="w-full h-full object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
+                      <span className="text-white text-base md:text-xl font-bold">
+                        {user?.firstName?.[0] || user?.username?.[0] || "U"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Badge de usuário online - TAMANHO INTERMEDIÁRIO */}
+                <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                
+                {/* Tooltip com nome do usuário */}
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                  {user?.firstName || user?.username || "Usuário"}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-800"></div>
+                </div>
+              </div>
+            </SignedIn>
+            
+            <SignedOut>
+              <div className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 text-base md:text-lg font-semibold transition-all duration-300 hover:from-purple-600 hover:to-purple-800 hover:scale-105 cursor-pointer shadow-lg">
+                <SignInButton />
+              </div>
+            </SignedOut>
+          </div>
+
+          {/* Texto "Bem-vindo" abaixo do botão/avatar */}
+          <div className="text-center max-w-3xl mx-auto mt-8">
+            <p className="text-base md:text-lg lg:text-xl text-white drop-shadow-lg">
+              Bem-vindo ao curso que vai transformar sua relação com o inglês!
+              Você está preparado para finalmente mudar a sua vida com o inglês ou
+              vai apenas assistir a gente mudando a nossa?
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Main Content Container */}
+      {/* Espaçamento entre a imagem hero e o próximo conteúdo */}
+      <div className="h-12 md:h-16 lg:h-20"></div>
+
+      {/* Main Content Container - Restante do conteúdo começa aqui */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* About Section with subtle background image */}
         <section className="relative bg-gradient-to-br from-blue-100 via-purple-100 to-blue-200 rounded-2xl shadow-xl p-8 mb-16 border-2 border-[#bfdbfe] overflow-hidden">

@@ -70,99 +70,58 @@ export default function Lesson33() {
     });
   };
 
+  // Female voice text-to-speech function using browser's SpeechSynthesis API
   const playAudio = (text: string) => {
-    // Map specific texts to their corresponding GitHub audio URLs
-    const audioMap: Record<string, string> = {
-      // Verbs
-      'to talk': 'https://github.com/Sullivan-code/english-audios/raw/main/to-talk.mp3',
-      'to talk to': 'https://github.com/Sullivan-code/english-audios/raw/main/to-talk-to.mp3',
-      'to talk about': 'https://github.com/Sullivan-code/english-audios/raw/main/to-talk-about.mp3',
-      'to watch': 'https://github.com/Sullivan-code/english-audios/raw/main/to-watch.mp3',
-      
-      // New Words
-      'science': 'https://github.com/Sullivan-code/english-audios/raw/main/science.mp3',
-      'religion': 'https://github.com/Sullivan-code/english-audios/raw/main/religion.mp3',
-      'politics': 'https://github.com/Sullivan-code/english-audios/raw/main/politics.mp3',
-      'music': 'https://github.com/Sullivan-code/english-audios/raw/main/music.mp3',
-      'sports': 'https://github.com/Sullivan-code/english-audios/raw/main/sports.mp3',
-      'fashion': 'https://github.com/Sullivan-code/english-audios/raw/main/fashion.mp3',
-      'life': 'https://github.com/Sullivan-code/english-audios/raw/main/life.mp3',
-      'stuff': 'https://github.com/Sullivan-code/english-audios/raw/main/stuff.mp3',
-      'idea': 'https://github.com/Sullivan-code/english-audios/raw/main/idea.mp3',
-      'opinion': 'https://github.com/Sullivan-code/english-audios/raw/main/opinion.mp3',
-      'problem': 'https://github.com/Sullivan-code/english-audios/raw/main/problem.mp3',
-      'series': 'https://github.com/Sullivan-code/english-audios/raw/main/series.mp3',
-      'movie': 'https://github.com/Sullivan-code/english-audios/raw/main/movie.mp3',
-      'video': 'https://github.com/Sullivan-code/english-audios/raw/main/video.mp3',
-      'it': 'https://github.com/Sullivan-code/english-audios/raw/main/it.mp3',
-      'his': 'https://github.com/Sullivan-code/english-audios/raw/main/his.mp3',
-      'her': 'https://github.com/Sullivan-code/english-audios/raw/main/her.mp3',
-
-      // Useful Phrases
-      'i want to meet my friends tonight': 'https://github.com/Sullivan-code/english-audios/raw/main/i-want-to-meet-my-friends-tonight.mp3',
-      'where does he want to go tonight': 'https://github.com/Sullivan-code/english-audios/raw/main/where-does-he-want-to-go-tonight.mp3',
-      'he wants to meet his friends tonight': 'https://github.com/Sullivan-code/english-audios/raw/main/he-wants-to-meet-his-friends-tonight.mp3',
-      'i don\'t have an opinion about it': 'https://github.com/Sullivan-code/english-audios/raw/main/i-dont-have-an-opinion-about-it.mp3',
-      'do you have an opinion about this problem': 'https://github.com/Sullivan-code/english-audios/raw/main/do-you-have-an-opinion-about-this-problem.mp3',
-
-      // Grammar Examples
-      'he watches videos on his tablet': 'https://github.com/Sullivan-code/english-audios/raw/main/he-watches-videos-on-his-tablet.mp3',
-      'she has great ideas': 'https://github.com/Sullivan-code/english-audios/raw/main/she-has-great-ideas.mp3',
-      'it starts at ten o\'clock': 'https://github.com/Sullivan-code/english-audios/raw/main/it-starts-at-ten-oclock.mp3',
-      'she doesn\'t live with her parents': 'https://github.com/Sullivan-code/english-audios/raw/main/she-doesnt-live-with-her-parents.mp3',
-      'he doesn\'t study music at the university': 'https://github.com/Sullivan-code/english-audios/raw/main/he-doesnt-study-music-at-the-university.mp3',
-      'it doesn\'t finish this week': 'https://github.com/Sullivan-code/english-audios/raw/main/it-doesnt-finish-this-week.mp3',
-      'does she want to learn more about sports': 'https://github.com/Sullivan-code/english-audios/raw/main/does-she-want-to-learn-more-about-sports.mp3',
-      'does he like to talk about his life': 'https://github.com/Sullivan-code/english-audios/raw/main/does-he-like-to-talk-about-his-life.mp3',
-      'what time does it start': 'https://github.com/Sullivan-code/english-audios/raw/main/what-time-does-it-start.mp3',
-
-      // Real Life
-      'i really need to talk to you': 'https://github.com/Sullivan-code/english-audios/raw/main/i-really-need-to-talk-to-you.mp3',
-      'she talks to her mother about everything': 'https://github.com/Sullivan-code/english-audios/raw/main/she-talks-to-her-mother-about-everything.mp3',
-      'my wife loves to watch series': 'https://github.com/Sullivan-code/english-audios/raw/main/my-wife-loves-to-watch-series.mp3',
-      'do you like his ideas': 'https://github.com/Sullivan-code/english-audios/raw/main/do-you-like-his-ideas.mp3',
-      'she doesn\'t want to talk about this subject': 'https://github.com/Sullivan-code/english-audios/raw/main/she-doesnt-want-to-talk-about-this-subject.mp3',
-      'he doesn\'t have a math exam this week': 'https://github.com/Sullivan-code/english-audios/raw/main/he-doesnt-have-a-math-exam-this-week.mp3',
-      'it doesn\'t start today': 'https://github.com/Sullivan-code/english-audios/raw/main/it-doesnt-start-today.mp3',
-      'does he like to talk about politics': 'https://github.com/Sullivan-code/english-audios/raw/main/does-he-like-to-talk-about-politics.mp3',
-      'does it finish in an hour': 'https://github.com/Sullivan-code/english-audios/raw/main/does-it-finish-in-an-hour.mp3',
-      'what stuff does he want to buy': 'https://github.com/Sullivan-code/english-audios/raw/main/what-stuff-does-he-want-to-buy.mp3',
-      'what time does your class start': 'https://github.com/Sullivan-code/english-audios/raw/main/what-time-does-your-class-start.mp3',
-      'how many languages does your sister speak': 'https://github.com/Sullivan-code/english-audios/raw/main/how-many-languages-does-your-sister-speak.mp3',
-
-      // Practice examples
-      'i need to talk to you': 'https://github.com/Sullivan-code/english-audios/raw/main/i-need-to-talk-to-you.mp3',
-      'she talks to her friends every day': 'https://github.com/Sullivan-code/english-audios/raw/main/she-talks-to-her-friends-every-day.mp3',
-      'he likes to talk about sports': 'https://github.com/Sullivan-code/english-audios/raw/main/he-likes-to-talk-about-sports.mp3',
-      'we watch videos on our phones': 'https://github.com/Sullivan-code/english-audios/raw/main/we-watch-videos-on-our-phones.mp3',
-      'they want to watch a movie tonight': 'https://github.com/Sullivan-code/english-audios/raw/main/they-want-to-watch-a-movie-tonight.mp3',
-    };
-
-    // Check if we have a direct mapping for this text
-    const audioUrl = audioMap[text.toLowerCase()];
+    if (!text || typeof window === 'undefined') return;
     
-    if (audioUrl) {
-      console.log('Tentando reproduzir áudio:', audioUrl);
-      const audio = new Audio(audioUrl);
-      audio.play().catch(e => console.error("Erro ao reproduzir áudio:", e));
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    
+    // Try to find a female voice
+    const setFemaleVoice = () => {
+      const voices = window.speechSynthesis.getVoices();
+      // Look for female voices (common patterns)
+      const femaleVoice = voices.find(voice => 
+        voice.name.includes('Google UK English Female') ||
+        voice.name.includes('Samantha') ||
+        voice.name.includes('Karen') ||
+        voice.name.includes('Victoria') ||
+        voice.name.includes('Susan') ||
+        voice.name.toLowerCase().includes('female') ||
+        (voice.lang === 'en-US' && voice.name.includes('Female'))
+      );
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
+      }
+    };
+    
+    // Voices might not be loaded yet
+    if (window.speechSynthesis.getVoices().length > 0) {
+      setFemaleVoice();
     } else {
-      // Fallback: try to format the text for the GitHub URL
-      const formattedText = text
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s*\/\s*/g, '-or-')
-        .replace(/'/g, '')
-        .replace(/\?/g, '')
-        .trim();
-      
-      const fallbackUrl = `https://github.com/Sullivan-code/english-audios/raw/main/${formattedText}.mp3`;
-      console.log('Usando fallback URL:', fallbackUrl);
-      
-      const audio = new Audio(fallbackUrl);
-      audio.play().catch(e => console.error("Erro ao reproduzir áudio:", e));
+      window.speechSynthesis.onvoiceschanged = setFemaleVoice;
     }
+    
+    window.speechSynthesis.speak(utterance);
   };
+
+  // Helper to create practice phrase with click handler
+  const PracticePhrase = ({ english, variations, onClick }: { english: string; variations?: string; onClick?: () => void }) => (
+    <div 
+      className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
+      onClick={() => playAudio(english)}
+    >
+      <p className="text-lg font-medium text-gray-800">
+        <span className="text-blue-600 font-bold">{english}</span>
+        {variations && <span className="text-gray-600 ml-2">{variations}</span>}
+      </p>
+    </div>
+  );
 
   return (
     <div
@@ -231,31 +190,31 @@ export default function Lesson33() {
               <div className="bg-blue-50 p-4 rounded-xl space-y-2">
                 <p className="font-medium text-gray-700">Examples:</p>
                 <p>
-                  <button onClick={() => playAudio('i need to talk to you')} className="text-blue-600 hover:text-blue-800">
+                  <button onClick={() => playAudio('I need to talk to you.')} className="text-blue-600 hover:text-blue-800">
                     I need to talk to you.
                   </button>
                   <span className="text-gray-600 ml-2">Eu preciso conversar com você.</span>
                 </p>
                 <p>
-                  <button onClick={() => playAudio('she talks to her friends every day')} className="text-blue-600 hover:text-blue-800">
+                  <button onClick={() => playAudio('She talks to her friends every day.')} className="text-blue-600 hover:text-blue-800">
                     She talks to her friends every day.
                   </button>
                   <span className="text-gray-600 ml-2">Ela conversa com os amigos todos os dias.</span>
                 </p>
                 <p>
-                  <button onClick={() => playAudio('he likes to talk about sports')} className="text-blue-600 hover:text-blue-800">
+                  <button onClick={() => playAudio('He likes to talk about sports.')} className="text-blue-600 hover:text-blue-800">
                     He likes to talk about sports.
                   </button>
                   <span className="text-gray-600 ml-2">Ele gosta de falar sobre esportes.</span>
                 </p>
                 <p>
-                  <button onClick={() => playAudio('we watch videos on our phones')} className="text-blue-600 hover:text-blue-800">
+                  <button onClick={() => playAudio('We watch videos on our phones.')} className="text-blue-600 hover:text-blue-800">
                     We watch videos on our phones.
                   </button>
                   <span className="text-gray-600 ml-2">Nós assistimos vídeos em nossos celulares.</span>
                 </p>
                 <p>
-                  <button onClick={() => playAudio('they want to watch a movie tonight')} className="text-blue-600 hover:text-blue-800">
+                  <button onClick={() => playAudio('They want to watch a movie tonight.')} className="text-blue-600 hover:text-blue-800">
                     They want to watch a movie tonight.
                   </button>
                   <span className="text-gray-600 ml-2">Eles querem assistir um filme hoje à noite.</span>
@@ -267,47 +226,12 @@ export default function Lesson33() {
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <p className="text-lg font-medium text-blue-800 mb-4">🔁 PRÁTICA – VERBS</p>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('i need to talk to you')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">1️⃣ Eu preciso conversar com você.</span> / Eles precisam conversar com você. / Nós precisamos conversar com você.
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('what do you want to watch now')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">2️⃣ O que você quer assistir agora?</span> / hoje / esta noite
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('you like to talk to me')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">3️⃣ Você gosta de conversar comigo.</span> / com ele / com ela
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('i like to talk about sports')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">4️⃣ Eu gosto de falar sobre esportes.</span> / política / ciência
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('we watch videos on our phones')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">5️⃣ Nós assistimos vídeos no celular.</span> / na TV / no tablet
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('do you want to watch this movie with me')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">6️⃣ Você quer assistir esse filme comigo?</span> / essa série / esse vídeo
-                  </p>
-                </div>
+                <PracticePhrase english="I need to talk to you." variations=" / They need to talk to you. / We need to talk to you." />
+                <PracticePhrase english="What do you want to watch now?" variations=" / today / tonight" />
+                <PracticePhrase english="You like to talk to me." variations=" / with him / with her" />
+                <PracticePhrase english="I like to talk about sports." variations=" / politics / science" />
+                <PracticePhrase english="We watch videos on our phones." variations=" / on TV / on the tablet" />
+                <PracticePhrase english="Do you want to watch this movie with me?" variations=" / this series / this video" />
               </div>
             )}
           </div>
@@ -332,90 +256,33 @@ export default function Lesson33() {
           
           <div className="p-8">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-              <div>
-                <button onClick={() => playAudio('science')} className="text-blue-600 font-bold hover:text-blue-800">science</button> = ciência
-              </div>
-              <div>
-                <button onClick={() => playAudio('religion')} className="text-blue-600 font-bold hover:text-blue-800">religion</button> = religião
-              </div>
-              <div>
-                <button onClick={() => playAudio('politics')} className="text-blue-600 font-bold hover:text-blue-800">politics</button> = política
-              </div>
-              <div>
-                <button onClick={() => playAudio('music')} className="text-blue-600 font-bold hover:text-blue-800">music</button> = música
-              </div>
-              <div>
-                <button onClick={() => playAudio('sports')} className="text-blue-600 font-bold hover:text-blue-800">sports</button> = esportes
-              </div>
-              <div>
-                <button onClick={() => playAudio('fashion')} className="text-blue-600 font-bold hover:text-blue-800">fashion</button> = moda
-              </div>
-              <div>
-                <button onClick={() => playAudio('life')} className="text-blue-600 font-bold hover:text-blue-800">life</button> = vida
-              </div>
-              <div>
-                <button onClick={() => playAudio('stuff')} className="text-blue-600 font-bold hover:text-blue-800">stuff</button> = coisas
-              </div>
-              <div>
-                <button onClick={() => playAudio('idea')} className="text-blue-600 font-bold hover:text-blue-800">idea</button> = ideia
-              </div>
-              <div>
-                <button onClick={() => playAudio('opinion')} className="text-blue-600 font-bold hover:text-blue-800">opinion</button> = opinião
-              </div>
-              <div>
-                <button onClick={() => playAudio('problem')} className="text-blue-600 font-bold hover:text-blue-800">problem</button> = problema
-              </div>
-              <div>
-                <button onClick={() => playAudio('series')} className="text-blue-600 font-bold hover:text-blue-800">series</button> = série
-              </div>
-              <div>
-                <button onClick={() => playAudio('movie')} className="text-blue-600 font-bold hover:text-blue-800">movie</button> = filme
-              </div>
-              <div>
-                <button onClick={() => playAudio('video')} className="text-blue-600 font-bold hover:text-blue-800">video</button> = vídeo
-              </div>
-              <div>
-                <button onClick={() => playAudio('it')} className="text-blue-600 font-bold hover:text-blue-800">it</button> = ele / ela / neutro
-              </div>
-              <div>
-                <button onClick={() => playAudio('his')} className="text-blue-600 font-bold hover:text-blue-800">his</button> = dele
-              </div>
-              <div>
-                <button onClick={() => playAudio('her')} className="text-blue-600 font-bold hover:text-blue-800">her</button> = dela
-              </div>
+              <div><button onClick={() => playAudio('science')} className="text-blue-600 font-bold hover:text-blue-800">science</button> = ciência</div>
+              <div><button onClick={() => playAudio('religion')} className="text-blue-600 font-bold hover:text-blue-800">religion</button> = religião</div>
+              <div><button onClick={() => playAudio('politics')} className="text-blue-600 font-bold hover:text-blue-800">politics</button> = política</div>
+              <div><button onClick={() => playAudio('music')} className="text-blue-600 font-bold hover:text-blue-800">music</button> = música</div>
+              <div><button onClick={() => playAudio('sports')} className="text-blue-600 font-bold hover:text-blue-800">sports</button> = esportes</div>
+              <div><button onClick={() => playAudio('fashion')} className="text-blue-600 font-bold hover:text-blue-800">fashion</button> = moda</div>
+              <div><button onClick={() => playAudio('life')} className="text-blue-600 font-bold hover:text-blue-800">life</button> = vida</div>
+              <div><button onClick={() => playAudio('stuff')} className="text-blue-600 font-bold hover:text-blue-800">stuff</button> = coisas</div>
+              <div><button onClick={() => playAudio('idea')} className="text-blue-600 font-bold hover:text-blue-800">idea</button> = ideia</div>
+              <div><button onClick={() => playAudio('opinion')} className="text-blue-600 font-bold hover:text-blue-800">opinion</button> = opinião</div>
+              <div><button onClick={() => playAudio('problem')} className="text-blue-600 font-bold hover:text-blue-800">problem</button> = problema</div>
+              <div><button onClick={() => playAudio('series')} className="text-blue-600 font-bold hover:text-blue-800">series</button> = série</div>
+              <div><button onClick={() => playAudio('movie')} className="text-blue-600 font-bold hover:text-blue-800">movie</button> = filme</div>
+              <div><button onClick={() => playAudio('video')} className="text-blue-600 font-bold hover:text-blue-800">video</button> = vídeo</div>
+              <div><button onClick={() => playAudio('it')} className="text-blue-600 font-bold hover:text-blue-800">it</button> = ele / ela / neutro</div>
+              <div><button onClick={() => playAudio('his')} className="text-blue-600 font-bold hover:text-blue-800">his</button> = dele</div>
+              <div><button onClick={() => playAudio('her')} className="text-blue-600 font-bold hover:text-blue-800">her</button> = dela</div>
             </div>
             
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <p className="text-lg font-medium text-blue-800 mb-4">🔁 PRÁTICA – NEW WORDS</p>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('she likes to talk about sports')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">3️⃣ Ela gosta de conversar sobre esportes.</span> / moda / religião
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('i don\'t want to talk about my life')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">4️⃣ Eu não quero falar sobre minha vida.</span> / este problema / este filme
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('i watch videos on my phone')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">5️⃣ Eu assisto vídeos no meu celular.</span> / séries / filmes
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('do you want to watch this movie with me')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">6️⃣ Você quer assistir esse filme comigo?</span> / essa série / esse vídeo
-                  </p>
-                </div>
+                <PracticePhrase english="She likes to talk about sports." variations=" / fashion / religion" />
+                <PracticePhrase english="I don't want to talk about my life." variations=" / this problem / this movie" />
+                <PracticePhrase english="I watch videos on my phone." variations=" / series / movies" />
+                <PracticePhrase english="Do you want to watch this movie with me?" variations=" / this series / this video" />
               </div>
             )}
           </div>
@@ -440,60 +307,20 @@ export default function Lesson33() {
           
           <div className="p-8">
             <div className="space-y-3 mb-6">
-              <p>
-                <button onClick={() => playAudio('i want to meet my friends tonight')} className="text-blue-600 hover:text-blue-800">
-                  I want to meet my friends tonight.
-                </button>
-                <span className="text-gray-600 ml-2">Eu quero encontrar meus amigos hoje à noite.</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('where does he want to go tonight')} className="text-blue-600 hover:text-blue-800">
-                  Where does he want to go tonight?
-                </button>
-                <span className="text-gray-600 ml-2">Onde ele quer ir hoje à noite?</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('he wants to meet his friends tonight')} className="text-blue-600 hover:text-blue-800">
-                  He wants to meet his friends tonight.
-                </button>
-                <span className="text-gray-600 ml-2">Ele quer encontrar os amigos dele hoje à noite.</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('i don\'t have an opinion about it')} className="text-blue-600 hover:text-blue-800">
-                  I don't have an opinion about it.
-                </button>
-                <span className="text-gray-600 ml-2">Eu não tenho uma opinião sobre isso.</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('do you have an opinion about this problem')} className="text-blue-600 hover:text-blue-800">
-                  Do you have an opinion about this problem?
-                </button>
-                <span className="text-gray-600 ml-2">Você tem uma opinião sobre esse problema?</span>
-              </p>
+              <p><button onClick={() => playAudio('I want to meet my friends tonight.')} className="text-blue-600 hover:text-blue-800">I want to meet my friends tonight.</button><span className="text-gray-600 ml-2">Eu quero encontrar meus amigos hoje à noite.</span></p>
+              <p><button onClick={() => playAudio('Where does he want to go tonight?')} className="text-blue-600 hover:text-blue-800">Where does he want to go tonight?</button><span className="text-gray-600 ml-2">Onde ele quer ir hoje à noite?</span></p>
+              <p><button onClick={() => playAudio('He wants to meet his friends tonight.')} className="text-blue-600 hover:text-blue-800">He wants to meet his friends tonight.</button><span className="text-gray-600 ml-2">Ele quer encontrar os amigos dele hoje à noite.</span></p>
+              <p><button onClick={() => playAudio("I don't have an opinion about it.")} className="text-blue-600 hover:text-blue-800">I don't have an opinion about it.</button><span className="text-gray-600 ml-2">Eu não tenho uma opinião sobre isso.</span></p>
+              <p><button onClick={() => playAudio('Do you have an opinion about this problem?')} className="text-blue-600 hover:text-blue-800">Do you have an opinion about this problem?</button><span className="text-gray-600 ml-2">Você tem uma opinião sobre esse problema?</span></p>
             </div>
             
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <p className="text-lg font-medium text-blue-800 mb-4">🔁 PRÁTICA – USEFUL PHRASES</p>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors">
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">7️⃣ Nós não ficamos em casa durante a semana.</span> / aqui / lá
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors">
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">8️⃣ Às vezes eu estudo aos domingos.</span> / lavo a roupa / limpo a casa
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('do you have an opinion about this problem')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">9️⃣ Você tem uma opinião sobre este problema?</span> / assunto / curso
-                  </p>
-                </div>
+                <PracticePhrase english="We don't stay at home during the week." variations=" / here / there" />
+                <PracticePhrase english="Sometimes I study on Sundays." variations=" / do the laundry / clean the house" />
+                <PracticePhrase english="Do you have an opinion about this problem?" variations=" / subject / course" />
               </div>
             )}
           </div>
@@ -520,68 +347,23 @@ export default function Lesson33() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div className="space-y-3">
                 <p className="font-medium text-gray-700">Affirmative:</p>
-                <p>
-                  <button onClick={() => playAudio('he watches videos on his tablet')} className="text-blue-600 hover:text-blue-800">
-                    He watches videos on his tablet.
-                  </button>
-                  <span className="text-gray-600 ml-2">Ele assiste vídeos no tablet dele.</span>
-                </p>
-                <p>
-                  <button onClick={() => playAudio('she has great ideas')} className="text-blue-600 hover:text-blue-800">
-                    She has great ideas.
-                  </button>
-                  <span className="text-gray-600 ml-2">Ela tem ótimas ideias.</span>
-                </p>
-                <p>
-                  <button onClick={() => playAudio('it starts at ten o\'clock')} className="text-blue-600 hover:text-blue-800">
-                    It starts at ten o'clock.
-                  </button>
-                  <span className="text-gray-600 ml-2">Começa às dez horas.</span>
-                </p>
+                <p><button onClick={() => playAudio('He watches videos on his tablet.')} className="text-blue-600 hover:text-blue-800">He watches videos on his tablet.</button><span className="text-gray-600 ml-2">Ele assiste vídeos no tablet dele.</span></p>
+                <p><button onClick={() => playAudio('She has great ideas.')} className="text-blue-600 hover:text-blue-800">She has great ideas.</button><span className="text-gray-600 ml-2">Ela tem ótimas ideias.</span></p>
+                <p><button onClick={() => playAudio("It starts at ten o'clock.")} className="text-blue-600 hover:text-blue-800">It starts at ten o'clock.</button><span className="text-gray-600 ml-2">Começa às dez horas.</span></p>
               </div>
               
               <div className="space-y-3">
                 <p className="font-medium text-gray-700">Negative:</p>
-                <p>
-                  <button onClick={() => playAudio('she doesn\'t live with her parents')} className="text-blue-600 hover:text-blue-800">
-                    She doesn't live with her parents.
-                  </button>
-                  <span className="text-gray-600 ml-2">Ela não mora com os pais.</span>
-                </p>
-                <p>
-                  <button onClick={() => playAudio('he doesn\'t study music at the university')} className="text-blue-600 hover:text-blue-800">
-                    He doesn't study music at the university.
-                  </button>
-                  <span className="text-gray-600 ml-2">Ele não estuda música na universidade.</span>
-                </p>
-                <p>
-                  <button onClick={() => playAudio('it doesn\'t finish this week')} className="text-blue-600 hover:text-blue-800">
-                    It doesn't finish this week.
-                  </button>
-                  <span className="text-gray-600 ml-2">Não termina esta semana.</span>
-                </p>
+                <p><button onClick={() => playAudio("She doesn't live with her parents.")} className="text-blue-600 hover:text-blue-800">She doesn't live with her parents.</button><span className="text-gray-600 ml-2">Ela não mora com os pais.</span></p>
+                <p><button onClick={() => playAudio("He doesn't study music at the university.")} className="text-blue-600 hover:text-blue-800">He doesn't study music at the university.</button><span className="text-gray-600 ml-2">Ele não estuda música na universidade.</span></p>
+                <p><button onClick={() => playAudio("It doesn't finish this week.")} className="text-blue-600 hover:text-blue-800">It doesn't finish this week.</button><span className="text-gray-600 ml-2">Não termina esta semana.</span></p>
               </div>
               
               <div className="space-y-3 md:col-span-2">
                 <p className="font-medium text-gray-700">Questions:</p>
-                <p>
-                  <button onClick={() => playAudio('does she want to learn more about sports')} className="text-blue-600 hover:text-blue-800">
-                    Does she want to learn more about sports?
-                  </button>
-                  <span className="text-gray-600 ml-2">Ela quer aprender mais sobre esportes?</span>
-                </p>
-                <p>
-                  <button onClick={() => playAudio('does he like to talk about his life')} className="text-blue-600 hover:text-blue-800">
-                    Does he like to talk about his life?
-                  </button>
-                  <span className="text-gray-600 ml-2">Ele gosta de falar sobre a vida dele?</span>
-                </p>
-                <p>
-                  <button onClick={() => playAudio('what time does it start')} className="text-blue-600 hover:text-blue-800">
-                    What time does it start?
-                  </button>
-                  <span className="text-gray-600 ml-2">A que horas começa?</span>
-                </p>
+                <p><button onClick={() => playAudio('Does she want to learn more about sports?')} className="text-blue-600 hover:text-blue-800">Does she want to learn more about sports?</button><span className="text-gray-600 ml-2">Ela quer aprender mais sobre esportes?</span></p>
+                <p><button onClick={() => playAudio('Does he like to talk about his life?')} className="text-blue-600 hover:text-blue-800">Does he like to talk about his life?</button><span className="text-gray-600 ml-2">Ele gosta de falar sobre a vida dele?</span></p>
+                <p><button onClick={() => playAudio('What time does it start?')} className="text-blue-600 hover:text-blue-800">What time does it start?</button><span className="text-gray-600 ml-2">A que horas começa?</span></p>
               </div>
             </div>
             
@@ -589,25 +371,9 @@ export default function Lesson33() {
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <p className="text-lg font-medium text-blue-800 mb-4">🔁 PRÁTICA – GRAMMAR</p>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('she likes to talk about sports')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">🔟 Ela gosta de conversar sobre esportes.</span> / quer / prefere
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors">
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">1️⃣1️⃣ Ele não entende este assunto.</span> / esta palavra / esta língua
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => playAudio('what time does the meeting start')}>
-                  <p className="text-lg font-medium text-gray-800">
-                    <span className="text-blue-600 font-bold">1️⃣2️⃣ A que horas a reunião começa?</span> / o filme / a aula
-                  </p>
-                </div>
+                <PracticePhrase english="She likes to talk about sports." variations=" / wants / prefers" />
+                <PracticePhrase english="He doesn't understand this subject." variations=" / this word / this language" />
+                <PracticePhrase english="What time does the meeting start?" variations=" / the movie / the class" />
               </div>
             )}
           </div>
@@ -632,85 +398,25 @@ export default function Lesson33() {
           
           <div className="p-8">
             <div className="space-y-3 mb-6">
-              <p>
-                <button onClick={() => playAudio('i really need to talk to you')} className="text-blue-600 hover:text-blue-800">
-                  I really need to talk to you.
-                </button>
-                <span className="text-gray-600 ml-2">Eu realmente preciso conversar com você.</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('she talks to her mother about everything')} className="text-blue-600 hover:text-blue-800">
-                  She talks to her mother about everything.
-                </button>
-                <span className="text-gray-600 ml-2">Ela conversa com a mãe dela sobre tudo.</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('my wife loves to watch series')} className="text-blue-600 hover:text-blue-800">
-                  My wife loves to watch series.
-                </button>
-                <span className="text-gray-600 ml-2">Minha esposa adora assistir séries.</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('do you like his ideas')} className="text-blue-600 hover:text-blue-800">
-                  Do you like his ideas?
-                </button>
-                <span className="text-gray-600 ml-2">Você gosta das ideias dele?</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('she doesn\'t want to talk about this subject')} className="text-blue-600 hover:text-blue-800">
-                  She doesn't want to talk about this subject.
-                </button>
-                <span className="text-gray-600 ml-2">Ela não quer falar sobre esse assunto.</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('he doesn\'t have a math exam this week')} className="text-blue-600 hover:text-blue-800">
-                  He doesn't have a math exam this week.
-                </button>
-                <span className="text-gray-600 ml-2">Ele não tem prova de matemática esta semana.</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('it doesn\'t start today')} className="text-blue-600 hover:text-blue-800">
-                  It doesn't start today.
-                </button>
-                <span className="text-gray-600 ml-2">Não começa hoje.</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('does he like to talk about politics')} className="text-blue-600 hover:text-blue-800">
-                  Does he like to talk about politics?
-                </button>
-                <span className="text-gray-600 ml-2">Ele gosta de falar sobre política?</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('does it finish in an hour')} className="text-blue-600 hover:text-blue-800">
-                  Does it finish in an hour?
-                </button>
-                <span className="text-gray-600 ml-2">Termina em uma hora?</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('what stuff does he want to buy')} className="text-blue-600 hover:text-blue-800">
-                  What stuff does he want to buy?
-                </button>
-                <span className="text-gray-600 ml-2">Que coisas ele quer comprar?</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('what time does your class start')} className="text-blue-600 hover:text-blue-800">
-                  What time does your class start?
-                </button>
-                <span className="text-gray-600 ml-2">Que horas sua aula começa?</span>
-              </p>
-              <p>
-                <button onClick={() => playAudio('how many languages does your sister speak')} className="text-blue-600 hover:text-blue-800">
-                  How many languages does your sister speak?
-                </button>
-                <span className="text-gray-600 ml-2">Quantos idiomas sua irmã fala?</span>
-              </p>
+              <p><button onClick={() => playAudio('I really need to talk to you.')} className="text-blue-600 hover:text-blue-800">I really need to talk to you.</button><span className="text-gray-600 ml-2">Eu realmente preciso conversar com você.</span></p>
+              <p><button onClick={() => playAudio('She talks to her mother about everything.')} className="text-blue-600 hover:text-blue-800">She talks to her mother about everything.</button><span className="text-gray-600 ml-2">Ela conversa com a mãe dela sobre tudo.</span></p>
+              <p><button onClick={() => playAudio('My wife loves to watch series.')} className="text-blue-600 hover:text-blue-800">My wife loves to watch series.</button><span className="text-gray-600 ml-2">Minha esposa adora assistir séries.</span></p>
+              <p><button onClick={() => playAudio('Do you like his ideas?')} className="text-blue-600 hover:text-blue-800">Do you like his ideas?</button><span className="text-gray-600 ml-2">Você gosta das ideias dele?</span></p>
+              <p><button onClick={() => playAudio("She doesn't want to talk about this subject.")} className="text-blue-600 hover:text-blue-800">She doesn't want to talk about this subject.</button><span className="text-gray-600 ml-2">Ela não quer falar sobre esse assunto.</span></p>
+              <p><button onClick={() => playAudio("He doesn't have a math exam this week.")} className="text-blue-600 hover:text-blue-800">He doesn't have a math exam this week.</button><span className="text-gray-600 ml-2">Ele não tem prova de matemática esta semana.</span></p>
+              <p><button onClick={() => playAudio("It doesn't start today.")} className="text-blue-600 hover:text-blue-800">It doesn't start today.</button><span className="text-gray-600 ml-2">Não começa hoje.</span></p>
+              <p><button onClick={() => playAudio('Does he like to talk about politics?')} className="text-blue-600 hover:text-blue-800">Does he like to talk about politics?</button><span className="text-gray-600 ml-2">Ele gosta de falar sobre política?</span></p>
+              <p><button onClick={() => playAudio('Does it finish in an hour?')} className="text-blue-600 hover:text-blue-800">Does it finish in an hour?</button><span className="text-gray-600 ml-2">Termina em uma hora?</span></p>
+              <p><button onClick={() => playAudio('What stuff does he want to buy?')} className="text-blue-600 hover:text-blue-800">What stuff does he want to buy?</button><span className="text-gray-600 ml-2">Que coisas ele quer comprar?</span></p>
+              <p><button onClick={() => playAudio('What time does your class start?')} className="text-blue-600 hover:text-blue-800">What time does your class start?</button><span className="text-gray-600 ml-2">Que horas sua aula começa?</span></p>
+              <p><button onClick={() => playAudio('How many languages does your sister speak?')} className="text-blue-600 hover:text-blue-800">How many languages does your sister speak?</button><span className="text-gray-600 ml-2">Quantos idiomas sua irmã fala?</span></p>
             </div>
             
             {openDrills.realLife && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <p className="text-lg font-medium text-blue-800 mb-4">🔁 PRÁTICA – REAL LIFE</p>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors">
+                <div className="p-4 bg-white rounded-xl border border-blue-200">
                   <p className="text-lg font-medium text-gray-800">
                     Pratique substituindo as palavras em azul nas frases acima com diferentes termos para criar novas frases!
                   </p>

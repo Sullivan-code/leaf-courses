@@ -19,10 +19,12 @@ interface SpeakTextProps {
   text: string;
   children?: React.ReactNode;
   className?: string;
+  asSpan?: boolean; // New prop to render as span instead of button
+  style?: React.CSSProperties; // Added style prop
 }
 
 // Speech component for text-to-speech with American Female voice
-const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
+const SpeakText = ({ text, children, className = "", asSpan = false, style }: SpeakTextProps) => {
   const speak = () => {
     if (!text || typeof window === 'undefined') return;
     
@@ -60,11 +62,30 @@ const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
     window.speechSynthesis.speak(utterance);
   };
 
+  if (asSpan) {
+    return (
+      <span
+        onClick={speak}
+        className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
+        title="Click to hear American pronunciation"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') speak(); }}
+        style={style}
+      >
+        {children || text}
+        <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+      </span>
+    );
+  }
+
   return (
     <button
       onClick={speak}
       className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
       title="Click to hear American pronunciation"
+      type="button"
+      style={style}
     >
       {children || text}
       <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
@@ -73,39 +94,59 @@ const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
 };
 
 // Component for pronouncing entire sentences with American female voice
-const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
+const SpeakSentence = ({ text, children, className = "", asSpan = false, style }: SpeakTextProps) => {
+  const speak = () => {
+    const speechText = children && typeof children === 'string' ? children : text;
+    if (speechText && typeof window !== 'undefined') {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(speechText);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      utterance.pitch = 1.0;
+      
+      const voices = window.speechSynthesis.getVoices();
+      
+      const americanFemaleVoices = voices.filter(voice => 
+        (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+        (voice.name.toLowerCase().includes('samantha') || 
+         voice.name.toLowerCase().includes('google us english') ||
+         voice.name === 'Google US English')
+      );
+      
+      const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+      
+      if (americanFemaleVoices.length > 0) {
+        utterance.voice = americanFemaleVoices[0];
+      } else if (americanVoices.length > 0) {
+        utterance.voice = americanVoices[0];
+      }
+      
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  if (asSpan) {
+    return (
+      <span
+        onClick={speak}
+        className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors ${className}`}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') speak(); }}
+        style={style}
+      >
+        {children || text}
+        <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
+      </span>
+    );
+  }
+
   return (
     <button
-      onClick={() => {
-        const speechText = children && typeof children === 'string' ? children : text;
-        if (speechText && typeof window !== 'undefined') {
-          window.speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(speechText);
-          utterance.lang = 'en-US';
-          utterance.rate = 0.85;
-          utterance.pitch = 1.0;
-          
-          const voices = window.speechSynthesis.getVoices();
-          
-          const americanFemaleVoices = voices.filter(voice => 
-            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
-            (voice.name.toLowerCase().includes('samantha') || 
-             voice.name.toLowerCase().includes('google us english') ||
-             voice.name === 'Google US English')
-          );
-          
-          const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
-          
-          if (americanFemaleVoices.length > 0) {
-            utterance.voice = americanFemaleVoices[0];
-          } else if (americanVoices.length > 0) {
-            utterance.voice = americanVoices[0];
-          }
-          
-          window.speechSynthesis.speak(utterance);
-        }
-      }}
+      onClick={speak}
       className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors ${className}`}
+      type="button"
+      style={style}
     >
       {children || text}
       <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
@@ -293,7 +334,7 @@ const substitutionPracticeII = [
     english: "She will call you back as soon as she finishes her meeting.",
     portuguese: "Ela vai te ligar de volta assim que terminar a reunião dela.",
     substitutions: [
-      { word: "She", options: ["She", "He", "My manager"] },
+      { word: "She", options: ["She", "my manager"] },
       { word: "her meeting", options: ["her meeting", "her presentation", "her appointment"] }
     ],
     currentText: "She will call you back as soon as she finishes her meeting."
@@ -320,7 +361,7 @@ const affirmativePractice = [
     portuguese: "Ela ainda não terminou a lição de casa dela.",
     affirmative: "She has already finished her homework.",
     substitutions: [
-      { word: "She", options: ["She", "He"] },
+      { word: "She", options: ["She", "Julia"] },
       { word: "her homework", options: ["her homework", "her project", "her assignment"] }
     ],
     currentText: "She hasn't finished her homework yet."
@@ -346,17 +387,6 @@ const affirmativePractice = [
       { word: "tomorrow", options: ["tomorrow", "next week", "on Monday"] }
     ],
     currentText: "I won't be able to attend the conference tomorrow."
-  },
-  {
-    id: 4,
-    english: "He has never traveled outside his country before.",
-    portuguese: "Ele nunca viajou para fora do seu país antes.",
-    affirmative: "He has traveled to many different countries before.",
-    substitutions: [
-      { word: "He", options: ["He", "She"] },
-      { word: "many different countries", options: ["many different countries", "several places in Europe", "a few cities in Asia"] }
-    ],
-    currentText: "He has never traveled outside his country before."
   },
   {
     id: 5,
@@ -510,12 +540,14 @@ const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
         onClick={togglePlayPause} 
         className={`${compact ? "p-1" : "p-2"} text-white rounded-full hover:opacity-90 transition-all`}
         style={{ backgroundColor: LESSON_THEME_COLOR }}
+        type="button"
       >
         {isPlaying ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
       </button>
       <button 
         onClick={resetAudio} 
         className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600 transition-all`}
+        type="button"
       >
         <RotateCcw size={compact ? 12 : 16} />
       </button>
@@ -641,6 +673,7 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
         <button
           onClick={() => setShowPortuguese(!showPortuguese)}
           className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full transition"
+          type="button"
         >
           {showPortuguese ? "🇧🇷" : "🇺🇸"} {showPortuguese ? "Português" : "English"}
         </button>
@@ -648,13 +681,15 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
           onClick={resetToOriginal}
           className="text-sm px-3 py-1 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition flex items-center gap-1"
           title="Reset to original sentence"
+          type="button"
         >
           <RotateCcw size={14} /> Reset
         </button>
       </div>
 
       <div className="mb-4">
-        <SpeakSentence text={currentText} className="text-2xl font-bold text-gray-800 mb-2 block">
+        {/* Using asSpan=true to avoid button inside button */}
+        <SpeakSentence text={currentText} className="text-2xl font-bold text-gray-800 mb-2 block" asSpan>
           {currentText}
         </SpeakSentence>
         {showPortuguese && (
@@ -683,8 +718,10 @@ const SubstitutionExercise = ({ exercise, onUpdate }: SubstitutionExerciseProps)
                     }`}
                     style={currentWord === option ? { backgroundColor: LESSON_THEME_COLOR, color: 'white' } : {}}
                     disabled={currentWord === option}
+                    type="button"
                   >
-                    <SpeakText text={option} className="inline">
+                    {/* Using asSpan=true for nested SpeakText */}
+                    <SpeakText text={option} className="inline" asSpan>
                       {option}
                     </SpeakText>
                   </button>
@@ -731,7 +768,8 @@ const InteractiveQuestion = ({ id, question, icon: Icon, value, onChange, onClea
         {Icon && <Icon className="mt-1" style={{ color: LESSON_THEME_COLOR }} size={24} />}
         <h4 className="text-lg font-medium text-gray-800 flex-1">
           <span className="font-bold mr-2" style={{ color: LESSON_THEME_COLOR }}>{id}.</span>
-          <SpeakSentence text={question}>{question}</SpeakSentence>
+          {/* Using asSpan=true to avoid button nesting */}
+          <SpeakSentence text={question} asSpan>{question}</SpeakSentence>
         </h4>
       </div>
 
@@ -758,6 +796,7 @@ const InteractiveQuestion = ({ id, question, icon: Icon, value, onChange, onClea
         <button
           onClick={() => onClear(id)}
           className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition flex items-center gap-2"
+          type="button"
         >
           <X size={16} /> Clear
         </button>
@@ -915,7 +954,7 @@ export default function Lesson34TuneYourEars() {
           </h1>
           <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-gray-800">{LESSON_TITLE}</h2>
           <h3 className="text-xl text-gray-600 mb-4">{LESSON_SUBTITLE}</h3>
-          <SpeakSentence text="Practice slow listening, shadowing technique, and reflect on your English learning journey." className="text-xl text-gray-700 max-w-3xl mx-auto">
+          <SpeakSentence text="Practice slow listening, shadowing technique, and reflect on your English learning journey." className="text-xl text-gray-700 max-w-3xl mx-auto" asSpan>
             Practice slow listening, shadowing technique, and reflect on your English learning journey.
           </SpeakSentence>
           
@@ -923,18 +962,21 @@ export default function Lesson34TuneYourEars() {
             <button
               onClick={saveAllAnswers}
               className="flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition shadow-lg"
+              type="button"
             >
               <Check size={20} /> Save Progress
             </button>
             <button
               onClick={exportToPDF}
               className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition shadow-lg"
+              type="button"
             >
               <Download size={20} /> Export as PDF
             </button>
             <button
               onClick={shareOnWhatsApp}
               className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition shadow-lg"
+              type="button"
             >
               <MessageCircle size={20} /> Share on WhatsApp
             </button>
@@ -952,6 +994,7 @@ export default function Lesson34TuneYourEars() {
             <button 
               onClick={() => toggleSection('pronunciation')}
               className="p-2 rounded-full hover:bg-white/20 transition"
+              type="button"
             >
               {expandedSections.pronunciation ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
             </button>
@@ -993,13 +1036,15 @@ export default function Lesson34TuneYourEars() {
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2">
                           {Icon && <Icon size={20} style={{ color: LESSON_THEME_COLOR }} />}
-                          <SpeakText text={item.word} className="text-xl font-bold" style={{ color: LESSON_THEME_COLOR }}>
+                          {/* Fixed: style is now passed correctly */}
+                          <SpeakText text={item.word} className="text-xl font-bold" asSpan style={{ color: LESSON_THEME_COLOR }}>
                             {item.word}
                           </SpeakText>
                         </div>
                         <AudioPlayer src={item.audio} compact />
                       </div>
-                      <SpeakSentence text={item.phrase} className="text-gray-700 mb-1 font-medium block">
+                      {/* Using asSpan to avoid button nesting */}
+                      <SpeakSentence text={item.phrase} className="text-gray-700 mb-1 font-medium block" asSpan>
                         {item.phrase}
                       </SpeakSentence>
                       <p className="text-gray-500 italic text-sm border-l-2 pl-2 mt-1" style={{ borderColor: LESSON_THEME_COLOR }}>
@@ -1023,6 +1068,7 @@ export default function Lesson34TuneYourEars() {
             <button 
               onClick={() => toggleSection('substitution1')}
               className="p-2 rounded-full hover:bg-white/20 transition"
+              type="button"
             >
               {expandedSections.substitution1 ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
             </button>
@@ -1030,7 +1076,7 @@ export default function Lesson34TuneYourEars() {
           
           {expandedSections.substitution1 && (
             <div className="p-8">
-              <SpeakSentence text="Practice with Present Perfect, Past Simple (DID), and Future (WILL). Click on any option to replace the highlighted word." className="text-purple-700 mb-6 italic block">
+              <SpeakSentence text="Practice with Present Perfect, Past Simple (DID), and Future (WILL). Click on any option to replace the highlighted word." className="text-purple-700 mb-6 italic block" asSpan>
                 Practice with Present Perfect, Past Simple (DID), and Future (WILL). Click on any option to replace the highlighted word.
               </SpeakSentence>
               <div className="space-y-6">
@@ -1056,6 +1102,7 @@ export default function Lesson34TuneYourEars() {
             <button 
               onClick={() => toggleSection('substitution2')}
               className="p-2 rounded-full hover:bg-white/20 transition"
+              type="button"
             >
               {expandedSections.substitution2 ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
             </button>
@@ -1063,7 +1110,7 @@ export default function Lesson34TuneYourEars() {
           
           {expandedSections.substitution2 && (
             <div className="p-8">
-              <SpeakSentence text="Continue practicing with more complex sentences using different tenses." className="text-green-700 mb-6 italic block">
+              <SpeakSentence text="Continue practicing with more complex sentences using different tenses." className="text-green-700 mb-6 italic block" asSpan>
                 Continue practicing with more complex sentences using different tenses.
               </SpeakSentence>
               <div className="space-y-6">
@@ -1089,6 +1136,7 @@ export default function Lesson34TuneYourEars() {
             <button 
               onClick={() => toggleSection('affirmative')}
               className="p-2 rounded-full hover:bg-white/20 transition"
+              type="button"
             >
               {expandedSections.affirmative ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
             </button>
@@ -1096,7 +1144,7 @@ export default function Lesson34TuneYourEars() {
           
           {expandedSections.affirmative && (
             <div className="p-8">
-              <SpeakSentence text="Transform these negative sentences into affirmative sentences by replacing words." className="text-amber-700 mb-6 italic block">
+              <SpeakSentence text="Transform these negative sentences into affirmative sentences by replacing words." className="text-amber-700 mb-6 italic block" asSpan>
                 Transform these negative sentences into affirmative sentences by replacing words.
               </SpeakSentence>
               <div className="space-y-6">
@@ -1122,6 +1170,7 @@ export default function Lesson34TuneYourEars() {
             <button 
               onClick={() => toggleSection('questions')}
               className="p-2 rounded-full hover:bg-white/20 transition"
+              type="button"
             >
               {expandedSections.questions ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
             </button>
@@ -1129,7 +1178,7 @@ export default function Lesson34TuneYourEars() {
           
           {expandedSections.questions && (
             <div className="p-8">
-              <SpeakSentence text="Practice answering these questions using Past Simple (DID), Present Perfect, and Future (WILL)." className="text-indigo-700 mb-6 italic block">
+              <SpeakSentence text="Practice answering these questions using Past Simple (DID), Present Perfect, and Future (WILL)." className="text-indigo-700 mb-6 italic block" asSpan>
                 Practice answering these questions using Past Simple (DID), Present Perfect, and Future (WILL).
               </SpeakSentence>
               
@@ -1173,6 +1222,7 @@ export default function Lesson34TuneYourEars() {
             <button 
               onClick={() => toggleSection('tuneYourEars')}
               className="p-2 rounded-full hover:bg-white/20 transition"
+              type="button"
             >
               {expandedSections.tuneYourEars ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
             </button>
@@ -1184,7 +1234,7 @@ export default function Lesson34TuneYourEars() {
                 <h3 className="text-2xl font-bold text-cyan-700 mb-4">
                   {tuneYourEarsVideo.title}
                 </h3>
-                <SpeakSentence text={tuneYourEarsVideo.description} className="text-cyan-600 mb-6 block">
+                <SpeakSentence text={tuneYourEarsVideo.description} className="text-cyan-600 mb-6 block" asSpan>
                   {tuneYourEarsVideo.description}
                 </SpeakSentence>
                 
@@ -1193,10 +1243,10 @@ export default function Lesson34TuneYourEars() {
                   <h4 className="text-lg font-bold text-cyan-800 mb-2 flex items-center gap-2">
                     <Headphones size={20} /> What is Shadowing?
                   </h4>
-                  <SpeakSentence text={tuneYourEarsVideo.shadowingExplanation} className="text-cyan-700 block">
+                  <SpeakSentence text={tuneYourEarsVideo.shadowingExplanation} className="text-cyan-700 block" asSpan>
                     {tuneYourEarsVideo.shadowingExplanation}
                   </SpeakSentence>
-                  <SpeakSentence text="How to practice: Listen to a short phrase → Pause the video → Repeat exactly what you heard → Focus on rhythm and intonation" className="text-cyan-600 text-sm mt-2 italic block">
+                  <SpeakSentence text="How to practice: Listen to a short phrase → Pause the video → Repeat exactly what you heard → Focus on rhythm and intonation" className="text-cyan-600 text-sm mt-2 italic block" asSpan>
                     How to practice: Listen to a short phrase → Pause the video → Repeat exactly what you heard → Focus on rhythm and intonation
                   </SpeakSentence>
                 </div>
@@ -1226,7 +1276,7 @@ export default function Lesson34TuneYourEars() {
                       <div key={idx} className="flex items-center justify-between p-3 bg-white rounded-lg hover:shadow-md transition-all">
                         <div className="flex items-center gap-2">
                           {Icon && <Icon size={16} style={{ color: LESSON_THEME_COLOR }} />}
-                          <SpeakText text={item.english} className="font-medium text-cyan-700">
+                          <SpeakText text={item.english} className="font-medium text-cyan-700" asSpan>
                             {item.english}
                           </SpeakText>
                         </div>
@@ -1240,7 +1290,7 @@ export default function Lesson34TuneYourEars() {
               {/* REFLECTION QUESTIONS */}
               <div className="space-y-8">
                 <h3 className="text-xl font-bold text-center text-cyan-700">Reflection Questions</h3>
-                <SpeakSentence text="Answer these questions honestly to reflect on your English learning journey." className="text-center text-gray-600 -mt-4 block">
+                <SpeakSentence text="Answer these questions honestly to reflect on your English learning journey." className="text-center text-gray-600 -mt-4 block" asSpan>
                   Answer these questions honestly to reflect on your English learning journey.
                 </SpeakSentence>
                 
@@ -1248,7 +1298,7 @@ export default function Lesson34TuneYourEars() {
                   <div key={q.id} className="bg-white p-6 rounded-xl border-2 shadow-md"
                        style={{ borderColor: `${LESSON_THEME_COLOR}30` }}>
                     <h4 className="text-lg font-bold mb-3" style={{ color: LESSON_THEME_COLOR }}>
-                      <SpeakSentence text={`Question ${q.id}: ${q.question}`}>
+                      <SpeakSentence text={`Question ${q.id}: ${q.question}`} asSpan>
                         Question {q.id}: {q.question}
                       </SpeakSentence>
                     </h4>
@@ -1274,12 +1324,14 @@ export default function Lesson34TuneYourEars() {
                         onClick={() => checkVideoAnswer(q.id, videoAnswers[q.id] || "", q.correctAnswer, q.reflectionType === "personal")}
                         className="text-white px-6 py-2 rounded-lg transition font-medium hover:opacity-90"
                         style={{ backgroundColor: LESSON_THEME_COLOR }}
+                        type="button"
                       >
                         Check / Reflect
                       </button>
                       <button
                         onClick={() => clearVideoAnswer(q.id)}
                         className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg transition font-medium"
+                        type="button"
                       >
                         Clear
                       </button>
@@ -1303,12 +1355,12 @@ export default function Lesson34TuneYourEars() {
                   <Headphones size={20} /> 🎯 Listening & Shadowing Tips:
                 </h3>
                 <ul className="list-disc pl-5 space-y-2 text-cyan-700">
-                  <SpeakSentence text="Listen first without looking at the questions" className="block">Listen first without looking at the questions</SpeakSentence>
-                  <SpeakSentence text="Practice shadowing: pause after each sentence and repeat" className="block">Practice shadowing: pause after each sentence and repeat</SpeakSentence>
-                  <SpeakSentence text="Use your mistakes as fuel - learn from them" className="block">Use your mistakes as fuel - learn from them</SpeakSentence>
-                  <SpeakSentence text="Set a timer for daily practice (15-25 minutes is enough)" className="block">Set a timer for daily practice (15-25 minutes is enough)</SpeakSentence>
-                  <SpeakSentence text="Remember: progress happens step by step, not overnight" className="block">Remember: progress happens step by step, not overnight</SpeakSentence>
-                  <SpeakSentence text="Write down new vocabulary and review it regularly" className="block">Write down new vocabulary and review it regularly</SpeakSentence>
+                  <SpeakSentence text="Listen first without looking at the questions" className="block" asSpan>Listen first without looking at the questions</SpeakSentence>
+                  <SpeakSentence text="Practice shadowing: pause after each sentence and repeat" className="block" asSpan>Practice shadowing: pause after each sentence and repeat</SpeakSentence>
+                  <SpeakSentence text="Use your mistakes as fuel - learn from them" className="block" asSpan>Use your mistakes as fuel - learn from them</SpeakSentence>
+                  <SpeakSentence text="Set a timer for daily practice (15-25 minutes is enough)" className="block" asSpan>Set a timer for daily practice (15-25 minutes is enough)</SpeakSentence>
+                  <SpeakSentence text="Remember: progress happens step by step, not overnight" className="block" asSpan>Remember: progress happens step by step, not overnight</SpeakSentence>
+                  <SpeakSentence text="Write down new vocabulary and review it regularly" className="block" asSpan>Write down new vocabulary and review it regularly</SpeakSentence>
                 </ul>
               </div>
             </div>
@@ -1321,12 +1373,14 @@ export default function Lesson34TuneYourEars() {
             <button
               onClick={saveAllAnswers}
               className="flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition font-medium shadow-md"
+              type="button"
             >
               <Check size={20} /> Save All Answers
             </button>
             <button
               onClick={clearAllAnswers}
               className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition font-medium shadow-md"
+              type="button"
             >
               <X size={20} /> Clear All
             </button>
@@ -1336,6 +1390,7 @@ export default function Lesson34TuneYourEars() {
             <button
               onClick={() => router.push("/cursos/lesson33")}
               className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-full transition font-medium shadow-md"
+              type="button"
             >
               &larr; Previous Lesson
             </button>
@@ -1343,6 +1398,7 @@ export default function Lesson34TuneYourEars() {
               onClick={() => router.push(`/cursos/lesson${LESSON_NUMBER + 1}`)}
               className="px-6 py-3 text-white rounded-full transition font-medium shadow-md"
               style={{ backgroundColor: LESSON_THEME_COLOR }}
+              type="button"
             >
               Next Lesson &rarr;
             </button>
@@ -1351,7 +1407,7 @@ export default function Lesson34TuneYourEars() {
         
         <div className="mt-8 text-center text-gray-500 text-sm">
           <p>Lesson {LESSON_NUMBER}: {LESSON_TITLE} - {LESSON_SUBTITLE} • Interactive English Practice • All answers are saved in your browser</p>
-          <SpeakSentence text="Remember: Tune your ears, practice shadowing, and keep going step by step!" className="mt-1">
+          <SpeakSentence text="Remember: Tune your ears, practice shadowing, and keep going step by step!" className="mt-1" asSpan>
             🎧 Remember: Tune your ears, practice shadowing, and keep going step by step!
           </SpeakSentence>
         </div>

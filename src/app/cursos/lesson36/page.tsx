@@ -6,46 +6,46 @@ import { useEffect, useState, useRef } from "react";
 import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle, ChevronLeft, ChevronRight } from "lucide-react";
 
 // ============================================
-// LISTEN ITEMS - Imagem 1, 2, 3 (EMBARALHADAS NA TELA, MAS ORDEM CORRETA É 1,2,3)
-// COM IMAGENS EM BASE64 PARA FUNCIONAR SEM ARQUIVOS EXTERNOS
+// LISTEN ITEMS - Imagens (EMBARALHADAS NA TELA)
+// ORDEM CORRETA: 1. mulher sorrindo → 2. refletindo sobre a vida → 3. casal assistindo tv juntos
 // ============================================
 
-// Imagem 1: Refletindo sobre a vida (Homem pensando)
-const image1Base64 = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 250'%3E%3Crect width='300' height='250' fill='%23667eea'/%3E%3Ccircle cx='150' cy='100' r='50' fill='%23fbbf24'/%3E%3Ccircle cx='130' cy='90' r='5' fill='%23333'/%3E%3Ccircle cx='170' cy='90' r='5' fill='%23333'/%3E%3Cpath d='M130 120 Q150 135 170 120' stroke='%23333' stroke-width='3' fill='none'/%3E%3Crect x='120' y='145' width='60' height='40' rx='5' fill='%23ef4444'/%3E%3Ctext x='150' y='210' text-anchor='middle' fill='white' font-size='14' font-weight='bold'%3E🤔 REFLETINDO%3C/text%3E%3Ctext x='150' y='230' text-anchor='middle' fill='%23ddd' font-size='12'%3ESOBRE A VIDA%3C/text%3E%3C/svg%3E";
+// Imagem: Mulher sorrindo - PRIMEIRO NA ORDEM (1)
+const image3Url = "/images/3-mulher-sorrindo.jpg";
 
-// Imagem 2: Casal assistindo TV juntos
-const image2Base64 = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 250'%3E%3Crect width='300' height='250' fill='%238b5cf6'/%3E%3Crect x='50' y='80' width='200' height='100' rx='10' fill='%233b82f6'/%3E%3Crect x='60' y='90' width='180' height='70' rx='5' fill='%231e40af'/%3E%3Ccircle cx='100' cy='195' r='20' fill='%23fbbf24'/%3E%3Ccircle cx='95' cy='190' r='3' fill='%23333'/%3E%3Ccircle cx='200' cy='195' r='20' fill='%23f97316'/%3E%3Ccircle cx='195' cy='190' r='3' fill='%23333'/%3E%3Ctext x='150' y='210' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3E👫 ASSISTINDO TV%3C/text%3E%3Ctext x='150' y='230' text-anchor='middle' fill='%23ddd' font-size='11'%3ECASAL JUNTOS%3C/text%3E%3C/svg%3E";
+// Imagem: Refletindo sobre a vida (Homem pensando) - SEGUNDO NA ORDEM (2)
+const image1Url = "/images/1-refletindo.jpg";
 
-// Imagem 3: Mulher sorrindo
-const image3Base64 = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 250'%3E%3Crect width='300' height='250' fill='%23ec4899'/%3E%3Ccircle cx='150' cy='100' r='55' fill='%23fcd34d'/%3E%3Ccircle cx='130' cy='90' r='6' fill='%23333'/%3E%3Ccircle cx='170' cy='90' r='6' fill='%23333'/%3E%3Cpath d='M130 125 Q150 145 170 125' stroke='%23333' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Crect x='140' y='160' width='20' height='30' rx='5' fill='%23ef4444'/%3E%3Ctext x='150' y='210' text-anchor='middle' fill='white' font-size='14' font-weight='bold'%3E😊 MULHER%3C/text%3E%3Ctext x='150' y='230' text-anchor='middle' fill='%23ddd' font-size='12'%3ESORRINDO%3C/text%3E%3C/svg%3E";
+// Imagem: Casal assistindo TV juntos - TERCEIRO NA ORDEM (3)
+const image2Url = "/images/2-casal.jpg";
 
 const listenItemsOriginal = [
   { 
+    key: "image3", 
+    label: "mulher sorrindo", 
+    image: image3Url,
+    placeholder: "😊",
+    description: "Mulher com um lindo sorriso",
+    correctNumber: 1,
+    bgColor: "from-pink-100 to-rose-100"
+  },
+  { 
     key: "image1", 
-    label: "1. refletindo sobre a vida", 
-    image: image1Base64,
+    label: "refletindo sobre a vida", 
+    image: image1Url,
     placeholder: "🤔",
     description: "Homem pensando, refletindo sobre a vida",
-    correctNumber: 1,
+    correctNumber: 2,
     bgColor: "from-purple-100 to-blue-100"
   },
   { 
     key: "image2", 
-    label: "2. casal assistindo tv juntos", 
-    image: image2Base64,
+    label: "casal assistindo tv juntos", 
+    image: image2Url,
     placeholder: "👫📺",
     description: "Casal assistindo televisão juntos no sofá",
-    correctNumber: 2,
-    bgColor: "from-indigo-100 to-purple-100"
-  },
-  { 
-    key: "image3", 
-    label: "3. mulher sorrindo", 
-    image: image3Base64,
-    placeholder: "😊",
-    description: "Mulher com um lindo sorriso",
     correctNumber: 3,
-    bgColor: "from-pink-100 to-rose-100"
+    bgColor: "from-indigo-100 to-purple-100"
   },
 ];
 
@@ -259,7 +259,6 @@ const AudioPlayer = ({ src, compact = false, textToSpeak = "" }: AudioPlayerProp
     if (!text && !src) return;
     
     if ('speechSynthesis' in window) {
-      // Cancela qualquer fala em andamento
       window.speechSynthesis.cancel();
       
       const utterance = new SpeechSynthesisUtterance(text);
@@ -267,7 +266,6 @@ const AudioPlayer = ({ src, compact = false, textToSpeak = "" }: AudioPlayerProp
       utterance.rate = 0.9;
       utterance.pitch = 1.1;
       
-      // Tentar usar voz feminina americana
       const voices = window.speechSynthesis.getVoices();
       const femaleVoice = voices.find(voice => 
         voice.lang === 'en-US' && 
@@ -683,7 +681,8 @@ export default function Lesson36() {
         </div>
 
         {/* ============================================ */}
-        {/* LISTEN AND NUMBER - Imagens 1, 2, 3 */}
+        {/* LISTEN AND NUMBER - Imagens */}
+        {/* ORDEM CORRETA: 1. mulher sorrindo → 2. refletindo sobre a vida → 3. casal assistindo tv juntos */}
         {/* ============================================ */}
         <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-purple-600 text-white py-4 px-8 flex items-center justify-between">
@@ -693,7 +692,7 @@ export default function Lesson36() {
                 {sections.listen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
-            <AudioPlayer src="" textToSpeak="Number one: a man thinking about life. Number two: a couple watching TV together. Number three: a smiling woman." />
+            <AudioPlayer src="" textToSpeak="Number one: a smiling woman. Number two: a man thinking about life. Number three: a couple watching TV together." />
           </div>
 
           {sections.listen && (
@@ -703,10 +702,10 @@ export default function Lesson36() {
               </p>
               
               <p className="text-sm text-purple-600 mb-6 bg-purple-100 p-3 rounded-lg">
-                🎯 <strong>Correct sequence:</strong> 1. refletindo sobre a vida → 2. casal assistindo tv juntos → 3. mulher sorrindo
+                🎯 <strong>Correct sequence:</strong> 1. mulher sorrindo → 2. refletindo sobre a vida → 3. casal assistindo tv juntos
               </p>
 
-              {/* Imagens embaralhadas */}
+              {/* Imagens embaralhadas sem números nos containers */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 {shuffledListenItems.map((item) => (
                   <div 
@@ -775,7 +774,7 @@ export default function Lesson36() {
                     ) : (
                       <div className="flex items-center gap-2">
                         <XCircle size={24} />
-                        <span className="font-bold">❌ Sequência errada! A ordem correta é: 1. refletindo sobre a vida → 2. casal assistindo tv juntos → 3. mulher sorrindo</span>
+                        <span className="font-bold">❌ Sequência errada! A ordem correta é: 1. mulher sorrindo → 2. refletindo sobre a vida → 3. casal assistindo tv juntos</span>
                       </div>
                     )}
                   </div>
@@ -788,7 +787,7 @@ export default function Lesson36() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {shuffledListenItems.map((item) => (
                     <div key={`ind-${item.key}`} className="bg-white p-4 rounded-lg border border-purple-200">
-                      <div className="w-full h-32 mb-3 rounded-lg overflow-hidden">
+                      <div className="w-full h-32 mb-3 rounded-lg overflow-hidden relative">
                         <img src={item.image} alt={item.label} className="w-full h-full object-cover" />
                       </div>
                       <p className="text-sm font-medium text-gray-700 text-center mb-3">{item.label}</p>

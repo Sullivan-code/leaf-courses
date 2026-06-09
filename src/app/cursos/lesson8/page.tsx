@@ -509,11 +509,22 @@ export default function LessonLanguagesAndCountries() {
     setSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
+  // FUNÇÃO CORRIGIDA - AGORA COM VERIFICAÇÃO SEGURA
   const getCurrentSubs2Sentence = (exercise: typeof substitutionPractice2[0]): string => {
     const currentOption = exercise.options[exercise.currentIndex];
-    if (exercise.specificSentences && exercise.specificSentences[currentOption as keyof typeof exercise.specificSentences]) {
-      return exercise.specificSentences[currentOption as keyof typeof exercise.specificSentences];
+    
+    // Verificação segura com fallback
+    if (exercise.specificSentences) {
+      const sentenceKey = currentOption as keyof typeof exercise.specificSentences;
+      const sentence = exercise.specificSentences[sentenceKey];
+      
+      // Retorna a frase específica se existir e for uma string
+      if (sentence && typeof sentence === 'string') {
+        return sentence;
+      }
     }
+    
+    // Fallback: construir a frase a partir das palavras corretas
     const words = exercise.correctAnswer.split(' ');
     const baseWords = words.map(word => {
       const cleanWord = word.replace('.', '').replace(',', '').replace('?', '').replace('!', '');
@@ -732,7 +743,7 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* SUBSTITUTION PRACTICE 2 COM ÁUDIO APENAS EM INGLÊS */}
+        {/* SUBSTITUTION PRACTICE 2 COM ÁUDIO APENAS EM INGLÊS - FUNÇÃO CORRIGIDA */}
         <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">

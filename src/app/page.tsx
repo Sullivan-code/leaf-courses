@@ -16,7 +16,7 @@ export default function Home() {
           style={{ backgroundImage: 'url("/images/mainpage.png")' }}
         >
           {/* Overlay escuro para melhor contraste do texto */}
-          <div className="absolute inset-0 bg-black/0"></div>
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
 
         {/* Conteúdo sobreposto à imagem */}

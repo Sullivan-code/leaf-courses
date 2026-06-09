@@ -13,7 +13,7 @@ interface NoteModalState {
 }
 
 // ============================================
-// SPEECH SYSTEM WITH AMERICAN FEMALE VOICE (ZOEY'S VOICE)
+// SPEECH SYSTEM WITH AMERICAN FEMALE VOICE
 // ============================================
 
 interface SpeakTextProps {
@@ -110,7 +110,7 @@ const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
   );
 };
 
-// Componente de Modal para Anotações
+// Note Modal Component
 function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
   isOpen: boolean;
   onClose: () => void;
@@ -128,7 +128,7 @@ function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fadeIn">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style={{ animation: 'fadeIn 0.3s ease-out' }}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6">
           <h3 className="text-xl font-bold">📝 Anotações - {sectionTitle}</h3>
@@ -167,7 +167,7 @@ function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
   );
 }
 
-// Componente de Ícone de Lápis
+// Pencil Icon Component
 function PencilIcon({ onClick }: { onClick: () => void }) {
   return (
     <button
@@ -183,7 +183,7 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
   );
 }
 
-// Componente CheckItOutHorizontal
+// CheckItOutHorizontal Component
 function CheckItOutHorizontal() {
   return (
     <div className="w-full mx-auto border-2 border-gray-800 rounded-lg overflow-hidden shadow-lg">
@@ -303,8 +303,8 @@ export default function Lesson31StartFinish() {
     }
   }, []);
 
-  // Image URLs
-  const mainImage = "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
+  // NEW IMAGE: Start/Finish concept - A person starting a race and finishing a project
+  const mainImage = "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
   const collegeImage = "https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
   const projectImage = "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
   const meetingImage = "https://images.unsplash.com/photo-1517048676738-d65ab93716d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
@@ -335,33 +335,42 @@ export default function Lesson31StartFinish() {
     { english: "great", portuguese: "ótimo" }
   ];
 
+  // MODIFIED: New Useful Phrases with Past, Future, and Questions using Do/Does
   const usefulPhrases = [
-    { english: "I start a new course this morning.", portuguese: "Eu começo um novo curso hoje de manhã." },
-    { english: "I do my homework on weekends.", portuguese: "Eu faço minha lição de casa nos fins de semana." },
+    { english: "I started a new course yesterday.", portuguese: "Eu comecei um novo curso ontem." },
+    { english: "She finished her project last week.", portuguese: "Ela terminou o projeto dela na semana passada." },
+    { english: "He will start college next year.", portuguese: "Ele vai começar a faculdade no ano que vem." },
+    { english: "We will finish the meeting in an hour.", portuguese: "Nós vamos terminar a reunião em uma hora." },
+    { english: "Does he start work at 9 AM?", portuguese: "Ele começa a trabalhar às 9 da manhã?" },
+    { english: "Does she finish class at noon?", portuguese: "Ela termina a aula ao meio-dia?" },
+    { english: "Does it start on time?", portuguese: "Isso começa na hora certa?" },
     { english: "Let's start!", portuguese: "Vamos começar!" }
   ];
 
+  // MODIFIED: New Grammar Examples with Past, Future, and Questions
   const grammarExamples = [
-    { english: "I want to start college this year.", portuguese: "Eu quero começar a faculdade este ano." },
-    { english: "We have to start the meeting now.", portuguese: "Nós temos que começar a reunião agora." },
-    { english: "They want to start the course next semester.", portuguese: "Eles querem começar o curso no próximo semestre." },
-    { english: "I don't want to study business in college.", portuguese: "Eu não quero estudar negócios na faculdade." },
-    { english: "They don't need to start the project this week.", portuguese: "Eles não precisam começar o projeto esta semana." },
-    { english: "Do you have a minute?", portuguese: "Você tem um minuto?" }
+    { english: "I started this course last month.", portuguese: "Eu comecei este curso no mês passado." },
+    { english: "She finished her homework an hour ago.", portuguese: "Ela terminou a lição de casa dela há uma hora." },
+    { english: "He will start his new job tomorrow.", portuguese: "Ele vai começar o novo trabalho dele amanhã." },
+    { english: "They will finish the project next week.", portuguese: "Eles vão terminar o projeto na próxima semana." },
+    { english: "Does she want to start the meeting now?", portuguese: "Ela quer começar a reunião agora?" },
+    { english: "Does he need to finish the report today?", portuguese: "Ele precisa terminar o relatório hoje?" },
+    { english: "When does the movie start?", portuguese: "Quando começa o filme?" },
+    { english: "What time does she finish work?", portuguese: "Que horas ela termina o trabalho?" }
   ];
 
-  // Real Life Practice Sentences
+  // MODIFIED: New Real Life Practice Sentences with Past, Future, and Questions for He/She/It
   const realLifeSentences = [
-    { english: "I want to start a new course.", portuguese: "Eu quero começar um novo curso." },
-    { english: "She needs to finish the project today.", portuguese: "Ela precisa terminar o projeto hoje." },
-    { english: "He has to study for the exam.", portuguese: "Ele tem que estudar para a prova." },
-    { english: "We don't want to start this task now.", portuguese: "Nós não queremos começar esta tarefa agora." },
-    { english: "They don't need to finish this week.", portuguese: "Eles não precisam terminar esta semana." },
-    { english: "Do you have a deadline?", portuguese: "Você tem um prazo?" },
-    { english: "Does she start high school next year?", portuguese: "Ela começa o ensino médio no próximo ano?" },
-    { english: "What time do you finish work?", portuguese: "Que horas você termina o trabalho?" },
-    { english: "When does the meeting start?", portuguese: "Quando começa a reunião?" },
-    { english: "Everything is great!", portuguese: "Está tudo ótimo!" }
+    { english: "I started a new course last semester.", portuguese: "Eu comecei um novo curso no semestre passado." },
+    { english: "She finished the project yesterday.", portuguese: "Ela terminou o projeto ontem." },
+    { english: "He will study for the exam tonight.", portuguese: "Ele vai estudar para a prova hoje à noite." },
+    { english: "We will finish this task in five minutes.", portuguese: "Nós vamos terminar esta tarefa em cinco minutos." },
+    { english: "Does he start work at 8 AM?", portuguese: "Ele começa a trabalhar às 8 da manhã?" },
+    { english: "Does she have a deadline this Friday?", portuguese: "Ela tem um prazo nesta sexta-feira?" },
+    { english: "Does the meeting start at 3 PM?", portuguese: "A reunião começa às 15 horas?" },
+    { english: "When does he finish college?", portuguese: "Quando ele termina a faculdade?" },
+    { english: "What time does she start her course?", portuguese: "Que horas ela começa o curso dela?" },
+    { english: "Why does it start so late?", portuguese: "Por que isso começa tão tarde?" }
   ];
 
   return (
@@ -388,10 +397,11 @@ export default function Lesson31StartFinish() {
           <div className="w-64 h-64 mx-auto">
             <img
               src={mainImage}
-              alt="Starting and finishing tasks"
+              alt="Starting and finishing tasks - Race start and project completion"
               className="w-full h-full object-cover rounded-2xl shadow-md"
             />
           </div>
+          <p className="text-sm text-gray-500 mt-2 italic">🎯 Start strong, finish stronger!</p>
         </div>
 
         {/* Section 1 - Verbs with Drill */}
@@ -403,7 +413,7 @@ export default function Lesson31StartFinish() {
             </div>
             <button 
               onClick={() => toggleDrill('verbs')}
-              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
@@ -424,7 +434,7 @@ export default function Lesson31StartFinish() {
             </ul>
             
             {openDrills.verbs && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
                     1. <SpeakText text="start" className="text-blue-600 font-bold">start</SpeakText> / <SpeakText text="I start" className="text-blue-600 font-bold">I start</SpeakText>. / <SpeakText text="You start" className="text-blue-600 font-bold">You start</SpeakText>. / <SpeakText text="We start" className="text-blue-600 font-bold">We start</SpeakText>.
@@ -439,7 +449,7 @@ export default function Lesson31StartFinish() {
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    3. <SpeakText text="When do you start" className="text-blue-600 font-bold">When do you start</SpeakText>? / <SpeakText text="When does he start" className="text-blue-600 font-bold">he</SpeakText> / <SpeakText text="When does she start" className="text-blue-600 font-bold">she</SpeakText>.
+                    3. <SpeakText text="When do you start" className="text-blue-600 font-bold">When do you start</SpeakText>? / <SpeakText text="When does he start" className="text-blue-600 font-bold">does he</SpeakText> / <SpeakText text="When does she start" className="text-blue-600 font-bold">does she</SpeakText>.
                   </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 quando você começa? / quando ele começa? / quando ela começa?</p>
                 </div>
@@ -469,7 +479,7 @@ export default function Lesson31StartFinish() {
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    8. <SpeakText text="I do not start today" className="text-blue-600 font-bold">I do not start today</SpeakText>. / <SpeakText text="You do not start today" className="text-blue-600 font-bold">You</SpeakText> / <SpeakText text="They do not start today" className="text-blue-600 font-bold">They</SpeakText>.
+                    8. <SpeakText text="I do not start today" className="text-blue-600 font-bold">I don't start today</SpeakText>. / <SpeakText text="You do not start today" className="text-blue-600 font-bold">You</SpeakText> / <SpeakText text="They do not start today" className="text-blue-600 font-bold">They</SpeakText>.
                   </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eu não começo hoje / você não começa / eles não começam</p>
                 </div>
@@ -499,7 +509,7 @@ export default function Lesson31StartFinish() {
             </div>
             <button 
               onClick={() => toggleDrill('vocabulary')}
-              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.vocabulary ? 'Hide Exercise' : 'Show Exercise'}
             </button>
@@ -521,7 +531,7 @@ export default function Lesson31StartFinish() {
             </div>
             
             {openDrills.vocabulary && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
                     1. <SpeakText text="I start college this year" className="text-blue-600 font-bold">I start college this year</SpeakText>. / <SpeakText text="I start high school this year" className="text-blue-600 font-bold">high school</SpeakText> / <SpeakText text="I start a course this year" className="text-blue-600 font-bold">a course</SpeakText>.
@@ -569,24 +579,24 @@ export default function Lesson31StartFinish() {
           </div>
         </div>
 
-        {/* Section 3 - Useful Phrases with Drill */}
+        {/* Section 3 - Useful Phrases with Drill - MODIFIED */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 USEFUL PHRASES</h2>
+              <h2 className="text-2xl font-bold">🔹 Speak Like a Native</h2>
               <PencilIcon onClick={() => openNoteModal('Useful Phrases')} />
             </div>
             <button 
               onClick={() => toggleDrill('usefulPhrases')}
-              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.usefulPhrases ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
-            <SpeakSentence text="Practice common phrases to talk about beginnings and endings" className="text-md text-gray-600 mb-4 italic">
-              💬 Practice common phrases to talk about beginnings and endings
+            <SpeakSentence text="Practice common phrases to talk about beginnings and endings in past, present, and future." className="text-md text-gray-600 mb-4 italic">
+              💬 Practice common phrases to talk about beginnings and endings in past, present, and future.
             </SpeakSentence>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               {usefulPhrases.map((phrase, index) => (
@@ -600,37 +610,61 @@ export default function Lesson31StartFinish() {
             </div>
             
             {openDrills.usefulPhrases && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    1. <SpeakText text="I start a new course this morning" className="text-blue-600 font-bold">I start a new course this morning</SpeakText>.
+                    1. <SpeakText text="I started a new course yesterday" className="text-blue-600 font-bold">I started a new course yesterday</SpeakText>.
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu começo um novo curso hoje de manhã.</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu comecei um novo curso ontem.</p> 
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    2. <SpeakText text="I do my homework on weekends" className="text-blue-600 font-bold">I do my homework on weekends</SpeakText>.
+                    2. <SpeakText text="She finished her project last week" className="text-blue-600 font-bold">She finished her project last week</SpeakText>.
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu faço minha lição de casa nos fins de semana.</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela terminou o projeto dela na semana passada.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    3. <SpeakText text="Let's start" className="text-blue-600 font-bold">Let's start</SpeakText>!
+                    3. <SpeakText text="He will start college next year" className="text-blue-600 font-bold">He will start college next year</SpeakText>.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ele vai começar a faculdade no ano que vem.</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    4. <SpeakText text="We will finish the meeting in an hour" className="text-blue-600 font-bold">We will finish the meeting in an hour</SpeakText>.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Nós vamos terminar a reunião em uma hora.</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    5. <SpeakText text="Does he start work at 9 AM" className="text-blue-600 font-bold">Does he start work at 9 AM</SpeakText>?
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ele começa a trabalhar às 9 da manhã?</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    6. <SpeakText text="Does she finish class at noon" className="text-blue-600 font-bold">Does she finish class at noon</SpeakText>?
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela termina a aula ao meio-dia?</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    7. <SpeakText text="Does it start on time" className="text-blue-600 font-bold">Does it start on time</SpeakText>?
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Isso começa na hora certa?</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    8. <SpeakText text="Let's start" className="text-blue-600 font-bold">Let's start</SpeakText>!
                   </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 Vamos começar!</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    4. <SpeakText text="Let's finish" className="text-blue-600 font-bold">Let's finish</SpeakText>! / <SpeakText text="Let's study" className="text-blue-600 font-bold">Let's study</SpeakText>!
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Vamos terminar! / Vamos estudar!</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 4 - Grammar with Drill */}
+        {/* Section 4 - Grammar with Drill - MODIFIED */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -639,15 +673,15 @@ export default function Lesson31StartFinish() {
             </div>
             <button 
               onClick={() => toggleDrill('grammar')}
-              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
-            <SpeakSentence text="Want to / Need to / Have to + verb" className="text-md text-gray-600 mb-4 italic">
-              📚 Want to / Need to / Have to + verb
+            <SpeakSentence text="Practice past, future, and questions with Do/Does for He, She, It." className="text-md text-gray-600 mb-4 italic">
+              📚 Practice past, future, and questions with Do/Does for He, She, It.
             </SpeakSentence>
             <div className="bg-blue-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
               {grammarExamples.map((example, index) => (
@@ -661,53 +695,65 @@ export default function Lesson31StartFinish() {
             </div>
             
             {openDrills.grammar && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    1. <SpeakText text="I really want to study business" className="text-blue-600 font-bold">I really want to study business</SpeakText>. / <SpeakText text="I really want to study math" className="text-blue-600 font-bold">math</SpeakText> / <SpeakText text="I really want to study geography" className="text-blue-600 font-bold">geography</SpeakText>.
+                    1. <SpeakText text="I started this course last month" className="text-blue-600 font-bold">I started this course last month</SpeakText>.
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu realmente quero estudar negócios / matemática / geografia</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu comecei este curso no mês passado.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    2. <SpeakText text="We do not want to start this task" className="text-blue-600 font-bold">We do not want to start this task</SpeakText>. / <SpeakText text="We do not want to start next week" className="text-blue-600 font-bold">next week</SpeakText> / <SpeakText text="We do not want to start next month" className="text-blue-600 font-bold">next month</SpeakText>.
+                    2. <SpeakText text="She finished her homework an hour ago" className="text-blue-600 font-bold">She finished her homework an hour ago</SpeakText>.
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 nós não queremos começar esta tarefa / na próxima semana / no próximo mês</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela terminou a lição de casa dela há uma hora.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    3. <SpeakText text="Do you have a minute" className="text-blue-600 font-bold">Do you have a minute</SpeakText>? / <SpeakText text="Do they have a minute" className="text-blue-600 font-bold">they</SpeakText> / <SpeakText text="Do we have a minute" className="text-blue-600 font-bold">we</SpeakText>.
+                    3. <SpeakText text="He will start his new job tomorrow" className="text-blue-600 font-bold">He will start his new job tomorrow</SpeakText>.
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você tem um minuto? / eles têm? / nós temos?</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ele vai começar o novo trabalho dele amanhã.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    4. <SpeakText text="I need to study for an exam" className="text-blue-600 font-bold">I need to study for an exam</SpeakText>. / <SpeakText text="I need to study for a test" className="text-blue-600 font-bold">a test</SpeakText> / <SpeakText text="I need to study for a project" className="text-blue-600 font-bold">a project</SpeakText>.
+                    4. <SpeakText text="They will finish the project next week" className="text-blue-600 font-bold">They will finish the project next week</SpeakText>.
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu preciso estudar para uma prova / um teste / um projeto</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eles vão terminar o projeto na próxima semana.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    5. <SpeakText text="She wants to start the course" className="text-blue-600 font-bold">She wants to start the course</SpeakText>. / <SpeakText text="She wants to finish the course" className="text-blue-600 font-bold">finish</SpeakText> / <SpeakText text="She wants to take the course" className="text-blue-600 font-bold">take</SpeakText>.
+                    5. <SpeakText text="Does she want to start the meeting now" className="text-blue-600 font-bold">Does she want to start the meeting now</SpeakText>?
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 ela quer começar o curso / terminar / fazer</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela quer começar a reunião agora?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    6. <SpeakText text="They have to finish the project" className="text-blue-600 font-bold">They have to finish the project</SpeakText>. / <SpeakText text="They have to start the project" className="text-blue-600 font-bold">start</SpeakText> / <SpeakText text="They have to present the project" className="text-blue-600 font-bold">present</SpeakText>.
+                    6. <SpeakText text="Does he need to finish the report today" className="text-blue-600 font-bold">Does he need to finish the report today</SpeakText>?
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eles têm que terminar o projeto / começar / apresentar</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ele precisa terminar o relatório hoje?</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    7. <SpeakText text="When does the movie start" className="text-blue-600 font-bold">When does the movie start</SpeakText>?
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Quando começa o filme?</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    8. <SpeakText text="What time does she finish work" className="text-blue-600 font-bold">What time does she finish work</SpeakText>?
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Que horas ela termina o trabalho?</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 5 - Real Life Practice */}
+        {/* Section 5 - Real Life Practice - MODIFIED */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 REAL LIFE</h2>
+              <h2 className="text-2xl font-bold">🔹 Make It Yours</h2>
               <PencilIcon onClick={() => openNoteModal('Real Life Practice')} />
             </div>
             <div className="text-sm text-blue-100">
@@ -782,7 +828,7 @@ export default function Lesson31StartFinish() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 CHECK IT OUT!</h2>
+              <h2 className="text-2xl font-bold">🔹 WRAP UP</h2>
               <PencilIcon onClick={() => openNoteModal('Check It Out')} />
             </div>
             <p className="text-sm text-blue-100">
@@ -853,7 +899,7 @@ export default function Lesson31StartFinish() {
         </div>  
       </div>
 
-      {/* Modal de Anotações */}
+      {/* Note Modal */}
       <NoteModal
         isOpen={noteModal.isOpen}
         onClose={() => setNoteModal(prev => ({ ...prev, isOpen: false }))}
@@ -862,7 +908,7 @@ export default function Lesson31StartFinish() {
         onSave={saveNote}
       />
 
-      <style jsx>{`
+      <style jsx global>{`
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -872,26 +918,6 @@ export default function Lesson31StartFinish() {
             opacity: 1;
             transform: translateY(0);
           }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-        
-        @keyframes glow {
-          0% {
-            box-shadow: 0 0 5px rgba(59,130,246,0.5);
-          }
-          50% {
-            box-shadow: 0 0 20px rgba(139,92,246,0.8);
-          }
-          100% {
-            box-shadow: 0 0 5px rgba(59,130,246,0.5);
-          }
-        }
-        
-        .active\\:animate-glow:active {
-          animation: glow 0.5s ease-out;
         }
       `}</style>
     </div>

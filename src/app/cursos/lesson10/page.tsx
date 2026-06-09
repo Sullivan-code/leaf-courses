@@ -1,12 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Check, XCircle, VolumeX } from "lucide-react";
+import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle } from "lucide-react";
 
 // ============================================
-// SPEECH SYSTEM WITH VOICE SELECTION (AMERICAN ENGLISH ONLY)
+// SPEECH SYSTEM WITH AMERICAN VOICES
 // ============================================
 
 interface SpeakTextProps {
@@ -16,54 +15,7 @@ interface SpeakTextProps {
   voiceType?: "female" | "male";
 }
 
-// Helper function to get an American English voice
-const getAmericanVoice = (voiceType: "female" | "male" = "female"): SpeechSynthesisVoice | null => {
-  if (typeof window === 'undefined') return null;
-  const voices = window.speechSynthesis.getVoices();
-  
-  // First, try to find explicit American English voices
-  let americanVoices = voices.filter(voice => 
-    voice.lang === 'en-US' && voice.localService === true
-  );
-  
-  // If no localService en-US, try any en-US
-  if (americanVoices.length === 0) {
-    americanVoices = voices.filter(voice => voice.lang === 'en-US');
-  }
-  
-  // If still none, try any English voice from the US
-  if (americanVoices.length === 0) {
-    americanVoices = voices.filter(voice => 
-      voice.lang.startsWith('en') && 
-      (voice.name.toLowerCase().includes('us') || 
-       voice.name.toLowerCase().includes('american'))
-    );
-  }
-  
-  if (americanVoices.length === 0) return null;
-  
-  // For female voice
-  if (voiceType === "female") {
-    const femaleVoice = americanVoices.find(voice => 
-      voice.name.toLowerCase().includes('samantha') ||
-      voice.name.toLowerCase().includes('google uk female') ||
-      voice.name.toLowerCase().includes('victoria') ||
-      voice.name.toLowerCase().includes('female')
-    );
-    return femaleVoice || americanVoices[0];
-  } 
-  // For male voice
-  else {
-    const maleVoice = americanVoices.find(voice => 
-      voice.name.toLowerCase().includes('daniel') ||
-      voice.name.toLowerCase().includes('google uk male') ||
-      voice.name.toLowerCase().includes('male')
-    );
-    return maleVoice || americanVoices[0];
-  }
-};
-
-// Speech component for text-to-speech
+// Speech component for text-to-speech with AMERICAN accent
 const SpeakText = ({ text, children, className = "", voiceType = "female" }: SpeakTextProps) => {
   const speak = () => {
     if (!text || typeof window === 'undefined') return;
@@ -72,14 +24,41 @@ const SpeakText = ({ text, children, className = "", voiceType = "female" }: Spe
     window.speechSynthesis.cancel();
     
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
+    utterance.lang = 'en-US'; // American English
     utterance.rate = 0.9;
     utterance.pitch = 1.0;
     
-    // Get American English voice
-    const americanVoice = getAmericanVoice(voiceType);
-    if (americanVoice) {
-      utterance.voice = americanVoice;
+    // Get available voices
+    const voices = window.speechSynthesis.getVoices();
+    
+    // American female voices
+    const americanFemaleVoices = voices.filter(voice => 
+      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+      (voice.name.toLowerCase().includes('samantha') || 
+       voice.name.toLowerCase().includes('google us english') ||
+       voice.name.toLowerCase().includes('siri') ||
+       voice.name.toLowerCase().includes('female') ||
+       voice.name === 'Google US English' ||
+       voice.name === 'Samantha')
+    );
+    
+    // American male voices
+    const americanMaleVoices = voices.filter(voice => 
+      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+      (voice.name.toLowerCase().includes('google us english male') ||
+       voice.name.toLowerCase().includes('male') ||
+       voice.name === 'Google US English Male')
+    );
+    
+    // Fallback to any American voice
+    const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+    
+    if (voiceType === "female" && americanFemaleVoices.length > 0) {
+      utterance.voice = americanFemaleVoices[0];
+    } else if (voiceType === "male" && americanMaleVoices.length > 0) {
+      utterance.voice = americanMaleVoices[0];
+    } else if (americanVoices.length > 0) {
+      utterance.voice = americanVoices[0];
     }
     
     window.speechSynthesis.speak(utterance);
@@ -89,7 +68,7 @@ const SpeakText = ({ text, children, className = "", voiceType = "female" }: Spe
     <button
       onClick={speak}
       className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
-      title="Click to hear pronunciation"
+      title="Click to hear American pronunciation"
     >
       {children || text}
       <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
@@ -97,7 +76,7 @@ const SpeakText = ({ text, children, className = "", voiceType = "female" }: Spe
   );
 };
 
-// Component for pronouncing entire sentences
+// Component for pronouncing entire sentences with American accent
 const SpeakSentence = ({ text, children, className = "", voiceType = "female" }: SpeakTextProps) => {
   return (
     <button
@@ -106,12 +85,36 @@ const SpeakSentence = ({ text, children, className = "", voiceType = "female" }:
         if (speechText && typeof window !== 'undefined') {
           window.speechSynthesis.cancel();
           const utterance = new SpeechSynthesisUtterance(speechText);
-          utterance.lang = 'en-US';
+          utterance.lang = 'en-US'; // American English
           utterance.rate = 0.85;
           utterance.pitch = 1.0;
           
-          const americanVoice = getAmericanVoice(voiceType);
-          if (americanVoice) utterance.voice = americanVoice;
+          const voices = window.speechSynthesis.getVoices();
+          
+          // American female voices
+          const americanFemaleVoices = voices.filter(voice => 
+            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+            (voice.name.toLowerCase().includes('samantha') || 
+             voice.name.toLowerCase().includes('google us english') ||
+             voice.name === 'Google US English')
+          );
+          
+          // American male voices
+          const americanMaleVoices = voices.filter(voice => 
+            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+            (voice.name.toLowerCase().includes('google us english male') ||
+             voice.name === 'Google US English Male')
+          );
+          
+          const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+          
+          if (voiceType === "female" && americanFemaleVoices.length > 0) {
+            utterance.voice = americanFemaleVoices[0];
+          } else if (voiceType === "male" && americanMaleVoices.length > 0) {
+            utterance.voice = americanMaleVoices[0];
+          } else if (americanVoices.length > 0) {
+            utterance.voice = americanVoices[0];
+          }
           
           window.speechSynthesis.speak(utterance);
         }
@@ -124,32 +127,11 @@ const SpeakSentence = ({ text, children, className = "", voiceType = "female" }:
   );
 };
 
-// Hook for speech functionality
-const useSpeech = () => {
-  const speak = (text: string, voiceType: "female" | "male" = "female") => {
-    if (!text || typeof window === 'undefined') return;
-    
-    window.speechSynthesis.cancel();
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    
-    const americanVoice = getAmericanVoice(voiceType);
-    if (americanVoice) utterance.voice = americanVoice;
-    
-    window.speechSynthesis.speak(utterance);
-  };
-  
-  return { speak };
-};
-
 // ============================================
 // LESSON DATA
 // ============================================
 
-// Vocabulary with audio
+// Vocabulary with audio (American accent)
 const vocabulary = [
   { word: "a little", translation: "um pouco" },
   { word: "I get", translation: "eu entendo" },
@@ -162,34 +144,7 @@ const vocabulary = [
   { word: "friend", translation: "amigo" }
 ];
 
-// Key Vocabulary from Video
-const videoKeyVocabulary = [
-  { word: "Tips", translation: "Dicas / conselhos" },
-  { word: "Perfection", translation: "Perfeição" },
-  { word: "even native speakers", translation: "até mesmo os nativos" },
-  { word: "goal", translation: "Objetivo" },
-  { word: "Habit", translation: "Hábito" },
-  { word: "your own words", translation: "suas próprias palavras" },
-  { word: "English-speaking group", translation: "Grupo falante de inglês" },
-  { word: "A mix of accents", translation: "Uma mistura de sotaques" },
-  { word: "Slangs", translation: "Gírias" },
-  { word: "celebrate your progress", translation: "Celebre o seu progresso" },
-  { word: "It's a piece of cake", translation: "Isso é muito fácil" },
-  { word: "tone and emotion", translation: "tom e emoção" },
-  { word: "Sarcastic", translation: "Sarcástico" },
-  { word: "It depends on", translation: "Depende de" },
-  { word: "You'll be / You will be", translation: "Você vai estar / Você estará" },
-  { word: "faster", translation: "Mais rápido" },
-  { word: "To turn on", translation: "Ligar (um aparelho)" },
-  { word: "To procrastinate", translation: "Procrastinar" },
-  { word: "A must", translation: "algo que você deve fazer" },
-  { word: "maybe you're ordering food", translation: "Talvez você esteja pedindo comida" },
-  { word: "Role-switching", translation: "Troca de papéis (numa conversa)" },
-  { word: "Confidence", translation: "Confiança" },
-  { word: "Positive affirmations", translation: "Afirmações positivas" }
-];
-
-// Main dialogue with voice roles (Zoey - female, Mike - male)
+// Main dialogue with American voices (Zoey - female American, Mike - male American)
 const mainDialogue = [
   { speaker: "Zoey", text: "Hi, Mike.", voiceType: "female" as const },
   { speaker: "Mike", text: "Hello, Zoey. What's up?", voiceType: "male" as const },
@@ -360,16 +315,74 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
   );
 };
 
+// Dialogue line component with individual audio buttons
+const DialogueLine = ({ speaker, text, voiceType }: { speaker: string; text: string; voiceType: "female" | "male" }) => {
+  const speakLine = () => {
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      utterance.pitch = 1.0;
+      
+      const voices = window.speechSynthesis.getVoices();
+      
+      const americanFemaleVoices = voices.filter(voice => 
+        (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+        (voice.name.toLowerCase().includes('samantha') || 
+         voice.name.toLowerCase().includes('google us english') ||
+         voice.name === 'Google US English')
+      );
+      
+      const americanMaleVoices = voices.filter(voice => 
+        (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
+        (voice.name.toLowerCase().includes('google us english male') ||
+         voice.name === 'Google US English Male')
+      );
+      
+      const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+      
+      if (voiceType === "female" && americanFemaleVoices.length > 0) {
+        utterance.voice = americanFemaleVoices[0];
+      } else if (voiceType === "male" && americanMaleVoices.length > 0) {
+        utterance.voice = americanMaleVoices[0];
+      } else if (americanVoices.length > 0) {
+        utterance.voice = americanVoices[0];
+      }
+      
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+      <div className={`font-bold min-w-[70px] ${speaker === "Zoey" ? "text-pink-600" : "text-blue-600"}`}>
+        {speaker}:
+      </div>
+      <div className="flex-1 flex items-center gap-3 flex-wrap">
+        <span className="text-gray-800">{text}</span>
+        <button
+          onClick={speakLine}
+          className="flex items-center gap-1 px-2 py-1 bg-blue-100 hover:bg-blue-200 rounded-full transition-colors text-blue-700 text-sm"
+        >
+          <Volume2 size={14} />
+          <span>Hear {speaker}</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
 // ============================================
 // MAIN LESSON COMPONENT
 // ============================================
 
 export default function Lesson10LanguagesAndCountries() {
   const router = useRouter();
-  const { speak } = useSpeech();
   
   // State for sections
   const [sections, setSections] = useState({
+    talkToFriend: true,
     vocabulary: true,
     substitution1: true,
     negative: true,
@@ -403,9 +416,14 @@ export default function Lesson10LanguagesAndCountries() {
         console.error("Error loading saved answers:", error);
       }
     }
+    
+    // Initialize voices
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.getVoices();
+    }
   }, []);
 
-  const saveAllAnswers = async () => {
+  const saveAllAnswers = () => {
     const data = {
       subs1Exercises,
       subs2Exercises,
@@ -454,6 +472,19 @@ export default function Lesson10LanguagesAndCountries() {
     const isCorrect = checkAnswer(userAnswer, correctAnswer);
     setAnswerResults(prev => ({ ...prev, [exerciseKey]: isCorrect }));
     setShowAnswerResults(prev => ({ ...prev, [exerciseKey]: true }));
+    
+    // Pronounce the correct answer with American accent
+    if (typeof window !== 'undefined' && !isCorrect) {
+      const utterance = new SpeechSynthesisUtterance(correctAnswer);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      
+      const voices = window.speechSynthesis.getVoices();
+      const americanVoice = voices.find(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+      if (americanVoice) utterance.voice = americanVoice;
+      
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   const checkVideoAnswer = (questionId: string) => {
@@ -482,44 +513,57 @@ export default function Lesson10LanguagesAndCountries() {
           <h1 className="text-4xl md:text-5xl font-bold text-[#0c4a6e] mb-4 md:mb-6">
             🌍 Lesson 10 – Languages & Countries
           </h1>
-          <SpeakSentence text="Lesson 10 – Languages and Countries" className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto px-4" voiceType="female">
+          <SpeakSentence text="Talk to your friend and practice conversations about languages, countries, and daily life. Improve your communication skills." voiceType="female">
             Talk to your friend and practice conversations about languages, countries, and daily life. Improve your communication skills.
           </SpeakSentence>
         </div>
 
-        {/* TALK TO YOUR FRIEND - WITH GENDERED VOICES */}
+        {/* TALK TO YOUR FRIEND - WITH INDIVIDUAL AMERICAN VOICES FOR MIKE AND ZOEY */}
         <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
-          <div className="bg-purple-500 text-white py-4 px-6 md:px-8">
-            <h2 className="text-xl md:text-2xl font-bold">💬 TALK TO YOUR FRIEND</h2>
-            <p className="text-purple-100 text-sm mt-1">Click on any sentence to hear it with a natural American accent (Mike: Male Voice, Zoey: Female Voice)</p>
-          </div>
-          <div className="p-6 md:p-8">
-            <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-4 md:p-6">
-              <h3 className="text-lg md:text-xl font-bold text-purple-800 mb-4">
-                Practice this conversation between Zoey and Mike:
-              </h3>
-              
-              <div className="space-y-4 bg-white p-4 md:p-6 rounded-lg border border-purple-200">
-                {mainDialogue.map((line, index) => (
-                  <div key={index} className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                    <div className={`font-bold ${
-                      line.speaker === "Zoey" ? "text-pink-600" : "text-blue-600"
-                    }`}>
-                      {line.speaker}:
-                    </div>
-                    <div className="flex-1">
-                      <SpeakSentence text={line.text} voiceType={line.voiceType} className="text-gray-800 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                        {line.text}
-                      </SpeakSentence>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-purple-600 mt-4 text-center">
-                💡 Click on any sentence to hear it spoken clearly. Practice saying these lines with a partner!
-              </p>
+          <div className="bg-purple-500 text-white py-4 px-6 md:px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-xl md:text-2xl font-bold">💬 TALK TO YOUR FRIEND</h2>
+              <button 
+                onClick={() => toggleSection('talkToFriend')}
+                className="ml-4 p-2 rounded-full hover:bg-purple-600 transition"
+              >
+                {sections.talkToFriend ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
             </div>
           </div>
+
+          {sections.talkToFriend && (
+            <div className="p-6 md:p-8">
+              <div className="bg-purple-100 border-2 border-purple-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-purple-800 mb-4">
+                  Practice this conversation between Zoey and Mike:
+                </h3>
+                <p className="text-purple-600 text-sm mb-4 flex items-center gap-2">
+                  <Volume2 size={14} /> Click the "Hear" button next to each line to listen to the American pronunciation
+                </p>
+                
+                <div className="space-y-2 bg-white p-4 md:p-6 rounded-lg border border-purple-200">
+                  {mainDialogue.map((line, index) => (
+                    <DialogueLine 
+                      key={index}
+                      speaker={line.speaker}
+                      text={line.text}
+                      voiceType={line.voiceType}
+                    />
+                  ))}
+                </div>
+                
+                <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                  <p className="text-sm text-purple-700 flex items-center gap-2">
+                    <span className="font-semibold">🎤 Voice Actors:</span>
+                    <span className="text-pink-600">Zoey (American Female)</span>
+                    <span> & </span>
+                    <span className="text-blue-600">Mike (American Male)</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* VOCABULARY SECTION */}
@@ -543,7 +587,7 @@ export default function Lesson10LanguagesAndCountries() {
                   {vocabulary.map((item, index) => (
                     <div key={index} className="bg-white/70 p-3 rounded-lg border border-blue-100 flex justify-between items-center">
                       <div>
-                        <SpeakText text={item.word} className="font-medium text-blue-700 text-sm" voiceType="female">
+                        <SpeakText text={item.word} voiceType="female" className="font-medium text-blue-700 text-sm">
                           {item.word}
                         </SpeakText>
                         <p className="text-gray-600 text-xs">{item.translation}</p>
@@ -590,7 +634,7 @@ export default function Lesson10LanguagesAndCountries() {
                         </div>
                         
                         <div className="mb-3 p-3 bg-green-50 rounded-md">
-                          <SpeakSentence text={currentSentence} className="text-green-700 font-medium" voiceType="female">
+                          <SpeakSentence text={currentSentence} voiceType="female" className="text-green-700 font-medium">
                             {currentSentence}
                           </SpeakSentence>
                         </div>
@@ -644,7 +688,7 @@ export default function Lesson10LanguagesAndCountries() {
                   {negativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-red-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                        <SpeakSentence text={exercise.sentence} className="font-medium text-gray-700 flex-1" voiceType="female">
+                        <SpeakSentence text={exercise.sentence} voiceType="female" className="font-medium text-gray-700 flex-1">
                           {exercise.sentence}
                         </SpeakSentence>
                       </div>
@@ -714,7 +758,7 @@ export default function Lesson10LanguagesAndCountries() {
                         </div>
                         
                         <div className="mb-3 p-3 bg-orange-50 rounded-md">
-                          <SpeakSentence text={currentSentence} className="text-orange-700 font-medium" voiceType="female">
+                          <SpeakSentence text={currentSentence} voiceType="female" className="text-orange-700 font-medium">
                             {currentSentence}
                           </SpeakSentence>
                         </div>
@@ -768,7 +812,7 @@ export default function Lesson10LanguagesAndCountries() {
                   {affirmativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-teal-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                        <SpeakSentence text={exercise.sentence} className="font-medium text-gray-700 flex-1" voiceType="female">
+                        <SpeakSentence text={exercise.sentence} voiceType="female" className="font-medium text-gray-700 flex-1">
                           {exercise.sentence}
                         </SpeakSentence>
                       </div>
@@ -825,7 +869,7 @@ export default function Lesson10LanguagesAndCountries() {
                   {interrogativeExercises.map((exercise) => (
                     <div key={exercise.key} className="bg-white p-4 rounded-lg border border-indigo-200">
                       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                        <SpeakSentence text={exercise.sentence} className="font-medium text-gray-700 flex-1" voiceType="female">
+                        <SpeakSentence text={exercise.sentence} voiceType="female" className="font-medium text-gray-700 flex-1">
                           {exercise.sentence}
                         </SpeakSentence>
                       </div>
@@ -882,7 +926,7 @@ export default function Lesson10LanguagesAndCountries() {
               <div className="space-y-6">
                 {unlockQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-pink-200 shadow-md">
-                    <SpeakSentence text={question.question} className="text-base md:text-lg font-bold text-pink-700 mb-3" voiceType="female">
+                    <SpeakSentence text={question.question} voiceType="female" className="text-base md:text-lg font-bold text-pink-700 mb-3">
                       {question.question}
                     </SpeakSentence>
                     
@@ -928,7 +972,7 @@ export default function Lesson10LanguagesAndCountries() {
           {sections.tuneIn && (
             <div className="p-6 md:p-8">
               <div className="mb-8 text-center">
-                <SpeakSentence text="Watch the video and answer the questions below" className="text-xl md:text-2xl font-bold text-teal-700 mb-4" voiceType="female">
+                <SpeakSentence text="Watch the video and answer the questions below" voiceType="female" className="text-xl md:text-2xl font-bold text-teal-700 mb-4">
                   Watch the video and answer the questions below:
                 </SpeakSentence>
                
@@ -945,32 +989,10 @@ export default function Lesson10LanguagesAndCountries() {
                 </div>
               </div>
 
-              {/* Key Vocabulary from the Video */}
-              <div className="mb-10 bg-white border-2 border-teal-200 rounded-xl p-6 shadow-md">
-                <h3 className="text-xl font-bold text-teal-700 mb-6 flex items-center gap-2">
-                  <span className="text-2xl">📖</span> Key Vocabulary from the Video
-                </h3>
-                <div className="grid md:grid-cols-2 gap-3">
-                  {videoKeyVocabulary.map((item, index) => (
-                    <div key={index} className="bg-teal-50 p-3 rounded-lg border border-teal-100 flex justify-between items-center hover:shadow-sm transition">
-                      <div className="flex-1">
-                        <SpeakText text={item.word} className="font-semibold text-teal-700 text-sm" voiceType="female">
-                          {item.word}
-                        </SpeakText>
-                        <p className="text-gray-600 text-xs mt-1">{item.translation}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs text-teal-600 mt-4 italic text-center">
-                  🔊 Click on any word to hear its pronunciation in an American English accent
-                </p>
-              </div>
-
               <div className="space-y-6 mb-8">
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-teal-200 shadow-md">
-                    <SpeakSentence text={question.question} className="text-base md:text-lg font-bold text-teal-700 mb-3" voiceType="female">
+                    <SpeakSentence text={question.question} voiceType="female" className="text-base md:text-lg font-bold text-teal-700 mb-3">
                       {question.question}
                       {question.isPersonal && (
                         <span className="ml-2 text-sm font-normal text-teal-500">(Personal answer)</span>

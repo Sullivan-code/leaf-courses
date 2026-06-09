@@ -71,7 +71,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Verbs</h2>
+              <h2 className="text-2xl font-bold">🔹 Verbs</h2>
               <p className="mt-2 text-blue-100 italic">
                 Click on the verbs to hear the pronunciation and study their conjugations
               </p>
@@ -155,7 +155,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">New Vocabulary</h2>
+              <h2 className="text-2xl font-bold">🔹 New Vocabulary</h2>
               <p className="mt-2 text-blue-100 italic">
                 Click on each word to hear its correct pronunciation
               </p>
@@ -319,8 +319,8 @@ export default function LessonFoodAndDrink() {
                   <p className="text-sm text-gray-500 mt-1">Eu bebo chá e água, obrigado. / suco e café / café e água</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">I eat <span className="text-blue-600">bread</span> with butter. / cracker / pancake</p>
-                  <p className="text-sm text-gray-500 mt-1">Eu como pão com manteiga. / biscoito / panqueca</p>
+                  <p className="text-lg font-medium text-gray-800">I eat <span className="text-blue-600">bread</span> and butter. / cracker / pancake</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como pão com manteiga. / biscoito salgado / panqueca</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">Do you prefer <span className="text-blue-600">cheese</span> or ham? / butter / tea or milk</p>
@@ -351,7 +351,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Slangs and Fluency</h2>
+              <h2 className="text-2xl font-bold">🔹 Speak Like a Native</h2>
               <p className="mt-2 text-blue-100 italic">
                 Practice common phrases and everyday expressions
               </p>
@@ -399,7 +399,7 @@ export default function LessonFoodAndDrink() {
                   <p className="text-sm text-gray-500 mt-1">Você quer café ou chá? / leite / suco</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">I like bread with <span className="text-blue-600">cheese</span>. / butter / ham</p>
+                  <p className="text-lg font-medium text-gray-800">I like bread and <span className="text-blue-600">cheese</span>. / butter / ham</p>
                   <p className="text-sm text-gray-500 mt-1">Eu gosto de pão com queijo. / manteiga / presunto</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
@@ -419,8 +419,8 @@ export default function LessonFoodAndDrink() {
                   <p className="text-sm text-gray-500 mt-1">Eles bebem chá de camomila. / hortelã / erva-doce</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">I eat <span className="text-blue-600">cheese</span> with bread. / ham / butter</p>
-                  <p className="text-sm text-gray-500 mt-1">Eu como queijo com pão. / presunto / manteiga</p>
+                  <p className="text-lg font-medium text-gray-800">I eat bread with cheese<span className="text-blue-600">cheese</span>. / ham / butter</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como pão com queijo. / presunto / manteiga</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">Do you like <span className="text-blue-600">pancakes</span>? / crackers / bread</p>
@@ -435,7 +435,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Understand Grammar</h2>
+              <h2 className="text-2xl font-bold">🔹 GRAMMAR</h2>
               <p className="mt-2 text-blue-100 italic">
                 Observe the sentence structure and practice correct formation
               </p>
@@ -553,7 +553,7 @@ export default function LessonFoodAndDrink() {
         {/* Seção 5 - Real Life Practice */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">Real Life Practice</h2>
+            <h2 className="text-2xl font-bold">🔹 Make It Yours</h2>
             <p className="mt-2 text-blue-100 italic">
               Replace the blue words to practice pronunciation in real situations
             </p>
@@ -813,7 +813,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-3xl font-bold">CHECK IT OUT!</h2>
+              <h2 className="text-3xl font-bold">🔹 WRAP UP</h2>
               <p className="mt-2 text-blue-100 italic">
                 Review the main points and essential expressions of the lesson
               </p>

@@ -111,41 +111,44 @@ const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
 // IMAGES FOR LISTEN AND NUMBER (Pexels/Unsplash URLs)
 // ============================================
 
+// Imagem principal da Lesson 31 (Start/Finish - corrida e projeto)
+const lesson31MainImage = "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
+
+// Imagem de bandeira da Espanha
+const spainFlagImage = "https://upload.wikimedia.org/wikipedia/en/9/9a/Flag_of_Spain.svg";
+
+// Imagem: pessoa estudando com livros
+const studentStudyingImage = "https://images.pexels.com/photos/4050301/pexels-photo-4050301.jpeg?auto=compress&cs=tinysrgb&w=600";
+
 const listenItems = [
   { 
     key: "presentation", 
-    label: "Homem apresentando ideias em um quadro cheio de post-its", 
     image: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 3
   },
   { 
     key: "meeting", 
-    label: "Pessoas em reunião em uma sala de vidro", 
     image: "https://images.pexels.com/photos/3182763/pexels-photo-3182763.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 1
   },
   { 
     key: "deadline", 
-    label: "Ampulheta e calendário - símbolos de PRAZO / DEADLINE", 
-    image: "https://images.pexels.com/photos/7130552/pexels-photo-7130552.jpeg?auto=compress&cs=tinysrgb&w=600", 
+    image: lesson31MainImage,
     correctNumber: 2
   },
   { 
     key: "group-students", 
-    label: "Grupo de jovens caminhando juntos no corredor da faculdade", 
     image: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=600", 
     correctNumber: 6
   },
   { 
     key: "learn-spanish", 
-    label: "Alunos com a bandeira da Espanha estudando espanhol", 
-    image: "https://images.pexels.com/photos/4050303/pexels-photo-4050303.jpeg?auto=compress&cs=tinysrgb&w=600", 
+    image: spainFlagImage,
     correctNumber: 5
   },
   { 
     key: "studying-tired", 
-    label: "Alunos estudando duro, cansados e exaustos com muitos livros", 
-    image: "https://images.pexels.com/photos/4145120/pexels-photo-4145120.jpeg?auto=compress&cs=tinysrgb&w=600", 
+    image: studentStudyingImage,
     correctNumber: 4
   },
 ];
@@ -347,9 +350,9 @@ const speakCards = [
   },
   { 
     id: 5, 
-    question: "When do you finish elementary school?", 
+    question: "When does your son finish elementary school?", 
     answer: "My son finishes elementary school this year.",
-    translation: "Quando você termina o ensino fundamental?",
+    translation: "Quando seu filho termina o ensino fundamental?",
     answerTranslation: "Meu filho termina o ensino fundamental este ano."
   },
   { 
@@ -379,38 +382,44 @@ const specialWords = [
   { word: "due date", meaning: "data de vencimento" },
 ];
 
-// Key Vocabulary from Video for Tune In Your Ears
+// ============================================
+// NEW KEY VOCABULARY - JAPAN THEMED
+// ============================================
 const keyVocabulary = [
-  { word: "tips", meaning: "dicas / conselhos" },
-  { word: "improve", meaning: "melhorar" },
-  { word: "listening skills", meaning: "habilidades de compreensão auditiva" },
-  { word: "native speakers", meaning: "falantes nativos" },
-  { word: "perfection", meaning: "perfeição" },
-  { word: "goals", meaning: "objetivos" },
-  { word: "habits", meaning: "hábitos" },
-  { word: "your own words", meaning: "suas próprias palavras" },
-  { word: "English-speaking group", meaning: "grupo falante de inglês" },
-  { word: "confidence", meaning: "confiança" },
-  { word: "a mix of accents", meaning: "uma mistura de sotaques" },
-  { word: "slangs", meaning: "gírias" },
-  { word: "it's a piece of cake", meaning: "é muito fácil" },
-  { word: "tone and emotion", meaning: "tom e emoção" },
-  { word: "sarcastic", meaning: "sarcástico" },
-  { word: "it depends on", meaning: "depende de" },
-  { word: "celebrate your progress", meaning: "celebre o seu progresso" },
-  { word: "positive affirmations", meaning: "afirmações positivas" }
+  { word: "Asia", meaning: "Ásia" },
+  { word: "Japan", meaning: "Japão" },
+  { word: "Tokyo", meaning: "Tóquio" },
+  { word: "Capital", meaning: "Capital" },
+  { word: "busiest", meaning: "mais lotadas" },
+  { word: "traveling", meaning: "viajando" },
+  { word: "Have you ever heard ...?", meaning: "Você já ouviu ...?" },
+  { word: "Mount Fuji", meaning: "Monte Fuji" },
+  { word: "Excited", meaning: "animado" },
+  { word: "I woke up early", meaning: "Eu acordei cedo" },
+  { word: "bought", meaning: "comprei" },
+  { word: "I'm on my way", meaning: "Estou a caminho" },
+  { word: "I'm sitting by the window", meaning: "Estou sentado perto da janela" },
+  { word: "However", meaning: "no entanto" },
+  { word: "snacks", meaning: "lanches" },
+  { word: "slightly", meaning: "um pouquinho" },
+  { word: "to chew", meaning: "mastigar" },
+  { word: "chewy food", meaning: "comida que você precisa mastigar bastante antes de engolir" },
+  { word: "famous", meaning: "famoso(a)" },
+  { word: "Hoto", meaning: "É um tipo de macarrão" }
 ];
 
-// Video Questions
+// ============================================
+// NEW VIDEO QUESTIONS ABOUT JAPAN, ANIME, TRAVEL
+// ============================================
 const videoQuestions = [
-  { id: "video-1", question: "According to the video, what are some practical TIPS to improve your English listening skills?", isPersonal: false },
-  { id: "video-2", question: "The speaker mentions that even NATIVE SPEAKERS make mistakes. Why is it important not to focus on PERFECTION when learning English?", isPersonal: false },
-  { id: "video-3", question: "What GOALS and HABITS does the speaker suggest for creating a daily English practice routine?", isPersonal: false },
-  { id: "video-4", question: "How can you practice English in YOUR OWN WORDS and join an ENGLISH-SPEAKING GROUP to improve your CONFIDENCE?", isPersonal: true },
-  { id: "video-5", question: "How can we be exposed to different accents to improve our listening skills?", isPersonal: false },
-  { id: "video-6", question: "How can learning expressions like 'piece of cake' help you sound more natural?", isPersonal: false },
-  { id: "video-7", question: "How does TONE AND EMOTION in conversations affect meaning?", isPersonal: false },
-  { id: "video-8", question: "Why is it important to CELEBRATE YOUR PROGRESS and use POSITIVE AFFIRMATIONS when learning English?", isPersonal: true }
+  { id: "video-1", question: "What do you know about Japan? Have you ever visited Japan or any other country in Asia?", isPersonal: true },
+  { id: "video-2", question: "Would you like to travel to Tokyo someday? Why or why not?", isPersonal: true },
+  { id: "video-3", question: "What places in Japan would you like to visit? (Mount Fuji, Tokyo, Kyoto, Osaka, etc.)", isPersonal: true },
+  { id: "video-4", question: "Do you watch anime? If yes, what is your favorite anime? If not, would you like to start watching?", isPersonal: true },
+  { id: "video-5", question: "What Japanese foods do you know? Have you tried sushi, ramen, or any other Japanese dish?", isPersonal: true },
+  { id: "video-6", question: "Would you like to learn Japanese? Why or why not?", isPersonal: true },
+  { id: "video-7", question: "If you could travel to Japan, what would you like to do there? (Visit temples, eat Japanese food, see anime culture, etc.)", isPersonal: true },
+  { id: "video-8", question: "What do you think is the most famous symbol of Japan? (Mount Fuji, cherry blossoms, Shinkansen bullet train, etc.)", isPersonal: true }
 ];
 
 // Helper function to check answers
@@ -731,7 +740,7 @@ export default function Lesson32() {
                     <div className="relative h-48 w-full">
                       <Image 
                         src={item.image} 
-                        alt={item.label}
+                        alt={`Image ${item.key}`}
                         fill
                         className="object-cover"
                         unoptimized
@@ -739,8 +748,6 @@ export default function Lesson32() {
                     </div>
                     
                     <div className="p-4">
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{item.label}</p>
-                      
                       <div className="mb-3">
                         <p className="text-xs text-gray-500 mb-1">Select number:</p>
                         <div className="flex flex-wrap gap-2 justify-center">
@@ -790,18 +797,6 @@ export default function Lesson32() {
                     </div>
                   </div>
                 ))}
-              </div>
-              
-              <div className="mt-6 bg-purple-100 border-2 border-purple-300 rounded-xl p-4">
-                <h3 className="text-lg font-bold text-purple-800 mb-2">Correct Answers:</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-purple-700">
-                  <span className="bg-white px-3 py-1 rounded-full text-center">A: 3 (Presentation)</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-center">B: 1 (Meeting)</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-center">C: 2 (Deadline)</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-center">D: 6 (Group of students)</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-center">E: 5 (Learn Spanish)</span>
-                  <span className="bg-white px-3 py-1 rounded-full text-center">F: 4 (Studying tired)</span>
-                </div>
               </div>
             </div>
           )}
@@ -1241,7 +1236,7 @@ export default function Lesson32() {
           )}
         </div>
 
-        {/* TUNE IN YOUR EARS - With Key Vocabulary Audio */}
+        {/* TUNE IN YOUR EARS - With Key Vocabulary Audio - UPDATED VIDEO AND QUESTIONS */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-8 md:mb-10 overflow-hidden">
           <div className="bg-teal-600 text-white py-4 px-6 md:px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -1265,8 +1260,8 @@ export default function Lesson32() {
                 <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
                   <div className="relative w-full pt-[56.25%]">
                     <iframe
-                      src="https://www.youtube.com/embed/q5JxLYzO5k4?list=PLc0_DKGuWp_2GK_ZyY81hiV_vdMaUmezE&index=40"
-                      title="English Listening Practice - Daily Routines & Conversations"
+                      src="https://www.youtube.com/embed/tWH0aDe4yUs"
+                      title="Exploring Japan - Travel and Culture"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       className="absolute top-0 left-0 w-full h-full"
@@ -1275,7 +1270,7 @@ export default function Lesson32() {
                 </div>
               </div>
 
-              {/* KEY VOCABULARY FROM THE VIDEO */}
+              {/* KEY VOCABULARY FROM THE VIDEO - JAPAN THEMED */}
               <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
                 <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">📖 KEY VOCABULARY FROM THE VIDEO:</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1292,7 +1287,7 @@ export default function Lesson32() {
                 </div>
               </div>
 
-              {/* Video Questions */}
+              {/* Video Questions - About Japan, Anime, Travel */}
               <div className="space-y-6 mb-8">
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-teal-200 shadow-md">

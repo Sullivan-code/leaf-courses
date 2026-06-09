@@ -68,7 +68,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Verbs</h2>
+              <h2 className="text-2xl font-bold">🔹 VERBS</h2>
               <p className="mt-2 text-blue-100 italic">
                 Click on the verbs to hear the pronunciation and practice their forms
               </p>
@@ -152,7 +152,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">New Vocabulary</h2>
+              <h2 className="text-2xl font-bold">🔹 New Vocabulary</h2>
               <p className="mt-2 text-blue-100 italic">
                 Click on each word to hear its correct pronunciation
               </p>
@@ -316,7 +316,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Slangs and Fluency</h2>
+              <h2 className="text-2xl font-bold">🔹 Speak Like a Native</h2>
               <p className="mt-2 text-blue-100 italic">
                 Practice common phrases to express preferences
               </p>
@@ -408,7 +408,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Understand Grammar</h2>
+              <h2 className="text-2xl font-bold">🔹 GRAMMAR</h2>
               <p className="mt-2 text-blue-100 italic">
                 Structures to express likes and preferences
               </p>
@@ -523,7 +523,7 @@ export default function LessonFoodAndDrink() {
         {/* Seção 5 - Real Life Practice */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">Real Life Practice</h2>
+            <h2 className="text-2xl font-bold">🔹 Make It Yours</h2>
             <p className="mt-2 text-blue-100 italic">
               Replace the blue words to practice pronunciation in real situations
             </p>
@@ -806,7 +806,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-3xl font-bold">CHECK IT OUT!</h2>
+              <h2 className="text-3xl font-bold">🔹 WRAP UP</h2>
               <p className="mt-2 text-blue-100 italic">
                 Practice essential structures to talk about preferences and practice them with the content you've already learned.
               </p>

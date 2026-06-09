@@ -178,8 +178,8 @@ export default function Lesson5FoodAndDrink() {
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">I prefer <span className="text-blue-600 font-bold">juice</span>. / <span className="text-blue-600 font-bold">soda</span></p>
-                  <p className="text-sm text-gray-500 mt-1">Eu prefiro suco. / refrigerante</p>
+                  <p className="text-lg font-medium text-gray-800">I prefer <span className="text-blue-600 font-bold">juice</span>. / <span className="text-blue-600 font-bold">soda</span> / <span className="text-blue-600 font-bold">chamomile tea</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu prefiro suco. / refrigerante / chá de camomila</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">Do you prefer <span className="text-blue-600 font-bold">rice</span> or <span className="text-blue-600 font-bold">beans</span>? / <span className="text-blue-600 font-bold">meat</span> or <span className="text-blue-600 font-bold">fish</span> / <span className="text-blue-600 font-bold">chicken</span> or <span className="text-blue-600 font-bold">salad</span></p>

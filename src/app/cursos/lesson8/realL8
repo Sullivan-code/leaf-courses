@@ -150,7 +150,7 @@ const SpeakableText = ({
   );
 };
 
-// Componente para falar qualquer frase em inglês com botão de áudio
+// Componente para falar qualquer frase com botão de áudio
 const AudioButton = ({ text, className = "" }: { text: string; className?: string }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -549,7 +549,7 @@ export default function LessonLanguagesAndCountries() {
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">🌍 Lesson 8 – Languages and Countries</h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            Practice speaking about languages, countries, and international communication. <strong>Click on any text in English to hear pronunciation!</strong> 🎧
+            Practice speaking about languages, countries, and international communication. <strong>Click on any text to hear pronunciation!</strong> 🎧
           </p>
         </div>
 
@@ -578,7 +578,7 @@ export default function LessonLanguagesAndCountries() {
                 </div>
               </div>
 
-              {/* Diálogos de Prática COM ÁUDIO APENAS EM INGLÊS */}
+              {/* Diálogos de Prática COM ÁUDIO */}
               <div className="space-y-6 mb-8">
                 <div className="bg-white p-4 rounded-xl border-2 border-blue-200 shadow-sm">
                   <div className="flex flex-col md:flex-row gap-4 items-start">
@@ -652,7 +652,7 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* SUBSTITUTION PRACTICE 1 COM ÁUDIO APENAS EM INGLÊS */}
+        {/* SUBSTITUTION PRACTICE 1 COM ÁUDIO */}
         <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -676,7 +676,7 @@ export default function LessonLanguagesAndCountries() {
                     const currentSentence = exercise.base.replace('{0}', exercise.options[exercise.currentIndex]);
                     return (
                       <div key={exercise.key} className="bg-white p-4 rounded-lg border border-green-200">
-                        <p className="text-green-600 font-medium mb-2 block">{exercise.original}</p>
+                        <SpeakableText text={exercise.original} className="text-green-600 font-medium mb-2 block" />
                         <div className="mb-3 p-3 bg-green-50 rounded-md">
                           <SpeakableText text={currentSentence} className="text-green-700 font-medium" />
                         </div>
@@ -696,7 +696,7 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* CHANGE INTO NEGATIVE COM ÁUDIO APENAS EM INGLÊS */}
+        {/* CHANGE INTO NEGATIVE COM ÁUDIO */}
         <div className="bg-red-50 border-2 border-red-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-red-500 to-orange-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -732,7 +732,7 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* SUBSTITUTION PRACTICE 2 COM ÁUDIO APENAS EM INGLÊS */}
+        {/* SUBSTITUTION PRACTICE 2 COM ÁUDIO */}
         <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -756,7 +756,7 @@ export default function LessonLanguagesAndCountries() {
                     const currentSentence = getCurrentSubs2Sentence(exercise);
                     return (
                       <div key={exercise.key} className="bg-white p-4 rounded-lg border border-purple-200">
-                        <p className="text-purple-600 font-medium mb-2 block">{exercise.original}</p>
+                        <SpeakableText text={exercise.original} className="text-purple-600 font-medium mb-2 block" />
                         <div className="mb-3 p-3 bg-purple-50 rounded-md">
                           <SpeakableText text={currentSentence} className="text-purple-700 font-medium" />
                         </div>
@@ -776,7 +776,7 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* CHANGE INTO AFFIRMATIVE COM ÁUDIO APENAS EM INGLÊS */}
+        {/* CHANGE INTO AFFIRMATIVE COM ÁUDIO */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -812,7 +812,7 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* CHANGE INTO INTERROGATIVE COM ÁUDIO APENAS EM INGLÊS */}
+        {/* CHANGE INTO INTERROGATIVE COM ÁUDIO */}
         <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-orange-500 to-amber-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -848,7 +848,7 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* QUESTIONS COM ÁUDIO APENAS EM INGLÊS */}
+        {/* QUESTIONS COM ÁUDIO */}
         <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
           <div className="bg-gradient-to-r from-indigo-500 to-blue-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -894,7 +894,7 @@ export default function LessonLanguagesAndCountries() {
           )}
         </div>
 
-        {/* TUNE IN YOUR EARS COM ÁUDIO APENAS EM INGLÊS */}
+        {/* TUNE IN YOUR EARS COM ÁUDIO */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
           <div className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -990,4 +990,4 @@ export default function LessonLanguagesAndCountries() {
       </div>
     </div>
   );
-}
+} 

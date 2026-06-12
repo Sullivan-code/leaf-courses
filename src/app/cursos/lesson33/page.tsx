@@ -114,7 +114,7 @@ function CheckItOutHorizontal() {
   return (
     <div className="w-full mx-auto border-2 border-gray-800 rounded-lg overflow-hidden shadow-lg">
       <div className="flex items-center justify-between px-6 py-3 bg-white border-b-2 border-gray-800">
-        <h2 className="text-xl font-bold tracking-widest text-gray-900">CHECK IT OUT!</h2>
+        <h2 className="text-xl font-bold tracking-widest text-gray-900">WRAP UP!</h2>
         <div className="flex items-center gap-3 text-gray-600">
           <span className="cursor-pointer hover:text-gray-900">≡</span>
           <span className="cursor-pointer hover:text-gray-900">✕</span>
@@ -145,8 +145,15 @@ function CheckItOutHorizontal() {
           <p className="text-gray-800 cursor-pointer hover:opacity-70" onClick={() => playAudio('my sister and i speak')}>• My sister and I speak…</p>
         </div>
 
-        <div className="bg-sky-300 p-6 flex items-center justify-center font-semibold text-gray-800">
-          class → classes
+        <div className="bg-sky-300 p-6 flex flex-col items-center justify-center font-semibold text-gray-800">
+          <p className="mb-2">class → classes</p>
+          <p className="text-xs font-normal mt-1 text-center">A regra do plural em palavras como "classes" aplica-se a substantivos e adjetivos terminados em -s, -z, -x, -sch ou -ch. Nesses casos, acrescenta-se -es ao final para formar o plural.</p>
+          <div className="mt-3 text-xs font-normal text-center">
+            <p>box → boxes</p>
+            <p>buzz → buzzes</p>
+            <p>church → churches</p>
+            <p>wish → wishes</p>
+          </div>
         </div>
       </div>
     </div>
@@ -223,7 +230,7 @@ export default function Lesson33() {
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
       style={{
-        backgroundImage: `url("/images/l7-bgg.jpg")`,
+        backgroundImage: `url("https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=1600&q=80")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -282,27 +289,27 @@ export default function Lesson33() {
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('I need to talk to you.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">I need to talk to you.</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">I need to talk to you.</span> / to her / to your grandmother</p>
                   <p className="text-sm text-gray-500 mt-1">Eu preciso conversar com você.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('She talks to her friends every day.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">She talks to her friends every day.</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">She talks to her friends every day.</span> / her teachers / her relatives</p>
                   <p className="text-sm text-gray-500 mt-1">Ela conversa com os amigos todos os dias.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('He likes to talk about sports.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">He likes to talk about sports.</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">He likes to talk about sports.</span> / health / subsjects</p>
                   <p className="text-sm text-gray-500 mt-1">Ele gosta de falar sobre esportes.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('We watch videos on our phones.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">We watch videos on our phones.</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">We watch videos on our phones.</span> / our tablet / her cellphone </p>
                   <p className="text-sm text-gray-500 mt-1">Nós assistimos vídeos em nossos celulares.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('They want to watch a movie tonight.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">They want to watch a movie tonight.</span></p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">They want to watch a movie tonight.</span> / tomorrow / on Tuesdays</p>
                   <p className="text-sm text-gray-500 mt-1">Eles querem assistir um filme hoje à noite.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
@@ -312,7 +319,7 @@ export default function Lesson33() {
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('You like to talk to me.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">You like to talk to me.</span> / with him / with her</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">You like to talk to me.</span> / to him / to her</p>
                   <p className="text-sm text-gray-500 mt-1">Você gosta de conversar comigo.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
@@ -461,6 +468,27 @@ export default function Lesson33() {
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do you have an opinion about this problem?</span> / subject / course</p>
                   <p className="text-sm text-gray-500 mt-1">Você tem uma opinião sobre esse problema?</p>
                 </div>
+                {/* Future and Past Tense Exercises with Will and Didn't */}
+                <div className="p-4 bg-white rounded-xl border border-green-200 cursor-pointer hover:bg-green-50 transition-colors"
+                  onClick={() => playAudio('Will you talk to her about the classes tomorrow?')}>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-green-600">Will you talk to her about the classes tomorrow?</span> (Future - Question)</p>
+                  <p className="text-sm text-gray-500 mt-1">Você vai falar com ela sobre as aulas amanhã?</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-green-200 cursor-pointer hover:bg-green-50 transition-colors"
+                  onClick={() => playAudio('I will watch the boxes carefully.')}>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-green-600">I will watch the boxes carefully.</span> (Future - Affirmative)</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu vou observar as caixas cuidadosamente.</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-red-200 cursor-pointer hover:bg-red-50 transition-colors"
+                  onClick={() => playAudio('She didn\'t go to the churches last Sunday.')}>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-red-600">She didn't go to the churches last Sunday.</span> (Past - Negative)</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela não foi às igrejas no domingo passado.</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-red-200 cursor-pointer hover:bg-red-50 transition-colors"
+                  onClick={() => playAudio('Didn\'t you understand the buzzes from the crowd?')}>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-red-600">Didn't you understand the buzzes from the crowd?</span> (Past - Negative Question)</p>
+                  <p className="text-sm text-gray-500 mt-1">Você não entendeu os zumbidos da multidão?</p>
+                </div>
               </div>
             )}
           </div>
@@ -562,6 +590,27 @@ export default function Lesson33() {
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">What time does the meeting start?</span> / the movie / the class</p>
                   <p className="text-sm text-gray-500 mt-1">A que horas a reunião começa?</p>
                 </div>
+                {/* Future and Past Tense Exercises with Will and Didn't */}
+                <div className="p-4 bg-white rounded-xl border border-green-200 cursor-pointer hover:bg-green-50 transition-colors"
+                  onClick={() => playAudio('Will she discuss the matches with the coaches?')}>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-green-600">Will she discuss the matches with the coaches?</span> (Future - Question)</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela vai discutir as partidas com os treinadores?</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-green-200 cursor-pointer hover:bg-green-50 transition-colors"
+                  onClick={() => playAudio('They will not finish the courses this month.')}>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-green-600">They will not finish the courses this month.</span> (Future - Negative)</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles não vão terminar os cursos este mês.</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-red-200 cursor-pointer hover:bg-red-50 transition-colors"
+                  onClick={() => playAudio('He didn\'t like the speeches at the conferences.')}>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-red-600">He didn't like the speeches at the conferences.</span> (Past - Negative)</p>
+                  <p className="text-sm text-gray-500 mt-1">Ele não gostou dos discursos nas conferências.</p>
+                </div>
+                <div className="p-4 bg-white rounded-xl border border-red-200 cursor-pointer hover:bg-red-50 transition-colors"
+                  onClick={() => playAudio('Didn\'t you see the flashes from the cameras?')}>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-red-600">Didn't you see the flashes from the cameras?</span> (Past - Negative Question)</p>
+                  <p className="text-sm text-gray-500 mt-1">Você não viu os flashes das câmeras?</p>
+                </div>
               </div>
             )}
           </div>
@@ -571,7 +620,7 @@ export default function Lesson33() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 WRAP UP</h2>
+              <h2 className="text-2xl font-bold">🔹 MAKE IT YOURS </h2>
               <PencilIcon onClick={() => openNoteModal('Real Life Practice')} />
             </div>
             <div className="text-sm text-blue-100">
@@ -584,32 +633,32 @@ export default function Lesson33() {
               <div className="space-y-4">
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('I really need to talk to you.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">I really need to talk to you.</span></p>
-                  <p className="text-sm text-gray-500 mt-1">Eu realmente preciso conversar com você.</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">I'm gonna need to talk to you.</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Eu vou precisar conversar com você.</p>
                 </div>
                 
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('She talks to her mother about everything.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">She talks to her mother about everything.</span></p>
-                  <p className="text-sm text-gray-500 mt-1">Ela conversa com a mãe dela sobre tudo.</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">She'll talk to her mother about everything.</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Ela conversará com a mãe dela sobre tudo.</p>
                 </div>
                 
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('My wife loves to watch series.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">My wife loves to watch series.</span></p>
-                  <p className="text-sm text-gray-500 mt-1">Minha esposa adora assistir séries.</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">My wife loved to watch series.</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Minha esposa adorava assistir séries.</p>
                 </div>
                 
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('Do you like his ideas?')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do you like his ideas?</span></p>
-                  <p className="text-sm text-gray-500 mt-1">Você gosta das ideias dele?</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Did you like his ideas?</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Você gostou das ideias dele?</p>
                 </div>
                 
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio("She doesn't want to talk about this subject.")}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">She doesn't want to talk about this subject.</span></p>
-                  <p className="text-sm text-gray-500 mt-1">Ela não quer falar sobre esse assunto.</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">She didn't want to talk about this subject.</span></p>
+                  <p className="text-sm text-gray-500 mt-1">Ela não queria falar sobre esse assunto.</p>
                 </div>
                 
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"

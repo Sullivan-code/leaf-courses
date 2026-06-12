@@ -242,6 +242,47 @@ const speakCards = [
 ];
 
 // ============================================
+// KEY VOCABULARY - WEATHER & MOOD THEMED (para TUNE IN YOUR EARS)
+// ============================================
+const keyVocabulary = [
+  { word: "a bit", meaning: "um pouco" },
+  { word: "mood", meaning: "temperamento / humor" },
+  { word: "kind of", meaning: "meio que" },
+  { word: "weather", meaning: "clima, tempo" },
+  { word: "walk up someone", meaning: "chegar em alguém" },
+  { word: "summer person", meaning: "uma pessoa que curte o verão" },
+  { word: "cloudy", meaning: "nublado" },
+  { word: "breeze", meaning: "brisa" },
+  { word: "rainy weather", meaning: "clima chuvoso" },
+  { word: "energetic", meaning: "cheio de energia" },
+  { word: "What's the weather like?", meaning: "Como está o tempo? (clima)" },
+  { word: "warm", meaning: "quente de forma confortável" },
+  { word: "hot", meaning: "quente de forma desconfortável" },
+  { word: "autumn", meaning: "outono" },
+  { word: "Nothing beats a clear blue sky", meaning: "nada ganha de um céu azul limpo" },
+  { word: "fair", meaning: "justo" },
+  { word: "It's pouring", meaning: "Está chovendo" },
+  { word: "It gets slushy", meaning: "Fica lamacento" },
+  { word: "Weather forecast", meaning: "Previsão do tempo" },
+  { word: "changing leaves", meaning: "folhas mudando" },
+  { word: "Every cloud has a silver lining", meaning: "Não há mal que não traga algum bem" },
+];
+
+// ============================================
+// VIDEO QUESTIONS ABOUT WEATHER, MOODS, SEASONS
+// ============================================
+const videoQuestions = [
+  { id: "video-1", question: "What's your favorite type of weather? Why?", isPersonal: true },
+  { id: "video-2", question: "Are you a summer person or do you prefer colder seasons?", isPersonal: true },
+  { id: "video-3", question: "How does rainy weather affect your mood?", isPersonal: true },
+  { id: "video-4", question: "Do you prefer warm or hot weather? Explain the difference.", isPersonal: true },
+  { id: "video-5", question: "What do you like to do on a cloudy day with a nice breeze?", isPersonal: true },
+  { id: "video-6", question: "How do changing leaves in autumn make you feel?", isPersonal: true },
+  { id: "video-7", question: "Have you ever walked up to someone on a sunny day? Describe the situation.", isPersonal: true },
+  { id: "video-8", question: "What does 'Every cloud has a silver lining' mean to you? Give an example.", isPersonal: true },
+];
+
+// ============================================
 // COMPONENTES AUXILIARES
 // ============================================
 
@@ -330,6 +371,28 @@ const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
   );
 };
 
+// Component SpeakSentence para TTS
+const SpeakSentence = ({ text, children, className = "" }: { text: string; children?: React.ReactNode; className?: string }) => {
+  const speak = () => {
+    const speechText = children && typeof children === 'string' ? children : text;
+    if (speechText && typeof window !== 'undefined') {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(speechText);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  return (
+    <button onClick={speak} className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors ${className}`}>
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
+    </button>
+  );
+};
+
 // ============================================
 // COMPONENTE PRINCIPAL - LESSON 36
 // ============================================
@@ -378,6 +441,10 @@ export default function Lesson36() {
   const [showSpeakResult, setShowSpeakResult] = useState(false);
   const [speakResult, setSpeakResult] = useState(false);
   
+  // Estados para TUNE IN YOUR EARS
+  const [videoAnswers, setVideoAnswers] = useState<Record<string, string>>({});
+  const [showVideoResults, setShowVideoResults] = useState<Record<string, boolean>>({});
+  
   // Estados para controle de expansão das seções
   const [sections, setSections] = useState({
     listen: true,
@@ -387,7 +454,8 @@ export default function Lesson36() {
     pastPerfect: true,
     future: true,
     pastQuestions: true,
-    speak: true
+    speak: true,
+    tuneIn: true
   });
 
   // Estado para armazenar a sequência de números que o aluno selecionou
@@ -436,6 +504,7 @@ export default function Lesson36() {
         if (data.speakResult !== undefined) setSpeakResult(data.speakResult);
         if (data.sections) setSections(data.sections);
         if (data.imageSequence) setImageSequence(data.imageSequence);
+        if (data.videoAnswers) setVideoAnswers(data.videoAnswers);
       } catch (error) {
         console.error("Erro ao carregar respostas salvas:", error);
       }
@@ -469,6 +538,7 @@ export default function Lesson36() {
       speakResult,
       sections,
       imageSequence,
+      videoAnswers,
       lastUpdated: new Date().toISOString(),
       lessonName: "Lesson 36 - Past, Present Perfect, Past Perfect, Future",
     };
@@ -509,6 +579,8 @@ export default function Lesson36() {
       setSpeakResult(false);
       setImageSequence([]);
       setShowFinalSequenceResult(false);
+      setVideoAnswers({});
+      setShowVideoResults({});
       localStorage.removeItem("lesson36Answers");
       alert("Todas as respostas foram limpas.");
     }
@@ -654,6 +726,15 @@ export default function Lesson36() {
     setShowSpeakResult(false);
   };
 
+  const handleVideoAnswerChange = (id: string, value: string) => {
+    setVideoAnswers(prev => ({ ...prev, [id]: value }));
+    setShowVideoResults(prev => ({ ...prev, [id]: false }));
+  };
+
+  const checkVideoAnswer = (id: string) => {
+    setShowVideoResults(prev => ({ ...prev, [id]: true }));
+  };
+
   const currentCard = speakCards[currentCardIndex];
 
   if (!isHydrated) {
@@ -668,7 +749,7 @@ export default function Lesson36() {
   }
 
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"%3E%3Crect width="800" height="800" fill="%234f46e5"/%3E%3Ccircle cx="200" cy="200" r="300" fill="%238b5cf6" opacity="0.3"/%3E%3Ccircle cx="600" cy="500" r="250" fill="%23ec4899" opacity="0.3"/%3E%3C/svg%3E')` }}>
+    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=2069&auto=format&fit=crop')` }}>
       <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         
         {/* HEADER */}
@@ -692,17 +773,37 @@ export default function Lesson36() {
                 {sections.listen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
             </div>
-            <AudioPlayer src="" textToSpeak="Number one: a smiling woman. Number two: a man thinking about life. Number three: a couple watching TV together." />
+            <div className="flex items-center gap-3">
+              <AudioPlayer src="" textToSpeak="Number one: a smiling woman. Number two: a man thinking about life. Number three: a couple watching TV together." />
+              <audio id="listenAudio" src="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/L36listening.mp3" />
+              <button 
+                onClick={() => {
+                  const audio = document.getElementById('listenAudio') as HTMLAudioElement;
+                  if (audio) {
+                    if (audio.paused) {
+                      audio.play();
+                    } else {
+                      audio.pause();
+                      audio.currentTime = 0;
+                    }
+                  }
+                }}
+                className="p-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition"
+                title="Play Listening Audio"
+              >
+                <Play size={16} />
+              </button>
+            </div>
           </div>
 
           {sections.listen && (
             <div className="p-8">
               <p className="text-purple-700 mb-4 italic">
-                👂 Listen to the audio describing the images. Click on the images <strong className="font-bold">IN THE ORDER YOU HEAR</strong> (1 → 2 → 3).
+                👂 Ouça o áudio descrevendo as imagens. Clique nas imagens <strong className="font-bold">NA ORDEM QUE VOCÊ OUVE</strong> (1 → 2 → 3).
               </p>
               
               <p className="text-sm text-purple-600 mb-6 bg-purple-100 p-3 rounded-lg">
-                🎯 <strong>Correct sequence:</strong> 1. mulher sorrindo → 2. refletindo sobre a vida → 3. casal assistindo tv juntos
+                🎯 <strong>Sequência correta:</strong> 1. mulher sorrindo → 2. refletindo sobre a vida → 3. casal assistindo tv juntos
               </p>
 
               {/* Imagens embaralhadas sem números nos containers */}
@@ -724,14 +825,14 @@ export default function Lesson36() {
                       <p className="text-md font-bold text-purple-700">{item.label}</p>
                       <p className="text-xs text-gray-500 mt-1">{item.description}</p>
                       <div className="mt-2 inline-block bg-purple-100 text-purple-600 text-xs px-2 py-1 rounded-full">
-                        Click to add to sequence
+                        Clique para adicionar à sequência
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Exibição da sequência */}
+              {/* Exibição da sequência - SEM MOSTRAR A RESPOSTA CORRETA ATÉ VERIFICAR */}
               <div className="bg-purple-100 rounded-xl p-5 mb-6">
                 <h3 className="font-bold text-purple-800 mb-3">📋 Sua sequência (ordem que você clicou):</h3>
                 <div className="flex flex-wrap gap-3 items-center">
@@ -1173,6 +1274,104 @@ export default function Lesson36() {
                 </div>
                 
                 {showSpeakResult && <div className="mt-4"><AnswerResult isCorrect={speakResult} correctAnswer={currentCard.answer} /></div>}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ============================================ */}
+        {/* TUNE IN YOUR EARS - Weather & Mood Themed */}
+        {/* ============================================ */}
+        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-teal-600 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
+              <button
+                onClick={() => toggleSection('tuneIn')}
+                className="ml-4 p-2 rounded-full hover:bg-teal-700 transition"
+              >
+                {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.tuneIn && (
+            <div className="p-8">
+              <div className="mb-8 text-center">
+                <p className="text-xl md:text-2xl font-bold text-teal-700 mb-4">
+                  Watch the video and answer the questions below:
+                </p>
+               
+                <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
+                  <div className="relative w-full pt-[56.25%]">
+                    <iframe
+                      src="https://www.youtube.com/embed/BBPJCwoxBFE"
+                      title="Weather and Mood Vocabulary Lesson"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute top-0 left-0 w-full h-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* KEY VOCABULARY FROM THE VIDEO - WEATHER & MOOD THEMED */}
+              <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">📖 KEY VOCABULARY FROM THE VIDEO:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {keyVocabulary.map((item, idx) => (
+                    <div key={idx} className="bg-white p-3 rounded-lg border border-teal-200 shadow-sm hover:shadow-md transition flex justify-between items-center">
+                      <div>
+                        <span className="font-bold text-teal-700">{item.word}</span>
+                        <p className="text-sm text-gray-600">{item.meaning}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Video Questions - About Weather, Moods, Seasons */}
+              <div className="space-y-6 mb-8">
+                {videoQuestions.map((question) => (
+                  <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-teal-200 shadow-md">
+                    <p className="text-base md:text-lg font-bold text-teal-700 mb-3">
+                      {question.question}
+                      {question.isPersonal && (
+                        <span className="ml-2 text-sm font-normal text-teal-500">(Personal answer)</span>
+                      )}
+                    </p>
+
+                    <textarea
+                      value={videoAnswers[question.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)}
+                      placeholder="Write your answer here..."
+                      className="w-full h-24 p-3 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                    />
+
+                    <div className="flex flex-col sm:flex-row gap-3 mt-3">
+                      <button
+                        onClick={() => checkVideoAnswer(question.id)}
+                        className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition font-medium"
+                      >
+                        Check Answer
+                      </button>
+                      <button
+                        onClick={() => handleVideoAnswerChange(question.id, "")}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md transition"
+                      >
+                        Clear
+                      </button>
+                    </div>
+
+                    {showVideoResults[question.id] && question.isPersonal && (
+                      <div className="mt-3 p-3 bg-teal-50 border border-teal-200 rounded-md">
+                        <p className="text-sm text-teal-700">
+                          <span className="font-medium">Note:</span> This is a personal question. Your answer has been saved for practice.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}

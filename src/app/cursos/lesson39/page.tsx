@@ -302,7 +302,7 @@ export default function Lesson39HealthFeelingsProfessions() {
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-green-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 2. NEW WORDS (Vocabulário)</h2>
+              <h2 className="text-2xl font-bold">🔹 2. NEW WORDS </h2>
               <p className="mt-2 text-green-100 italic">
                 Clique em cada palavra para ouvir sua pronúncia correta
               </p>
@@ -407,12 +407,13 @@ export default function Lesson39HealthFeelingsProfessions() {
             )}
           </div>
         </div>
+        
 
         {/* Section 3 - GRAMMAR with Drill */}
         <div className="bg-white border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-purple-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 3. GRAMMAR (Negative Form)</h2>
+              <h2 className="text-2xl font-bold">🔹 GRAMMAR (Negative Form)</h2>
               <p className="mt-2 text-purple-100 italic">
                 Estruturas negativas com o verbo to be
               </p>

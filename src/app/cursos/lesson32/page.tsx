@@ -153,7 +153,7 @@ const listenItems = [
   },
 ];
 
-// Images for Photo Descriptions
+// Images for Photo Descriptions (EXCLUDED: Carteira de trabalho & Estudante com diploma)
 const descriptionPhotos = [
   {
     id: 1,
@@ -175,28 +175,6 @@ const descriptionPhotos = [
       "What do you want to start next semester?",
       "Do you have a lot of classes this semester?",
       "Is this semester difficult?"
-    ]
-  },
-  {
-    id: 3,
-    image: "https://images.pexels.com/photos/6863173/pexels-photo-6863173.jpeg?auto=compress&cs=tinysrgb&w=600",
-    title: "Carteira de trabalho",
-    description: "Uma carteira de trabalho azul está sobre uma mesa de madeira. Ela representa emprego, trabalho formal e início de carreira.",
-    questions: [
-      "When do you want to start working?",
-      "Do you need a job next year?",
-      "Do you want to start a new career?"
-    ]
-  },
-  {
-    id: 4,
-    image: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=600",
-    title: "Estudante com diploma",
-    description: "Uma jovem está segurando um diploma e sorrindo. Ela parece orgulhosa e feliz.",
-    questions: [
-      "When do you want to finish your course?",
-      "Do you want to finish it this year?",
-      "What do you want to do after that?"
     ]
   }
 ];

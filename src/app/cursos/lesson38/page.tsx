@@ -7,7 +7,8 @@ import {
   Play, Pause, RotateCcw, Volume2, ChevronDown, ChevronUp,
   Check, X, Download, MessageCircle, Headphones,
   Stethoscope, Pill, Hospital, Thermometer, Activity, Heart,
-  User, Users, Calendar, Clock, AlertCircle, CheckCircle, Youtube
+  User, Users, Calendar, Clock, AlertCircle, CheckCircle, Youtube,
+  BookOpen, HelpCircle
 } from "lucide-react";
 
 // ==============================
@@ -17,7 +18,7 @@ const LESSON_NUMBER = 38;
 const LESSON_TITLE = "Health & Daily Situations";
 const LESSON_SUBTITLE = "Listening, Drilling & Fluency Practice";
 const LESSON_THEME_COLOR = "#10b981"; // Emerald-500
-const BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1588776814546-1ffc4725f6a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80";
+const BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=1600&q=80"; // Planning/Organization theme
 
 // ==============================
 // LISTEN AND NUMBER IMAGES (coherent with each situation)
@@ -40,7 +41,7 @@ const drillingPracticeI = [
     original: "She takes medicine for her headache.",
     portuguese: "She takes medicine for her headache.",
     substitutions: [
-      { word: "She", options: ["She", "He", "I"] }
+      { word: "She", options: ["She", "He", "Bruno"] }
     ],
     currentText: "She takes medicine for her headache."
   },
@@ -73,12 +74,12 @@ const drillingPracticeI = [
   },
   {
     id: 5,
-    original: "I am a teacher.",
-    portuguese: "I am a teacher.",
+    original: "I was a teacher.",
+    portuguese: "I was a teacher.",
     substitutions: [
       { word: "teacher", options: ["teacher", "dentist", "doctor"] }
     ],
-    currentText: "I am a teacher."
+    currentText: "I was a teacher."
   }
 ];
 
@@ -100,12 +101,12 @@ const negativePractice = [
 const drillingPracticeII = [
   {
     id: 1,
-    original: "I still need to talk to the doctor.",
-    portuguese: "I still need to talk to the doctor.",
+    original: "I'll need to talk to the doctor.",
+    portuguese: "Eu precisarei.",
     substitutions: [
       { word: "doctor", options: ["doctor", "nurse", "teacher"] }
     ],
-    currentText: "I still need to talk to the doctor."
+    currentText: "I'll need to talk to the doctor."
   },
   {
     id: 2,
@@ -118,12 +119,12 @@ const drillingPracticeII = [
   },
   {
     id: 3,
-    original: "Do you have a cold?",
-    portuguese: "Do you have a cold?",
+    original: "Did you have a cold?",
+    portuguese: "Você estava com resfriado?",
     substitutions: [
       { word: "a cold", options: ["a cold", "a sore throat", "a toothache"] }
     ],
-    currentText: "Do you have a cold?"
+    currentText: "Did you have a cold?"
   },
   {
     id: 4,
@@ -223,6 +224,23 @@ const tuneInYourEars = {
     "Do you use English when you're doing simple things?"
   ],
   advice: "Describe what you see when you're at home. Use this space here to describe things around you."
+};
+
+// ==============================
+// WRAP UP - PLURAL RULE
+// ==============================
+const wrapUpContent = {
+  rule: "A regra do plural em palavras como 'classes' aplica-se a substantivos e adjetivos terminados em -s, -z, -x, -sch ou -ch. Nesses casos, acrescenta-se -es ao final para formar o plural.",
+  examples: [
+    { singular: "class", plural: "classes" },
+    { singular: "box", plural: "boxes" },
+    { singular: "buzz", plural: "buzzes" },
+    { singular: "church", plural: "churches" },
+    { singular: "wish", plural: "wishes" },
+    { singular: "bus", plural: "buses" },
+    { singular: "quiz", plural: "quizzes" },
+    { singular: "tax", plural: "taxes" }
+  ]
 };
 
 // ==============================
@@ -510,7 +528,8 @@ export default function Lesson38Health() {
     affirmative: true,
     interrogative: true,
     fluency: true,
-    tuneIn: true
+    tuneIn: true,
+    wrapUp: true
   });
 
   // Listen and Number state
@@ -807,6 +826,26 @@ export default function Lesson38Health() {
                   <SubstitutionDrill key={ex.id} exercise={ex} onUpdate={handleDrilling1Update} />
                 ))}
               </div>
+              {/* Future and Past Tense Exercises with Will and Didn't */}
+              <div className="mt-6 p-4 bg-blue-100 rounded-xl border border-blue-300">
+                <h4 className="font-bold text-blue-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
+                <div className="space-y-3">
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">🔮 <strong>Future (WILL):</strong></p>
+                    <p className="text-green-600">• I will take these pills tomorrow morning.</p>
+                    <p className="text-green-600">• She will talk to the doctor about her symptoms.</p>
+                    <p className="text-green-600">• Will you go to the hospital if the pain continues?</p>
+                    <p className="text-red-500">• He won't (will not) forget to take his medicine.</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">📅 <strong>Past (DIDN'T - Negative):</strong></p>
+                    <p className="text-red-500">• I didn't take my vitamins yesterday.</p>
+                    <p className="text-red-500">• She didn't feel well after eating that.</p>
+                    <p className="text-blue-600">❓ Didn't you see the doctor last week?</p>
+                    <p className="text-blue-600">❓ Why didn't he call the nurse?</p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -837,6 +876,28 @@ export default function Lesson38Health() {
               <div className="mt-5 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                 <p className="text-yellow-700 text-xs">💡 Tip: Use "do not / don't" or "does not / doesn't"</p>
               </div>
+              {/* Future and Past Tense Exercises with Will and Didn't */}
+              <div className="mt-6 p-4 bg-red-100 rounded-xl border border-red-300">
+                <h4 className="font-bold text-red-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
+                <div className="space-y-3">
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">🔮 <strong>Future (WILL):</strong></p>
+                    <p className="text-green-600">• I will take these pills in the morning tomorrow.</p>
+                    <p className="text-green-600">• She will go to the dentist next Monday.</p>
+                    <p className="text-green-600">• Will they have to take medicine every day?</p>
+                    <p className="text-red-500">• He won't need painkillers after the treatment.</p>
+                    <p className="text-blue-600">❓ Will you feel better after resting?</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">📅 <strong>Past (DIDN'T - Negative):</strong></p>
+                    <p className="text-red-500">• I didn't take these pills yesterday morning.</p>
+                    <p className="text-red-500">• She didn't have a fever last night.</p>
+                    <p className="text-red-500">• They didn't go to the dentist last month.</p>
+                    <p className="text-blue-600">❓ Didn't you have a toothache last week?</p>
+                    <p className="text-blue-600">❓ Why didn't she need painkillers after surgery?</p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -858,6 +919,28 @@ export default function Lesson38Health() {
                 {drillingPracticeII.map((ex) => (
                   <SubstitutionDrill key={ex.id} exercise={ex} onUpdate={handleDrilling2Update} />
                 ))}
+              </div>
+              {/* Future and Past Tense Exercises with Will and Didn't */}
+              <div className="mt-6 p-4 bg-purple-100 rounded-xl border border-purple-300">
+                <h4 className="font-bold text-purple-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
+                <div className="space-y-3">
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">🔮 <strong>Future (WILL):</strong></p>
+                    <p className="text-green-600">• I will still need to talk to the doctor next week.</p>
+                    <p className="text-green-600">• She will be a great nurse one day.</p>
+                    <p className="text-green-600">• Will you have a cold if you go outside without a coat?</p>
+                    <p className="text-red-500">• These won't be my cousins after the wedding.</p>
+                    <p className="text-blue-600">❓ Will they be at the beach together next summer?</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">📅 <strong>Past (DIDN'T - Negative):</strong></p>
+                    <p className="text-red-500">• I didn't need to talk to the doctor yesterday.</p>
+                    <p className="text-red-500">• She wasn't a great nurse at that hospital.</p>
+                    <p className="text-red-500">• You didn't have a cold last winter.</p>
+                    <p className="text-blue-600">❓ Didn't you say these were your cousins?</p>
+                    <p className="text-blue-600">❓ Why didn't they go to the beach together?</p>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -952,6 +1035,28 @@ export default function Lesson38Health() {
                 <h4 className="font-bold text-cyan-800 text-sm mb-1">🎯 Practice Tip:</h4>
                 <p className="text-cyan-700 text-sm">Practice saying these sentences out loud. Pay attention to the difference between <strong>this/these</strong> (near) and <strong>that/those</strong> (far).</p>
               </div>
+              {/* Future and Past Tense Exercises with Will and Didn't */}
+              <div className="mt-6 p-4 bg-cyan-100 rounded-xl border border-cyan-300">
+                <h4 className="font-bold text-cyan-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
+                <div className="space-y-3">
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">🔮 <strong>Future (WILL):</strong></p>
+                    <p className="text-green-600">• I will visit that city next year.</p>
+                    <p className="text-green-600">• They will need to take this pill after surgery.</p>
+                    <p className="text-green-600">• Will you read that book about health?</p>
+                    <p className="text-red-500">• She won't buy this backpack for the trip.</p>
+                    <p className="text-blue-600">❓ Will we talk about that subject in class?</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">📅 <strong>Past (DIDN'T - Negative):</strong></p>
+                    <p className="text-red-500">• I didn't visit that city last summer.</p>
+                    <p className="text-red-500">• They didn't need to take this pill yesterday.</p>
+                    <p className="text-red-500">• She didn't read that book last month.</p>
+                    <p className="text-blue-600">❓ Didn't you buy this backpack last year?</p>
+                    <p className="text-blue-600">❓ Why didn't they talk about that subject?</p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -1020,6 +1125,50 @@ export default function Lesson38Health() {
           )}
         </div>
 
+        {/* PART 9: WRAP UP - PLURAL RULE */}
+        <div className="mb-12 bg-gradient-to-br from-pink-50 to-rose-50 border-2 rounded-2xl shadow-lg overflow-hidden"
+             style={{ borderColor: "#ec4899" }}>
+          <div className="py-3 px-6 flex justify-between items-center bg-gradient-to-r from-pink-500 to-rose-500">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              📝 PART 9 — WRAP UP!
+            </h2>
+            <button onClick={() => toggleSection('wrapUp')} className="p-1 rounded-full hover:bg-white/20">
+              {expandedSections.wrapUp ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+            </button>
+          </div>
+          {expandedSections.wrapUp && (
+            <div className="p-6">
+              <div className="bg-white rounded-xl p-5 shadow-md border-2" style={{ borderColor: "#ec489930" }}>
+                <div className="text-center mb-4">
+                  <div className="inline-block p-2 rounded-full bg-pink-100 mb-2">
+                    <span className="text-2xl">📚</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800">Plural Rule: Words ending in -s, -z, -x, -sch, -ch</h3>
+                </div>
+                
+                <p className="text-gray-700 text-center mb-4">
+                  {wrapUpContent.rule}
+                </p>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                  {wrapUpContent.examples.map((ex, idx) => (
+                    <div key={idx} className="bg-pink-50 rounded-lg p-3 text-center border border-pink-200">
+                      <p className="font-bold text-pink-700">{ex.singular}</p>
+                      <p className="text-gray-600">→</p>
+                      <p className="font-bold text-emerald-600">{ex.plural}</p>
+                      <AudioPlayerSimulated text={`${ex.singular} → ${ex.plural}`} compact />
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <p className="text-yellow-700 text-xs">💡 <strong>Memory Tip:</strong> Add -ES to words ending in S, Z, X, CH, SH (like "buzz" → "buzzes" or "church" → "churches")</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* FOOTER */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-5 mt-10 pt-6 border-t border-gray-300">
           <div className="flex flex-col sm:flex-row gap-3">
@@ -1048,6 +1197,3 @@ export default function Lesson38Health() {
     </div>
   );
 }
-
-// Missing icons imports
-import { BookOpen, HelpCircle } from "lucide-react";

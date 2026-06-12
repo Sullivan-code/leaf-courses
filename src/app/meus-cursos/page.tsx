@@ -62,7 +62,7 @@ export default async function MeusCursos() {
                   Inglês Básico ao Intermediário (A1-B1)
                 </h2>
                 <p className="text-xl text-gray-600 mt-2">
-                  Curso completo com 33 lições + revisões
+                  Curso completo com 60 lições + 10 revisões
                 </p>
               </div>
             </div>
@@ -84,7 +84,7 @@ export default async function MeusCursos() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-lg">
-                <Link href="/cursos">
+                <Link href="/ver-todas">
                   Ver Todas as Lições
                 </Link>
               </Button>

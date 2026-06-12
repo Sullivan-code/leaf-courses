@@ -54,6 +54,7 @@ export default async function MeusCursos() {
         </h1>
         
         <div className="grid gap-8">
+          {/* Curso de Inglês Básico ao Intermediário */}
           <div className="bg-white shadow-2xl rounded-3xl p-8 border-4 border-blue-300 hover:shadow-3xl transition-all duration-300 transform hover:scale-105">
             <div className="flex items-center gap-6 mb-6">
               <div className="text-6xl">🇺🇸</div>
@@ -85,6 +86,44 @@ export default async function MeusCursos() {
               </Button>
               <Button asChild variant="outline" size="lg" className="text-lg">
                 <Link href="/ver-todas">
+                  Ver Todas as Lições
+                </Link>
+              </Button>
+            </div>
+          </div>
+
+          {/* Curso de Inglês - Off Shore */}
+          <div className="bg-white shadow-2xl rounded-3xl p-8 border-4 border-orange-300 hover:shadow-3xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center gap-6 mb-6">
+              <div className="text-6xl">⛴️</div>
+              <div>
+                <h2 className="text-3xl font-bold text-orange-700">
+                  Inglês - Off Shore
+                </h2>
+                <p className="text-xl text-gray-600 mt-2">
+                  Curso especializado para profissionais embarcados - 40 lições técnicas
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-orange-50 p-6 rounded-2xl mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-lg font-semibold text-gray-700">Progresso</span>
+                <span className="text-lg font-semibold text-orange-600">0%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-4">
+                <div className="bg-green-500 h-4 rounded-full w-0"></div>
+              </div>
+            </div>
+            
+            <div className="flex gap-4">
+              <Button asChild size="lg" className="flex-1 text-lg bg-orange-600 hover:bg-orange-700">
+                <Link href="/cursos/lesson1-offshore">
+                  Iniciar Curso Off Shore
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="text-lg border-orange-300 text-orange-700 hover:bg-orange-50">
+                <Link href="/ver-todas-offshore">
                   Ver Todas as Lições
                 </Link>
               </Button>

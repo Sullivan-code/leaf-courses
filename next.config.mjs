@@ -22,6 +22,12 @@ const nextConfig = {
         hostname: 'images.pexels.com',
         pathname: '/**',
       },
+      // 👇 ADICIONADO PARA IMAGENS DO GITHUB RAW
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        pathname: '/**',
+      },
     ],
   },
 };

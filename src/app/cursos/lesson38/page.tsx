@@ -24,12 +24,48 @@ const BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1506784983877-45594e
 // LISTEN AND NUMBER IMAGES (coherent with each situation)
 // ==============================
 const listenAndNumberImages = [
-  { id: "A", description: "Couple relaxing on the sofa", imageUrl: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", correctNumber: 4, situation: "People feeling well / relaxed" },
-  { id: "B", description: "Woman talking to a doctor", imageUrl: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", correctNumber: 2, situation: "Medical appointment" },
-  { id: "C", description: "Woman sneezing with a tissue", imageUrl: "https://images.unsplash.com/photo-1611867001974-cf6b2c0c0c0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", correctNumber: 6, situation: "Cold / flu" },
-  { id: "D", description: "Patient at the hospital", imageUrl: "https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", correctNumber: 3, situation: "Hospital care" },
-  { id: "E", description: "Woman taking a pill", imageUrl: "https://images.unsplash.com/photo-1584308666744-00d3c9c6c8c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", correctNumber: 1, situation: "Taking medicine" },
-  { id: "F", description: "Person lying with sleep mask", imageUrl: "https://images.unsplash.com/photo-1484836495779-1f3b2a9d8c2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", correctNumber: 5, situation: "Sick / resting" }
+  {
+    id: "A",
+    description: "Couple on the sofa watching TV",
+    imageUrl: "/images/L38IMGA.png",
+    correctNumber: 4,
+    situation: "People feeling well / relaxed"
+  },
+  {
+    id: "B",
+    description: "Woman talking to a doctor",
+    imageUrl: "/images/L38IMGB.png",
+    correctNumber: 2,
+    situation: "Medical appointment"
+  },
+  {
+    id: "C",
+    description: "Woman sneezing with a tissue",
+    imageUrl: "/images/L38IMGC.png",
+    correctNumber: 6,
+    situation: "Cold / flu"
+  },
+  {
+    id: "D",
+    description: "Patient at the hospital",
+    imageUrl: "/images/L38IMGD.png",
+    correctNumber: 3,
+    situation: "Hospital care"
+  },
+  {
+    id: "E",
+    description: "Woman taking a pill",
+    imageUrl: "/images/L38IMGE.png",
+    correctNumber: 1,
+    situation: "Taking medicine"
+  },
+  {
+    id: "F",
+    description: "Person lying with sleep mask",
+    imageUrl: "/images/L38IMGF.png",
+    correctNumber: 5,
+    situation: "Sick / resting"
+  }
 ];
 
 // ==============================
@@ -749,8 +785,7 @@ export default function Lesson38Health() {
                       </div>
                       <div className="flex items-center gap-3">
                         <label className="text-gray-600 font-medium text-sm">Number:</label>
-                        <select
-                          value={userNumbers[img.id] || ""}
+                        <select                          value={userNumbers[img.id] || ""}
                           onChange={(e) => handleUserNumberChange(img.id, e.target.value)}
                           className="w-16 px-2 py-1 border-2 rounded-lg focus:outline-none text-sm"
                           style={{ borderColor: `${LESSON_THEME_COLOR}50` }}
@@ -826,7 +861,6 @@ export default function Lesson38Health() {
                   <SubstitutionDrill key={ex.id} exercise={ex} onUpdate={handleDrilling1Update} />
                 ))}
               </div>
-              {/* Future and Past Tense Exercises with Will and Didn't */}
               <div className="mt-6 p-4 bg-blue-100 rounded-xl border border-blue-300">
                 <h4 className="font-bold text-blue-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
                 <div className="space-y-3">
@@ -876,7 +910,6 @@ export default function Lesson38Health() {
               <div className="mt-5 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                 <p className="text-yellow-700 text-xs">💡 Tip: Use "do not / don't" or "does not / doesn't"</p>
               </div>
-              {/* Future and Past Tense Exercises with Will and Didn't */}
               <div className="mt-6 p-4 bg-red-100 rounded-xl border border-red-300">
                 <h4 className="font-bold text-red-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
                 <div className="space-y-3">
@@ -920,7 +953,6 @@ export default function Lesson38Health() {
                   <SubstitutionDrill key={ex.id} exercise={ex} onUpdate={handleDrilling2Update} />
                 ))}
               </div>
-              {/* Future and Past Tense Exercises with Will and Didn't */}
               <div className="mt-6 p-4 bg-purple-100 rounded-xl border border-purple-300">
                 <h4 className="font-bold text-purple-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
                 <div className="space-y-3">
@@ -1035,7 +1067,6 @@ export default function Lesson38Health() {
                 <h4 className="font-bold text-cyan-800 text-sm mb-1">🎯 Practice Tip:</h4>
                 <p className="text-cyan-700 text-sm">Practice saying these sentences out loud. Pay attention to the difference between <strong>this/these</strong> (near) and <strong>that/those</strong> (far).</p>
               </div>
-              {/* Future and Past Tense Exercises with Will and Didn't */}
               <div className="mt-6 p-4 bg-cyan-100 rounded-xl border border-cyan-300">
                 <h4 className="font-bold text-cyan-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
                 <div className="space-y-3">

@@ -299,7 +299,7 @@ export default function Lesson33() {
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('He likes to talk about sports.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">He likes to talk about sports.</span> / health / subsjects</p>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">He likes to talk about sports.</span> / health / subjects</p>
                   <p className="text-sm text-gray-500 mt-1">Ele gosta de falar sobre esportes.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"

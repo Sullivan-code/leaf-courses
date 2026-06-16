@@ -118,7 +118,7 @@ export default async function MeusCursos() {
             
             <div className="flex gap-4">
               <Button asChild size="lg" className="flex-1 text-lg bg-orange-600 hover:bg-orange-700">
-                <Link href="/cursos/lesson1-offshore">
+                <Link href="/cursos/offshore/lesson1-offshore">
                   Iniciar Curso Off Shore
                 </Link>
               </Button>

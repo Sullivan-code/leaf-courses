@@ -2,1531 +2,1466 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import {
+  Play, Pause, RotateCcw, Volume2, ChevronDown, ChevronUp,
+  Check, X, Download, MessageCircle, Headphones,
+  Stethoscope, Pill, Hospital, Thermometer, Activity, Heart,
+  User, Users, Calendar, Clock, AlertCircle, CheckCircle, Youtube,
+  BookOpen, HelpCircle, GripVertical
+} from "lucide-react";
 
-// ============================================
-// LISTEN ITEMS - Imagens (EMBARALHADAS NA TELA)
-// ORDEM CORRETA: 1. mulher sorrindo → 2. refletindo sobre a vida → 3. casal assistindo tv juntos
-// ============================================
+// ==============================
+// LESSON CONFIGURATION
+// ==============================
+const LESSON_NUMBER = 38;
+const LESSON_TITLE = "Health & Daily Situations";
+const LESSON_SUBTITLE = "Listening, Drilling & Fluency Practice";
+const LESSON_THEME_COLOR = "#10b981"; // Emerald-500
+const BACKGROUND_IMAGE = "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=1600&q=80";
 
-// Imagem: Mulher sorrindo - PRIMEIRO NA ORDEM (1)
-const image3Url = "/images/3-mulher-sorrindo.jpg";
-
-// Imagem: Refletindo sobre a vida (Homem pensando) - SEGUNDO NA ORDEM (2)
-const image1Url = "/images/1-refletindo.jpg";
-
-// Imagem: Casal assistindo TV juntos - TERCEIRO NA ORDEM (3)
-const image2Url = "/images/2-casal.jpg";
-
-const listenItemsOriginal = [
-  { 
-    key: "image3", 
-    label: "mulher sorrindo", 
-    image: image3Url,
-    placeholder: "😊",
-    description: "Mulher com um lindo sorriso",
-    correctNumber: 1,
-    bgColor: "from-pink-100 to-rose-100"
+// ==============================
+// LISTEN AND NUMBER IMAGES
+// ==============================
+const listenAndNumberImages = [
+  {
+    id: "A",
+    description: "Couple on the sofa watching TV",
+    imageUrl: "/images/L38IMGA.png",
+    correctNumber: 4,
+    situation: "People feeling well / relaxed"
   },
-  { 
-    key: "image1", 
-    label: "refletindo sobre a vida", 
-    image: image1Url,
-    placeholder: "🤔",
-    description: "Homem pensando, refletindo sobre a vida",
+  {
+    id: "B",
+    description: "Woman talking to a doctor",
+    imageUrl: "/images/L38IMGB.png",
     correctNumber: 2,
-    bgColor: "from-purple-100 to-blue-100"
+    situation: "Medical appointment"
   },
-  { 
-    key: "image2", 
-    label: "casal assistindo tv juntos", 
-    image: image2Url,
-    placeholder: "👫📺",
-    description: "Casal assistindo televisão juntos no sofá",
+  {
+    id: "C",
+    description: "Woman sneezing with a tissue",
+    imageUrl: "/images/L38IMGC.png",
+    correctNumber: 6,
+    situation: "Cold / flu"
+  },
+  {
+    id: "D",
+    description: "Patient at the hospital",
+    imageUrl: "/images/L38IMGD.png",
     correctNumber: 3,
-    bgColor: "from-indigo-100 to-purple-100"
+    situation: "Hospital care"
   },
+  {
+    id: "E",
+    description: "Woman taking a pill",
+    imageUrl: "/images/L38IMGE.png",
+    correctNumber: 1,
+    situation: "Taking medicine"
+  },
+  {
+    id: "F",
+    description: "Person lying with sleep mask",
+    imageUrl: "/images/L38IMGF.png",
+    correctNumber: 5,
+    situation: "Sick / resting"
+  }
 ];
 
-// Função para embaralhar array
-function shuffleArray<T>(array: T[]): T[] {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
+const AUDIO_SRC = "https://github.com/Sullivan-code/english-audios/raw/main/l38-listenandnumber.mp3";
+const AUDIO_START_OFFSET = 10; // Começar 10 segundos à frente
 
-// ============================================
-// DRILLING PRACTICE I - Substitution Practice (PAST TENSE)
-// ============================================
-const drillingExercises1 = [
+// ==============================
+// DRILLING PRACTICE I - SUBSTITUTION
+// ==============================
+const drillingPracticeI = [
   {
     id: 1,
-    portuguese: "Ele escreveu coisas engraçadas.",
-    english: "He wrote funny things.",
-    audio: "",
+    original: "She takes medicine for her headache.",
+    portuguese: "She takes medicine for her headache.",
     substitutions: [
-      { word: "interessantes", english: "interesting", phrase: "He wrote interesting things.", audio: "" },
-      { word: "importantes", english: "important", phrase: "He wrote important things.", audio: "" }
-    ]
+      { word: "She", options: ["She", "He", "Bruno"] }
+    ],
+    currentText: "She takes medicine for her headache."
   },
   {
     id: 2,
-    portuguese: "Eu pensei que era importante estudar inglês.",
-    english: "I thought it was important to study English.",
-    audio: "",
+    original: "I don't want painkillers, I prefer to drink tea.",
+    portuguese: "I don't want painkillers, I prefer to drink tea.",
     substitutions: [
-      { word: "aprender", english: "to learn", phrase: "I thought it was important to learn English.", audio: "" },
-      { word: "falar", english: "to speak", phrase: "I thought it was important to speak English.", audio: "" }
-    ]
+      { word: "drink tea", options: ["drink tea", "go to sleep", "take a shower"] }
+    ],
+    currentText: "I don't want painkillers, I prefer to drink tea."
   },
   {
     id: 3,
-    portuguese: "Você achou que era engraçado?",
-    english: "Did you think it was funny?",
-    audio: "",
+    original: "We prefer to go to the doctor tomorrow.",
+    portuguese: "We prefer to go to the doctor tomorrow.",
     substitutions: [
-      { word: "difícil", english: "difficult", phrase: "Did you think it was difficult?", audio: "" },
-      { word: "fácil", english: "easy", phrase: "Did you think it was easy?", audio: "" }
-    ]
+      { word: "tomorrow", options: ["tomorrow", "today", "this morning"] }
+    ],
+    currentText: "We prefer to go to the doctor tomorrow."
+  },
+  {
+    id: 4,
+    original: "Do you feel better now?",
+    portuguese: "Do you feel better now?",
+    substitutions: [
+      { word: "You", options: ["You", "He", "She"] }
+    ],
+    currentText: "Do you feel better now?"
+  },
+  {
+    id: 5,
+    original: "I was a teacher.",
+    portuguese: "I was a teacher.",
+    substitutions: [
+      { word: "teacher", options: ["teacher", "dentist", "doctor"] }
+    ],
+    currentText: "I was a teacher."
   }
 ];
 
-// ============================================
-// PAST TENSE EXERCISES - Simple Past
-// ============================================
-const pastTenseExercises = [
-  { id: 1, present: "I think about the problem.", past: "I thought about the problem.", userAnswer: "", audio: "" },
-  { id: 2, present: "They study together every day.", past: "They studied together yesterday.", userAnswer: "", audio: "" },
-  { id: 3, present: "We need to write a story.", past: "We needed to write a story.", userAnswer: "", audio: "" },
-  { id: 4, present: "She has great ideas.", past: "She had great ideas.", userAnswer: "", audio: "" },
-  { id: 5, present: "He goes to the office on Thursdays.", past: "He went to the office last Thursday.", userAnswer: "", audio: "" },
-  { id: 6, present: "She meets everybody on weekends.", past: "She met everybody last weekend.", userAnswer: "", audio: "" },
+// ==============================
+// NEGATIVE PRACTICE
+// ==============================
+const negativePractice = [
+  { id: 1, english: "I take these pills in the morning.", portuguese: "I take these pills in the morning." },
+  { id: 2, english: "He takes medicine for everything.", portuguese: "He takes medicine for everything." },
+  { id: 3, english: "They have to go to the dentist.", portuguese: "They have to go to the dentist." },
+  { id: 4, english: "You have a fever.", portuguese: "You have a fever." },
+  { id: 5, english: "I have a toothache.", portuguese: "I have a toothache." },
+  { id: 6, english: "She needs painkillers.", portuguese: "She needs painkillers." }
 ];
 
-// ============================================
-// PRESENT PERFECT EXERCISES
-// ============================================
-const presentPerfectExercises = [
-  { id: 1, sentence: "I have studied English for five years.", userAnswer: "", audio: "" },
-  { id: 2, sentence: "She has never been to London.", userAnswer: "", audio: "" },
-  { id: 3, sentence: "They have already finished their homework.", userAnswer: "", audio: "" },
-  { id: 4, sentence: "We have just eaten lunch.", userAnswer: "", audio: "" },
-  { id: 5, sentence: "He has written three books.", userAnswer: "", audio: "" },
-  { id: 6, sentence: "Have you ever visited Paris?", userAnswer: "", audio: "" },
+// ==============================
+// DRILLING PRACTICE II - SUBSTITUTION
+// ==============================
+const drillingPracticeII = [
+  {
+    id: 1,
+    original: "I'll need to talk to the doctor.",
+    portuguese: "Eu precisarei.",
+    substitutions: [
+      { word: "doctor", options: ["doctor", "nurse", "teacher"] }
+    ],
+    currentText: "I'll need to talk to the doctor."
+  },
+  {
+    id: 2,
+    original: "She is a great nurse.",
+    portuguese: "She is a great nurse.",
+    substitutions: [
+      { word: "great", options: ["great", "funny", "kind"] }
+    ],
+    currentText: "She is a great nurse."
+  },
+  {
+    id: 3,
+    original: "Did you have a cold?",
+    portuguese: "Você estava com resfriado?",
+    substitutions: [
+      { word: "a cold", options: ["a cold", "a sore throat", "a toothache"] }
+    ],
+    currentText: "Did you have a cold?"
+  },
+  {
+    id: 4,
+    original: "These are my cousins.",
+    portuguese: "These are my cousins.",
+    substitutions: [
+      { word: "cousins", options: ["cousins", "neighbors", "friends"] }
+    ],
+    currentText: "These are my cousins."
+  },
+  {
+    id: 5,
+    original: "They are at the beach together.",
+    portuguese: "They are at the beach together.",
+    substitutions: [
+      { word: "at the beach", options: ["at the beach", "in the park", "at church"] }
+    ],
+    currentText: "They are at the beach together."
+  }
 ];
 
-// ============================================
-// PAST PERFECT EXERCISES
-// ============================================
-const pastPerfectExercises = [
-  { id: 1, sentence: "She had already left when I arrived.", userAnswer: "", audio: "" },
-  { id: 2, sentence: "They had never seen such a beautiful place.", userAnswer: "", audio: "" },
-  { id: 3, sentence: "He had finished his work before the meeting started.", userAnswer: "", audio: "" },
-  { id: 4, sentence: "We had already eaten when they arrived.", userAnswer: "", audio: "" },
-  { id: 5, sentence: "I had never thought about that before.", userAnswer: "", audio: "" },
-  { id: 6, sentence: "Had you ever tried sushi before that day?", userAnswer: "", audio: "" },
+// ==============================
+// AFFIRMATIVE PRACTICE
+// ==============================
+const affirmativePractice = [
+  { id: 1, negative: "They don't like to read about health.", affirmative: "They like to read about health." },
+  { id: 2, negative: "I don't think she has a fever.", affirmative: "I think she has a fever." },
+  { id: 3, negative: "You don't have an appointment at the dentist.", affirmative: "You have an appointment at the dentist." },
+  { id: 4, negative: "I don't take my children to the doctor.", affirmative: "I take my children to the doctor." },
+  { id: 5, negative: "He doesn't need to go to the hospital.", affirmative: "He needs to go to the hospital." },
+  { id: 6, negative: "I don't have to read those reports.", affirmative: "I have to read those reports." }
 ];
 
-// ============================================
-// FUTURE TENSE EXERCISES
-// ============================================
-const futureExercises = [
-  { id: 1, sentence: "I will study English tomorrow.", userAnswer: "", audio: "" },
-  { id: 2, sentence: "She is going to travel next week.", userAnswer: "", audio: "" },
-  { id: 3, sentence: "They will call you later.", userAnswer: "", audio: "" },
-  { id: 4, sentence: "We are going to buy a new car.", userAnswer: "", audio: "" },
-  { id: 5, sentence: "He will arrive at 8 PM.", userAnswer: "", audio: "" },
-  { id: 6, sentence: "Will you come to the party?", userAnswer: "", audio: "" },
+// ==============================
+// INTERROGATIVE PRACTICE
+// ==============================
+const interrogativePractice = [
+  { id: 1, statement: "My neighbor has a cold.", interrogative: "Does my neighbor have a cold?" },
+  { id: 2, statement: "Your friend has to take medicine every day.", interrogative: "Does your friend have to take medicine every day?" },
+  { id: 3, statement: "You think it's good for your health.", interrogative: "Do you think it's good for your health?" },
+  { id: 4, statement: "She needs a painkiller for her sore throat.", interrogative: "Does she need a painkiller for her sore throat?" },
+  { id: 5, statement: "You need to buy this medicine at the drugstore.", interrogative: "Do you need to buy this medicine at the drugstore?" },
+  { id: 6, statement: "He needs to take these pills.", interrogative: "Does he need to take these pills?" }
 ];
 
-// ============================================
-// QUESTIONS IN THE PAST (DID)
-// ============================================
-const pastQuestionsExercises = [
-  { id: 1, statement: "You went to the movies yesterday.", question: "Did you go to the movies yesterday?", userAnswer: "", audio: "" },
-  { id: 2, statement: "She ate pizza for dinner.", question: "Did she eat pizza for dinner?", userAnswer: "", audio: "" },
-  { id: 3, statement: "They played soccer last weekend.", question: "Did they play soccer last weekend?", userAnswer: "", audio: "" },
-  { id: 4, statement: "He woke up early this morning.", question: "Did he wake up early this morning?", userAnswer: "", audio: "" },
-  { id: 5, statement: "We visited our grandparents.", question: "Did we visit our grandparents?", userAnswer: "", audio: "" },
-  { id: 6, statement: "She bought a new dress.", question: "Did she buy a new dress?", userAnswer: "", audio: "" },
-];
+// ==============================
+// FLUENCY - DEMONSTRATIVES
+// ==============================
+const fluencyExercises = {
+  partA: [
+    { id: "a", sentence: "I want to visit that city.", portuguese: "I want to visit that city." },
+    { id: "b", sentence: "They need to take this pill.", portuguese: "They need to take this pill." },
+    { id: "c", sentence: "I want to read that book.", portuguese: "I want to read that book." },
+    { id: "d", sentence: "She wants to buy this backpack.", portuguese: "She wants to buy this backpack." },
+    { id: "e", sentence: "We don't like to talk about that subject.", portuguese: "We don't like to talk about that subject." },
+    { id: "f", sentence: "Do they have a meeting to talk about this project?", portuguese: "Do they have a meeting to talk about this project?" }
+  ],
+  partB: [
+    { id: "a", sentence: "This is my teacher.", portuguese: "This is my teacher." },
+    { id: "b", sentence: "That is my classmate.", portuguese: "That is my classmate." },
+    { id: "c", sentence: "This is her friend.", portuguese: "This is her friend." },
+    { id: "d", sentence: "That is his cell phone.", portuguese: "That is his cell phone." },
+    { id: "e", sentence: "This is my gift.", portuguese: "This is my gift." },
+    { id: "f", sentence: "That is her backpack.", portuguese: "That is her backpack." }
+  ]
+};
 
-// ============================================
-// SPEAK RIGHT NOW CARDS - Questions (All Tenses)
-// ============================================
-const speakCards = [
-  { 
-    id: 1, 
-    question: "What did you do yesterday?", 
-    answer: "Yesterday I studied English and watched a movie.",
-    translation: "O que você fez ontem?",
-    answerTranslation: "Ontem eu estudei inglês e assisti um filme.",
-    audio: ""
-  },
-  { 
-    id: 2, 
-    question: "Have you ever traveled abroad?", 
-    answer: "Yes, I have traveled to the United States.",
-    translation: "Você já viajou para o exterior?",
-    answerTranslation: "Sim, eu viajei para os Estados Unidos.",
-    audio: ""
-  },
-  { 
-    id: 3, 
-    question: "What had you already done before the party started?", 
-    answer: "I had already eaten dinner before the party started.",
-    translation: "O que você já tinha feito antes da festa começar?",
-    answerTranslation: "Eu já tinha jantado antes da festa começar.",
-    audio: ""
-  },
-  { 
-    id: 4, 
-    question: "What will you do next weekend?", 
-    answer: "I will visit my family next weekend.",
-    translation: "O que você fará no próximo fim de semana?",
-    answerTranslation: "Eu visitarei minha família no próximo fim de semana.",
-    audio: ""
-  },
-  { 
-    id: 5, 
-    question: "Did you like the movie?", 
-    answer: "Yes, I liked the movie very much.",
-    translation: "Você gostou do filme?",
-    answerTranslation: "Sim, eu gostei muito do filme.",
-    audio: ""
-  },
-  { 
-    id: 6, 
-    question: "How long have you studied English?", 
-    answer: "I have studied English for three years.",
-    translation: "Há quanto tempo você estuda inglês?",
-    answerTranslation: "Eu estudo inglês há três anos.",
-    audio: ""
-  },
-  { 
-    id: 7, 
-    question: "What are you going to do tomorrow?", 
-    answer: "I am going to work and then go to the gym.",
-    translation: "O que você vai fazer amanhã?",
-    answerTranslation: "Eu vou trabalhar e depois ir para a academia.",
-    audio: ""
-  },
-  { 
-    id: 8, 
-    question: "Had you ever seen that before?", 
-    answer: "No, I had never seen anything like that.",
-    translation: "Você já tinha visto aquilo antes?",
-    answerTranslation: "Não, eu nunca tinha visto nada parecido.",
-    audio: ""
-  },
-  { 
-    id: 9, 
-    question: "Will you help me with this project?", 
-    answer: "Yes, I will help you with the project.",
-    translation: "Você vai me ajudar com este projeto?",
-    answerTranslation: "Sim, eu vou te ajudar com o projeto.",
-    audio: ""
-  },
-  { 
-    id: 10, 
-    question: "Why did you choose to learn English?", 
-    answer: "I chose to learn English because it's important for my career.",
-    translation: "Por que você escolheu aprender inglês?",
-    answerTranslation: "Eu escolhi aprender inglês porque é importante para minha carreira.",
-    audio: ""
-  },
-];
+// ==============================
+// TUNE IN YOUR EARS
+// ==============================
+const tuneInYourEars = {
+  // Vídeo atualizado para o link específico com timestamp
+  videoUrl: "https://www.youtube.com/watch?v=0-GHVzKNCek&t=66s",
+  vocabulary: [
+    { word: "slowly", meaning: "lentamente" },
+    { word: "everyday", meaning: "todo dia" },
+    { word: "speaking", meaning: "fala" },
+    { word: "to translate", meaning: "traduzir" },
+    { word: "why?", meaning: "por que?" },
+    { word: "fast", meaning: "rápido" },
+    { word: "slower", meaning: "mais lento" },
+    { word: "strange", meaning: "estranho" },
+    { word: "as well", meaning: "também" },
+    { word: "your own language", meaning: "sua própria língua" },
+    { word: "learners", meaning: "aprendizes, alunos" },
+    { word: "because", meaning: "porque (de resposta)" },
+    { word: "rhythm", meaning: "ritmo" },
+    { word: "I'm going ...", meaning: "eu estou indo ..." },
+    { word: "immediately", meaning: "imediatamente" },
+    { word: "around you", meaning: "ao seu redor" },
+    { word: "to fold clothes", meaning: "arrumar roupas, dobrar roupas" }
+  ],
+  questions: [
+    "Do you translate sentences all the time?",
+    "Do you understand when people speak fast?",
+    "Do you put the videos slower to understand them?",
+    "How can you train your brain to understand English quickly?",
+    "Do you use English when you're doing simple things?"
+  ],
+  advice: "Describe what you see when you're at home. Use this space here to describe things around you."
+};
 
-// ============================================
-// KEY VOCABULARY - WEATHER & MOOD THEMED (para TUNE IN YOUR EARS)
-// ============================================
-const keyVocabulary = [
-  { word: "a bit", meaning: "um pouco" },
-  { word: "mood", meaning: "temperamento / humor" },
-  { word: "kind of", meaning: "meio que" },
-  { word: "weather", meaning: "clima, tempo" },
-  { word: "walk up someone", meaning: "chegar em alguém" },
-  { word: "summer person", meaning: "uma pessoa que curte o verão" },
-  { word: "cloudy", meaning: "nublado" },
-  { word: "breeze", meaning: "brisa" },
-  { word: "rainy weather", meaning: "clima chuvoso" },
-  { word: "energetic", meaning: "cheio de energia" },
-  { word: "What's the weather like?", meaning: "Como está o tempo? (clima)" },
-  { word: "warm", meaning: "quente de forma confortável" },
-  { word: "hot", meaning: "quente de forma desconfortável" },
-  { word: "autumn", meaning: "outono" },
-  { word: "Nothing beats a clear blue sky", meaning: "nada ganha de um céu azul limpo" },
-  { word: "fair", meaning: "justo" },
-  { word: "It's pouring", meaning: "Está chovendo" },
-  { word: "It gets slushy", meaning: "Fica lamacento" },
-  { word: "Weather forecast", meaning: "Previsão do tempo" },
-  { word: "changing leaves", meaning: "folhas mudando" },
-  { word: "Every cloud has a silver lining", meaning: "Não há mal que não traga algum bem" },
-];
+// ==============================
+// WRAP UP - PLURAL RULE
+// ==============================
+const wrapUpContent = {
+  rule: "A regra do plural em palavras como 'classes' aplica-se a substantivos e adjetivos terminados em -s, -z, -x, -sch ou -ch. Nesses casos, acrescenta-se -es ao final para formar o plural.",
+  examples: [
+    { singular: "class", plural: "classes" },
+    { singular: "box", plural: "boxes" },
+    { singular: "buzz", plural: "buzzes" },
+    { singular: "church", plural: "churches" },
+    { singular: "wish", plural: "wishes" },
+    { singular: "bus", plural: "buses" },
+    { singular: "quiz", plural: "quizzes" },
+    { singular: "tax", plural: "taxes" }
+  ]
+};
 
-// ============================================
-// VIDEO QUESTIONS ABOUT WEATHER, MOODS, SEASONS
-// ============================================
-const videoQuestions = [
-  { id: "video-1", question: "What's your favorite type of weather? Why?", isPersonal: true },
-  { id: "video-2", question: "Are you a summer person or do you prefer colder seasons?", isPersonal: true },
-  { id: "video-3", question: "How does rainy weather affect your mood?", isPersonal: true },
-  { id: "video-4", question: "Do you prefer warm or hot weather? Explain the difference.", isPersonal: true },
-  { id: "video-5", question: "What do you like to do on a cloudy day with a nice breeze?", isPersonal: true },
-  { id: "video-6", question: "How do changing leaves in autumn make you feel?", isPersonal: true },
-  { id: "video-7", question: "Have you ever walked up to someone on a sunny day? Describe the situation.", isPersonal: true },
-  { id: "video-8", question: "What does 'Every cloud has a silver lining' mean to you? Give an example.", isPersonal: true },
-];
-
-// ============================================
-// COMPONENTES AUXILIARES
-// ============================================
-
+// ==============================
+// COMPONENT: CENTRALIZED AUDIO PLAYER
+// ==============================
 interface AudioPlayerProps {
-  src: string;
-  compact?: boolean;
-  textToSpeak?: string;
+  audioSrc: string;
+  startOffset?: number; // Offset em segundos para iniciar a reprodução
 }
 
-const AudioPlayer = ({ src, compact = false, textToSpeak = "" }: AudioPlayerProps) => {
-  const [isSpeaking, setIsSpeaking] = useState(false);
+const CentralizedAudioPlayer = ({ audioSrc, startOffset = 0 }: AudioPlayerProps) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false); // Para controlar se o offset já foi aplicado
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const progressRef = useRef<HTMLDivElement | null>(null);
 
-  const speakWithWebSpeech = () => {
-    const text = textToSpeak;
-    if (!text && !src) return;
-    
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.9;
-      utterance.pitch = 1.1;
-      
-      const voices = window.speechSynthesis.getVoices();
-      const femaleVoice = voices.find(voice => 
-        voice.lang === 'en-US' && 
-        (voice.name.includes('Google UK Female') || 
-         voice.name.includes('Samantha') ||
-         voice.name.includes('Female'))
-      );
-      if (femaleVoice) utterance.voice = femaleVoice;
-      
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
-      
-      window.speechSynthesis.speak(utterance);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const audio = new Audio(audioSrc);
+      audioRef.current = audio;
+
+      const handleLoadedMetadata = () => {
+        setDuration(audio.duration);
+        // Se tiver offset e ainda não foi aplicado, define o tempo inicial
+        if (startOffset > 0 && !hasStarted && audio.duration > startOffset) {
+          audio.currentTime = startOffset;
+          setProgress((startOffset / audio.duration) * 100);
+          setHasStarted(true);
+        }
+      };
+
+      const handleTimeUpdate = () => {
+        if (!isDragging) {
+          setProgress((audio.currentTime / audio.duration) * 100);
+        }
+      };
+
+      const handleEnded = () => {
+        setIsPlaying(false);
+        setProgress(0);
+        setHasStarted(false); // Reset para próximo play
+      };
+
+      audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.addEventListener('timeupdate', handleTimeUpdate);
+      audio.addEventListener('ended', handleEnded);
+
+      return () => {
+        audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        audio.removeEventListener('timeupdate', handleTimeUpdate);
+        audio.removeEventListener('ended', handleEnded);
+        audio.pause();
+        audio.src = '';
+      };
     }
-  };
+  }, [audioSrc, startOffset, hasStarted]);
 
   const togglePlayPause = () => {
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
     } else {
-      speakWithWebSpeech();
+      // Se o áudio terminou, reinicia do offset
+      if (audioRef.current.currentTime === audioRef.current.duration) {
+        audioRef.current.currentTime = startOffset > 0 ? Math.min(startOffset, audioRef.current.duration) : 0;
+        setProgress((audioRef.current.currentTime / audioRef.current.duration) * 100);
+      }
+      audioRef.current.play();
+      setIsPlaying(true);
     }
   };
 
+  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!audioRef.current || !progressRef.current) return;
+
+    const rect = progressRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const newTime = x * audioRef.current.duration;
+    
+    audioRef.current.currentTime = newTime;
+    setProgress(x * 100);
+  };
+
+  const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    handleProgressClick(e);
+  };
+
+  const handleDragMove = (e: MouseEvent) => {
+    if (!isDragging || !audioRef.current || !progressRef.current) return;
+
+    const rect = progressRef.current.getBoundingClientRect();
+    const x = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+    const newTime = x * audioRef.current.duration;
+    
+    audioRef.current.currentTime = newTime;
+    setProgress(x * 100);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    if (audioRef.current && isPlaying) {
+      audioRef.current.play();
+    }
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleDragMove);
+      window.addEventListener('mouseup', handleDragEnd);
+    } else {
+      window.removeEventListener('mousemove', handleDragMove);
+      window.removeEventListener('mouseup', handleDragEnd);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleDragMove);
+      window.removeEventListener('mouseup', handleDragEnd);
+    };
+  }, [isDragging]);
+
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return '0:00';
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
   return (
-    <div className={`flex items-center gap-2 ${compact ? "ml-2" : ""}`}>
-      <button 
-        onClick={togglePlayPause} 
-        className={`${compact ? "p-1" : "p-2"} bg-blue-500 text-white rounded-full hover:bg-blue-600 transition`}
-        title="Listen (Text-to-Speech)"
-      >
-        {isSpeaking ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
-      </button>
+    <div className="bg-white p-4 rounded-xl shadow-md border-2 border-emerald-200 max-w-md mx-auto">
+      <div className="flex items-center gap-4">
+        <button
+          onClick={togglePlayPause}
+          className="p-3 text-white rounded-full hover:opacity-85 transition-all shadow-md flex-shrink-0"
+          style={{ backgroundColor: LESSON_THEME_COLOR }}
+        >
+          {isPlaying ? <Pause size={24} /> : <Play size={24} />}
+        </button>
+
+        <div className="flex-1">
+          <div 
+            ref={progressRef}
+            className="relative h-2 bg-gray-200 rounded-full cursor-pointer"
+            onClick={handleProgressClick}
+          >
+            <div
+              className="absolute h-full rounded-full transition-all duration-100"
+              style={{ 
+                width: `${progress}%`,
+                backgroundColor: LESSON_THEME_COLOR
+              }}
+            />
+            <div
+              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white border-2 shadow-md cursor-grab active:cursor-grabbing"
+              style={{ 
+                left: `calc(${progress}% - 8px)`,
+                borderColor: LESSON_THEME_COLOR,
+                display: progress > 0 ? 'block' : 'none'
+              }}
+              onMouseDown={handleDragStart}
+            />
+          </div>
+          <div className="flex justify-between mt-1">
+            <span className="text-xs text-gray-500 font-mono">
+              {formatTime(audioRef.current?.currentTime || 0)}
+            </span>
+            <span className="text-xs text-gray-500 font-mono">
+              {formatTime(duration)}
+            </span>
+          </div>
+          {startOffset > 0 && (
+            <div className="text-xs text-emerald-600 mt-1 text-center font-medium">
+              ⏱ Inicia em {startOffset}s
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 
-interface AnswerResultProps {
-  isCorrect: boolean;
-  correctAnswer: string;
+// ==============================
+// COMPONENT: SUBSTITUTION DRILL
+// ==============================
+interface SubstitutionDrillProps {
+  exercise: any;
+  onUpdate: (id: number, newText: string) => void;
 }
 
-const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
-  if (isCorrect) {
-    return (
-      <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md">
-        <Check size={16} className="text-green-600" />
-        <span className="text-sm text-green-700 font-medium">Correct! ✓</span>
-      </div>
-    );
-  }
+const SubstitutionDrill = ({ exercise, onUpdate }: SubstitutionDrillProps) => {
+  const [currentText, setCurrentText] = useState(exercise.currentText);
+  const [showPortuguese, setShowPortuguese] = useState(false);
+
+  const handleSubstitution = (oldWord: string, newWord: string) => {
+    let newText = currentText;
+    const regex = new RegExp(`\\b${oldWord}\\b`, 'gi');
+    newText = newText.replace(regex, newWord);
+    setCurrentText(newText);
+    onUpdate(exercise.id, newText);
+  };
+
+  const getCurrentWord = (subOption: any) => {
+    for (const opt of subOption.options) {
+      if (currentText.includes(opt)) {
+        return opt;
+      }
+    }
+    return subOption.options[0];
+  };
+
+  const resetToOriginal = () => {
+    setCurrentText(exercise.original);
+    onUpdate(exercise.id, exercise.original);
+  };
 
   return (
-    <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-md">
-      <XCircle size={16} className="text-red-600" />
-      <span className="text-sm text-red-700">
-        <span className="font-medium">Expected:</span> {correctAnswer}
-      </span>
+    <div className="bg-white p-5 rounded-xl border-2 border-opacity-50 shadow-md hover:shadow-lg transition-all"
+         style={{ borderColor: `${LESSON_THEME_COLOR}40` }}>
+      
+      <div className="flex justify-between items-start mb-3">
+        <button
+          onClick={() => setShowPortuguese(!showPortuguese)}
+          className="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full transition"
+        >
+          {showPortuguese ? "🇧🇷 Show English" : "🇺🇸 Show Portuguese"}
+        </button>
+        <button
+          onClick={resetToOriginal}
+          className="text-xs px-3 py-1 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition flex items-center gap-1"
+        >
+          <RotateCcw size={14} /> Reset
+        </button>
+      </div>
+
+      <div className="mb-4">
+        <p className="text-lg font-bold text-gray-800 mb-2">
+          {currentText}
+        </p>
+        {showPortuguese && (
+          <p className="text-md text-gray-600 italic border-l-4 pl-3" 
+             style={{ borderColor: LESSON_THEME_COLOR }}>
+            {exercise.portuguese}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-3">
+        {exercise.substitutions.map((sub: any, idx: number) => {
+          const currentWord = getCurrentWord(sub);
+          return (
+            <div key={idx} className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-medium text-gray-600">Replace "{currentWord}":</span>
+              <div className="flex flex-wrap gap-2">
+                {sub.options.map((option: string, optIdx: number) => (
+                  <button
+                    key={optIdx}
+                    onClick={() => handleSubstitution(currentWord, option)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                      currentWord === option 
+                        ? 'bg-opacity-20 text-white cursor-default' 
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                    }`}
+                    style={currentWord === option ? { backgroundColor: LESSON_THEME_COLOR, color: 'white' } : {}}
+                    disabled={currentWord === option}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
 
-// Component SpeakSentence para TTS
-const SpeakSentence = ({ text, children, className = "" }: { text: string; children?: React.ReactNode; className?: string }) => {
-  const speak = () => {
-    const speechText = children && typeof children === 'string' ? children : text;
-    if (speechText && typeof window !== 'undefined') {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(speechText);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.85;
-      utterance.pitch = 1.0;
-      window.speechSynthesis.speak(utterance);
-    }
+// ==============================
+// COMPONENT: TRANSFORMATION EXERCISE
+// ==============================
+interface TransformationExerciseProps {
+  title: string;
+  items: any[];
+  transformType: 'negative' | 'affirmative' | 'interrogative';
+  onAnswerChange: (id: number, value: string) => void;
+  answers: Record<number, string>;
+  onCheck: (id: number, userAnswer: string, correctAnswer: string) => void;
+  showResults: Record<number, boolean>;
+  correctness: Record<number, boolean>;
+}
+
+const TransformationExercise = ({ 
+  title, items, transformType, onAnswerChange, answers, onCheck, showResults, correctness 
+}: TransformationExerciseProps) => {
+  const getOriginalText = (item: any) => {
+    if (transformType === 'negative') return item.english;
+    if (transformType === 'affirmative') return item.negative;
+    return item.statement;
+  };
+
+  const getCorrectAnswer = (item: any) => {
+    if (transformType === 'negative') return `don't/doesn't ${item.english.toLowerCase()}`;
+    if (transformType === 'affirmative') return item.affirmative;
+    return item.interrogative;
+  };
+
+  const getInstruction = () => {
+    if (transformType === 'negative') return "Transform into negative using 'do not / don't' or 'does not / doesn't':";
+    if (transformType === 'affirmative') return "Transform into affirmative:";
+    return "Transform into interrogative (question form):";
   };
 
   return (
-    <button onClick={speak} className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors ${className}`}>
-      {children || text}
-      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
-    </button>
+    <div className="bg-white p-5 rounded-xl border-2 shadow-md" style={{ borderColor: `${LESSON_THEME_COLOR}30` }}>
+      <h3 className="text-xl font-bold mb-4" style={{ color: LESSON_THEME_COLOR }}>{title}</h3>
+      <p className="text-gray-600 mb-5 italic text-sm">{getInstruction()}</p>
+      
+      <div className="space-y-5">
+        {items.map((item) => (
+          <div key={item.id} className="border-b pb-4 last:border-b-0">
+            <p className="font-medium text-gray-800 mb-2">
+              {getOriginalText(item)}
+            </p>
+            <textarea
+              value={answers[item.id] || ""}
+              onChange={(e) => onAnswerChange(item.id, e.target.value)}
+              placeholder="Type your transformed sentence here..."
+              className="w-full p-2 border-2 rounded-lg focus:ring-2 focus:outline-none resize-none text-sm"
+              style={{ borderColor: `${LESSON_THEME_COLOR}30` }}
+              rows={2}
+            />
+            <div className="flex gap-3 mt-2">
+              <button
+                onClick={() => onCheck(item.id, answers[item.id] || "", getCorrectAnswer(item))}
+                className="text-white px-4 py-1.5 rounded-lg transition font-medium text-sm hover:opacity-90"
+                style={{ backgroundColor: LESSON_THEME_COLOR }}
+              >
+                Check Answer
+              </button>
+            </div>
+            {showResults[item.id] && (
+              <div className={`mt-3 p-3 rounded-lg ${correctness[item.id] ? 'bg-green-100 border-green-300' : 'bg-red-100 border-red-300'} border`}>
+                <div className="flex items-start gap-2">
+                  {correctness[item.id] ? (
+                    <Check className="text-green-600 flex-shrink-0" size={18} />
+                  ) : (
+                    <X className="text-red-600 flex-shrink-0" size={18} />
+                  )}
+                  <div>
+                    <p className={`font-medium text-sm ${correctness[item.id] ? 'text-green-700' : 'text-red-700'}`}>
+                      {correctness[item.id] ? 'Correct!' : 'Not quite right.'}
+                    </p>
+                    {!correctness[item.id] && (
+                      <p className="text-gray-700 text-xs">
+                        <span className="font-medium">Suggested answer:</span> {getCorrectAnswer(item)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
-// ============================================
-// COMPONENTE DE EXPLICAÇÃO - QUESTIONS IN THE PAST (DID)
-// ============================================
-const DidExplanation = () => {
+// ==============================
+// COMPONENT: FLUENCY CARD
+// ==============================
+const FluencyCard = ({ item, index }: { item: any; index: number }) => {
+  const [showPortuguese, setShowPortuguese] = useState(false);
+  
   return (
-    <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-6 mb-6 border-2 border-pink-300 shadow-md">
-      <div className="flex items-center gap-3 mb-4">
-        <span className="text-4xl">🤔</span>
-        <h3 className="text-2xl font-bold text-pink-700">Como fazer perguntas no PASSADO usando o DID?</h3>
+    <div className="bg-white p-4 rounded-xl border-2 shadow-md hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
+         style={{ borderColor: `${LESSON_THEME_COLOR}30` }}>
+      <div className="absolute -top-10 -right-10 w-20 h-20 rounded-full opacity-5 group-hover:opacity-10 transition-opacity"
+           style={{ backgroundColor: LESSON_THEME_COLOR }} />
+      
+      <div className="flex justify-between items-start mb-2 relative">
+        <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: `${LESSON_THEME_COLOR}20`, color: LESSON_THEME_COLOR }}>
+          {index + 1}
+        </span>
+        <button
+          onClick={() => setShowPortuguese(!showPortuguese)}
+          className="text-xs px-2 py-0.5 bg-gray-100 hover:bg-gray-200 rounded-full transition"
+        >
+          {showPortuguese ? "🇧🇷" : "🇺🇸"}
+        </button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Coluna 1 - Regra Básica */}
-        <div className="bg-white p-5 rounded-lg shadow-sm border border-pink-200">
-          <h4 className="font-bold text-pink-600 text-lg mb-3 flex items-center gap-2">
-            <span className="text-2xl">📝</span> A REGRA É SIMPLES:
-          </h4>
-          <div className="space-y-3 text-gray-700">
-            <p className="flex items-start gap-2">
-              <span className="text-pink-500 font-bold text-xl">1.</span>
-              <span><strong className="text-pink-600">DID</strong> vem no <strong>INÍCIO</strong> da pergunta</span>
-            </p>
-            <p className="flex items-start gap-2">
-              <span className="text-pink-500 font-bold text-xl">2.</span>
-              <span>O verbo volta para o <strong className="text-pink-600">INFINITIVO</strong> (sem -ed ou -d)</span>
-            </p>
-            <p className="flex items-start gap-2">
-              <span className="text-pink-500 font-bold text-xl">3.</span>
-              <span>Depois vem o <strong className="text-pink-600">SUJEITO</strong> e o resto da frase</span>
-            </p>
+      <div className="relative">
+        <p className="text-base font-medium text-gray-800 mb-2 leading-relaxed">
+          {item.sentence}
+        </p>
+        {showPortuguese && (
+          <p className="text-gray-600 italic text-sm mt-1 border-l-4 pl-2" style={{ borderColor: LESSON_THEME_COLOR }}>
+            {item.portuguese}
+          </p>
+        )}
+      </div>
+      
+      <div className="mt-3 pt-2 border-t border-gray-100 flex items-center gap-2">
+        <Volume2 size={14} className="text-gray-400" />
+        <span className="text-xs text-gray-400">Click play to listen</span>
+      </div>
+    </div>
+  );
+};
+
+// ==============================
+// COMPONENT: FLUENCY DEMONSTRATIVE EXPLANATION
+// ==============================
+const FluencyDemonstrativeExplanation = () => {
+  return (
+    <div className="bg-gradient-to-br from-cyan-50 to-sky-50 rounded-xl p-5 border-2 border-cyan-200 shadow-inner">
+      <h4 className="text-lg font-bold text-cyan-800 mb-3 flex items-center gap-2">
+        <BookOpen size={18} /> Understanding <span className="text-emerald-600">This</span> & <span className="text-orange-500">That</span>
+      </h4>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-cyan-200">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-2xl">👆</span>
+            <h5 className="font-bold text-cyan-700">THIS / THESE</h5>
+            <span className="text-xs bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full">Near</span>
           </div>
-          
-          <div className="mt-4 p-3 bg-pink-100 rounded-lg border border-pink-300">
-            <p className="text-sm text-pink-800 font-medium">
-              💡 <strong>Fórmula Mágica:</strong> 
-              <span className="block text-center text-lg font-bold text-pink-700 mt-1">
-                DID + Sujeito + Verbo no Infinitivo + Complemento?
-              </span>
-            </p>
-          </div>
+          <p className="text-sm text-gray-600 mb-2">Use for things <strong>close</strong> to the speaker:</p>
+          <ul className="space-y-1 text-sm">
+            <li className="flex items-center gap-2">
+              <span className="text-emerald-500">•</span>
+              <span><span className="font-bold text-emerald-600">This</span> is my book. (I'm holding it)</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-emerald-500">•</span>
+              <span><span className="font-bold text-emerald-600">These</span> are my keys. (They're in my hand)</span>
+            </li>
+          </ul>
         </div>
 
-        {/* Coluna 2 - Exemplos */}
-        <div className="bg-white p-5 rounded-lg shadow-sm border border-pink-200">
-          <h4 className="font-bold text-pink-600 text-lg mb-3 flex items-center gap-2">
-            <span className="text-2xl">✨</span> EXEMPLOS PRÁTICOS:
-          </h4>
-          <div className="space-y-4">
-            <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-              <p className="text-sm text-gray-500">Afirmação:</p>
-              <p className="text-gray-700">You <strong className="text-green-600">went</strong> to the movies yesterday.</p>
-              <p className="text-sm text-gray-500 mt-2">Pergunta com DID:</p>
-              <p className="text-pink-600 font-bold">Did you <strong className="text-pink-700">go</strong> to the movies yesterday?</p>
-              <p className="text-xs text-gray-500 mt-1">👆 Veja: went → go (volta ao infinitivo)</p>
-            </div>
-            
-            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-              <p className="text-sm text-gray-500">Afirmação:</p>
-              <p className="text-gray-700">She <strong className="text-blue-600">ate</strong> pizza for dinner.</p>
-              <p className="text-sm text-gray-500 mt-2">Pergunta com DID:</p>
-              <p className="text-pink-600 font-bold">Did she <strong className="text-pink-700">eat</strong> pizza for dinner?</p>
-              <p className="text-xs text-gray-500 mt-1">👆 Veja: ate → eat (volta ao infinitivo)</p>
-            </div>
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-orange-200">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-2xl">👉</span>
+            <h5 className="font-bold text-orange-600">THAT / THOSE</h5>
+            <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">Far</span>
           </div>
+          <p className="text-sm text-gray-600 mb-2">Use for things <strong>far</strong> from the speaker:</p>
+          <ul className="space-y-1 text-sm">
+            <li className="flex items-center gap-2">
+              <span className="text-orange-500">•</span>
+              <span><span className="font-bold text-orange-500">That</span> is my car. (It's across the street)</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-orange-500">•</span>
+              <span><span className="font-bold text-orange-500">Those</span> are my neighbors. (They're far away)</span>
+            </li>
+          </ul>
         </div>
       </div>
 
-      {/* Dica Extra */}
-      <div className="mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
-        <p className="text-yellow-800 flex items-start gap-2">
-          <span className="text-2xl">🎯</span>
-          <span>
-            <strong>DICA DE OURO:</strong> O <strong className="text-pink-600">DID</strong> já é o "passado" da frase, 
-            então o verbo principal NÃO precisa estar no passado! É como se o DID "carregasse" o passado para você. 🎒
-          </span>
+      <div className="mt-4 p-3 bg-cyan-100 rounded-lg border border-cyan-300">
+        <p className="text-cyan-800 text-sm flex items-start gap-2">
+          <span className="text-lg">💡</span>
+          <span><strong>Memory trick:</strong> <span className="text-emerald-600 font-bold">This/These</span> have a <span className="text-emerald-600">'t'</span> for <span className="text-emerald-600">"touch"</span> (near). 
+          <span className="text-orange-500 font-bold ml-2">That/Those</span> have a <span className="text-orange-500">'t'</span> for <span className="text-orange-500">"there"</span> (far).</span>
         </p>
       </div>
     </div>
   );
 };
 
-// ============================================
-// COMPONENTE PRINCIPAL - LESSON 36
-// ============================================
-
-export default function Lesson36() {
+// ==============================
+// MAIN COMPONENT
+// ==============================
+export default function Lesson38Health() {
   const router = useRouter();
   
-  // Estados para as respostas do Listen
-  const [listenAnswers, setListenAnswers] = useState<Record<string, number | null>>({});
-  const [showListenResults, setShowListenResults] = useState<Record<string, boolean>>({});
-  const [listenResults, setListenResults] = useState<Record<string, boolean>>({});
-  
-  // Estados para os exercícios de drilling 1
-  const [drilling1Sentences, setDrilling1Sentences] = useState<Record<number, string>>(
-    Object.fromEntries(drillingExercises1.map(ex => [ex.id, ex.english]))
-  );
-  
-  // Estados para os exercícios de passado
-  const [pastTenseEx, setPastTenseEx] = useState(pastTenseExercises);
-  const [pastTenseResults, setPastTenseResults] = useState<Record<number, boolean>>({});
-  const [showPastTenseResults, setShowPastTenseResults] = useState<Record<number, boolean>>({});
-  
-  // Estados para present perfect
-  const [presentPerfectEx, setPresentPerfectEx] = useState(presentPerfectExercises);
-  const [presentPerfectResults, setPresentPerfectResults] = useState<Record<number, boolean>>({});
-  const [showPresentPerfectResults, setShowPresentPerfectResults] = useState<Record<number, boolean>>({});
-  
-  // Estados para past perfect
-  const [pastPerfectEx, setPastPerfectEx] = useState(pastPerfectExercises);
-  const [pastPerfectResults, setPastPerfectResults] = useState<Record<number, boolean>>({});
-  const [showPastPerfectResults, setShowPastPerfectResults] = useState<Record<number, boolean>>({});
-  
-  // Estados para future
-  const [futureEx, setFutureEx] = useState(futureExercises);
-  const [futureResults, setFutureResults] = useState<Record<number, boolean>>({});
-  const [showFutureResults, setShowFutureResults] = useState<Record<number, boolean>>({});
-  
-  // Estados para past questions
-  const [pastQuestionsEx, setPastQuestionsEx] = useState(pastQuestionsExercises);
-  const [pastQuestionsResults, setPastQuestionsResults] = useState<Record<number, boolean>>({});
-  const [showPastQuestionsResults, setShowPastQuestionsResults] = useState<Record<number, boolean>>({});
-  
-  // Estado para o Speak Right Now
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [speakUserAnswer, setSpeakUserAnswer] = useState("");
-  const [showSpeakResult, setShowSpeakResult] = useState(false);
-  const [speakResult, setSpeakResult] = useState(false);
-  
-  // Estados para TUNE IN YOUR EARS
-  const [videoAnswers, setVideoAnswers] = useState<Record<string, string>>({});
-  const [showVideoResults, setShowVideoResults] = useState<Record<string, boolean>>({});
-  
-  // Estados para controle de expansão das seções
-  const [sections, setSections] = useState({
-    listen: true,
+  const [expandedSections, setExpandedSections] = useState({
+    listenAndNumber: true,
     drilling1: true,
-    pastTense: true,
-    presentPerfect: true,
-    pastPerfect: true,
-    future: true,
-    pastQuestions: true,
-    speak: true,
-    tuneIn: true
+    negative: true,
+    drilling2: true,
+    affirmative: true,
+    interrogative: true,
+    fluency: true,
+    tuneIn: true,
+    wrapUp: true
   });
 
-  // Estado para armazenar a sequência de números que o aluno selecionou
-  const [imageSequence, setImageSequence] = useState<number[]>([]);
-  const [showFinalSequenceResult, setShowFinalSequenceResult] = useState(false);
-  const [isSequenceCorrect, setIsSequenceCorrect] = useState(false);
+  const [userNumbers, setUserNumbers] = useState<Record<string, string>>({});
+  const [listenResults, setListenResults] = useState<Record<string, boolean>>({});
+  const [showListenAnswers, setShowListenAnswers] = useState(false);
+
+  const [drilling1Texts, setDrilling1Texts] = useState<Record<number, string>>({});
+  const [drilling2Texts, setDrilling2Texts] = useState<Record<number, string>>({});
   
-  // Estado para armazenar a lista de itens embaralhados
-  const [shuffledListenItems, setShuffledListenItems] = useState(listenItemsOriginal);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [negativeAnswers, setNegativeAnswers] = useState<Record<number, string>>({});
+  const [affirmativeAnswers, setAffirmativeAnswers] = useState<Record<number, string>>({});
+  const [interrogativeAnswers, setInterrogativeAnswers] = useState<Record<number, string>>({});
+  
+  const [negativeResults, setNegativeResults] = useState<Record<number, boolean>>({});
+  const [affirmativeResults, setAffirmativeResults] = useState<Record<number, boolean>>({});
+  const [interrogativeResults, setInterrogativeResults] = useState<Record<number, boolean>>({});
+  const [negativeShow, setNegativeShow] = useState<Record<number, boolean>>({});
+  const [affirmativeShow, setAffirmativeShow] = useState<Record<number, boolean>>({});
+  const [interrogativeShow, setInterrogativeShow] = useState<Record<number, boolean>>({});
 
-  // Embaralhar as imagens
-  useEffect(() => {
-    setShuffledListenItems(shuffleArray(listenItemsOriginal));
-    setIsHydrated(true);
-  }, []);
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
-  // Persistência
-  useEffect(() => {
-    const savedAnswers = localStorage.getItem("lesson36Answers");
-    if (savedAnswers) {
-      try {
-        const data = JSON.parse(savedAnswers);
-        if (data.listenAnswers) setListenAnswers(data.listenAnswers);
-        if (data.showListenResults) setShowListenResults(data.showListenResults);
-        if (data.listenResults) setListenResults(data.listenResults);
-        if (data.drilling1Sentences) setDrilling1Sentences(data.drilling1Sentences);
-        if (data.pastTenseEx) setPastTenseEx(data.pastTenseEx);
-        if (data.pastTenseResults) setPastTenseResults(data.pastTenseResults);
-        if (data.showPastTenseResults) setShowPastTenseResults(data.showPastTenseResults);
-        if (data.presentPerfectEx) setPresentPerfectEx(data.presentPerfectEx);
-        if (data.presentPerfectResults) setPresentPerfectResults(data.presentPerfectResults);
-        if (data.showPresentPerfectResults) setShowPresentPerfectResults(data.showPresentPerfectResults);
-        if (data.pastPerfectEx) setPastPerfectEx(data.pastPerfectEx);
-        if (data.pastPerfectResults) setPastPerfectResults(data.pastPerfectResults);
-        if (data.showPastPerfectResults) setShowPastPerfectResults(data.showPastPerfectResults);
-        if (data.futureEx) setFutureEx(data.futureEx);
-        if (data.futureResults) setFutureResults(data.futureResults);
-        if (data.showFutureResults) setShowFutureResults(data.showFutureResults);
-        if (data.pastQuestionsEx) setPastQuestionsEx(data.pastQuestionsEx);
-        if (data.pastQuestionsResults) setPastQuestionsResults(data.pastQuestionsResults);
-        if (data.showPastQuestionsResults) setShowPastQuestionsResults(data.showPastQuestionsResults);
-        if (data.currentCardIndex !== undefined) setCurrentCardIndex(data.currentCardIndex);
-        if (data.speakUserAnswer) setSpeakUserAnswer(data.speakUserAnswer);
-        if (data.showSpeakResult !== undefined) setShowSpeakResult(data.showSpeakResult);
-        if (data.speakResult !== undefined) setSpeakResult(data.speakResult);
-        if (data.sections) setSections(data.sections);
-        if (data.imageSequence) setImageSequence(data.imageSequence);
-        if (data.videoAnswers) setVideoAnswers(data.videoAnswers);
-      } catch (error) {
-        console.error("Erro ao carregar respostas salvas:", error);
-      }
-    }
-  }, []);
+  const handleUserNumberChange = (id: string, value: string) => {
+    setUserNumbers(prev => ({ ...prev, [id]: value }));
+  };
+
+  const checkListenAndNumber = () => {
+    const results: Record<string, boolean> = {};
+    listenAndNumberImages.forEach(img => {
+      const userNum = parseInt(userNumbers[img.id] || "");
+      results[img.id] = userNum === img.correctNumber;
+    });
+    setListenResults(results);
+    setShowListenAnswers(true);
+  };
+
+  const clearListenAndNumber = () => {
+    setUserNumbers({});
+    setListenResults({});
+    setShowListenAnswers(false);
+  };
+
+  const handleDrilling1Update = (id: number, newText: string) => {
+    setDrilling1Texts(prev => ({ ...prev, [id]: newText }));
+  };
+
+  const handleDrilling2Update = (id: number, newText: string) => {
+    setDrilling2Texts(prev => ({ ...prev, [id]: newText }));
+  };
+
+  const handleNegativeAnswerChange = (id: number, value: string) => {
+    setNegativeAnswers(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleAffirmativeAnswerChange = (id: number, value: string) => {
+    setAffirmativeAnswers(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleInterrogativeAnswerChange = (id: number, value: string) => {
+    setInterrogativeAnswers(prev => ({ ...prev, [id]: value }));
+  };
+
+  const checkNegative = (id: number, userAnswer: string, correctAnswer: string) => {
+    const normalizedUser = userAnswer.toLowerCase().replace(/[^a-z]/g, '');
+    const normalizedCorrect = correctAnswer.toLowerCase().replace(/[^a-z]/g, '');
+    const isCorrect = normalizedUser === normalizedCorrect || 
+      (normalizedUser.length > 5 && normalizedCorrect.includes(normalizedUser));
+    setNegativeResults(prev => ({ ...prev, [id]: isCorrect }));
+    setNegativeShow(prev => ({ ...prev, [id]: true }));
+  };
+
+  const checkAffirmative = (id: number, userAnswer: string, correctAnswer: string) => {
+    const normalizedUser = userAnswer.toLowerCase().replace(/[^a-z]/g, '');
+    const normalizedCorrect = correctAnswer.toLowerCase().replace(/[^a-z]/g, '');
+    const isCorrect = normalizedUser === normalizedCorrect;
+    setAffirmativeResults(prev => ({ ...prev, [id]: isCorrect }));
+    setAffirmativeShow(prev => ({ ...prev, [id]: true }));
+  };
+
+  const checkInterrogative = (id: number, userAnswer: string, correctAnswer: string) => {
+    const normalizedUser = userAnswer.toLowerCase().replace(/[^a-z\s]/g, '').trim();
+    const normalizedCorrect = correctAnswer.toLowerCase().replace(/[^a-z\s]/g, '').trim();
+    const isCorrect = normalizedUser === normalizedCorrect;
+    setInterrogativeResults(prev => ({ ...prev, [id]: isCorrect }));
+    setInterrogativeShow(prev => ({ ...prev, [id]: true }));
+  };
 
   const saveAllAnswers = () => {
-    const data = {
-      listenAnswers,
-      showListenResults,
-      listenResults,
-      drilling1Sentences,
-      pastTenseEx,
-      pastTenseResults,
-      showPastTenseResults,
-      presentPerfectEx,
-      presentPerfectResults,
-      showPresentPerfectResults,
-      pastPerfectEx,
-      pastPerfectResults,
-      showPastPerfectResults,
-      futureEx,
-      futureResults,
-      showFutureResults,
-      pastQuestionsEx,
-      pastQuestionsResults,
-      showPastQuestionsResults,
-      currentCardIndex,
-      speakUserAnswer,
-      showSpeakResult,
-      speakResult,
-      sections,
-      imageSequence,
-      videoAnswers,
-      lastUpdated: new Date().toISOString(),
-      lessonName: "Lesson 36 - Past, Present Perfect, Past Perfect, Future",
+    const allData = {
+      userNumbers,
+      drilling1Texts,
+      drilling2Texts,
+      negativeAnswers,
+      affirmativeAnswers,
+      interrogativeAnswers,
+      timestamp: new Date().toISOString()
     };
-    
-    try {
-      localStorage.setItem("lesson36Answers", JSON.stringify(data));
-      alert("✅ Todas as suas respostas foram salvas com sucesso!");
-    } catch (error) {
-      console.error("Erro ao salvar respostas:", error);
-      alert("❌ Erro ao salvar as respostas.");
-    }
+    localStorage.setItem(`lesson${LESSON_NUMBER}_answers`, JSON.stringify(allData));
+    alert("All your answers have been saved locally!");
   };
 
   const clearAllAnswers = () => {
-    if (confirm("Tem certeza que deseja limpar TODAS as suas respostas?")) {
-      setListenAnswers({});
-      setShowListenResults({});
+    if (confirm("Are you sure you want to clear all answers?")) {
+      setUserNumbers({});
+      setDrilling1Texts({});
+      setDrilling2Texts({});
+      setNegativeAnswers({});
+      setAffirmativeAnswers({});
+      setInterrogativeAnswers({});
       setListenResults({});
-      setDrilling1Sentences(Object.fromEntries(drillingExercises1.map(ex => [ex.id, ex.english])));
-      setPastTenseEx(pastTenseExercises.map(ex => ({ ...ex, userAnswer: "" })));
-      setPastTenseResults({});
-      setShowPastTenseResults({});
-      setPresentPerfectEx(presentPerfectExercises.map(ex => ({ ...ex, userAnswer: "" })));
-      setPresentPerfectResults({});
-      setShowPresentPerfectResults({});
-      setPastPerfectEx(pastPerfectExercises.map(ex => ({ ...ex, userAnswer: "" })));
-      setPastPerfectResults({});
-      setShowPastPerfectResults({});
-      setFutureEx(futureExercises.map(ex => ({ ...ex, userAnswer: "" })));
-      setFutureResults({});
-      setShowFutureResults({});
-      setPastQuestionsEx(pastQuestionsExercises.map(ex => ({ ...ex, userAnswer: "" })));
-      setPastQuestionsResults({});
-      setShowPastQuestionsResults({});
-      setCurrentCardIndex(0);
-      setSpeakUserAnswer("");
-      setShowSpeakResult(false);
-      setSpeakResult(false);
-      setImageSequence([]);
-      setShowFinalSequenceResult(false);
-      setVideoAnswers({});
-      setShowVideoResults({});
-      localStorage.removeItem("lesson36Answers");
-      alert("Todas as respostas foram limpas.");
+      setNegativeResults({});
+      setAffirmativeResults({});
+      setInterrogativeResults({});
+      setNegativeShow({});
+      setAffirmativeShow({});
+      setInterrogativeShow({});
+      setShowListenAnswers(false);
+      alert("All answers have been cleared.");
     }
   };
 
-  const toggleSection = (section: keyof typeof sections) => {
-    setSections(prev => ({ ...prev, [section]: !prev[section] }));
+  const shareOnWhatsApp = () => {
+    const text = `I just completed Lesson ${LESSON_NUMBER}: ${LESSON_TITLE} - ${LESSON_SUBTITLE}! Check out my progress.`;
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
   };
 
-  const handleImageClickForSequence = (correctNumber: number) => {
-    if (imageSequence.includes(correctNumber)) {
-      alert(`⚠️ O número ${correctNumber} já foi adicionado à sua sequência! Escolha uma imagem diferente.`);
-      return;
-    }
-    setImageSequence(prev => [...prev, correctNumber]);
-    setShowFinalSequenceResult(false);
-  };
-
-  const resetSequence = () => {
-    setImageSequence([]);
-    setShowFinalSequenceResult(false);
-    setIsSequenceCorrect(false);
-  };
-
-  const checkSequence = () => {
-    const correctSequence = [1, 2, 3];
+  // Função para extrair o ID do vídeo do YouTube e o timestamp
+  const getYouTubeEmbedUrl = (url: string) => {
+    // Extrai o ID do vídeo
+    const videoIdMatch = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})(?:[&?]|$)/);
+    const videoId = videoIdMatch ? videoIdMatch[1] : '';
     
-    if (imageSequence.length !== 3) {
-      alert(`⚠️ Você precisa selecionar as 3 imagens na ordem correta! Você selecionou ${imageSequence.length} imagem(ns).`);
-      return;
-    }
+    // Extrai o timestamp (t=66s)
+    const timestampMatch = url.match(/[?&]t=(\d+)s/);
+    const timestamp = timestampMatch ? timestampMatch[1] : '';
     
-    let isCorrect = true;
-    for (let i = 0; i < 3; i++) {
-      if (imageSequence[i] !== correctSequence[i]) {
-        isCorrect = false;
-        break;
-      }
-    }
-    
-    setIsSequenceCorrect(isCorrect);
-    setShowFinalSequenceResult(true);
+    return `https://www.youtube.com/embed/${videoId}${timestamp ? `?start=${timestamp}` : ''}`;
   };
-
-  const handleListenSelect = (key: string, number: number) => {
-    setListenAnswers(prev => ({ ...prev, [key]: number }));
-    setShowListenResults(prev => ({ ...prev, [key]: false }));
-  };
-
-  const handleListenCheck = (key: string, correctNumber: number) => {
-    const isCorrect = listenAnswers[key] === correctNumber;
-    setListenResults(prev => ({ ...prev, [key]: isCorrect }));
-    setShowListenResults(prev => ({ ...prev, [key]: true }));
-  };
-
-  const handlePastTenseChange = (id: number, value: string) => {
-    setPastTenseEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
-    setShowPastTenseResults(prev => ({ ...prev, [id]: false }));
-  };
-
-  const handlePastTenseCheck = (id: number, correctPast: string) => {
-    const exercise = pastTenseEx.find(ex => ex.id === id);
-    if (exercise) {
-      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctPast.toLowerCase().trim();
-      setPastTenseResults(prev => ({ ...prev, [id]: isCorrect }));
-      setShowPastTenseResults(prev => ({ ...prev, [id]: true }));
-    }
-  };
-
-  const handlePresentPerfectChange = (id: number, value: string) => {
-    setPresentPerfectEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
-    setShowPresentPerfectResults(prev => ({ ...prev, [id]: false }));
-  };
-
-  const handlePresentPerfectCheck = (id: number, correctSentence: string) => {
-    const exercise = presentPerfectEx.find(ex => ex.id === id);
-    if (exercise) {
-      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctSentence.toLowerCase().trim();
-      setPresentPerfectResults(prev => ({ ...prev, [id]: isCorrect }));
-      setShowPresentPerfectResults(prev => ({ ...prev, [id]: true }));
-    }
-  };
-
-  const handlePastPerfectChange = (id: number, value: string) => {
-    setPastPerfectEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
-    setShowPastPerfectResults(prev => ({ ...prev, [id]: false }));
-  };
-
-  const handlePastPerfectCheck = (id: number, correctSentence: string) => {
-    const exercise = pastPerfectEx.find(ex => ex.id === id);
-    if (exercise) {
-      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctSentence.toLowerCase().trim();
-      setPastPerfectResults(prev => ({ ...prev, [id]: isCorrect }));
-      setShowPastPerfectResults(prev => ({ ...prev, [id]: true }));
-    }
-  };
-
-  const handleFutureChange = (id: number, value: string) => {
-    setFutureEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
-    setShowFutureResults(prev => ({ ...prev, [id]: false }));
-  };
-
-  const handleFutureCheck = (id: number, correctSentence: string) => {
-    const exercise = futureEx.find(ex => ex.id === id);
-    if (exercise) {
-      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctSentence.toLowerCase().trim();
-      setFutureResults(prev => ({ ...prev, [id]: isCorrect }));
-      setShowFutureResults(prev => ({ ...prev, [id]: true }));
-    }
-  };
-
-  const handlePastQuestionsChange = (id: number, value: string) => {
-    setPastQuestionsEx(prev => prev.map(ex => ex.id === id ? { ...ex, userAnswer: value } : ex));
-    setShowPastQuestionsResults(prev => ({ ...prev, [id]: false }));
-  };
-
-  const handlePastQuestionsCheck = (id: number, correctQuestion: string) => {
-    const exercise = pastQuestionsEx.find(ex => ex.id === id);
-    if (exercise) {
-      const isCorrect = exercise.userAnswer.toLowerCase().trim() === correctQuestion.toLowerCase().trim();
-      setPastQuestionsResults(prev => ({ ...prev, [id]: isCorrect }));
-      setShowPastQuestionsResults(prev => ({ ...prev, [id]: true }));
-    }
-  };
-
-  const handleSpeakCheck = () => {
-    const currentCard = speakCards[currentCardIndex];
-    const isCorrect = speakUserAnswer.toLowerCase().includes(currentCard.answer.toLowerCase()) || 
-                     speakUserAnswer.length > 15;
-    setSpeakResult(isCorrect);
-    setShowSpeakResult(true);
-  };
-
-  const nextCard = () => {
-    setCurrentCardIndex((prev) => (prev + 1) % speakCards.length);
-    setSpeakUserAnswer("");
-    setShowSpeakResult(false);
-  };
-
-  const prevCard = () => {
-    setCurrentCardIndex((prev) => (prev - 1 + speakCards.length) % speakCards.length);
-    setSpeakUserAnswer("");
-    setShowSpeakResult(false);
-  };
-
-  const handleVideoAnswerChange = (id: string, value: string) => {
-    setVideoAnswers(prev => ({ ...prev, [id]: value }));
-    setShowVideoResults(prev => ({ ...prev, [id]: false }));
-  };
-
-  const checkVideoAnswer = (id: string) => {
-    setShowVideoResults(prev => ({ ...prev, [id]: true }));
-  };
-
-  const currentCard = speakCards[currentCardIndex];
-
-  if (!isHydrated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading lesson...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=2069&auto=format&fit=crop')` }}>
-      <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
+    <div className="min-h-screen py-12 px-4 md:px-6 bg-cover bg-center bg-fixed relative"
+         style={{ backgroundImage: `url('${BACKGROUND_IMAGE}')` }}>
+      
+      <div className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm"></div>
+      
+      <div className="relative max-w-6xl mx-auto bg-white bg-opacity-95 rounded-3xl p-6 md:p-8 shadow-2xl">
         
         {/* HEADER */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">📘 LESSON 36</h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            🎧 PAST TENSES, PRESENT PERFECT, PAST PERFECT & FUTURE
+        <div className="text-center mb-12">
+          <div className="inline-block p-2 rounded-full mb-3" style={{ backgroundColor: `${LESSON_THEME_COLOR}20` }}>
+            <Heart size={40} style={{ color: LESSON_THEME_COLOR }} />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: LESSON_THEME_COLOR }}>
+            LESSON {LESSON_NUMBER}
+          </h1>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-3 text-gray-800">{LESSON_TITLE}</h2>
+          <h3 className="text-lg text-gray-600 mb-3">{LESSON_SUBTITLE}</h3>
+          <p className="text-md text-gray-700 max-w-3xl mx-auto">
+            Practice listening, substitution drills, transformations, and fluency with demonstratives.
           </p>
-          <p className="text-md text-gray-500 mt-2">Master all tenses with audio! 🎵</p>
+          
+          <div className="flex flex-wrap justify-center gap-3 mt-6">
+            <button
+              onClick={saveAllAnswers}
+              className="flex items-center gap-2 px-5 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition shadow-lg text-sm"
+            >
+              <Check size={18} /> Save Progress
+            </button>
+            <button
+              onClick={clearAllAnswers}
+              className="flex items-center gap-2 px-5 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition shadow-lg text-sm"
+            >
+              <X size={18} /> Clear All
+            </button>
+            <button
+              onClick={shareOnWhatsApp}
+              className="flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition shadow-lg text-sm"
+            >
+              <MessageCircle size={18} /> Share on WhatsApp
+            </button>
+          </div>
         </div>
 
-        {/* ============================================ */}
-        {/* LISTEN AND NUMBER - Imagens */}
-        {/* ============================================ */}
-        <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-purple-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🎧 LISTEN AND NUMBER</h2>
-              <button onClick={() => toggleSection('listen')} className="ml-4 p-2 rounded-full hover:bg-purple-700 transition">
-                {sections.listen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-            <div className="flex items-center gap-3">
-              <AudioPlayer src="" textToSpeak="Number one: a smiling woman. Number two: a man thinking about life. Number three: a couple watching TV together." />
-              <audio id="listenAudio" src="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/L36listening.mp3" />
-              <button 
-                onClick={() => {
-                  const audio = document.getElementById('listenAudio') as HTMLAudioElement;
-                  if (audio) {
-                    if (audio.paused) {
-                      audio.play();
-                    } else {
-                      audio.pause();
-                      audio.currentTime = 0;
-                    }
-                  }
-                }}
-                className="p-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition"
-                title="Play Listening Audio"
-              >
-                <Play size={16} />
-              </button>
-            </div>
+        {/* PART 1: LISTEN AND NUMBER */}
+        <div className="mb-12 bg-gradient-to-br from-emerald-50 to-teal-50 border-2 rounded-2xl shadow-lg overflow-hidden"
+             style={{ borderColor: `${LESSON_THEME_COLOR}30` }}>
+          <div className="py-3 px-6 flex justify-between items-center"
+               style={{ background: `linear-gradient(135deg, ${LESSON_THEME_COLOR}, ${LESSON_THEME_COLOR}dd)` }}>
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <Headphones size={20} /> PART 1 — LISTEN AND NUMBER
+            </h2>
+            <button 
+              onClick={() => toggleSection('listenAndNumber')}
+              className="p-1 rounded-full hover:bg-white/20 transition"
+            >
+              {expandedSections.listenAndNumber ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+            </button>
           </div>
-
-          {sections.listen && (
-            <div className="p-8">
-              <p className="text-purple-700 mb-4 italic">
-                👂 Ouça o áudio descrevendo as imagens. Clique nas imagens <strong className="font-bold">NA ORDEM QUE VOCÊ OUVE</strong> (1 → 2 → 3).
+          
+          {expandedSections.listenAndNumber && (
+            <div className="p-6">
+              <p className="text-gray-700 mb-4 text-center text-md">
+                🎧 Listen to the audio and number the pictures according to what you hear.
               </p>
-
-              {/* Imagens embaralhadas */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {shuffledListenItems.map((item) => (
-                  <div 
-                    key={item.key} 
-                    className="bg-white rounded-xl shadow-md border-2 border-purple-200 overflow-hidden cursor-pointer transition-all hover:shadow-xl hover:scale-105"
-                    onClick={() => handleImageClickForSequence(item.correctNumber)}
-                  >
-                    <div className={`relative h-64 w-full bg-gradient-to-br ${item.bgColor} flex items-center justify-center overflow-hidden`}>
-                      <img
-                        src={item.image}
-                        alt={item.label}
-                        className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+              <p className="text-center text-xs text-gray-500 mb-6 italic">
+                Use the player below to listen. O áudio inicia em {AUDIO_START_OFFSET} segundos. 
+                Arraste a barra de progresso para rewind ou fast-forward.
+              </p>
+              
+              {/* Centralized Audio Player */}
+              <div className="mb-8">
+                <CentralizedAudioPlayer audioSrc={AUDIO_SRC} startOffset={AUDIO_START_OFFSET} />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {listenAndNumberImages.map((img) => (
+                  <div key={img.id} className="bg-white rounded-xl overflow-hidden shadow-md border-2" style={{ borderColor: `${LESSON_THEME_COLOR}20` }}>
+                    <div className="relative h-40 w-full">
+                      <Image
+                        src={img.imageUrl}
+                        alt={img.description}
+                        fill
+                        className="object-cover"
                       />
                     </div>
-                    <div className="p-4 text-center bg-white">
-                      <p className="text-md font-bold text-purple-700">{item.label}</p>
-                      <p className="text-xs text-gray-500 mt-1">{item.description}</p>
-                      <div className="mt-2 inline-block bg-purple-100 text-purple-600 text-xs px-2 py-1 rounded-full">
-                        Clique para adicionar à sequência
+                    <div className="p-3">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-bold text-md" style={{ color: LESSON_THEME_COLOR }}>Image {img.id}</span>
+                        <span className="text-xs text-gray-400">{img.situation}</span>
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Exibição da sequência - SEM MOSTRAR A RESPOSTA CORRETA ATÉ VERIFICAR */}
-              <div className="bg-purple-100 rounded-xl p-5 mb-6">
-                <h3 className="font-bold text-purple-800 mb-3">📋 Sua sequência (ordem que você clicou):</h3>
-                <div className="flex flex-wrap gap-3 items-center">
-                  {imageSequence.length === 0 ? (
-                    <span className="text-gray-500 italic">Nenhuma imagem selecionada ainda</span>
-                  ) : (
-                    imageSequence.map((num, idx) => {
-                      const item = listenItemsOriginal.find(i => i.correctNumber === num);
-                      return (
-                        <span key={idx} className="bg-white px-4 py-2 rounded-full shadow-sm border border-purple-300">
-                          <span className="font-bold text-purple-700">{idx + 1}º:</span> {item?.label}
-                        </span>
-                      );
-                    })
-                  )}
-                </div>
-                
-                <div className="flex gap-3 mt-4">
-                  <button
-                    onClick={checkSequence}
-                    className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition font-semibold"
-                  >
-                    ✓ Verificar Sequência Completa
-                  </button>
-                  <button
-                    onClick={resetSequence}
-                    className="bg-gray-400 text-white px-6 py-2 rounded-lg hover:bg-gray-500 transition font-semibold"
-                  >
-                    🔄 Resetar Sequência
-                  </button>
-                </div>
-
-                {showFinalSequenceResult && (
-                  <div className={`mt-4 p-3 rounded-lg ${isSequenceCorrect ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
-                    {isSequenceCorrect ? (
-                      <div className="flex items-center gap-2">
-                        <Check size={24} />
-                        <span className="font-bold">✅ PARABÉNS! Você acertou a sequência correta!</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <XCircle size={24} />
-                        <span className="font-bold">❌ Sequência incorreta. Tente novamente!</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Identificação individual */}
-              <div className="border-t-2 border-purple-200 pt-6 mt-4">
-                <h3 className="font-bold text-purple-800 mb-4">🎯 Ou identifique cada imagem individualmente:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {shuffledListenItems.map((item) => (
-                    <div key={`ind-${item.key}`} className="bg-white p-4 rounded-lg border border-purple-200">
-                      <div className="w-full h-32 mb-3 rounded-lg overflow-hidden relative">
-                        <img src={item.image} alt={item.label} className="w-full h-full object-cover" />
-                      </div>
-                      <p className="text-sm font-medium text-gray-700 text-center mb-3">{item.label}</p>
-                      
-                      <div className="mb-3">
-                        <p className="text-xs text-gray-500 mb-1 text-center">Qual número esta imagem representa?</p>
-                        <div className="flex gap-2 justify-center">
-                          {[1, 2, 3].map((num) => (
-                            <button
-                              key={num}
-                              onClick={() => handleListenSelect(item.key, num)}
-                              className={`w-10 h-10 rounded-full font-bold transition ${
-                                listenAnswers[item.key] === num
-                                  ? 'bg-purple-600 text-white'
-                                  : 'bg-gray-200 text-gray-700 hover:bg-purple-200'
-                              }`}
-                            >
-                              {num}
-                            </button>
+                      <div className="flex items-center gap-3">
+                        <label className="text-gray-600 font-medium text-sm">Number:</label>
+                        <select
+                          value={userNumbers[img.id] || ""}
+                          onChange={(e) => handleUserNumberChange(img.id, e.target.value)}
+                          className="w-16 px-2 py-1 border-2 rounded-lg focus:outline-none text-sm"
+                          style={{ borderColor: `${LESSON_THEME_COLOR}50` }}
+                        >
+                          <option value="">—</option>
+                          {[1,2,3,4,5,6].map(num => (
+                            <option key={num} value={num}>{num}</option>
                           ))}
-                        </div>
+                        </select>
+                        {showListenAnswers && listenResults[img.id] !== undefined && (
+                          <span className={`ml-2 ${listenResults[img.id] ? 'text-green-600' : 'text-red-500'}`}>
+                            {listenResults[img.id] ? <Check size={16} /> : <X size={16} />}
+                          </span>
+                        )}
                       </div>
-                      
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleListenCheck(item.key, item.correctNumber)}
-                          className="flex-1 bg-purple-500 text-white py-2 rounded-md hover:bg-purple-600 transition"
-                          disabled={listenAnswers[item.key] === undefined}
-                        >
-                          Check
-                        </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex justify-center gap-4 mt-6">
+                <button
+                  onClick={checkListenAndNumber}
+                  className="px-5 py-2 text-white rounded-full font-medium hover:opacity-90 transition text-sm"
+                  style={{ backgroundColor: LESSON_THEME_COLOR }}
+                >
+                  Check Answers
+                </button>
+                <button
+                  onClick={clearListenAndNumber}
+                  className="px-5 py-2 bg-gray-500 text-white rounded-full font-medium hover:bg-gray-600 transition text-sm"
+                >
+                  Clear All Numbers
+                </button>
+              </div>
+              
+              {showListenAnswers && (
+                <div className="mt-6 p-4 bg-gray-100 rounded-xl border-2 border-gray-300">
+                  <h3 className="text-lg font-bold text-gray-700 mb-3 flex items-center gap-2">
+                    <CheckCircle size={18} style={{ color: LESSON_THEME_COLOR }} /> Correct Answers:
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {listenAndNumberImages.map((img) => (
+                      <div key={img.id} className="flex justify-between items-center p-2 bg-white rounded-lg text-sm">
+                        <span className="font-medium">Image {img.id}:</span>
+                        <span className="text-emerald-600 font-bold">→ {img.correctNumber}</span>
+                        <span className="text-gray-500 text-xs">({img.situation})</span>
                       </div>
-                      
-                      {showListenResults[item.key] && (
-                        <div className="mt-2">
-                          <AnswerResult isCorrect={listenResults[item.key] || false} correctAnswer={item.correctNumber.toString()} />
-                        </div>
-                      )}
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* PART 2: DRILLING PRACTICE I */}
+        <div className="mb-12 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 rounded-2xl shadow-lg overflow-hidden"
+             style={{ borderColor: "#3b82f6" }}>
+          <div className="py-3 px-6 flex justify-between items-center bg-gradient-to-r from-blue-500 to-indigo-500">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <span className="text-2xl">🔄</span> PART 2 — DRILLING PRACTICE I
+            </h2>
+            <button onClick={() => toggleSection('drilling1')} className="p-1 rounded-full hover:bg-white/20">
+              {expandedSections.drilling1 ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+            </button>
+          </div>
+          {expandedSections.drilling1 && (
+            <div className="p-6">
+              <p className="text-gray-600 mb-5 italic text-sm">Substitute the words as indicated:</p>
+              <div className="space-y-5">
+                {drillingPracticeI.map((ex) => (
+                  <SubstitutionDrill key={ex.id} exercise={ex} onUpdate={handleDrilling1Update} />
+                ))}
+              </div>
+              <div className="mt-6 p-4 bg-blue-100 rounded-xl border border-blue-300">
+                <h4 className="font-bold text-blue-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
+                <div className="space-y-3">
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">🔮 <strong>Future (WILL):</strong></p>
+                    <p className="text-green-600">• I will take these pills tomorrow morning.</p>
+                    <p className="text-green-600">• She will talk to the doctor about her symptoms.</p>
+                    <p className="text-green-600">• Will you go to the hospital if the pain continues?</p>
+                    <p className="text-red-500">• He won't (will not) forget to take his medicine.</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">📅 <strong>Past (DIDN'T - Negative):</strong></p>
+                    <p className="text-red-500">• I didn't take my vitamins yesterday.</p>
+                    <p className="text-red-500">• She didn't feel well after eating that.</p>
+                    <p className="text-blue-600">❓ Didn't you see the doctor last week?</p>
+                    <p className="text-blue-600">❓ Why didn't he call the nurse?</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* PART 3: CHANGE INTO NEGATIVE */}
+        <div className="mb-12 bg-gradient-to-br from-red-50 to-rose-50 border-2 rounded-2xl shadow-lg overflow-hidden"
+             style={{ borderColor: "#ef4444" }}>
+          <div className="py-3 px-6 flex justify-between items-center bg-gradient-to-r from-red-500 to-rose-500">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <span className="text-2xl">❌</span> PART 3 — CHANGE INTO NEGATIVE
+            </h2>
+            <button onClick={() => toggleSection('negative')} className="p-1 rounded-full hover:bg-white/20">
+              {expandedSections.negative ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+            </button>
+          </div>
+          {expandedSections.negative && (
+            <div className="p-6">
+              <TransformationExercise
+                title="Negative Transformation"
+                items={negativePractice}
+                transformType="negative"
+                onAnswerChange={handleNegativeAnswerChange}
+                answers={negativeAnswers}
+                onCheck={checkNegative}
+                showResults={negativeShow}
+                correctness={negativeResults}
+              />
+              <div className="mt-5 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                <p className="text-yellow-700 text-xs">💡 Tip: Use "do not / don't" or "does not / doesn't"</p>
+              </div>
+              <div className="mt-6 p-4 bg-red-100 rounded-xl border border-red-300">
+                <h4 className="font-bold text-red-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
+                <div className="space-y-3">
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">🔮 <strong>Future (WILL):</strong></p>
+                    <p className="text-green-600">• I will take these pills in the morning tomorrow.</p>
+                    <p className="text-green-600">• She will go to the dentist next Monday.</p>
+                    <p className="text-green-600">• Will they have to take medicine every day?</p>
+                    <p className="text-red-500">• He won't need painkillers after the treatment.</p>
+                    <p className="text-blue-600">❓ Will you feel better after resting?</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">📅 <strong>Past (DIDN'T - Negative):</strong></p>
+                    <p className="text-red-500">• I didn't take these pills yesterday morning.</p>
+                    <p className="text-red-500">• She didn't have a fever last night.</p>
+                    <p className="text-red-500">• They didn't go to the dentist last month.</p>
+                    <p className="text-blue-600">❓ Didn't you have a toothache last week?</p>
+                    <p className="text-blue-600">❓ Why didn't she need painkillers after surgery?</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* PART 4: DRILLING PRACTICE II */}
+        <div className="mb-12 bg-gradient-to-br from-purple-50 to-violet-50 border-2 rounded-2xl shadow-lg overflow-hidden"
+             style={{ borderColor: "#8b5cf6" }}>
+          <div className="py-3 px-6 flex justify-between items-center bg-gradient-to-r from-purple-500 to-violet-500">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <span className="text-2xl">🔄</span> PART 4 — DRILLING PRACTICE II
+            </h2>
+            <button onClick={() => toggleSection('drilling2')} className="p-1 rounded-full hover:bg-white/20">
+              {expandedSections.drilling2 ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+            </button>
+          </div>
+          {expandedSections.drilling2 && (
+            <div className="p-6">
+              <div className="space-y-5">
+                {drillingPracticeII.map((ex) => (
+                  <SubstitutionDrill key={ex.id} exercise={ex} onUpdate={handleDrilling2Update} />
+                ))}
+              </div>
+              <div className="mt-6 p-4 bg-purple-100 rounded-xl border border-purple-300">
+                <h4 className="font-bold text-purple-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
+                <div className="space-y-3">
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">🔮 <strong>Future (WILL):</strong></p>
+                    <p className="text-green-600">• I will still need to talk to the doctor next week.</p>
+                    <p className="text-green-600">• She will be a great nurse one day.</p>
+                    <p className="text-green-600">• Will you have a cold if you go outside without a coat?</p>
+                    <p className="text-red-500">• These won't be my cousins after the wedding.</p>
+                    <p className="text-blue-600">❓ Will they be at the beach together next summer?</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">📅 <strong>Past (DIDN'T - Negative):</strong></p>
+                    <p className="text-red-500">• I didn't need to talk to the doctor yesterday.</p>
+                    <p className="text-red-500">• She wasn't a great nurse at that hospital.</p>
+                    <p className="text-red-500">• You didn't have a cold last winter.</p>
+                    <p className="text-blue-600">❓ Didn't you say these were your cousins?</p>
+                    <p className="text-blue-600">❓ Why didn't they go to the beach together?</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* PART 5: CHANGE INTO AFFIRMATIVE */}
+        <div className="mb-12 bg-gradient-to-br from-green-50 to-emerald-50 border-2 rounded-2xl shadow-lg overflow-hidden"
+             style={{ borderColor: "#10b981" }}>
+          <div className="py-3 px-6 flex justify-between items-center bg-gradient-to-r from-green-500 to-emerald-500">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <span className="text-2xl">➕</span> PART 5 — CHANGE INTO AFFIRMATIVE
+            </h2>
+            <button onClick={() => toggleSection('affirmative')} className="p-1 rounded-full hover:bg-white/20">
+              {expandedSections.affirmative ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+            </button>
+          </div>
+          {expandedSections.affirmative && (
+            <div className="p-6">
+              <TransformationExercise
+                title="Affirmative Transformation"
+                items={affirmativePractice}
+                transformType="affirmative"
+                onAnswerChange={handleAffirmativeAnswerChange}
+                answers={affirmativeAnswers}
+                onCheck={checkAffirmative}
+                showResults={affirmativeShow}
+                correctness={affirmativeResults}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* PART 6: CHANGE INTO INTERROGATIVE */}
+        <div className="mb-12 bg-gradient-to-br from-yellow-50 to-amber-50 border-2 rounded-2xl shadow-lg overflow-hidden"
+             style={{ borderColor: "#f59e0b" }}>
+          <div className="py-3 px-6 flex justify-between items-center bg-gradient-to-r from-yellow-500 to-amber-500">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <span className="text-2xl">❓</span> PART 6 — CHANGE INTO INTERROGATIVE
+            </h2>
+            <button onClick={() => toggleSection('interrogative')} className="p-1 rounded-full hover:bg-white/20">
+              {expandedSections.interrogative ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+            </button>
+          </div>
+          {expandedSections.interrogative && (
+            <div className="p-6">
+              <TransformationExercise
+                title="Interrogative Transformation"
+                items={interrogativePractice}
+                transformType="interrogative"
+                onAnswerChange={handleInterrogativeAnswerChange}
+                answers={interrogativeAnswers}
+                onCheck={checkInterrogative}
+                showResults={interrogativeShow}
+                correctness={interrogativeResults}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* PART 7: FLUENCY - DEMONSTRATIVES */}
+        <div className="mb-12 bg-gradient-to-br from-cyan-50 to-sky-50 border-2 rounded-2xl shadow-lg overflow-hidden"
+             style={{ borderColor: "#06b6d4" }}>
+          <div className="py-3 px-6 flex justify-between items-center bg-gradient-to-r from-cyan-500 to-sky-500">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <span className="text-2xl">💬</span> PART 7 — FLUENCY (Demonstratives)
+            </h2>
+            <button onClick={() => toggleSection('fluency')} className="p-1 rounded-full hover:bg-white/20">
+              {expandedSections.fluency ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+            </button>
+          </div>
+          {expandedSections.fluency && (
+            <div className="p-6">
+              <FluencyDemonstrativeExplanation />
+              
+              <div className="mt-6 p-3 bg-cyan-100 rounded-lg border border-cyan-300">
+                <p className="text-cyan-800 text-sm">📘 <strong>Model:</strong> I need to talk to that nurse → I need to talk to those nurses / This is my brother → These are my brothers</p>
+              </div>
+              
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-bold text-cyan-700 mb-3 flex items-center gap-2">
+                    <span className="text-emerald-500">❶</span> Part A
+                  </h3>
+                  <div className="space-y-3">
+                    {fluencyExercises.partA.map((item, idx) => (
+                      <FluencyCard key={item.id} item={item} index={idx} />
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-bold text-cyan-700 mb-3 flex items-center gap-2">
+                    <span className="text-orange-500">❷</span> Part B
+                  </h3>
+                  <div className="space-y-3">
+                    {fluencyExercises.partB.map((item, idx) => (
+                      <FluencyCard key={item.id} item={item} index={idx} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 p-3 bg-cyan-100 rounded-lg border border-cyan-300">
+                <h4 className="font-bold text-cyan-800 text-sm mb-1">🎯 Practice Tip:</h4>
+                <p className="text-cyan-700 text-sm">Practice saying these sentences out loud. Pay attention to the difference between <span className="font-bold text-emerald-600">this/these</span> (near) and <span className="font-bold text-orange-500">that/those</span> (far).</p>
+              </div>
+              <div className="mt-6 p-4 bg-cyan-100 rounded-xl border border-cyan-300">
+                <h4 className="font-bold text-cyan-800 mb-3">➕ EXTRA: Future & Past with WILL and DIDN'T</h4>
+                <div className="space-y-3">
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">🔮 <strong>Future (WILL):</strong></p>
+                    <p className="text-green-600">• I will visit that city next year.</p>
+                    <p className="text-green-600">• They will need to take this pill after surgery.</p>
+                    <p className="text-green-600">• Will you read that book about health?</p>
+                    <p className="text-red-500">• She won't buy this backpack for the trip.</p>
+                    <p className="text-blue-600">❓ Will we talk about that subject in class?</p>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg">
+                    <p className="font-medium text-gray-800">📅 <strong>Past (DIDN'T - Negative):</strong></p>
+                    <p className="text-red-500">• I didn't visit that city last summer.</p>
+                    <p className="text-red-500">• They didn't need to take this pill yesterday.</p>
+                    <p className="text-red-500">• She didn't read that book last month.</p>
+                    <p className="text-blue-600">❓ Didn't you buy this backpack last year?</p>
+                    <p className="text-blue-600">❓ Why didn't they talk about that subject?</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* PART 8: TUNE IN YOUR EARS */}
+        <div className="mb-12 bg-gradient-to-br from-orange-50 to-amber-50 border-2 rounded-2xl shadow-lg overflow-hidden"
+             style={{ borderColor: "#f97316" }}>
+          <div className="py-3 px-6 flex justify-between items-center bg-gradient-to-r from-orange-500 to-amber-500">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <Youtube size={20} /> PART 8 — TUNE IN YOUR EARS
+            </h2>
+            <button onClick={() => toggleSection('tuneIn')} className="p-1 rounded-full hover:bg-white/20">
+              {expandedSections.tuneIn ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+            </button>
+          </div>
+          {expandedSections.tuneIn && (
+            <div className="p-6">
+              <div className="mb-5">
+                <p className="text-gray-700 mb-3 text-md font-medium">🎬 Watch the video and improve your listening skills:</p>
+                <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-hidden shadow-md">
+                  <iframe 
+                    src={getYouTubeEmbedUrl(tuneInYourEars.videoUrl)}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-80 md:h-96 rounded-xl"
+                  ></iframe>
+                </div>
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  ⏱ O vídeo inicia em 1:06 (66 segundos)
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+                <div className="bg-white p-4 rounded-xl shadow-md border border-orange-200">
+                  <h3 className="text-md font-bold text-orange-600 mb-3 flex items-center gap-2">
+                    <BookOpen size={16} /> Key Vocabulary
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    {tuneInYourEars.vocabulary.map((item, idx) => (
+                      <div key={idx} className="flex justify-between border-b border-gray-100 py-1">
+                        <span className="font-medium text-gray-800">{item.word}</span>
+                        <span className="text-gray-500 text-xs">— {item.meaning}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl shadow-md border border-orange-200">
+                  <h3 className="text-md font-bold text-orange-600 mb-3 flex items-center gap-2">
+                    <HelpCircle size={16} /> Questions to Reflect
+                  </h3>
+                  <ul className="space-y-2 text-sm">
+                    {tuneInYourEars.questions.map((q, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-orange-500 font-bold">•</span>
+                        <span className="text-gray-700">{q}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                    <p className="text-amber-700 text-sm font-medium">💡 Advice:</p>
+                    <p className="text-amber-600 text-sm">{tuneInYourEars.advice}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* PART 9: WRAP UP */}
+        <div className="mb-12 bg-gradient-to-br from-pink-50 to-rose-50 border-2 rounded-2xl shadow-lg overflow-hidden"
+             style={{ borderColor: "#ec4899" }}>
+          <div className="py-3 px-6 flex justify-between items-center bg-gradient-to-r from-pink-500 to-rose-500">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <span className="text-2xl">📝</span> PART 9 — WRAP UP!
+            </h2>
+            <button onClick={() => toggleSection('wrapUp')} className="p-1 rounded-full hover:bg-white/20">
+              {expandedSections.wrapUp ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+            </button>
+          </div>
+          {expandedSections.wrapUp && (
+            <div className="p-6">
+              <div className="bg-white rounded-xl p-5 shadow-md border-2" style={{ borderColor: "#ec489930" }}>
+                <div className="text-center mb-4">
+                  <div className="inline-block p-2 rounded-full bg-pink-100 mb-2">
+                    <span className="text-2xl">📚</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800">Plural Rule: Words ending in -s, -z, -x, -sch, -ch</h3>
+                </div>
+                
+                <p className="text-gray-700 text-center mb-4">
+                  {wrapUpContent.rule}
+                </p>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                  {wrapUpContent.examples.map((ex, idx) => (
+                    <div key={idx} className="bg-pink-50 rounded-lg p-3 text-center border border-pink-200">
+                      <p className="font-bold text-pink-700">{ex.singular}</p>
+                      <p className="text-gray-600">→</p>
+                      <p className="font-bold text-emerald-600">{ex.plural}</p>
                     </div>
                   ))}
                 </div>
-              </div>
-              
-              <div className="mt-6 bg-purple-100 rounded-xl p-4">
-                <h3 className="font-bold text-purple-800">🎭 Role-play Activity:</h3>
-                <p className="text-purple-700 text-sm mt-1">
-                  Work in pairs. Based on the images, create a short dialogue about what each person is doing or thinking.
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================ */}
-        {/* SUBSTITUTION PRACTICE - PAST TENSE */}
-        {/* ============================================ */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 Substitution Practice (Past Tense)</h2>
-              <button onClick={() => toggleSection('drilling1')} className="ml-4 p-2 rounded-full hover:bg-blue-700 transition">
-                {sections.drilling1 ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.drilling1 && (
-            <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {drillingExercises1.map((exercise) => (
-                  <div key={exercise.id} className="bg-white p-6 rounded-xl border border-blue-200 shadow-md">
-                    <div className="flex justify-between items-start mb-3">
-                      <p className="text-sm text-gray-500 mb-1">🇵🇹 Portuguese:</p>
-                      <AudioPlayer src="" textToSpeak={exercise.portuguese} compact />
-                    </div>
-                    <p className="text-md text-gray-700 mb-3">{exercise.portuguese}</p>
-                    <div className="flex justify-between items-start mb-2">
-                      <p className="text-sm text-gray-500">🇺🇸 English:</p>
-                      <AudioPlayer src="" textToSpeak={drilling1Sentences[exercise.id]} compact />
-                    </div>
-                    <p className="text-lg font-bold text-blue-700 mb-4">{drilling1Sentences[exercise.id]}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {exercise.substitutions.map((sub, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setDrilling1Sentences(prev => ({ ...prev, [exercise.id]: sub.phrase }))}
-                          className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition"
-                        >
-                          {sub.word} 🔊
-                        </button>
-                      ))}
-                      <button
-                        onClick={() => setDrilling1Sentences(prev => ({ ...prev, [exercise.id]: exercise.english }))}
-                        className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm hover:bg-gray-200 transition"
-                      >
-                        Reset
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================ */}
-        {/* SIMPLE PAST TENSE EXERCISES */}
-        {/* ============================================ */}
-        <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-orange-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">📝 Simple Past Tense</h2>
-              <button onClick={() => toggleSection('pastTense')} className="ml-4 p-2 rounded-full hover:bg-orange-700 transition">
-                {sections.pastTense ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.pastTense && (
-            <div className="p-8">
-              <p className="text-orange-700 mb-4 italic">Convert the present tense sentences to past tense:</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {pastTenseEx.map((exercise) => (
-                  <div key={exercise.id} className="bg-white p-6 rounded-xl border border-orange-200 shadow-md">
-                    <div className="flex justify-between items-start mb-2">
-                      <p className="text-md font-medium text-gray-700">Present:</p>
-                      <AudioPlayer src="" textToSpeak={exercise.present} compact />
-                    </div>
-                    <p className="text-lg font-bold text-gray-900 mb-4">{exercise.present}</p>
-                    
-                    <p className="text-sm text-gray-500 mb-1">Write the past form:</p>
-                    <textarea
-                      value={exercise.userAnswer}
-                      onChange={(e) => handlePastTenseChange(exercise.id, e.target.value)}
-                      placeholder="Write the past tense sentence here..."
-                      className="w-full h-20 p-3 border border-orange-300 rounded-md resize-none mb-3"
-                    />
-                    <div className="flex gap-2">
-                      <button onClick={() => handlePastTenseCheck(exercise.id, exercise.past)} className="flex-1 bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition">Check</button>
-                      <button onClick={() => handlePastTenseChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
-                    </div>
-                    {showPastTenseResults[exercise.id] && <AnswerResult isCorrect={pastTenseResults[exercise.id] || false} correctAnswer={exercise.past} />}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================ */}
-        {/* PRESENT PERFECT EXERCISES */}
-        {/* ============================================ */}
-        <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-green-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">✨ Present Perfect Tense</h2>
-              <button onClick={() => toggleSection('presentPerfect')} className="ml-4 p-2 rounded-full hover:bg-green-700 transition">
-                {sections.presentPerfect ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.presentPerfect && (
-            <div className="p-8">
-              <p className="text-green-700 mb-4 italic">Practice the Present Perfect tense (have/has + past participle):</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {presentPerfectEx.map((exercise) => (
-                  <div key={exercise.id} className="bg-white p-6 rounded-xl border border-green-200 shadow-md">
-                    <div className="flex justify-between items-start mb-3">
-                      <p className="text-sm text-gray-500">Example sentence:</p>
-                      <AudioPlayer src="" textToSpeak={exercise.sentence} compact />
-                    </div>
-                    <p className="text-lg font-bold text-green-700 mb-4">{exercise.sentence}</p>
-                    
-                    <textarea
-                      value={exercise.userAnswer}
-                      onChange={(e) => handlePresentPerfectChange(exercise.id, e.target.value)}
-                      placeholder="Write a similar sentence using Present Perfect..."
-                      className="w-full h-20 p-3 border border-green-300 rounded-md resize-none mb-3"
-                    />
-                    <div className="flex gap-2">
-                      <button onClick={() => handlePresentPerfectCheck(exercise.id, exercise.sentence)} className="flex-1 bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition">Check</button>
-                      <button onClick={() => handlePresentPerfectChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
-                    </div>
-                    {showPresentPerfectResults[exercise.id] && (
-                      <div className="mt-2 text-sm text-green-600">✓ Keep practicing!</div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================ */}
-        {/* PAST PERFECT EXERCISES */}
-        {/* ============================================ */}
-        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-indigo-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">⏪ Past Perfect Tense</h2>
-              <button onClick={() => toggleSection('pastPerfect')} className="ml-4 p-2 rounded-full hover:bg-indigo-700 transition">
-                {sections.pastPerfect ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.pastPerfect && (
-            <div className="p-8">
-              <p className="text-indigo-700 mb-4 italic">The Past Perfect shows an action completed before another past action (had + past participle):</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {pastPerfectEx.map((exercise) => (
-                  <div key={exercise.id} className="bg-white p-6 rounded-xl border border-indigo-200 shadow-md">
-                    <div className="flex justify-between items-start mb-3">
-                      <p className="text-sm text-gray-500">Example:</p>
-                      <AudioPlayer src="" textToSpeak={exercise.sentence} compact />
-                    </div>
-                    <p className="text-lg font-bold text-indigo-700 mb-4">{exercise.sentence}</p>
-                    
-                    <textarea
-                      value={exercise.userAnswer}
-                      onChange={(e) => handlePastPerfectChange(exercise.id, e.target.value)}
-                      placeholder="Write a similar sentence using Past Perfect..."
-                      className="w-full h-20 p-3 border border-indigo-300 rounded-md resize-none mb-3"
-                    />
-                    <div className="flex gap-2">
-                      <button onClick={() => handlePastPerfectCheck(exercise.id, exercise.sentence)} className="flex-1 bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition">Check</button>
-                      <button onClick={() => handlePastPerfectChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
-                    </div>
-                    {showPastPerfectResults[exercise.id] && (
-                      <div className="mt-2 text-sm text-indigo-600">✓ Good job with Past Perfect!</div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================ */}
-        {/* FUTURE TENSE EXERCISES */}
-        {/* ============================================ */}
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-yellow-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔮 Future Tense</h2>
-              <button onClick={() => toggleSection('future')} className="ml-4 p-2 rounded-full hover:bg-yellow-700 transition">
-                {sections.future ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.future && (
-            <div className="p-8">
-              <p className="text-yellow-700 mb-4 italic">Use WILL or GOING TO to talk about the future:</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {futureEx.map((exercise) => (
-                  <div key={exercise.id} className="bg-white p-6 rounded-xl border border-yellow-200 shadow-md">
-                    <div className="flex justify-between items-start mb-3">
-                      <p className="text-sm text-gray-500">Example:</p>
-                      <AudioPlayer src="" textToSpeak={exercise.sentence} compact />
-                    </div>
-                    <p className="text-lg font-bold text-yellow-700 mb-4">{exercise.sentence}</p>
-                    
-                    <textarea
-                      value={exercise.userAnswer}
-                      onChange={(e) => handleFutureChange(exercise.id, e.target.value)}
-                      placeholder="Write a similar sentence about the future..."
-                      className="w-full h-20 p-3 border border-yellow-300 rounded-md resize-none mb-3"
-                    />
-                    <div className="flex gap-2">
-                      <button onClick={() => handleFutureCheck(exercise.id, exercise.sentence)} className="flex-1 bg-yellow-500 text-white py-2 rounded-md hover:bg-yellow-600 transition">Check</button>
-                      <button onClick={() => handleFutureChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
-                    </div>
-                    {showFutureResults[exercise.id] && (
-                      <div className="mt-2 text-sm text-yellow-600">✓ Great! Future tense mastered!</div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================ */}
-        {/* QUESTIONS IN THE PAST (DID) - COM EXPLICAÇÃO */}
-        {/* ============================================ */}
-        <div className="bg-pink-50 border-2 border-pink-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-pink-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">❓ Questions in the Past (DID)</h2>
-              <button onClick={() => toggleSection('pastQuestions')} className="ml-4 p-2 rounded-full hover:bg-pink-700 transition">
-                {sections.pastQuestions ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.pastQuestions && (
-            <div className="p-8">
-              {/* Componente de Explicação em Português */}
-              <DidExplanation />
-
-              <p className="text-pink-700 mb-4 italic">Agora pratique transformando estas afirmações em perguntas usando o DID:</p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {pastQuestionsEx.map((exercise) => (
-                  <div key={exercise.id} className="bg-white p-6 rounded-xl border border-pink-200 shadow-md hover:shadow-lg transition-shadow">
-                    <div className="flex justify-between items-start mb-2">
-                      <p className="text-md font-medium text-gray-700">📌 Afirmação:</p>
-                      <AudioPlayer src="" textToSpeak={exercise.statement} compact />
-                    </div>
-                    <p className="text-lg font-bold text-gray-900 mb-4">{exercise.statement}</p>
-                    
-                    <p className="text-sm text-gray-500 mb-1">✏️ Escreva a pergunta com DID:</p>
-                    <textarea
-                      value={exercise.userAnswer}
-                      onChange={(e) => handlePastQuestionsChange(exercise.id, e.target.value)}
-                      placeholder="Ex: Did you go to the movies yesterday?"
-                      className="w-full h-20 p-3 border border-pink-300 rounded-md resize-none mb-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                    />
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => handlePastQuestionsCheck(exercise.id, exercise.question)} 
-                        className="flex-1 bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600 transition font-medium"
-                      >
-                        ✓ Verificar
-                      </button>
-                      <button 
-                        onClick={() => handlePastQuestionsChange(exercise.id, "")} 
-                        className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
-                      >
-                        Limpar
-                      </button>
-                    </div>
-                    {showPastQuestionsResults[exercise.id] && (
-                      <div className="mt-3">
-                        <AnswerResult isCorrect={pastQuestionsResults[exercise.id] || false} correctAnswer={exercise.question} />
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-              
-              {/* Dica extra no final */}
-              <div className="mt-6 p-4 bg-pink-100 rounded-lg border-2 border-pink-300">
-                <p className="text-pink-800 text-sm flex items-start gap-2">
-                  <span className="text-xl">🌟</span>
-                  <span>
-                    <strong>Lembre-se:</strong> Quando usamos o <strong className="text-pink-600">DID</strong>, o verbo principal 
-                    <strong className="text-pink-600"> volta para o presente</strong> (infinitivo)! 
-                    O DID já faz o trabalho do passado para você. 😉
-                  </span>
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================ */}
-        {/* SPEAK RIGHT NOW - All Tenses */}
-        {/* ============================================ */}
-        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-teal-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🗣️ SPEAK RIGHT NOW - All Tenses</h2>
-              <button onClick={() => toggleSection('speak')} className="ml-4 p-2 rounded-full hover:bg-teal-700 transition">
-                {sections.speak ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.speak && (
-            <div className="p-8">
-              <div className="bg-white p-6 rounded-xl border-2 border-teal-200 shadow-md">
-                <div className="flex items-center justify-between mb-6">
-                  <button onClick={prevCard} className="p-2 bg-teal-100 text-teal-700 rounded-full hover:bg-teal-200 transition"><ChevronLeft size={24} /></button>
-                  <span className="text-sm text-teal-600">Question {currentCardIndex + 1} of {speakCards.length}</span>
-                  <button onClick={nextCard} className="p-2 bg-teal-100 text-teal-700 rounded-full hover:bg-teal-200 transition"><ChevronRight size={24} /></button>
-                </div>
                 
-                <div className="mb-6 p-4 bg-teal-100 rounded-lg">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="text-sm text-teal-700 mb-1">Question:</p>
-                      <p className="text-xl font-bold text-teal-800">{currentCard.question}</p>
-                      <p className="text-sm text-teal-600 mt-1">{currentCard.translation}</p>
-                    </div>
-                    <AudioPlayer src="" textToSpeak={currentCard.question} compact />
-                  </div>
+                <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <p className="text-yellow-700 text-xs">💡 <strong>Memory Tip:</strong> Add -ES to words ending in S, Z, X, CH, SH (like "buzz" → "buzzes" or "church" → "churches")</p>
                 </div>
-                
-                <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="text-sm text-gray-700 mb-1">Example answer:</p>
-                      <p className="text-lg text-gray-800 italic">{currentCard.answer}</p>
-                      <p className="text-xs text-gray-500 mt-1">{currentCard.answerTranslation}</p>
-                    </div>
-                    <AudioPlayer src="" textToSpeak={currentCard.answer} compact />
-                  </div>
-                </div>
-                
-                <textarea
-                  value={speakUserAnswer}
-                  onChange={(e) => setSpeakUserAnswer(e.target.value)}
-                  placeholder="Write your answer here..."
-                  className="w-full h-24 p-4 border border-teal-300 rounded-md resize-none mb-4"
-                />
-                
-                <div className="flex gap-3">
-                  <button onClick={handleSpeakCheck} className="flex-1 bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-md transition font-medium">Check Answer</button>
-                  <button onClick={() => { setSpeakUserAnswer(""); setShowSpeakResult(false); }} className="px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-md transition">Clear</button>
-                </div>
-                
-                {showSpeakResult && <div className="mt-4"><AnswerResult isCorrect={speakResult} correctAnswer={currentCard.answer} /></div>}
               </div>
             </div>
           )}
         </div>
 
-        {/* ============================================ */}
-        {/* TUNE IN YOUR EARS - Weather & Mood Themed */}
-        {/* ============================================ */}
-        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-teal-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
-              <button
-                onClick={() => toggleSection('tuneIn')}
-                className="ml-4 p-2 rounded-full hover:bg-teal-700 transition"
-              >
-                {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.tuneIn && (
-            <div className="p-8">
-              <div className="mb-8 text-center">
-                <p className="text-xl md:text-2xl font-bold text-teal-700 mb-4">
-                  Watch the video and answer the questions below:
-                </p>
-               
-                <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
-                  <div className="relative w-full pt-[56.25%]">
-                    <iframe
-                      src="https://www.youtube.com/embed/BBPJCwoxBFE"
-                      title="Weather and Mood Vocabulary Lesson"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="absolute top-0 left-0 w-full h-full"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* KEY VOCABULARY FROM THE VIDEO - WEATHER & MOOD THEMED */}
-              <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-4 md:p-6">
-                <h3 className="text-lg md:text-xl font-bold text-teal-800 mb-4">📖 KEY VOCABULARY FROM THE VIDEO:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {keyVocabulary.map((item, idx) => (
-                    <div key={idx} className="bg-white p-3 rounded-lg border border-teal-200 shadow-sm hover:shadow-md transition flex justify-between items-center">
-                      <div>
-                        <span className="font-bold text-teal-700">{item.word}</span>
-                        <p className="text-sm text-gray-600">{item.meaning}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Video Questions - About Weather, Moods, Seasons */}
-              <div className="space-y-6 mb-8">
-                {videoQuestions.map((question) => (
-                  <div key={question.id} className="bg-white p-4 md:p-6 rounded-xl border-2 border-teal-200 shadow-md">
-                    <p className="text-base md:text-lg font-bold text-teal-700 mb-3">
-                      {question.question}
-                      {question.isPersonal && (
-                        <span className="ml-2 text-sm font-normal text-teal-500">(Personal answer)</span>
-                      )}
-                    </p>
-
-                    <textarea
-                      value={videoAnswers[question.id] || ""}
-                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)}
-                      placeholder="Write your answer here..."
-                      className="w-full h-24 p-3 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
-                    />
-
-                    <div className="flex flex-col sm:flex-row gap-3 mt-3">
-                      <button
-                        onClick={() => checkVideoAnswer(question.id)}
-                        className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition font-medium"
-                      >
-                        Check Answer
-                      </button>
-                      <button
-                        onClick={() => handleVideoAnswerChange(question.id, "")}
-                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md transition"
-                      >
-                        Clear
-                      </button>
-                    </div>
-
-                    {showVideoResults[question.id] && question.isPersonal && (
-                      <div className="mt-3 p-3 bg-teal-50 border border-teal-200 rounded-md">
-                        <p className="text-sm text-teal-700">
-                          <span className="font-medium">Note:</span> This is a personal question. Your answer has been saved for practice.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ============================================ */}
-        {/* LESSON SUMMARY */}
-        {/* ============================================ */}
-        <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">✅ LESSON SUMMARY</h2>
-          </div>
-          <div className="p-8 bg-white rounded-b-[30px]">
-            <p className="font-bold text-gray-800 mb-3">You practiced:</p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Simple Past</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Present Perfect</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Past Perfect</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Future (Will/Going to)</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Questions with DID</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm text-center">✔ Listening & Speaking</span>
-            </div>
-            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-700">🎵 <strong>Audio tip:</strong> Click the 🔊 buttons next to each sentence to hear natural American English pronunciation (Text-to-Speech)!</p>
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================ */}
-        {/* SAVE BUTTONS AND NAVIGATION */}
-        {/* ============================================ */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-8">
-          <div className="flex gap-4">
-            <button onClick={saveAllAnswers} className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 flex items-center gap-2">
-              <span>💾</span> Save All My Answers
+        {/* FOOTER */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-5 mt-10 pt-6 border-t border-gray-300">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button onClick={saveAllAnswers} className="flex items-center gap-2 px-5 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition font-medium shadow-md text-sm">
+              <Check size={18} /> Save All Answers
             </button>
-            <button onClick={clearAllAnswers} className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full text-sm transition duration-300">
-              Clear All
+            <button onClick={clearAllAnswers} className="flex items-center gap-2 px-5 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition font-medium shadow-md text-sm">
+              <X size={18} /> Clear All
             </button>
           </div>
-
-          <div className="flex gap-4">
-            <button onClick={() => router.push("/cursos")} className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors">
+          <div className="flex gap-3">
+            <button onClick={() => router.push("/cursos")} className="px-5 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-full transition font-medium shadow-md text-sm">
               &larr; Back to Courses
             </button>
-            <button onClick={() => router.push("/cursos/lesson37")} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">
+            <button onClick={() => router.push(`/cursos/lesson${LESSON_NUMBER + 1}`)} className="px-5 py-2 text-white rounded-full transition font-medium shadow-md text-sm" style={{ backgroundColor: LESSON_THEME_COLOR }}>
               Next Lesson &rarr;
             </button>
           </div>
+        </div>
+        
+        <div className="mt-6 text-center text-gray-500 text-xs">
+          <p>Lesson {LESSON_NUMBER}: {LESSON_TITLE} - {LESSON_SUBTITLE} • Interactive English Practice • All answers are saved in your browser</p>
+          <p className="mt-1">🩺 Stay healthy and keep practicing English every day!</p>
         </div>
       </div>
     </div>

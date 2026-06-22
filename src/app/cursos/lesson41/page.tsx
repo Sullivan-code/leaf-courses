@@ -127,8 +127,9 @@ export default function Lesson41HealthFeelingsProfessions() {
     { english: "Are we late?", portuguese: "Nós estamos atrasados?" },
   ];
 
-  // Real Life Practice Sentences
+  // Real Life Practice Sentences (UPDATED with will, won't, did)
   const realLifeSentences = [
+    // Original sentences with to be
     { english: "Am I late?", portuguese: "Eu estou atrasado?" },
     { english: "Are you Brazilian?", portuguese: "Você é brasileiro?" },
     { english: "Is he a student?", portuguese: "Ele é estudante?" },
@@ -144,6 +145,32 @@ export default function Lesson41HealthFeelingsProfessions() {
     { english: "When is your birthday?", portuguese: "Quando é seu aniversário?" },
     { english: "It's in April.", portuguese: "É em abril" },
     { english: "Is your father a manager?", portuguese: "Seu pai é gerente?" },
+    
+    // NEW: Sentences with WILL (future)
+    { english: "I will go to the beach in January.", portuguese: "Eu irei à praia em janeiro." },
+    { english: "She will be 25 years old next month.", portuguese: "Ela fará 25 anos no próximo mês." },
+    { english: "They will start the course in March.", portuguese: "Eles começarão o curso em março." },
+    { english: "Will you be at the office tomorrow?", portuguese: "Você estará no escritório amanhã?" },
+    { english: "He will arrive at 8 o'clock.", portuguese: "Ele chegará às 8 horas." },
+    { english: "We will have a meeting on Friday.", portuguese: "Nós teremos uma reunião na sexta-feira." },
+    
+    // NEW: Sentences with WON'T (will not - negative future)
+    { english: "I won't be late for the meeting.", portuguese: "Eu não chegarei atrasado para a reunião." },
+    { english: "She won't go to the pharmacy today.", portuguese: "Ela não irá à farmácia hoje." },
+    { english: "They won't be at the bank tomorrow.", portuguese: "Eles não estarão no banco amanhã." },
+    { english: "He won't work in December.", portuguese: "Ele não trabalhará em dezembro." },
+    { english: "We won't have class next week.", portuguese: "Nós não teremos aula na próxima semana." },
+    { english: "You won't need to bring anything.", portuguese: "Você não precisará trazer nada." },
+    
+    // NEW: Sentences with DID (past)
+    { english: "Did you go to the beach in February?", portuguese: "Você foi à praia em fevereiro?" },
+    { english: "Did she visit the shopping mall yesterday?", portuguese: "Ela visitou o shopping ontem?" },
+    { english: "Did they study for the test?", portuguese: "Eles estudaram para a prova?" },
+    { english: "Did your father work at the office?", portuguese: "Seu pai trabalhou no escritório?" },
+    { english: "Did you see the new store downtown?", portuguese: "Você viu a nova loja no centro?" },
+    { english: "Did we miss the bus?", portuguese: "Nós perdemos o ônibus?" },
+    { english: "Did he call you yesterday?", portuguese: "Ele te ligou ontem?" },
+    { english: "Did she buy the medicine at the pharmacy?", portuguese: "Ela comprou o remédio na farmácia?" },
   ];
 
   // Ordinal Numbers (16th to 31st)
@@ -196,7 +223,7 @@ export default function Lesson41HealthFeelingsProfessions() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 1. VERBS (to be - ser/estar - Questions)</h2>
+              <h2 className="text-2xl font-bold">🔹VERBS (to be - ser/estar - Questions)</h2>
               <p className="mt-2 text-blue-100 italic">
                 Clique nos verbos para ouvir a pronúncia e praticar perguntas
               </p>
@@ -282,7 +309,7 @@ export default function Lesson41HealthFeelingsProfessions() {
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-green-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 2. MONTHS & NEW WORDS (Meses e Vocabulário)</h2>
+              <h2 className="text-2xl font-bold">🔹 NEW WORDS (Meses e Vocabulário)</h2>
               <p className="mt-2 text-green-100 italic">
                 Clique em cada palavra para ouvir sua pronúncia correta
               </p>
@@ -395,7 +422,7 @@ export default function Lesson41HealthFeelingsProfessions() {
         <div className="bg-white border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-yellow-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 3. USEFUL PHRASES (Frases Úteis)</h2>
+              <h2 className="text-2xl font-bold">🔹 Speak Like a Native(Frases Úteis)</h2>
               <p className="mt-2 text-yellow-100 italic">
                 Perguntas e respostas sobre idade e aniversários
               </p>
@@ -481,7 +508,7 @@ export default function Lesson41HealthFeelingsProfessions() {
         <div className="bg-white border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-purple-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 4. GRAMMAR (Questions with To Be)</h2>
+              <h2 className="text-2xl font-bold">🔹 GRAMMAR (Questions with To Be)</h2>
               <p className="mt-2 text-purple-100 italic">
                 Estruturas interrogativas com o verbo to be
               </p>
@@ -579,9 +606,9 @@ export default function Lesson41HealthFeelingsProfessions() {
         <div className="bg-white border-2 border-red-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-red-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🎭 5. REAL LIFE (Uso no dia a dia)</h2>
+              <h2 className="text-2xl font-bold">🎭 MAKE IT YOURS(Uso no dia a dia)</h2>
               <p className="mt-2 text-red-100 italic">
-                Pratique perguntas e respostas com o verbo to be
+                Pratique perguntas e respostas com to be, will, won't e did
               </p>
             </div>
             <button 
@@ -722,7 +749,7 @@ export default function Lesson41HealthFeelingsProfessions() {
         <div className="bg-white border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-teal-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-3xl font-bold">🔢 CHECK IT OUT! - Ordinal Numbers 16th - 31st</h2>
+              <h2 className="text-3xl font-bold">🔢 WRAP UP! Ordinal Numbers 16th - 31st</h2>
               <p className="mt-2 text-teal-100 italic">
                 Números ordinais em inglês do 16º ao 31º
               </p>

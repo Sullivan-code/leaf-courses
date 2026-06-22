@@ -802,9 +802,7 @@ export default function Lesson36() {
                 👂 Ouça o áudio descrevendo as imagens. Clique nas imagens <strong className="font-bold">NA ORDEM QUE VOCÊ OUVE</strong> (1 → 2 → 3).
               </p>
               
-              <p className="text-sm text-purple-600 mb-6 bg-purple-100 p-3 rounded-lg">
-                🎯 <strong>Sequência correta:</strong> 1. mulher sorrindo → 2. refletindo sobre a vida → 3. casal assistindo tv juntos
-              </p>
+              {/* Sequência correta removida - NÃO MOSTRA MAIS A RESPOSTA */}
 
               {/* Imagens embaralhadas sem números nos containers */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -870,12 +868,12 @@ export default function Lesson36() {
                     {isSequenceCorrect ? (
                       <div className="flex items-center gap-2">
                         <Check size={24} />
-                        <span className="font-bold">✅ PARABÉNS! Você acertou a sequência correta: 1 → 2 → 3!</span>
+                        <span className="font-bold">✅ PARABÉNS! Você acertou a sequência correta!</span>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
                         <XCircle size={24} />
-                        <span className="font-bold">❌ Sequência errada! A ordem correta é: 1. mulher sorrindo → 2. refletindo sobre a vida → 3. casal assistindo tv juntos</span>
+                        <span className="font-bold">❌ Sequência incorreta. Tente novamente!</span>
                       </div>
                     )}
                   </div>

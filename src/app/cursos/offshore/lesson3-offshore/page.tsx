@@ -22,14 +22,42 @@ export default function LessonMachineryEquipment() {
     });
   };
 
-  const playAudio = (word: string) => {
-    const formattedWord = word
-      .toLowerCase()
-      .replace(/\s+/g, '_')
-      .replace(/[^\w\s]/g, '');
+  // Função simplificada - apenas dispara o áudio sem buscar arquivos
+  // O áudio será fornecido por outro sistema
+  const playAudio = (text: string) => {
+    // Esta função será substituída pelo sistema de áudio externo
+    // Por enquanto, apenas registra que o áudio deve ser reproduzido
+    console.log(`🔊 Reproduzindo áudio para: "${text}"`);
     
-    const audio = new Audio(`/audios/${formattedWord}.mp3`);
-    audio.play().catch(e => console.error("Erro ao reproduzir áudio:", e));
+    // Dispara um evento personalizado que o sistema externo pode capturar
+    const audioEvent = new CustomEvent('playAudio', { 
+      detail: { text, timestamp: Date.now() }
+    });
+    window.dispatchEvent(audioEvent);
+    
+    // Tenta reproduzir via Web Speech API como fallback (voz feminina)
+    try {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      utterance.pitch = 1.1;
+      
+      // Seleciona uma voz feminina disponível
+      const voices = window.speechSynthesis.getVoices();
+      const femaleVoice = voices.find(v => 
+        v.name.toLowerCase().includes('female') || 
+        v.name.toLowerCase().includes('samantha') ||
+        v.name.toLowerCase().includes('victoria') ||
+        v.name.toLowerCase().includes('zira')
+      );
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
+      }
+      
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.log('Áudio será reproduzido pelo sistema externo');
+    }
   };
 
   return (
@@ -43,7 +71,8 @@ export default function LessonMachineryEquipment() {
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="max-w-5xl mx-auto bg-[#f0f8ff] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
+      {/* Container principal com fade vermelho e laranja */}
+      <div className="max-w-5xl mx-auto bg-gradient-to-br from-red-100 via-orange-100 to-red-50 bg-opacity-95 rounded-[40px] p-10 shadow-lg border-4 border-red-300/50">
         
         {/* Título centralizado com imagem abaixo */}
         <div className="text-center mb-16">
@@ -65,17 +94,17 @@ export default function LessonMachineryEquipment() {
         </div>
 
         {/* Seção 1 - Verbos com Drill */}
-        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-white border-2 border-red-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">🔹 VERBS - Actions with Equipment</h2>
-              <p className="mt-2 text-blue-100 italic">
+              <p className="mt-2 text-red-100 italic">
                 Click on the verbs to hear the pronunciation and practice their forms
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('verbs')}
-              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
+              className="inline-block rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-orange-500 hover:to-red-600 active:animate-glow"
             >
               {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
@@ -85,56 +114,56 @@ export default function LessonMachineryEquipment() {
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
               <li>
                 <button 
-                  onClick={() => playAudio('tooperate')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('to operate')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   to operate
                 </button> = operar / manusear
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('tocheck')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('to check')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   to check
                 </button> = verificar / checar
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('tomaintain')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('to maintain')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   to maintain
                 </button> = fazer manutenção
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('toinspect')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('to inspect')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   to inspect
                 </button> = inspecionar
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('torepair')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('to repair')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   to repair
                 </button> = reparar / consertar
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('tostart')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('to start')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   to start
                 </button> = ligar / iniciar
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('tostop')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('to stop')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   to stop
                 </button> = desligar / parar
@@ -142,46 +171,166 @@ export default function LessonMachineryEquipment() {
             </ul>
             
             {openDrills.verbs && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">I operate the machine. / I check / I inspect</p>
-                  <p className="text-sm text-gray-500 mt-1">Eu opero a máquina. / Eu verifico / Eu inspeciono</p>
+              <div className="mt-4 bg-red-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('I operated the machine yesterday.')} className="text-red-600 hover:text-red-800 transition-colors">
+                      I operated the machine yesterday.
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eu operei a máquina ontem.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did you operate the machine?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did you operate the machine?
+                    </button> - 
+                    <button onClick={() => playAudio("No, I didn't operate the machine.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, I didn't operate the machine.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Do you check the pressure? / Do you inspect / Do you maintain</p>
-                  <p className="text-sm text-gray-500 mt-1">Você verifica a pressão? / Você inspeciona / Você faz manutenção</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('She checked the pressure gauge this morning.')} className="text-red-600 hover:text-red-800 transition-colors">
+                      She checked the pressure gauge this morning.
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Ela verificou o manômetro esta manhã.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did she check the pressure gauge?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did she check the pressure gauge?
+                    </button> - 
+                    <button onClick={() => playAudio("No, she didn't check it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, she didn't check it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">We maintain the equipment daily. / We check / We inspect</p>
-                  <p className="text-sm text-gray-500 mt-1">Nós fazemos manutenção do equipamento diariamente. / Nós verificamos / Nós inspecionamos</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('We maintained the equipment last week.')} className="text-red-600 hover:text-red-800 transition-colors">
+                      We maintained the equipment last week.
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Nós fizemos manutenção do equipamento na semana passada.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did we maintain the equipment?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did we maintain the equipment?
+                    </button> - 
+                    <button onClick={() => playAudio("No, we didn't maintain it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, we didn't maintain it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">They repair the pump. / They operate / They start</p>
-                  <p className="text-sm text-gray-500 mt-1">Eles consertam a bomba. / Eles operam / Eles ligam</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('They repaired the pump on Monday.')} className="text-red-600 hover:text-red-800 transition-colors">
+                      They repaired the pump on Monday.
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eles consertaram a bomba na segunda-feira.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did they repair the pump?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did they repair the pump?
+                    </button> - 
+                    <button onClick={() => playAudio("No, they didn't repair it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, they didn't repair it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">She starts the generator. / She stops / She checks</p>
-                  <p className="text-sm text-gray-500 mt-1">Ela liga o gerador. / Ela desliga / Ela verifica</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('He started the generator at 8 AM.')} className="text-red-600 hover:text-red-800 transition-colors">
+                      He started the generator at 8 AM.
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Ele ligou o gerador às 8 da manhã.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did he start the generator?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did he start the generator?
+                    </button> - 
+                    <button onClick={() => playAudio("No, he didn't start it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, he didn't start it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">I don't operate heavy machinery. / I don't use / I don't touch</p>
-                  <p className="text-sm text-gray-500 mt-1">Eu não opero máquinas pesadas. / Eu não uso / Eu não toco</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('I stopped the conveyor belt immediately.')} className="text-red-600 hover:text-red-800 transition-colors">
+                      I stopped the conveyor belt immediately.
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eu desliguei a esteira transportadora imediatamente.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did you stop the conveyor belt?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did you stop the conveyor belt?
+                    </button> - 
+                    <button onClick={() => playAudio("No, I didn't stop it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, I didn't stop it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Don't you inspect the valves? / Don't you check / Don't you test</p>
-                  <p className="text-sm text-gray-500 mt-1">Você não inspeciona as válvulas? / Você não verifica / Você não testa</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('We inspected the valves yesterday.')} className="text-red-600 hover:text-red-800 transition-colors">
+                      We inspected the valves yesterday.
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Nós inspecionamos as válvulas ontem.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did we inspect the valves?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did we inspect the valves?
+                    </button> - 
+                    <button onClick={() => playAudio("No, we didn't inspect them.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, we didn't inspect them.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">I need to repair the conveyor belt. / I want to check / I have to inspect</p>
-                  <p className="text-sm text-gray-500 mt-1">Eu preciso consertar a esteira transportadora. / Eu quero verificar / Eu tenho que inspecionar</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio("I didn't operate heavy machinery last month.")} className="text-red-600 hover:text-red-800 transition-colors">
+                      I didn't operate heavy machinery last month.
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eu não opere máquinas pesadas no mês passado.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did you operate heavy machinery?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did you operate heavy machinery?
+                    </button> - 
+                    <button onClick={() => playAudio("No, I didn't.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, I didn't.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">We want to start the compressor. / We need to stop / We have to check</p>
-                  <p className="text-sm text-gray-500 mt-1">Nós queremos ligar o compressor. / Nós precisamos desligar / Nós temos que verificar</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio("She didn't check the pressure gauge yesterday.")} className="text-red-600 hover:text-red-800 transition-colors">
+                      She didn't check the pressure gauge yesterday.
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Ela não verificou o manômetro ontem.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did she check it?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did she check it?
+                    </button> - 
+                    <button onClick={() => playAudio("No, she didn't check it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, she didn't check it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Do you know how to operate this equipment? / Do you know how to start / Do you know how to stop</p>
-                  <p className="text-sm text-gray-500 mt-1">Você sabe como operar este equipamento? / Você sabe como ligar / Você sabe como desligar</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio("They didn't repair the pump last week.")} className="text-red-600 hover:text-red-800 transition-colors">
+                      They didn't repair the pump last week.
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eles não consertaram a bomba na semana passada.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did they repair the pump?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did they repair the pump?
+                    </button> - 
+                    <button onClick={() => playAudio("No, they didn't repair it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, they didn't repair it.
+                    </button>
+                  </p>
                 </div>
               </div>
             )}
@@ -189,17 +338,17 @@ export default function LessonMachineryEquipment() {
         </div>
 
         {/* Seção 2 - Vocabulário com Drill */}
-        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-white border-2 border-red-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">🔹 Machinery & Equipment Vocabulary</h2>
-              <p className="mt-2 text-blue-100 italic">
+              <p className="mt-2 text-red-100 italic">
                 Click on each word to hear its correct pronunciation
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('vocabulary')}
-              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
+              className="inline-block rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-orange-500 hover:to-red-600 active:animate-glow"
             >
               {openDrills.vocabulary ? 'Hide Exercise' : 'Show Exercise'}
             </button>
@@ -210,7 +359,7 @@ export default function LessonMachineryEquipment() {
               <li>
                 <button 
                   onClick={() => playAudio('machine')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   machine
                 </button> = máquina
@@ -218,7 +367,7 @@ export default function LessonMachineryEquipment() {
               <li>
                 <button 
                   onClick={() => playAudio('equipment')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   equipment
                 </button> = equipamento
@@ -226,7 +375,7 @@ export default function LessonMachineryEquipment() {
               <li>
                 <button 
                   onClick={() => playAudio('engine')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   engine
                 </button> = motor
@@ -234,7 +383,7 @@ export default function LessonMachineryEquipment() {
               <li>
                 <button 
                   onClick={() => playAudio('pump')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   pump
                 </button> = bomba
@@ -242,7 +391,7 @@ export default function LessonMachineryEquipment() {
               <li>
                 <button 
                   onClick={() => playAudio('compressor')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   compressor
                 </button> = compressor
@@ -250,7 +399,7 @@ export default function LessonMachineryEquipment() {
               <li>
                 <button 
                   onClick={() => playAudio('generator')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   generator
                 </button> = gerador
@@ -258,7 +407,7 @@ export default function LessonMachineryEquipment() {
               <li>
                 <button 
                   onClick={() => playAudio('valve')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   valve
                 </button> = válvula
@@ -266,71 +415,71 @@ export default function LessonMachineryEquipment() {
               <li>
                 <button 
                   onClick={() => playAudio('pipe')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   pipe
                 </button> = tubo / cano
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('pressure_gauge')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('pressure gauge')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   pressure gauge
                 </button> = manômetro
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('temperature_sensor')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('temperature sensor')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   temperature sensor
                 </button> = sensor de temperatura
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('conveyor_belt')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('conveyor belt')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   conveyor belt
                 </button> = esteira transportadora
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('control_panel')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('control panel')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   control panel
                 </button> = painel de controle
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('alarm_system')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('alarm system')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   alarm system
                 </button> = sistema de alarme
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('safety_valve')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('safety valve')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   safety valve
                 </button> = válvula de segurança
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('hydraulic_system')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('hydraulic system')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   hydraulic system
                 </button> = sistema hidráulico
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('cooling_tower')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('cooling tower')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   cooling tower
                 </button> = torre de resfriamento
@@ -338,46 +487,146 @@ export default function LessonMachineryEquipment() {
             </ul>
             
             {openDrills.vocabulary && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">I check the <span className="text-blue-600">pressure gauge</span>. / temperature sensor / valve</p>
-                  <p className="text-sm text-gray-500 mt-1">Eu verifico o manômetro. / sensor de temperatura / válvula</p>
+              <div className="mt-4 bg-red-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    I checked the <button onClick={() => playAudio('pressure gauge')} className="text-red-600 font-bold hover:text-red-800 transition-colors">pressure gauge</button> yesterday.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eu verifiquei o manômetro ontem.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did you check the pressure gauge?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did you check the pressure gauge?
+                    </button> - 
+                    <button onClick={() => playAudio("No, I didn't check it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, I didn't check it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Do you operate this <span className="text-blue-600">machine</span>? / equipment / engine</p>
-                  <p className="text-sm text-gray-500 mt-1">Você opera esta máquina? / equipamento / motor</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    He operated the <button onClick={() => playAudio('machine')} className="text-red-600 font-bold hover:text-red-800 transition-colors">machine</button> last week.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Ele operou a máquina na semana passada.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did he operate the machine?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did he operate the machine?
+                    </button> - 
+                    <button onClick={() => playAudio("No, he didn't operate it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, he didn't operate it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">We maintain the <span className="text-blue-600">compressor</span>. / generator / pump</p>
-                  <p className="text-sm text-gray-500 mt-1">Nós fazemos manutenção do compressor. / gerador / bomba</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    We maintained the <button onClick={() => playAudio('compressor')} className="text-red-600 font-bold hover:text-red-800 transition-colors">compressor</button> on Friday.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Nós fizemos manutenção do compressor na sexta-feira.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did we maintain the compressor?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did we maintain the compressor?
+                    </button> - 
+                    <button onClick={() => playAudio("No, we didn't maintain it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, we didn't maintain it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">alarm system</span> is working. / control panel / safety valve</p>
-                  <p className="text-sm text-gray-500 mt-1">O sistema de alarme está funcionando. / painel de controle / válvula de segurança</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    The <button onClick={() => playAudio('alarm system')} className="text-red-600 font-bold hover:text-red-800 transition-colors">alarm system</button> worked yesterday.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">O sistema de alarme funcionou ontem.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did the alarm system work?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did the alarm system work?
+                    </button> - 
+                    <button onClick={() => playAudio("No, it didn't work.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, it didn't work.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">We need to inspect the <span className="text-blue-600">hydraulic system</span>. / cooling tower / pipes</p>
-                  <p className="text-sm text-gray-500 mt-1">Nós precisamos inspecionar o sistema hidráulico. / torre de resfriamento / tubos</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    We inspected the <button onClick={() => playAudio('hydraulic system')} className="text-red-600 font-bold hover:text-red-800 transition-colors">hydraulic system</button> last month.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Nós inspecionamos o sistema hidráulico no mês passado.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did we inspect the hydraulic system?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did we inspect the hydraulic system?
+                    </button> - 
+                    <button onClick={() => playAudio("No, we didn't inspect it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, we didn't inspect it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">conveyor belt</span> is stopped. / engine / generator</p>
-                  <p className="text-sm text-gray-500 mt-1">A esteira transportadora está parada. / motor / gerador</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    The <button onClick={() => playAudio('conveyor belt')} className="text-red-600 font-bold hover:text-red-800 transition-colors">conveyor belt</button> stopped at noon.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">A esteira transportadora parou ao meio-dia.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did the conveyor belt stop?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did the conveyor belt stop?
+                    </button> - 
+                    <button onClick={() => playAudio("No, it didn't stop.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, it didn't stop.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Check the <span className="text-blue-600">temperature sensor</span>. / pressure gauge / valves</p>
-                  <p className="text-sm text-gray-500 mt-1">Verifique o sensor de temperatura. / manômetro / válvulas</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    She checked the <button onClick={() => playAudio('temperature sensor')} className="text-red-600 font-bold hover:text-red-800 transition-colors">temperature sensor</button> this morning.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Ela verificou o sensor de temperatura esta manhã.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did she check the temperature sensor?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did she check the temperature sensor?
+                    </button> - 
+                    <button onClick={() => playAudio("No, she didn't check it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, she didn't check it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">safety valve</span> is important. / alarm system / control panel</p>
-                  <p className="text-sm text-gray-500 mt-1">A válvula de segurança é importante. / sistema de alarme / painel de controle</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    The <button onClick={() => playAudio('safety valve')} className="text-red-600 font-bold hover:text-red-800 transition-colors">safety valve</button> was important.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">A válvula de segurança era importante.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Was the safety valve important?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Was the safety valve important?
+                    </button> - 
+                    <button onClick={() => playAudio("No, it wasn't important.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, it wasn't important.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">We start the <span className="text-blue-600">generator</span> every morning. / compressor / pump</p>
-                  <p className="text-sm text-gray-500 mt-1">Nós ligamos o gerador toda manhã. / compressor / bomba</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    We started the <button onClick={() => playAudio('generator')} className="text-red-600 font-bold hover:text-red-800 transition-colors">generator</button> at 7 AM yesterday.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Nós ligamos o gerador às 7 da manhã ontem.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did we start the generator?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did we start the generator?
+                    </button> - 
+                    <button onClick={() => playAudio("No, we didn't start it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, we didn't start it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">pipes</span> need inspection. / valves / fittings</p>
-                  <p className="text-sm text-gray-500 mt-1">Os tubos precisam de inspeção. / válvulas / conexões</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    The <button onClick={() => playAudio('pipes')} className="text-red-600 font-bold hover:text-red-800 transition-colors">pipes</button> needed inspection.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Os tubos precisavam de inspeção.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did the pipes need inspection?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did the pipes need inspection?
+                    </button> - 
+                    <button onClick={() => playAudio("No, they didn't need it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, they didn't need it.
+                    </button>
+                  </p>
                 </div>
               </div>
             )}
@@ -385,17 +634,17 @@ export default function LessonMachineryEquipment() {
         </div>
 
         {/* Seção 3 - Frases Úteis com Drill */}
-        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-white border-2 border-red-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">🔹 Speak Like a Technician</h2>
-              <p className="mt-2 text-blue-100 italic">
+              <p className="mt-2 text-red-100 italic">
                 Practice common phrases for equipment operation and maintenance
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('usefulPhrases')}
-              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
+              className="inline-block rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-orange-500 hover:to-red-600 active:animate-glow"
             >
               {openDrills.usefulPhrases ? 'Hide Exercise' : 'Show Exercise'}
             </button>
@@ -405,32 +654,32 @@ export default function LessonMachineryEquipment() {
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
               <li>
                 <button 
-                  onClick={() => playAudio('check_the_pressure_gauge')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('Check the pressure gauge before starting.')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   Check the pressure gauge before starting.
                 </button> = Verifique o manômetro antes de ligar.
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('the_equipment_is_working_normally')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('The equipment is working normally.')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   The equipment is working normally.
                 </button> = O equipamento está funcionando normalmente.
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('we_need_to_repair_the_pump')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('We need to repair the pump.')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   We need to repair the pump.
                 </button> = Nós precisamos consertar a bomba.
               </li>
               <li>
                 <button 
-                  onClick={() => playAudio('stop_the_machine_immediately')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('Stop the machine immediately!')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
                   Stop the machine immediately!
                 </button> = Desligue a máquina imediatamente!
@@ -438,162 +687,361 @@ export default function LessonMachineryEquipment() {
             </ul>
             
             {openDrills.usefulPhrases && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Check the <span className="text-blue-600">temperature sensor</span> before starting. / pressure gauge / safety valve</p>
-                  <p className="text-sm text-gray-500 mt-1">Verifique o sensor de temperatura antes de ligar. / manômetro / válvula de segurança</p>
+              <div className="mt-4 bg-red-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    I checked the <button onClick={() => playAudio('temperature sensor')} className="text-red-600 font-bold hover:text-red-800 transition-colors">temperature sensor</button> before starting.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eu verifiquei o sensor de temperatura antes de ligar.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did you check the temperature sensor?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did you check the temperature sensor?
+                    </button> - 
+                    <button onClick={() => playAudio("No, I didn't check it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, I didn't check it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">compressor</span> is working normally. / generator / engine</p>
-                  <p className="text-sm text-gray-500 mt-1">O compressor está funcionando normalmente. / gerador / motor</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    The <button onClick={() => playAudio('compressor')} className="text-red-600 font-bold hover:text-red-800 transition-colors">compressor</button> worked normally yesterday.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">O compressor funcionou normalmente ontem.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did the compressor work normally?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did the compressor work normally?
+                    </button> - 
+                    <button onClick={() => playAudio("No, it didn't work.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, it didn't work.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">We need to repair the <span className="text-blue-600">hydraulic system</span>. / conveyor belt / valve</p>
-                  <p className="text-sm text-gray-500 mt-1">Nós precisamos consertar o sistema hidráulico. / esteira transportadora / válvula</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    We repaired the <button onClick={() => playAudio('hydraulic system')} className="text-red-600 font-bold hover:text-red-800 transition-colors">hydraulic system</button> last week.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Nós consertamos o sistema hidráulico na semana passada.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did we repair the hydraulic system?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did we repair the hydraulic system?
+                    </button> - 
+                    <button onClick={() => playAudio("No, we didn't repair it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, we didn't repair it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Stop the <span className="text-blue-600">engine</span> immediately! / machine / pump</p>
-                  <p className="text-sm text-gray-500 mt-1">Desligue o motor imediatamente! / máquina / bomba</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    I stopped the <button onClick={() => playAudio('engine')} className="text-red-600 font-bold hover:text-red-800 transition-colors">engine</button> immediately.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eu desliguei o motor imediatamente.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did you stop the engine?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did you stop the engine?
+                    </button> - 
+                    <button onClick={() => playAudio("No, I didn't stop it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, I didn't stop it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">We inspect the <span className="text-blue-600">equipment</span> every day. / machine / system</p>
-                  <p className="text-sm text-gray-500 mt-1">Nós inspecionamos o equipamento todos os dias. / máquina / sistema</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    We inspected the <button onClick={() => playAudio('equipment')} className="text-red-600 font-bold hover:text-red-800 transition-colors">equipment</button> every day.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Nós inspecionamos o equipamento todos os dias.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did we inspect the equipment?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did we inspect the equipment?
+                    </button> - 
+                    <button onClick={() => playAudio("No, we didn't inspect it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, we didn't inspect it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">alarm system</span> is activated. / safety valve / control panel</p>
-                  <p className="text-sm text-gray-500 mt-1">O sistema de alarme está ativado. / válvula de segurança / painel de controle</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    The <button onClick={() => playAudio('alarm system')} className="text-red-600 font-bold hover:text-red-800 transition-colors">alarm system</button> activated at 3 PM.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">O sistema de alarme ativou às 15h.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did the alarm system activate?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did the alarm system activate?
+                    </button> - 
+                    <button onClick={() => playAudio("No, it didn't activate.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, it didn't activate.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Do you know how to operate the <span className="text-blue-600">control panel</span>? / machine / equipment</p>
-                  <p className="text-sm text-gray-500 mt-1">Você sabe como operar o painel de controle? / máquina / equipamento</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    She operated the <button onClick={() => playAudio('control panel')} className="text-red-600 font-bold hover:text-red-800 transition-colors">control panel</button> correctly.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Ela operou o painel de controle corretamente.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did she operate the control panel?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did she operate the control panel?
+                    </button> - 
+                    <button onClick={() => playAudio("No, she didn't operate it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, she didn't operate it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">We need to replace the <span className="text-blue-600">pipe</span>. / valve / fitting</p>
-                  <p className="text-sm text-gray-500 mt-1">Nós precisamos substituir o tubo. / válvula / conexão</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    We replaced the <button onClick={() => playAudio('pipe')} className="text-red-600 font-bold hover:text-red-800 transition-colors">pipe</button> on Tuesday.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Nós substituímos o tubo na terça-feira.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did we replace the pipe?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did we replace the pipe?
+                    </button> - 
+                    <button onClick={() => playAudio("No, we didn't replace it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, we didn't replace it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">cooling tower</span> requires maintenance. / generator / compressor</p>
-                  <p className="text-sm text-gray-500 mt-1">A torre de resfriamento requer manutenção. / gerador / compressor</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    The <button onClick={() => playAudio('cooling tower')} className="text-red-600 font-bold hover:text-red-800 transition-colors">cooling tower</button> required maintenance.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">A torre de resfriamento requeria manutenção.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did the cooling tower require maintenance?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did the cooling tower require maintenance?
+                    </button> - 
+                    <button onClick={() => playAudio("No, it didn't.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, it didn't.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Don't forget to check the <span className="text-blue-600">safety valve</span>. / pressure gauge / alarm system</p>
-                  <p className="text-sm text-gray-500 mt-1">Não esqueça de verificar a válvula de segurança. / manômetro / sistema de alarme</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    I didn't forget to check the <button onClick={() => playAudio('safety valve')} className="text-red-600 font-bold hover:text-red-800 transition-colors">safety valve</button>.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eu não esqueci de verificar a válvula de segurança.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did you check the safety valve?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did you check the safety valve?
+                    </button> - 
+                    <button onClick={() => playAudio("Yes, I checked it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      Yes, I checked it.
+                    </button>
+                  </p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Seção 4 - Gramática com Drill */}
-        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+        {/* Seção 4 - Gramática com Drill - Past Tense Focus */}
+        <div className="bg-white border-2 border-red-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 GRAMMAR - Instructions & Procedures</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Structures to give instructions and talk about equipment status
+              <h2 className="text-2xl font-bold">🔹 GRAMMAR - Past Tense & Questions</h2>
+              <p className="mt-2 text-red-100 italic">
+                Learn to use past tense with questions and negatives
               </p>
             </div>
             <button 
               onClick={() => toggleDrill('grammar')}
-              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
+              className="inline-block rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-orange-500 hover:to-red-600 active:animate-glow"
             >
               {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
           
           <div className="p-8">
-            <div className="bg-blue-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
+            <div className="bg-red-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
+              <p className="font-bold text-red-700">Past Tense - Regular Verbs</p>
               <p>
                 <button 
-                  onClick={() => playAudio('check_the_valve_before_operation')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('I checked the valve before operation.')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
-                  Check the valve before operation.
-                </button> = Verifique a válvula antes da operação.
+                  I checked the valve before operation.
+                </button> = Eu verifiquei a válvula antes da operação.
               </p>
               <p>
                 <button 
-                  onClick={() => playAudio('the_machine_is_running')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('The machine ran smoothly.')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
-                  The machine is running.
-                </button> = A máquina está funcionando.
+                  The machine ran smoothly.
+                </button> = A máquina funcionou suavemente.
               </p>
               <p>
                 <button 
-                  onClick={() => playAudio('the_pump_is_not_working')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('The pump did not work yesterday.')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
-                  The pump is not working.
-                </button> = A bomba não está funcionando.
+                  The pump did not work yesterday.
+                </button> = A bomba não funcionou ontem.
+              </p>
+              <p className="font-bold text-red-700 mt-4">Past Tense - Questions</p>
+              <p>
+                <button 
+                  onClick={() => playAudio('Did you inspect the system?')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
+                >
+                  Did you inspect the system?
+                </button> = Você inspecionou o sistema?
               </p>
               <p>
                 <button 
-                  onClick={() => playAudio('we_have_to_inspect_the_system')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('Did they follow the safety procedures?')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
-                  We have to inspect the system.
-                </button> = Nós temos que inspecionar o sistema.
+                  Did they follow the safety procedures?
+                </button> = Eles seguiram os procedimentos de segurança?
+              </p>
+              <p className="font-bold text-red-700 mt-4">Past Tense - Negative</p>
+              <p>
+                <button 
+                  onClick={() => playAudio('We did not maintain the equipment.')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
+                >
+                  We did not maintain the equipment.
+                </button> = Nós não fizemos manutenção do equipamento.
               </p>
               <p>
                 <button 
-                  onClick={() => playAudio('you_must_follow_the_safety_procedures')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
+                  onClick={() => playAudio('She did not check the readings.')} 
+                  className="text-red-600 font-bold cursor-pointer hover:text-red-800 transition-colors"
                 >
-                  You must follow the safety procedures.
-                </button> = Você deve seguir os procedimentos de segurança.
-              </p>
-              <p>
-                <button 
-                  onClick={() => playAudio('the_equipment_needs_maintenance')} 
-                  className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                >
-                  The equipment needs maintenance.
-                </button> = O equipamento precisa de manutenção.
+                  She did not check the readings.
+                </button> = Ela não verificou as leituras.
               </p>
             </div>
             
             {openDrills.grammar && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Check the <span className="text-blue-600">pressure gauge</span> before operation. / temperature / safety valve</p>
-                  <p className="text-sm text-gray-500 mt-1">Verifique o manômetro antes da operação. / temperatura / válvula de segurança</p>
+              <div className="mt-4 bg-red-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    I <button onClick={() => playAudio('checked')} className="text-red-600 font-bold hover:text-red-800 transition-colors">checked</button> the pressure gauge before operation.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eu verifiquei o manômetro antes da operação.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did you check the pressure gauge?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did you check the pressure gauge?
+                    </button> - 
+                    <button onClick={() => playAudio("No, I didn't check it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, I didn't check it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">compressor</span> is running. / generator / engine</p>
-                  <p className="text-sm text-gray-500 mt-1">O compressor está funcionando. / gerador / motor</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    The compressor <button onClick={() => playAudio('ran')} className="text-red-600 font-bold hover:text-red-800 transition-colors">ran</button> smoothly.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">O compressor funcionou suavemente.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did the compressor run smoothly?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did the compressor run smoothly?
+                    </button> - 
+                    <button onClick={() => playAudio("No, it didn't run smoothly.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, it didn't run smoothly.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">conveyor belt</span> is not working. / pump / valve</p>
-                  <p className="text-sm text-gray-500 mt-1">A esteira transportadora não está funcionando. / bomba / válvula</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    The conveyor belt <button onClick={() => playAudio('did not work')} className="text-red-600 font-bold hover:text-red-800 transition-colors">did not work</button> yesterday.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">A esteira transportadora não funcionou ontem.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did the conveyor belt work?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did the conveyor belt work?
+                    </button> - 
+                    <button onClick={() => playAudio("No, it didn't work.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, it didn't work.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">We have to inspect the <span className="text-blue-600">hydraulic system</span>. / cooling tower / pipes</p>
-                  <p className="text-sm text-gray-500 mt-1">Nós temos que inspecionar o sistema hidráulico. / torre de resfriamento / tubos</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('Did you')} className="text-red-600 font-bold hover:text-red-800 transition-colors">Did you</button> inspect the hydraulic system?
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Você inspecionou o sistema hidráulico?</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio("No, I didn't inspect the hydraulic system.")} className="text-red-600 hover:text-red-800 transition-colors">
+                      No, I didn't inspect the hydraulic system.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">You must follow the <span className="text-blue-600">safety procedures</span>. / maintenance schedule / operation manual</p>
-                  <p className="text-sm text-gray-500 mt-1">Você deve seguir os procedimentos de segurança. / cronograma de manutenção / manual de operação</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('Did they')} className="text-red-600 font-bold hover:text-red-800 transition-colors">Did they</button> follow the safety procedures?
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Eles seguiram os procedimentos de segurança?</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio("No, they didn't follow the safety procedures.")} className="text-red-600 hover:text-red-800 transition-colors">
+                      No, they didn't follow the safety procedures.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">alarm system</span> needs maintenance. / generator / compressor</p>
-                  <p className="text-sm text-gray-500 mt-1">O sistema de alarme precisa de manutenção. / gerador / compressor</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    We <button onClick={() => playAudio('did not')} className="text-red-600 font-bold hover:text-red-800 transition-colors">did not</button> maintain the cooling tower.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Nós não fizemos manutenção na torre de resfriamento.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did we maintain the cooling tower?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did we maintain the cooling tower?
+                    </button> - 
+                    <button onClick={() => playAudio("No, we didn't maintain it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, we didn't maintain it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Do you know how to <span className="text-blue-600">stop the machine</span> in an emergency? / operate / start</p>
-                  <p className="text-sm text-gray-500 mt-1">Você sabe como desligar a máquina em uma emergência? / operar / ligar</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    She <button onClick={() => playAudio('did not')} className="text-red-600 font-bold hover:text-red-800 transition-colors">did not</button> check the temperature sensor.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Ela não verificou o sensor de temperatura.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did she check the temperature sensor?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did she check the temperature sensor?
+                    </button> - 
+                    <button onClick={() => playAudio("No, she didn't check it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, she didn't check it.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">We need to <span className="text-blue-600">replace the pipe</span>. / repair the valve / inspect the system</p>
-                  <p className="text-sm text-gray-500 mt-1">Nós precisamos substituir o tubo. / consertar a válvula / inspecionar o sistema</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('Did you')} className="text-red-600 font-bold hover:text-red-800 transition-colors">Did you</button> repair the pump last week?
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Você consertou a bomba na semana passada?</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio("No, I didn't repair the pump last week.")} className="text-red-600 hover:text-red-800 transition-colors">
+                      No, I didn't repair the pump last week.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">Don't forget to <span className="text-blue-600">record the readings</span>. / check the pressure / log the data</p>
-                  <p className="text-sm text-gray-500 mt-1">Não esqueça de registrar as leituras. / verificar a pressão / registrar os dados</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    The engine <button onClick={() => playAudio('did not')} className="text-red-600 font-bold hover:text-red-800 transition-colors">did not</button> start this morning.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">O motor não ligou esta manhã.</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio('Did the engine start?')} className="text-red-600 hover:text-red-800 transition-colors">
+                      Did the engine start?
+                    </button> - 
+                    <button onClick={() => playAudio("No, it didn't start.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                      No, it didn't start.
+                    </button>
+                  </p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">The <span className="text-blue-600">temperature sensor</span> shows normal readings. / pressure gauge / control panel</p>
-                  <p className="text-sm text-gray-500 mt-1">O sensor de temperatura mostra leituras normais. / manômetro / painel de controle</p>
+                <div className="p-4 bg-white rounded-xl border border-orange-200">
+                  <p className="text-lg font-medium text-gray-800">
+                    <button onClick={() => playAudio('Did we')} className="text-red-600 font-bold hover:text-red-800 transition-colors">Did we</button> record all the readings?
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">Nós registramos todas as leituras?</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    <button onClick={() => playAudio("No, we didn't record all the readings.")} className="text-red-600 hover:text-red-800 transition-colors">
+                      No, we didn't record all the readings.
+                    </button>
+                  </p>
                 </div>
               </div>
             )}
@@ -601,24 +1049,24 @@ export default function LessonMachineryEquipment() {
         </div>
 
         {/* Seção 5 - Real Life Practice */}
-        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
+        <div className="bg-white border-2 border-red-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white py-4 px-8">
             <h2 className="text-2xl font-bold">🔹 Make It Yours</h2>
-            <p className="mt-2 text-blue-100 italic">
-              Replace the blue words to practice real equipment operation phrases
+            <p className="mt-2 text-red-100 italic">
+              Replace the red words to practice real equipment operation phrases
             </p>
           </div>
           
           <div className="p-8">
-            <div className="bg-blue-50 rounded-[20px] p-6">
+            <div className="bg-red-50 rounded-[20px] p-6">
               <div className="flex flex-col lg:flex-row gap-8">
                 {/* Frases - 2/3 da largura */}
                 <div className="lg:w-2/3 space-y-6">
                   <div className="group">
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('check_the_pressure_gauge_before_starting')} 
-                        className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
+                        onClick={() => playAudio('I checked the pressure gauge before starting.')} 
+                        className="mr-3 mt-1 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -627,12 +1075,20 @@ export default function LessonMachineryEquipment() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          1. Check the <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('pressure_gauge')}
-                          >pressure gauge</span> before starting.
+                          1. I checked the <button 
+                            onClick={() => playAudio('pressure gauge')}
+                            className="text-red-600 font-bold hover:text-red-800 transition-colors"
+                          >pressure gauge</button> before starting.
                         </p>
-                        <p className="text-sm text-gray-600">Verifique o manômetro antes de ligar.</p>
+                        <p className="text-sm text-gray-600">Eu verifiquei o manômetro antes de ligar.</p>
+                        <p className="text-sm text-red-600 mt-1">
+                          <button onClick={() => playAudio('Did you check the pressure gauge?')} className="text-red-600 hover:text-red-800 transition-colors">
+                            Did you check the pressure gauge?
+                          </button> - 
+                          <button onClick={() => playAudio("No, I didn't check it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                            No, I didn't check it.
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -640,8 +1096,8 @@ export default function LessonMachineryEquipment() {
                   <div className="group">
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('the_engine_is_running_normally')} 
-                        className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
+                        onClick={() => playAudio('The engine ran normally yesterday.')} 
+                        className="mr-3 mt-1 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -650,12 +1106,20 @@ export default function LessonMachineryEquipment() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          2. The <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          2. The <button 
                             onClick={() => playAudio('engine')}
-                          >engine</span> is running normally.
+                            className="text-red-600 font-bold hover:text-red-800 transition-colors"
+                          >engine</button> ran normally yesterday.
                         </p>
-                        <p className="text-sm text-gray-600">O motor está funcionando normalmente.</p>
+                        <p className="text-sm text-gray-600">O motor funcionou normalmente ontem.</p>
+                        <p className="text-sm text-red-600 mt-1">
+                          <button onClick={() => playAudio('Did the engine run normally?')} className="text-red-600 hover:text-red-800 transition-colors">
+                            Did the engine run normally?
+                          </button> - 
+                          <button onClick={() => playAudio("No, it didn't run.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                            No, it didn't run.
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -663,8 +1127,8 @@ export default function LessonMachineryEquipment() {
                   <div className="group">
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('we_need_to_repair_the_pump')} 
-                        className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
+                        onClick={() => playAudio('We repaired the pump last week.')} 
+                        className="mr-3 mt-1 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -673,12 +1137,20 @@ export default function LessonMachineryEquipment() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          3. We need to repair the <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          3. We repaired the <button 
                             onClick={() => playAudio('pump')}
-                          >pump</span>.
+                            className="text-red-600 font-bold hover:text-red-800 transition-colors"
+                          >pump</button> last week.
                         </p>
-                        <p className="text-sm text-gray-600">Nós precisamos consertar a bomba.</p>
+                        <p className="text-sm text-gray-600">Nós consertamos a bomba na semana passada.</p>
+                        <p className="text-sm text-red-600 mt-1">
+                          <button onClick={() => playAudio('Did we repair the pump?')} className="text-red-600 hover:text-red-800 transition-colors">
+                            Did we repair the pump?
+                          </button> - 
+                          <button onClick={() => playAudio("No, we didn't repair it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                            No, we didn't repair it.
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -686,8 +1158,8 @@ export default function LessonMachineryEquipment() {
                   <div className="group">
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('stop_the_conveyor_belt_immediately')} 
-                        className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
+                        onClick={() => playAudio('I stopped the conveyor belt immediately.')} 
+                        className="mr-3 mt-1 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -696,12 +1168,20 @@ export default function LessonMachineryEquipment() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          4. Stop the <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('conveyor_belt')}
-                          >conveyor belt</span> immediately!
+                          4. I stopped the <button 
+                            onClick={() => playAudio('conveyor belt')}
+                            className="text-red-600 font-bold hover:text-red-800 transition-colors"
+                          >conveyor belt</button> immediately.
                         </p>
-                        <p className="text-sm text-gray-600">Desligue a esteira transportadora imediatamente!</p>
+                        <p className="text-sm text-gray-600">Eu desliguei a esteira transportadora imediatamente.</p>
+                        <p className="text-sm text-red-600 mt-1">
+                          <button onClick={() => playAudio('Did you stop the conveyor belt?')} className="text-red-600 hover:text-red-800 transition-colors">
+                            Did you stop the conveyor belt?
+                          </button> - 
+                          <button onClick={() => playAudio("No, I didn't stop it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                            No, I didn't stop it.
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -709,8 +1189,8 @@ export default function LessonMachineryEquipment() {
                   <div className="group">
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('the_alarm_system_is_activated')} 
-                        className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
+                        onClick={() => playAudio('The alarm system activated at 2 PM.')} 
+                        className="mr-3 mt-1 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -719,12 +1199,20 @@ export default function LessonMachineryEquipment() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          5. The <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('alarm_system')}
-                          >alarm system</span> is activated.
+                          5. The <button 
+                            onClick={() => playAudio('alarm system')}
+                            className="text-red-600 font-bold hover:text-red-800 transition-colors"
+                          >alarm system</button> activated at 2 PM.
                         </p>
-                        <p className="text-sm text-gray-600">O sistema de alarme está ativado.</p>
+                        <p className="text-sm text-gray-600">O sistema de alarme ativou às 14h.</p>
+                        <p className="text-sm text-red-600 mt-1">
+                          <button onClick={() => playAudio('Did the alarm system activate?')} className="text-red-600 hover:text-red-800 transition-colors">
+                            Did the alarm system activate?
+                          </button> - 
+                          <button onClick={() => playAudio("No, it didn't activate.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                            No, it didn't activate.
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -732,8 +1220,8 @@ export default function LessonMachineryEquipment() {
                   <div className="group">
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('we_have_to_inspect_the_cooling_tower')} 
-                        className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
+                        onClick={() => playAudio('We inspected the cooling tower yesterday.')} 
+                        className="mr-3 mt-1 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -742,12 +1230,20 @@ export default function LessonMachineryEquipment() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          6. We have to inspect the <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('cooling_tower')}
-                          >cooling tower</span>.
+                          6. We inspected the <button 
+                            onClick={() => playAudio('cooling tower')}
+                            className="text-red-600 font-bold hover:text-red-800 transition-colors"
+                          >cooling tower</button> yesterday.
                         </p>
-                        <p className="text-sm text-gray-600">Nós temos que inspecionar a torre de resfriamento.</p>
+                        <p className="text-sm text-gray-600">Nós inspecionamos a torre de resfriamento ontem.</p>
+                        <p className="text-sm text-red-600 mt-1">
+                          <button onClick={() => playAudio('Did we inspect the cooling tower?')} className="text-red-600 hover:text-red-800 transition-colors">
+                            Did we inspect the cooling tower?
+                          </button> - 
+                          <button onClick={() => playAudio("No, we didn't inspect it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                            No, we didn't inspect it.
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -755,8 +1251,8 @@ export default function LessonMachineryEquipment() {
                   <div className="group">
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('you_must_check_the_safety_valve')} 
-                        className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
+                        onClick={() => playAudio('You checked the safety valve yesterday.')} 
+                        className="mr-3 mt-1 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -765,12 +1261,20 @@ export default function LessonMachineryEquipment() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          7. You must check the <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('safety_valve')}
-                          >safety valve</span>.
+                          7. You checked the <button 
+                            onClick={() => playAudio('safety valve')}
+                            className="text-red-600 font-bold hover:text-red-800 transition-colors"
+                          >safety valve</button> yesterday.
                         </p>
-                        <p className="text-sm text-gray-600">Você deve verificar a válvula de segurança.</p>
+                        <p className="text-sm text-gray-600">Você verificou a válvula de segurança ontem.</p>
+                        <p className="text-sm text-red-600 mt-1">
+                          <button onClick={() => playAudio('Did you check the safety valve?')} className="text-red-600 hover:text-red-800 transition-colors">
+                            Did you check the safety valve?
+                          </button> - 
+                          <button onClick={() => playAudio("Yes, I checked it.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                            Yes, I checked it.
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -778,8 +1282,8 @@ export default function LessonMachineryEquipment() {
                   <div className="group">
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('do_you_know_how_to_operate_the_control_panel')} 
-                        className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
+                        onClick={() => playAudio('Did you operate the control panel yesterday?')} 
+                        className="mr-3 mt-1 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -788,12 +1292,17 @@ export default function LessonMachineryEquipment() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          8. Do you know how to operate the <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('control_panel')}
-                          >control panel</span>?
+                          8. Did you operate the <button 
+                            onClick={() => playAudio('control panel')}
+                            className="text-red-600 font-bold hover:text-red-800 transition-colors"
+                          >control panel</button> yesterday?
                         </p>
-                        <p className="text-sm text-gray-600">Você sabe como operar o painel de controle?</p>
+                        <p className="text-sm text-gray-600">Você operou o painel de controle ontem?</p>
+                        <p className="text-sm text-red-600 mt-1">
+                          <button onClick={() => playAudio("No, I didn't operate the control panel.")} className="text-red-600 hover:text-red-800 transition-colors">
+                            No, I didn't operate the control panel.
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -801,8 +1310,8 @@ export default function LessonMachineryEquipment() {
                   <div className="group">
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('the_temperature_sensor_is_malfunctioning')} 
-                        className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
+                        onClick={() => playAudio('The temperature sensor malfunctioned yesterday.')} 
+                        className="mr-3 mt-1 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -811,12 +1320,20 @@ export default function LessonMachineryEquipment() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          9. The <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                            onClick={() => playAudio('temperature_sensor')}
-                          >temperature sensor</span> is malfunctioning.
+                          9. The <button 
+                            onClick={() => playAudio('temperature sensor')}
+                            className="text-red-600 font-bold hover:text-red-800 transition-colors"
+                          >temperature sensor</button> malfunctioned yesterday.
                         </p>
-                        <p className="text-sm text-gray-600">O sensor de temperatura está com defeito.</p>
+                        <p className="text-sm text-gray-600">O sensor de temperatura apresentou defeito ontem.</p>
+                        <p className="text-sm text-red-600 mt-1">
+                          <button onClick={() => playAudio('Did the temperature sensor malfunction?')} className="text-red-600 hover:text-red-800 transition-colors">
+                            Did the temperature sensor malfunction?
+                          </button> - 
+                          <button onClick={() => playAudio("No, it didn't malfunction.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                            No, it didn't malfunction.
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -824,8 +1341,8 @@ export default function LessonMachineryEquipment() {
                   <div className="group">
                     <div className="flex items-start">
                       <button 
-                        onClick={() => playAudio('we_need_to_record_the_readings_in_the_logbook')} 
-                        className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
+                        onClick={() => playAudio('We recorded the readings in the logbook yesterday.')} 
+                        className="mr-3 mt-1 text-red-600 hover:text-red-800 transition-colors flex-shrink-0"
                         aria-label="Play audio"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -834,12 +1351,20 @@ export default function LessonMachineryEquipment() {
                       </button>
                       <div>
                         <p className="text-lg font-medium">
-                          10. We need to record the readings in the <span 
-                            className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                          10. We recorded the readings in the <button 
                             onClick={() => playAudio('logbook')}
-                          >logbook</span>.
+                            className="text-red-600 font-bold hover:text-red-800 transition-colors"
+                          >logbook</button> yesterday.
                         </p>
-                        <p className="text-sm text-gray-600">Nós precisamos registrar as leituras no livro de registro.</p>
+                        <p className="text-sm text-gray-600">Nós registramos as leituras no livro de registro ontem.</p>
+                        <p className="text-sm text-red-600 mt-1">
+                          <button onClick={() => playAudio('Did we record the readings?')} className="text-red-600 hover:text-red-800 transition-colors">
+                            Did we record the readings?
+                          </button> - 
+                          <button onClick={() => playAudio("No, we didn't record them.")} className="text-red-600 hover:text-red-800 transition-colors ml-1">
+                            No, we didn't record them.
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -883,11 +1408,11 @@ export default function LessonMachineryEquipment() {
         </div>
 
         {/* Seção 6 - WRAP UP */}
-        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-white border-2 border-red-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-3xl font-bold">🔹 WRAP UP</h2>
-              <p className="mt-2 text-blue-100 italic">
+              <p className="mt-2 text-red-100 italic">
                 Essential structures for equipment operation and maintenance
               </p>
             </div>
@@ -895,12 +1420,37 @@ export default function LessonMachineryEquipment() {
 
           <div className="flex flex-col md:flex-row">
             {/* Coluna esquerda - Equipment Status */}
-            <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
-              <p className="font-bold">The machine is running. <span className="text-sm text-blue-300 ml-2">A máquina está funcionando.</span></p>
-              <p className="font-bold">The pump needs repair. <span className="text-sm text-blue-300 ml-2">A bomba precisa de conserto.</span></p>
-              <p className="font-bold">Check the pressure gauge. <span className="text-sm text-blue-300 ml-2">Verifique o manômetro.</span></p>
-              <p className="font-bold">Stop the equipment. <span className="text-sm text-blue-300 ml-2">Desligue o equipamento.</span></p>
-              <p className="font-bold">Follow safety procedures. <span className="text-sm text-blue-300 ml-2">Siga os procedimentos de segurança.</span></p>
+            <div className="bg-red-900 text-white flex-1 p-6 space-y-4 text-xl">
+              <p className="font-bold">
+                <button onClick={() => playAudio('The machine ran smoothly.')} className="hover:text-red-200 transition-colors">
+                  The machine ran smoothly.
+                </button>
+                <span className="text-sm text-red-300 ml-2">A máquina funcionou suavemente.</span>
+              </p>
+              <p className="font-bold">
+                <button onClick={() => playAudio('The pump needed repair.')} className="hover:text-red-200 transition-colors">
+                  The pump needed repair.
+                </button>
+                <span className="text-sm text-red-300 ml-2">A bomba precisava de conserto.</span>
+              </p>
+              <p className="font-bold">
+                <button onClick={() => playAudio('I checked the pressure gauge.')} className="hover:text-red-200 transition-colors">
+                  I checked the pressure gauge.
+                </button>
+                <span className="text-sm text-red-300 ml-2">Eu verifiquei o manômetro.</span>
+              </p>
+              <p className="font-bold">
+                <button onClick={() => playAudio('I stopped the equipment.')} className="hover:text-red-200 transition-colors">
+                  I stopped the equipment.
+                </button>
+                <span className="text-sm text-red-300 ml-2">Eu desliguei o equipamento.</span>
+              </p>
+              <p className="font-bold">
+                <button onClick={() => playAudio('They followed safety procedures.')} className="hover:text-red-200 transition-colors">
+                  They followed safety procedures.
+                </button>
+                <span className="text-sm text-red-300 ml-2">Eles seguiram os procedimentos de segurança.</span>
+              </p>
             </div>
 
             {/* Coluna central - Imagem e balão */}
@@ -913,48 +1463,66 @@ export default function LessonMachineryEquipment() {
                 className="rounded-full w-40 h-40 object-cover mb-4"
               />
               <div className="bg-yellow-200 text-black px-4 py-2 rounded-xl shadow-md text-center">
-                Check the safety valve. <span className="font-bold">And you?</span>
-                <p className="text-sm text-gray-600 mt-1">Verifique a válvula de segurança. E você?</p>
+                <button onClick={() => playAudio('Did you check the safety valve?')} className="hover:text-red-600 transition-colors">
+                  Did you check the safety valve?
+                </button>
+                <span className="font-bold"> And you?</span>
+                <p className="text-sm text-gray-600 mt-1">Você verificou a válvula de segurança? E você?</p>
               </div>
             </div>
 
             {/* Coluna direita - Sign-Off */}
-            <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
+            <div className="bg-red-900 text-white flex-1 p-6 space-y-4 text-xl">
               <div className="flex items-center group">
                 <button 
-                  onClick={() => playAudio("bye_see_you")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
+                  onClick={() => playAudio('Bye! See you.')}
+                  className="mr-2 text-red-200 hover:text-white transition-colors"
                   aria-label="Play audio"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                   </svg>
                 </button>
-                <p>• Bye! See you. <span className="text-sm text-blue-300 ml-2">Tchau! Até mais.</span></p>
+                <p>
+                  <button onClick={() => playAudio('Bye! See you.')} className="hover:text-red-200 transition-colors">
+                    Bye! See you.
+                  </button>
+                  <span className="text-sm text-red-300 ml-2">Tchau! Até mais.</span>
+                </p>
               </div>
               <div className="flex items-center group">
                 <button 
-                  onClick={() => playAudio("see_you_later")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
+                  onClick={() => playAudio('See you later.')}
+                  className="mr-2 text-red-200 hover:text-white transition-colors"
                   aria-label="Play audio"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                   </svg>
                 </button>
-                <p>• See you later. <span className="text-sm text-blue-300 ml-2">Até mais tarde.</span></p>
+                <p>
+                  <button onClick={() => playAudio('See you later.')} className="hover:text-red-200 transition-colors">
+                    See you later.
+                  </button>
+                  <span className="text-sm text-red-300 ml-2">Até mais tarde.</span>
+                </p>
               </div>
               <div className="flex items-center group">
                 <button 
-                  onClick={() => playAudio("good_night")}
-                  className="mr-2 text-blue-200 hover:text-white transition-colors"
+                  onClick={() => playAudio('Good night!')}
+                  className="mr-2 text-red-200 hover:text-white transition-colors"
                   aria-label="Play audio"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                   </svg>
                 </button>
-                <p>• Good night! <span className="text-sm text-blue-300 ml-2">Boa noite!</span></p>
+                <p>
+                  <button onClick={() => playAudio('Good night!')} className="hover:text-red-200 transition-colors">
+                    Good night!
+                  </button>
+                  <span className="text-sm text-red-300 ml-2">Boa noite!</span>
+                </p>
               </div>
             </div>
           </div>
@@ -970,7 +1538,7 @@ export default function LessonMachineryEquipment() {
           </button>
           <button
             onClick={() => router.push("/cursos/lesson4")}
-            className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
+            className="inline-block rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-orange-500 hover:to-red-600 active:animate-glow"
           >
             Next Lesson &rarr;
           </button>
@@ -995,13 +1563,13 @@ export default function LessonMachineryEquipment() {
         
         @keyframes glow {
           0% {
-            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
           }
           70% {
-            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
           }
           100% {
-            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
           }
         }
         

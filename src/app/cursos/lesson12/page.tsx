@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle, CheckCircle, X, VolumeX } from "lucide-react";
 
 // --- VERSÃO DO COMPONENTE (PARA FORÇAR ATUALIZAÇÃO) ---
-const COMPONENT_VERSION = "2.4.0";
+const COMPONENT_VERSION = "2.5.0";
 const BUILD_TIMESTAMP = "2026-03-22";
 
 // LISTENING EXERCISE DATA
@@ -193,7 +193,6 @@ const thereAndAroundDialogue = [
 const getNaturalFemaleVoice = () => {
   const voices = window.speechSynthesis.getVoices();
   
-  // Lista de vozes femininas americanas naturais (priorizando as mais naturais)
   const preferredVoices = [
     "Google UK English Female",
     "Samantha",
@@ -206,13 +205,11 @@ const getNaturalFemaleVoice = () => {
     "Amy"
   ];
   
-  // Primeiro tenta encontrar por nome exato
   for (const preferredName of preferredVoices) {
     const voice = voices.find(v => v.name === preferredName && v.lang === "en-US");
     if (voice) return voice;
   }
   
-  // Depois tenta qualquer voz feminina americana
   const femaleAmericanVoice = voices.find(voice => 
     voice.lang === "en-US" && 
     (voice.name.toLowerCase().includes("female") || 
@@ -222,12 +219,10 @@ const getNaturalFemaleVoice = () => {
   );
   
   if (femaleAmericanVoice) return femaleAmericanVoice;
-  
-  // Fallback: qualquer voz americana
   return voices.find(voice => voice.lang === "en-US");
 };
 
-// Text-to-Speech function with natural female voice
+// Text-to-Speech function
 const speakEnglish = (text: string) => {
   if (!text || !/^[a-zA-Z\s\?\.,!']+$/.test(text.trim())) return;
   
@@ -239,8 +234,8 @@ const speakEnglish = (text: string) => {
     utterance.voice = naturalVoice;
   }
   
-  utterance.rate = 0.95; // Velocidade mais natural
-  utterance.pitch = 1.05; // Tom ligeiramente mais feminino
+  utterance.rate = 0.95;
+  utterance.pitch = 1.05;
   utterance.volume = 1;
   
   window.speechSynthesis.cancel();
@@ -296,12 +291,14 @@ const ClickToSpeak = ({ text, className = "" }: { text: string; className?: stri
   );
 };
 
-// COMPONENTE AUDIO PLAYER PARA LISTENING EXERCISE
-const ListeningAudioPlayer = ({ audioSrc }: { audioSrc: string }) => {
+// COMPONENTE AUDIO PLAYER COM DRAG PARA POSIÇÕES ESPECÍFICAS
+const EnhancedAudioPlayer = ({ audioSrc }: { audioSrc: string }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -309,14 +306,16 @@ const ListeningAudioPlayer = ({ audioSrc }: { audioSrc: string }) => {
         setDuration(audioRef.current?.duration || 0);
       });
       audioRef.current.addEventListener('timeupdate', () => {
-        setCurrentTime(audioRef.current?.currentTime || 0);
+        if (!isDragging) {
+          setCurrentTime(audioRef.current?.currentTime || 0);
+        }
       });
       audioRef.current.addEventListener('ended', () => {
         setIsPlaying(false);
         setCurrentTime(0);
       });
     }
-  }, []);
+  }, [isDragging]);
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -337,6 +336,59 @@ const ListeningAudioPlayer = ({ audioSrc }: { audioSrc: string }) => {
       setCurrentTime(0);
     }
   };
+
+  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!audioRef.current || !progressRef.current) return;
+    
+    const rect = progressRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const width = rect.width;
+    const percentage = Math.max(0, Math.min(1, x / width));
+    const newTime = percentage * duration;
+    
+    audioRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    handleProgressClick(e);
+  };
+
+  const handleDragMove = (e: MouseEvent) => {
+    if (!isDragging || !audioRef.current || !progressRef.current) return;
+    
+    const rect = progressRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const width = rect.width;
+    const percentage = Math.max(0, Math.min(1, x / width));
+    const newTime = percentage * duration;
+    
+    audioRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    if (audioRef.current) {
+      audioRef.current.currentTime = currentTime;
+    }
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleDragMove);
+      document.addEventListener('mouseup', handleDragEnd);
+    } else {
+      document.removeEventListener('mousemove', handleDragMove);
+      document.removeEventListener('mouseup', handleDragEnd);
+    }
+    
+    return () => {
+      document.removeEventListener('mousemove', handleDragMove);
+      document.removeEventListener('mouseup', handleDragEnd);
+    };
+  }, [isDragging]);
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -364,12 +416,24 @@ const ListeningAudioPlayer = ({ audioSrc }: { audioSrc: string }) => {
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div 
+          ref={progressRef}
+          className="w-full bg-gray-200 rounded-full h-2 cursor-pointer relative"
+          onClick={handleProgressClick}
+        >
           <div 
             className="bg-orange-500 h-2 rounded-full transition-all"
             style={{ width: `${(currentTime / duration) * 100}%` }}
           />
+          <div 
+            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-orange-500 rounded-full border-2 border-white shadow-md cursor-grab active:cursor-grabbing"
+            style={{ left: `${(currentTime / duration) * 100}%`, transform: 'translate(-50%, -50%)' }}
+            onMouseDown={handleDragStart}
+          />
         </div>
+        <p className="text-xs text-gray-500 mt-1 text-center">
+          💡 Drag the circle or click anywhere on the progress bar to listen to specific parts
+        </p>
       </div>
     </div>
   );
@@ -419,7 +483,6 @@ export default function Lesson12LanguagesAndCountries() {
   const [isInitialized, setIsInitialized] = useState(false);
   const [voicesLoaded, setVoicesLoaded] = useState(false);
   
-  // Carregar vozes antecipadamente
   useEffect(() => {
     const loadVoices = () => {
       window.speechSynthesis.getVoices();
@@ -436,6 +499,7 @@ export default function Lesson12LanguagesAndCountries() {
   
   const [sections, setSections] = useState({
     listeningExercise: true,
+    englishShots: true,
     substitution1: true,
     negative: true,
     substitution2: true,
@@ -466,7 +530,6 @@ export default function Lesson12LanguagesAndCountries() {
     setListeningResults(prev => ({ ...prev, [id]: isCorrect }));
     if (isCorrect) {
       setShowCorrectAnswer(prev => ({ ...prev, [id]: true }));
-      // Tocar a frase correta quando o aluno acerta
       speakEnglish(correct);
     }
   };
@@ -643,18 +706,17 @@ export default function Lesson12LanguagesAndCountries() {
                 </p>
               </div>
 
-              {/* Audio Player com controles Play, Stop e Voltar */}
+              {/* Audio Player com controles de arraste */}
               <div className="mb-8">
-                <ListeningAudioPlayer audioSrc="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/L12-listening.mp3" />
+                <EnhancedAudioPlayer audioSrc="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/L12-listening.mp3" />
                 <p className="text-center text-gray-500 text-sm mt-2">
-                  Listen to the full audio, then write the sentences for each image
+                  🎯 Drag the circle or click on the progress bar to listen to specific parts
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {listenItems.map(item => (
                   <div key={item.id} className="border-2 border-orange-200 rounded-2xl p-4 shadow-md bg-white">
-                    {/* Container da imagem */}
                     <div className="w-full flex items-center justify-center bg-gray-50 rounded-xl overflow-hidden">
                       <img
                         src={item.image}
@@ -734,12 +796,127 @@ export default function Lesson12LanguagesAndCountries() {
                 <h3 className="text-xl font-bold text-orange-800 mb-3">🎯 How to practice:</h3>
                 <ol className="list-decimal pl-5 space-y-2 text-orange-700">
                   <li>Use the audio player above to listen to all sentences</li>
+                  <li>Drag the circle or click on the progress bar to listen to specific parts</li>
                   <li>Listen carefully and identify which sentence corresponds to each image</li>
                   <li>Write what you hear for each image in the text box below it</li>
                   <li>Click <span className="font-semibold">"Check Answer"</span> to see if you're correct</li>
                   <li>When correct, the sentence will appear and be spoken aloud</li>
                   <li>Click the <span className="font-semibold">X</span> button to try again</li>
                 </ol>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ENGLISH SHOTS! - FEEL LIKE */}
+        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-yellow-500 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">📱 ENGLISH SHOTS!</h2>
+              <button 
+                onClick={() => toggleSection('englishShots')}
+                className="ml-4 p-2 rounded-full hover:bg-yellow-600 transition"
+              >
+                {sections.englishShots ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.englishShots && (
+            <div className="p-8">
+              <div className="bg-yellow-100 border-2 border-yellow-300 rounded-xl p-6 mb-6">
+                <h3 className="text-2xl font-bold text-yellow-800 mb-4">
+                  🎯 "FEEL LIKE" - Expressing Wants and Desires
+                </h3>
+                <p className="text-lg text-yellow-700 mb-4">
+                  <span className="font-bold">"Feel like"</span> in English is used to express what you <span className="font-bold">want</span> or <span className="font-bold">have a desire</span> to do.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="bg-white p-4 rounded-lg shadow">
+                    <p className="font-bold text-yellow-700">In Portuguese:</p>
+                    <p className="text-gray-700">"Estou com vontade de..."</p>
+                    <p className="text-gray-700">"Tenho vontade de..."</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow">
+                    <p className="font-bold text-yellow-700">In English:</p>
+                    <p className="text-gray-700">"I feel like..."</p>
+                    <p className="text-gray-700">"Do you feel like...?"</p>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow mb-4">
+                  <p className="font-bold text-yellow-700">Examples:</p>
+                  <ul className="list-disc pl-5 space-y-2 text-gray-700">
+                    <li><ClickToSpeak text="I feel like eating pizza tonight." className="font-medium" /> = Estou com vontade de comer pizza hoje à noite.</li>
+                    <li><ClickToSpeak text="Do you feel like going to the movies?" className="font-medium" /> = Você está com vontade de ir ao cinema?</li>
+                    <li><ClickToSpeak text="She feels like learning English." className="font-medium" /> = Ela está com vontade de aprender inglês.</li>
+                    <li><ClickToSpeak text="They don't feel like traveling now." className="font-medium" /> = Eles não estão com vontade de viajar agora.</li>
+                  </ul>
+                </div>
+                <div className="bg-yellow-200 p-4 rounded-lg">
+                  <p className="font-bold text-yellow-800">💡 Structure:</p>
+                  <p className="text-yellow-700 font-mono text-lg">
+                    Subject + feel/feels like + verb (ing) + complement
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-6 text-center">
+                <h4 className="text-xl font-bold text-yellow-800 mb-4">
+                  🎬 Watch this English Shot about "Feel Like":
+                </h4>
+                <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-2xl">
+                  <div className="relative pb-[100%] h-0">
+                    <iframe
+                      src="https://www.instagram.com/p/DDU4hzqytsQ/embed"
+                      title="English Shot - Feel Like"
+                      allowFullScreen
+                      className="absolute top-0 left-0 w-full h-full"
+                    />
+                  </div>
+                </div>
+                <p className="text-sm text-gray-500 mt-2">📱 Watch this short video to understand how to use "feel like"</p>
+              </div>
+
+              <div className="bg-white border-2 border-yellow-300 rounded-xl p-6">
+                <h4 className="text-lg font-bold text-yellow-800 mb-4">✍️ Practice "Feel Like" - Write sentences using the structure:</h4>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm text-yellow-700 mb-2">1. What do you feel like eating today?</p>
+                    <textarea
+                      value={writtenAnswers["feel-like-1"] || ""}
+                      onChange={(e) => handleWrittenAnswerChange("feel-like-1", e.target.value)}
+                      placeholder="Write: I feel like eating..."
+                      className="w-full h-20 p-3 border border-yellow-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm text-yellow-700 mb-2">2. What do you feel like doing this weekend?</p>
+                    <textarea
+                      value={writtenAnswers["feel-like-2"] || ""}
+                      onChange={(e) => handleWrittenAnswerChange("feel-like-2", e.target.value)}
+                      placeholder="Write: I feel like..."
+                      className="w-full h-20 p-3 border border-yellow-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm text-yellow-700 mb-2">3. Ask someone if they feel like learning English today.</p>
+                    <textarea
+                      value={writtenAnswers["feel-like-3"] || ""}
+                      onChange={(e) => handleWrittenAnswerChange("feel-like-3", e.target.value)}
+                      placeholder="Write: Do you feel like..."
+                      className="w-full h-20 p-3 border border-yellow-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm text-yellow-700 mb-2">4. Say something you don't feel like doing right now.</p>
+                    <textarea
+                      value={writtenAnswers["feel-like-4"] || ""}
+                      onChange={(e) => handleWrittenAnswerChange("feel-like-4", e.target.value)}
+                      placeholder="Write: I don't feel like..."
+                      className="w-full h-20 p-3 border border-yellow-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent resize-none"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )}

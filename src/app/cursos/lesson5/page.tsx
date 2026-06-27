@@ -234,7 +234,7 @@ export default function Lesson5FoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">New Vocabulary</h2>
+              <h2 className="text-2xl font-bold">New Words</h2>
               <p className="mt-2 text-blue-100 italic">
                 Click on each word to hear its correct pronunciation
               </p>
@@ -347,7 +347,7 @@ export default function Lesson5FoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Slangs and Fluency</h2>
+              <h2 className="text-2xl font-bold">Speak Like A Native</h2>
               <p className="mt-2 text-blue-100 italic">
                 Practice common phrases to express food preferences
               </p>
@@ -404,7 +404,7 @@ export default function Lesson5FoodAndDrink() {
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">4. I eat <span className="text-blue-600 font-bold">bread and eggs</span> for breakfast. / <span className="text-blue-600 font-bold">cereal and milk</span> / <span className="text-blue-600 font-bold">fruits and yogurt</span></p>
-                  <p className="text-sm text-gray-500 mt-1">Eu como pão e ovos no café da manhã. / cereal e leite / frutas e iogurte</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu como pão com ovos no café da manhã. / cereal com leite / frutas com iogurte</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">5. I <span className="text-blue-600 font-bold">prefer</span> fish for dinner. / <span className="text-blue-600 font-bold">chicken</span> / <span className="text-blue-600 font-bold">salad</span></p>
@@ -439,7 +439,7 @@ export default function Lesson5FoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Understand Grammar</h2>
+              <h2 className="text-2xl font-bold">GRAMMAR</h2>
               <p className="mt-2 text-blue-100 italic">
                 Structures to ask and answer about food preferences
               </p>
@@ -546,7 +546,7 @@ export default function Lesson5FoodAndDrink() {
         {/* Seção 5 - Real Life Practice */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">Real Life Practice</h2>
+            <h2 className="text-2xl font-bold">MAKE IT YOURS!</h2>
             <p className="mt-2 text-blue-100 italic">
               Replace the words to practice pronunciation in real situations
             </p>
@@ -794,9 +794,9 @@ export default function Lesson5FoodAndDrink() {
         {/* Seção 6 - Check It Out */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
-            <h2 className="text-3xl font-bold">CHECK IT OUT!</h2>
+            <h2 className="text-3xl font-bold">WRAP UP!</h2>
             <p className="mt-2 text-blue-100 italic">
-              Practice essential structures to talk about food preferences
+              Practice essential structures to talk about food preferences completing the rest of the sentences.
             </p>
           </div>
 

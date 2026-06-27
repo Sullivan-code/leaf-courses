@@ -152,7 +152,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 New Vocabulary</h2>
+              <h2 className="text-2xl font-bold">🔹 New Words</h2>
               <p className="mt-2 text-blue-100 italic">
                 Click on each word to hear its correct pronunciation
               </p>
@@ -523,7 +523,7 @@ export default function LessonFoodAndDrink() {
         {/* Seção 5 - Real Life Practice */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">🔹 Make It Yours</h2>
+            <h2 className="text-2xl font-bold">🔹 MAKE IT YOURS</h2>
             <p className="mt-2 text-blue-100 italic">
               Replace the blue words to practice pronunciation in real situations
             </p>

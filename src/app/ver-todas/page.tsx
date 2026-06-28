@@ -27,7 +27,7 @@ export default async function VerTodasLicoes() {
   const modulos = [
     {
       id: 1,
-      titulo: "Módulo 1 - Fundamentos",
+      titulo: "Módulo 1 - Food and Drink",
       aulas: [
         { id: "lesson1", titulo: "Lesson 1", numero: "1", tipo: "aula" },
         { id: "lesson2", titulo: "Lesson 2", numero: "2", tipo: "aula" },
@@ -40,7 +40,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 2,
-      titulo: "Módulo 2 - Construindo Frases",
+      titulo: "Módulo 2 - Languages & Countries",
       aulas: [
         { id: "lesson7", titulo: "Lesson 7", numero: "7", tipo: "aula" },
         { id: "lesson8", titulo: "Lesson 8", numero: "8", tipo: "aula" },
@@ -53,7 +53,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 3,
-      titulo: "Módulo 3 - Aprimorando o Vocabulário",
+      titulo: "Módulo 3 - Personal Information and Routine",
       aulas: [
         { id: "lesson13", titulo: "Lesson 13", numero: "13", tipo: "aula" },
         { id: "lesson14", titulo: "Lesson 14", numero: "14", tipo: "aula" },
@@ -66,7 +66,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 4,
-      titulo: "Módulo 4 - Conversação Avançada",
+      titulo: "Módulo 4 - Lifestyle and Weekly planning",
       aulas: [
         { id: "lesson19", titulo: "Lesson 19", numero: "19", tipo: "aula" },
         { id: "lesson20", titulo: "Lesson 20", numero: "20", tipo: "aula" },
@@ -79,7 +79,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 5,
-      titulo: "Módulo 5 - Fluência",
+      titulo: "Módulo 5 - Getting Around",
       aulas: [
         { id: "lesson25", titulo: "Lesson 25", numero: "25", tipo: "aula" },
         { id: "lesson26", titulo: "Lesson 26", numero: "26", tipo: "aula" },
@@ -92,7 +92,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 6,
-      titulo: "Módulo 6 - Cultura e Expressões",
+      titulo: "Módulo 6 - Studies, Ideas and Opinions",
       aulas: [
         { id: "lesson31", titulo: "Lesson 31", numero: "31", tipo: "aula" },
         { id: "lesson32", titulo: "Lesson 32", numero: "32", tipo: "aula" },
@@ -105,7 +105,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 7,
-      titulo: "Módulo 7 - Gramática Avançada",
+      titulo: "Módulo 7 - Health, Feelings, and Professions",
       aulas: [
         { id: "lesson37", titulo: "Lesson 37", numero: "37", tipo: "aula" },
         { id: "lesson38", titulo: "Lesson 38", numero: "38", tipo: "aula" },
@@ -118,7 +118,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 8,
-      titulo: "Módulo 8 - Escrita e Comunicação",
+      titulo: "Módulo 8 - Eating Out",
       aulas: [
         { id: "lesson43", titulo: "Lesson 43", numero: "43", tipo: "aula" },
         { id: "lesson44", titulo: "Lesson 44", numero: "44", tipo: "aula" },
@@ -131,7 +131,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 9,
-      titulo: "Módulo 9 - Listening & Pronunciation",
+      titulo: "Módulo 9 - Going Shopping",
       aulas: [
         { id: "lesson49", titulo: "Lesson 49", numero: "49", tipo: "aula" },
         { id: "lesson50", titulo: "Lesson 50", numero: "50", tipo: "aula" },
@@ -144,7 +144,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 10,
-      titulo: "Módulo 10 - Certificação",
+      titulo: "Módulo 10 - Hobbies and Traveling",
       aulas: [
         { id: "lesson55", titulo: "Lesson 55", numero: "55", tipo: "aula" },
         { id: "lesson56", titulo: "Lesson 56", numero: "56", tipo: "aula" },

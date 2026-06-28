@@ -8,7 +8,7 @@ import {
   Check, X, Download, MessageCircle, Headphones,
   Stethoscope, Pill, Hospital, Thermometer, Activity, Heart,
   User, Users, Calendar, Clock, AlertCircle, CheckCircle, Youtube,
-  BookOpen, HelpCircle
+  BookOpen, HelpCircle, ExternalLink
 } from "lucide-react";
 
 // ==============================
@@ -361,7 +361,7 @@ const fluencyExercises = {
 // TUNE IN YOUR EARS
 // ==============================
 const tuneInYourEars = {
-  videoUrl: "https://www.youtube.com/watch?v=5xVUO7b1hPo",
+  videoUrl: "https://www.youtube.com/watch?v=FKhJ3jbPhH4&t=309s",
   vocabulary: [
     { word: "2 hours away", meaning: "2 horas de distância" },
     { word: "hiking trail", meaning: "trilha de caminhada" },
@@ -588,7 +588,6 @@ interface TransformationExerciseProps {
   onCheck: (id: number, userAnswer: string, correctAnswer: string) => void;
   showResults: Record<number, boolean>;
   correctness: Record<number, boolean>;
-  // These are the functions that were missing - now passed as props
   setCorrectness: (id: number, value: boolean) => void;
   setShowResults: (id: number, value: boolean) => void;
 }
@@ -674,18 +673,15 @@ const TransformationExercise = ({
     const normalizedUser = userAns.toLowerCase().replace(/\s+/g, ' ').trim();
     const normalizedCorrect = correctAnswer.toLowerCase().replace(/\s+/g, ' ').trim();
     
-    // Get all possible negative forms
     const allForms = isFuture ? [normalizedCorrect] : getAllNegativeForms(normalizedCorrect);
     allForms.push(normalizedCorrect);
     
-    // Check if user answer matches any possible form
     const isCorrect = allForms.some(form => {
       const normalizedForm = form.toLowerCase().replace(/\s+/g, ' ').trim();
       return normalizedUser === normalizedForm || 
              (normalizedUser.length > 5 && normalizedForm.includes(normalizedUser));
     });
     
-    // Clean version
     const userClean = normalizedUser.replace(/[^a-zA-Z\s']/g, '');
     const isCorrectClean = allForms.some(form => {
       const clean = form.toLowerCase().replace(/[^a-zA-Z\s']/g, '');
@@ -694,11 +690,8 @@ const TransformationExercise = ({
     
     const finalResult = isCorrect || isCorrectClean;
     
-    // Update parent state using the passed functions
     setCorrectness(item.id, finalResult);
     setShowResults(item.id, true);
-    
-    // Also call the onCheck for compatibility
     onCheck(item.id, userAns, correctAnswer);
   };
 
@@ -961,7 +954,6 @@ export default function Lesson40HealthFeelingsProfessions() {
     setAffirmativeShow(prev => ({ ...prev, [id]: true }));
   };
 
-  // Wrapper functions to update state from child component
   const setNegativeCorrectness = (id: number, value: boolean) => {
     setNegativeResults(prev => ({ ...prev, [id]: value }));
   };
@@ -1273,15 +1265,27 @@ export default function Lesson40HealthFeelingsProfessions() {
             <div className="p-6">
               <div className="mb-5">
                 <p className="text-gray-700 mb-3 text-md font-medium">🎬 Watch the video and improve your listening skills:</p>
-                <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-hidden shadow-md">
-                  <iframe 
-                    src={tuneInYourEars.videoUrl.replace("watch?v=", "embed/")}
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-80 md:h-96 rounded-xl"
-                  ></iframe>
+                
+                {/* BOTÃO WATCH THE VIDEO - DESTAQUE */}
+                <div className="flex flex-col items-center justify-center p-8 bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl border-2 border-red-400 shadow-lg">
+                  <Youtube size={64} className="text-red-600 mb-4" />
+                  <h3 className="text-2xl font-bold text-red-600 mb-2">📺 Tune In Your Ears</h3>
+                  <p className="text-gray-600 mb-4 text-center max-w-md">
+                    Watch this video to improve your listening comprehension and learn new vocabulary.
+                  </p>
+                  <a
+                    href={tuneInYourEars.videoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold text-lg rounded-2xl transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl"
+                  >
+                    <Youtube size={28} />
+                    WATCH THE VIDEO
+                    <ExternalLink size={20} />
+                  </a>
+                  <p className="text-xs text-gray-500 mt-3">
+                    ⏱️ Video starts at 5:09 • Opens in new tab
+                  </p>
                 </div>
               </div>
 

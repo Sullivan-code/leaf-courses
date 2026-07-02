@@ -64,7 +64,7 @@ export default function LessonMachineryEquipment() {
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
       style={{
-        backgroundImage: `url("https://images.pexels.com/photos/380656/pexels-photo-380656.jpeg?auto=compress&cs=tinysrgb&w=1600")`,
+        backgroundImage: `url("https://github.com/Sullivan-code/english-audios/blob/main/ChatGPT%20Image%201%20de%20jul.%20de%202026%2C%2014_59_42.png?raw=true")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -74,7 +74,7 @@ export default function LessonMachineryEquipment() {
       {/* Container principal com fade vermelho e laranja */}
       <div className="max-w-5xl mx-auto bg-gradient-to-br from-red-100 via-orange-100 to-red-50 bg-opacity-95 rounded-[40px] p-10 shadow-lg border-4 border-red-300/50">
         
-        {/* Título centralizado com imagem abaixo */}
+        {/* Título centralizado com imagem abaixo - IMAGEM DA PLATAFORMA OFFSHORE */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
             Lesson 3 - Machinery & Equipment
@@ -84,13 +84,16 @@ export default function LessonMachineryEquipment() {
           </p>
           <div className="w-64 h-64 mx-auto relative">
             <Image
-              src="https://images.pexels.com/photos/159298/gear-wheels-cogs-mechanical-159298.jpeg?auto=compress&cs=tinysrgb&w=256&h=256&fit=crop"
-              alt="Industrial machinery gears"
-              width={256}
-              height={256}
-              className="w-full h-full object-cover rounded-2xl shadow-md"
+              src="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%20Jun%2012%2C%202026%2C%2006_28_56%20PM.png"
+              alt="Offshore oil platform at sea"
+              fill
+              sizes="(max-width: 256px) 100vw, 256px"
+              className="object-cover rounded-2xl shadow-md"
+              quality={100}
+              priority
             />
           </div>
+          <p className="text-sm text-gray-500 mt-2">📍 Offshore Oil Platform - North Sea</p>
         </div>
 
         {/* Seção 1 - Verbos com Drill */}
@@ -1375,15 +1378,16 @@ export default function LessonMachineryEquipment() {
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
                     <div className="relative h-64 w-full">
                       <Image
-                        src="https://images.pexels.com/photos/159298/gear-wheels-cogs-mechanical-159298.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
-                        alt="Industrial gears and machinery"
-                        layout="fill"
-                        objectFit="cover"
-                        className="rounded-xl"
+                        src="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%20Jun%2012%2C%202026%2C%2006_28_56%20PM.png"
+                        alt="Offshore oil platform at sea"
+                        fill
+                        sizes="(max-width: 400px) 100vw, 400px"
+                        className="object-cover rounded-xl"
+                        quality={100}
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
-                      Industrial machinery and gears
+                      Offshore Oil Platform - North Sea
                     </p>
                   </div>
                   
@@ -1392,9 +1396,10 @@ export default function LessonMachineryEquipment() {
                       <Image
                         src="https://images.pexels.com/photos/2681319/pexels-photo-2681319.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
                         alt="Engineer checking control panel"
-                        layout="fill"
-                        objectFit="cover"
-                        className="rounded-xl"
+                        fill
+                        sizes="(max-width: 400px) 100vw, 400px"
+                        className="object-cover rounded-xl"
+                        quality={100}
                       />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">
@@ -1461,6 +1466,7 @@ export default function LessonMachineryEquipment() {
                 width={160}
                 height={160}
                 className="rounded-full w-40 h-40 object-cover mb-4"
+                quality={100}
               />
               <div className="bg-yellow-200 text-black px-4 py-2 rounded-xl shadow-md text-center">
                 <button onClick={() => playAudio('Did you check the safety valve?')} className="hover:text-red-600 transition-colors">

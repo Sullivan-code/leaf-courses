@@ -505,10 +505,10 @@ export default function LessonOffshoreOQM() {
         {/* NEXT LESSON BUTTON */}
         <div className="text-center">
           <button
-            onClick={() => router.push("/cursos/lesson2-offshore")}
+            onClick={() => router.push("/cursos/offshore/lesson2-offshore")}
             className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-lg transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
           >
-            Next Lesson → Continue your OQM training
+            Next Lesson
           </button>
         </div>
       </div>

@@ -80,7 +80,7 @@ export default async function MeusCursos() {
             
             <div className="flex gap-4">
               <Button asChild size="lg" className="flex-1 text-lg">
-                <Link href="/cursos/lesson1">
+                <Link href="/cursos/offshore/lesson1">
                   Continuar de Onde Parei
                 </Link>
               </Button>
@@ -123,7 +123,7 @@ export default async function MeusCursos() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-lg border-orange-300 text-orange-700 hover:bg-orange-50">
-                <Link href="/ver-todas-offshore">
+                <Link href="/ver-todas-os">
                   Ver Todas as Lições
                 </Link>
               </Button>

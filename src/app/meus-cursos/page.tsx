@@ -92,6 +92,44 @@ export default async function MeusCursos() {
             </div>
           </div>
 
+          {/* Curso de Francês Básico ao Intermediário */}
+          <div className="bg-white shadow-2xl rounded-3xl p-8 border-4 border-red-300 hover:shadow-3xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center gap-6 mb-6">
+              <div className="text-6xl">🇫🇷</div>
+              <div>
+                <h2 className="text-3xl font-bold text-red-700">
+                  Francês Básico ao Intermediário (A1-B1)
+                </h2>
+                <p className="text-xl text-gray-600 mt-2">
+                  Curso completo com 50 lições + 8 revisões
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-red-50 p-6 rounded-2xl mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-lg font-semibold text-gray-700">Progresso</span>
+                <span className="text-lg font-semibold text-red-600">15%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-4">
+                <div className="bg-green-500 h-4 rounded-full w-[15%]"></div>
+              </div>
+            </div>
+            
+            <div className="flex gap-4">
+              <Button asChild size="lg" className="flex-1 text-lg bg-red-600 hover:bg-red-700">
+                <Link href="/cursos/frances/lesson1">
+                  Continuar de Onde Parei
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="text-lg border-red-300 text-red-700 hover:bg-red-50">
+                <Link href="/ver-todas-frances">
+                  Ver Todas as Lições
+                </Link>
+              </Button>
+            </div>
+          </div>
+
           {/* Curso de Inglês - Off Shore */}
           <div className="bg-white shadow-2xl rounded-3xl p-8 border-4 border-orange-300 hover:shadow-3xl transition-all duration-300 transform hover:scale-105">
             <div className="flex items-center gap-6 mb-6">

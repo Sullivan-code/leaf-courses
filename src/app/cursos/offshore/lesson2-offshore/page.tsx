@@ -176,7 +176,6 @@ export default function LessonOffshoreOQM_Lesson2() {
 
   // Questions data
   const questions = [
-    { id: 1, text: "What is Lucas's name?", correct: "His name is Lucas." },
     { id: 2, text: "Where does Lucas work?", correct: "He works on an offshore platform." },
     { id: 3, text: "What does Lucas do every morning before his watch starts?", correct: "He drinks a cup of coffee and looks at the sky." },
     { id: 4, text: "Where does Lucas work on the platform?", correct: "He works in the engine room." },

@@ -488,7 +488,7 @@ After my shift, I talk with my friends and enjoy the sea view. Tomorrow, I will 
             <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg mb-6">
               <iframe
                 className="absolute top-0 left-0 w-full h-full"
-                src="https://www.youtube.com/embed/2YEyT7wFc7o?list=PLnv2Qinw1PxTtlP2Pb_pqIKyweXfK5C_G"
+                src="https://www.youtube.com/embed/jCrP37SN8LQ?list=PLnv2Qinw1PxTtlP2Pb_pqIKyweXfK5C_G&index=13"
                 title="Offshore English Lesson - Key Vocabulary and Dialogue"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -498,7 +498,7 @@ After my shift, I talk with my friends and enjoy the sea view. Tomorrow, I will 
             </div>
             <p className="text-center text-gray-600 mb-6 text-sm">
               🔗 <a 
-                href="https://www.youtube.com/watch?v=2YEyT7wFc7o&list=PLnv2Qinw1PxTtlP2Pb_pqIKyweXfK5C_G" 
+                href="https://www.youtube.com/watch?v=jCrP37SN8LQ&list=PLnv2Qinw1PxTtlP2Pb_pqIKyweXfK5C_G&index=13" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline font-semibold"

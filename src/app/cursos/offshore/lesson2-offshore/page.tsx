@@ -414,7 +414,7 @@ export default function LessonOffshoreOQM_Lesson2() {
                         <p className="text-gray-700">{q.correct}</p>
                         {openDrills.questions && (
                           <p className="text-gray-500 mt-2 text-sm pt-2 border-t border-green-200">
-                            📝 <span className="font-semibold">Portuguese:</span> {q.id === 1 && "Qual é o nome do Lucas? → O nome dele é Lucas."}
+                            📝 <span className="font-semibold">Portuguese:</span>{" "}
                             {q.id === 2 && "Onde o Lucas trabalha? → Ele trabalha em uma plataforma offshore."}
                             {q.id === 3 && "O que o Lucas faz toda manhã antes do seu turno começar? → Ele toma uma xícara de café e olha para o céu."}
                             {q.id === 4 && "Onde o Lucas trabalha na plataforma? → Ele trabalha na casa de máquinas."}

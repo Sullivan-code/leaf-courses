@@ -193,6 +193,43 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
   );
 };
 
+// Componente SpeakableText para leitura de texto
+const SpeakableText = ({ text, className }: { text: string; className?: string }) => {
+  const speak = () => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  return (
+    <button onClick={speak} className={`hover:text-blue-600 transition-colors ${className}`}>
+      {text}
+      <Volume2 size={14} className="inline-block ml-1 opacity-60" />
+    </button>
+  );
+};
+
+// Componente AudioButton para ler textos
+const AudioButton = ({ text }: { text: string }) => {
+  const speak = () => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  return (
+    <button onClick={speak} className="ml-2 p-1 rounded-full hover:bg-teal-200 transition-colors">
+      <Volume2 size={16} className="text-teal-700" />
+    </button>
+  );
+};
+
 export default function LessonFoodAndDrink() {
   const router = useRouter();
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -985,53 +1022,41 @@ export default function LessonFoodAndDrink() {
                 </div>
               </div>
 
-              {/* Vocabulary Help */}
+              {/* Vocabulary Help - Updated with the exact words requested */}
               <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4">Key Vocabulary from the Video:</h3>
-                <div className="space-y-3 text-teal-700">
-                  <div className="flex justify-between">
-                    <span className="font-medium">brush your teeth</span>
-                    <span className="text-teal-600">escovar os dentes</span>
+                <h3 className="text-xl font-bold text-teal-800 mb-4 flex items-center gap-2">
+                  📖 Key Vocabulary from the Video:
+                  <AudioButton text="Key Vocabulary from the Video" />
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    {[
+                      "brush your teeth - escovar os dentes",
+                      "brush your hair - escovar o cabelo",
+                      "whenever - sempre que",
+                      "rainy day - dia chuvoso",
+                      "it takes time - leva tempo",
+                      "it takes effort - requer esforço",
+                      "make mistakes - cometer erros"
+                    ].map((item, i) => (
+                      <div key={i} className="flex justify-between items-center p-2 bg-white rounded-lg">
+                        <SpeakableText text={item.split(' - ')[0]} className="font-medium text-teal-700" />
+                        <span className="text-teal-600">{item.split(' - ')[1]}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">brush your hair</span>
-                    <span className="text-teal-600">escovar o cabelo</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">whenever</span>
-                    <span className="text-teal-600">sempre que</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">rainy day</span>
-                    <span className="text-teal-600">dia chuvoso</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">it takes time</span>
-                    <span className="text-teal-600">leva tempo</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">it takes effort</span>
-                    <span className="text-teal-600"> requer esforço</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">make mistakes</span>
-                    <span className="text-teal-600">cometer erros</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">You can talk to people around the world</span>
-                    <span className="text-teal-600">Você pode conversar com pessoas ao redor do mundo</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">feel shy or scared</span>
-                    <span className="text-teal-600">sentir-se tímido ou assustado</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">feel more confident</span>
-                    <span className="text-teal-600">sentir-se mais confiante</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">meet new people</span>
-                    <span className="text-teal-600">conhecer novas pessoas</span>
+                  <div className="space-y-3">
+                    {[
+                      "You can talk to people around the world - Você pode conversar com pessoas ao redor do mundo",
+                      "feel shy or scared - sentir-se tímido ou assustado",
+                      "feel more confident - sentir-se mais confiante",
+                      "meet new people - conhecer novas pessoas"
+                    ].map((item, i) => (
+                      <div key={i} className="flex justify-between items-center p-2 bg-white rounded-lg">
+                        <SpeakableText text={item.split(' - ')[0]} className="font-medium text-teal-700" />
+                        <span className="text-teal-600">{item.split(' - ')[1]}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

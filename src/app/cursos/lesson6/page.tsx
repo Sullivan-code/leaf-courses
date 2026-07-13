@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, ChevronDown, ChevronUp, Save } from "lucide-react";
+import { Pause, Play, RotateCcw, ChevronDown, ChevronUp, Save, Plus, Trash2 } from "lucide-react";
 
 const listenItems = [
   {
@@ -515,6 +515,23 @@ export default function Lesson6FoodDrink() {
     });
   };
 
+  // Função para adicionar nova linha de diálogo
+  const addDialogue = () => {
+    setDialogues(prev => [
+      ...prev,
+      { speaker: "Character", text: "", fixed: false }
+    ]);
+  };
+
+  // Função para remover linha de diálogo
+  const removeDialogue = (index: number) => {
+    if (dialogues.length <= 1) {
+      alert("Mantenha pelo menos uma linha de diálogo.");
+      return;
+    }
+    setDialogues(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handlePracticeAnswer = (id: number, answer: string) => {
     setPracticeItems(prev =>
       prev.map(item =>
@@ -798,10 +815,19 @@ export default function Lesson6FoodDrink() {
 
               {/* Role-Play Dialogue */}
               <div className="bg-white border-2 border-blue-300 rounded-xl p-6">
-                <h3 className="text-lg font-bold text-blue-700 mb-4">Crie seu diálogo:</h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-bold text-blue-700">Crie seu diálogo:</h3>
+                  <button
+                    onClick={addDialogue}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+                  >
+                    <Plus size={18} />
+                    Adicionar Fala
+                  </button>
+                </div>
                 <div className="space-y-4 mb-4">
                   {dialogues.map((dialogue, index) => (
-                    <div key={index} className="flex items-start gap-4">
+                    <div key={index} className="flex items-start gap-4 group">
                       <input
                         type="text"
                         value={dialogue.speaker}
@@ -819,8 +845,18 @@ export default function Lesson6FoodDrink() {
                         placeholder={`O que ${dialogue.speaker} diz...`}
                         className="flex-1 p-3 border border-blue-300 rounded-md resize-none h-20"
                       />
+                      <button
+                        onClick={() => removeDialogue(index)}
+                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition opacity-0 group-hover:opacity-100"
+                        title="Remover esta fala"
+                      >
+                        <Trash2 size={18} />
+                      </button>
                     </div>
                   ))}
+                </div>
+                <div className="text-sm text-gray-500 mt-2">
+                  💡 Passe o mouse sobre uma fala para ver o botão de remover.
                 </div>
               </div>
             </div>

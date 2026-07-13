@@ -367,12 +367,16 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
   );
 };
 
+// ============================================
+// DADOS CORRIGIDOS - TODAS AS PALAVRAS DIVIDIDAS LETRA POR LETRA
+// ============================================
+
 const countryLanguageMap: Record<string, { language: string; spelling: string }> = {
   "https://i.ibb.co/kskr0zmq/german-flag.jpg": { language: "German", spelling: "G-E-R-M-A-N-Y" },
   "https://i.ibb.co/fVR6hwYb/brazilian-portuguese-flag.jpg": { language: "Portuguese", spelling: "B-R-A-Z-I-L" },
   "https://i.ibb.co/21VkwN19/spanish-fla.jpg": { language: "Spanish", spelling: "S-P-A-I-N" },
   "https://i.ibb.co/7xnjGkDN/italian-flag.jpg": { language: "Italian", spelling: "I-T-A-L-Y" },
-  "https://i.ibb.co/qLL8CKv5/american-flag.jpg": { language: "English", spelling: "U-N-I-T-E-D S-T-A-T-E-S" },
+  "https://i.ibb.co/qLL8CKv5/american-flag.jpg": { language: "English", spelling: "U-N-I-T-E-D-S-T-A-T-E-S" },
   "https://i.ibb.co/dwjk9s3S/france-flag.jpg": { language: "French", spelling: "F-R-A-N-C-E" }
 };
 
@@ -381,7 +385,7 @@ const foodSpellingMap: Record<string, { food: string; spelling: string }> = {
   "https://i.ibb.co/99zBTC4q/sandwich.jpg": { food: "sandwich", spelling: "S-A-N-D-W-I-C-H" },
   "https://i.ibb.co/W4kNfZ2F/cookies.jpg": { food: "cookies", spelling: "C-O-O-K-I-E-S" },
   "https://i.ibb.co/pjYHqBsc/juice.jpg": { food: "juice", spelling: "J-U-I-C-E" },
-  "https://i.ibb.co/jvg8bfKY/orange-juice.jpg": { food: "orange juice", spelling: "O-R-A-N-G-E J-U-I-C-E" },
+  "https://i.ibb.co/jvg8bfKY/orange-juice.jpg": { food: "orange juice", spelling: "O-R-A-N-G-E-J-U-I-C-E" },
   "https://i.ibb.co/HfCPk3qD/friends.jpg": { food: "friends", spelling: "F-R-I-E-N-D-S" }
 };
 
@@ -451,7 +455,7 @@ export default function LessonLanguagesAndCountries() {
     if (countryInfo && foodInfo) {
       setPracticeDialogs([
         { question: `Do you want to speak ${countryInfo.language} or ${randomLanguage} with me?`, response: `I want to speak ${countryInfo.language} with you.`, highlighted: [countryInfo.language, randomLanguage, countryInfo.language] },
-        { question: `How do you spell '${foodInfo.food}'?`, response: foodInfo.spelling, highlighted: [foodInfo.food, ...foodInfo.spelling.split(' ')] }
+        { question: `How do you spell '${foodInfo.food}'?`, response: foodInfo.spelling, highlighted: [foodInfo.food, ...foodInfo.spelling.split('-')] }
       ]);
     }
   }, [selectedFlag, selectedFood]);
@@ -589,7 +593,7 @@ export default function LessonLanguagesAndCountries() {
                 </div>
               </div>
 
-              {/* Diálogos de Prática COM ÁUDIO APENAS EM INGLÊS */}
+              {/* Diálogos de Prática COM ÁUDIO APENAS EM INGLÊS - CORRIGIDO */}
               <div className="space-y-6 mb-8">
                 <div className="bg-white p-4 rounded-xl border-2 border-blue-200 shadow-sm">
                   <div className="flex flex-col md:flex-row gap-4 items-start">
@@ -636,9 +640,9 @@ export default function LessonLanguagesAndCountries() {
                           <p className="text-sm font-semibold text-green-700 flex items-center gap-2">
                             Response: <AudioButton text={practiceDialogs[1].response} />
                           </p>
-                          <div className="text-lg font-mono bg-white p-2 rounded border border-blue-200">
-                            {practiceDialogs[1].response.split(' ').map((letter, index) => (
-                              <SpeakableText key={index} text={letter.replace('-', '')} className="text-red-600 font-bold inline-block mx-px" showIcon={false} />
+                          <div className="text-lg font-mono bg-white p-3 rounded border border-blue-200 flex flex-wrap gap-1 justify-center">
+                            {practiceDialogs[1].response.split('-').map((letter, index) => (
+                              <SpeakableText key={index} text={letter.trim()} className="text-red-600 font-bold inline-block px-1.5 py-0.5 bg-red-50 rounded border border-red-200 min-w-[24px] text-center" showIcon={false} />
                             ))}
                           </div>
                         </div>

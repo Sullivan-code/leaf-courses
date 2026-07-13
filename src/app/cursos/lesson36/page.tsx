@@ -60,6 +60,54 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 // ============================================
+// ENGLISH SHOTS - Verb Table (Present → Past)
+// ============================================
+const verbTableData = [
+  { present: "think", past: "thought", translation: "pensar" },
+  { present: "study", past: "studied", translation: "estudar" },
+  { present: "need", past: "needed", translation: "precisar" },
+  { present: "have", past: "had", translation: "ter" },
+  { present: "go", past: "went", translation: "ir" },
+  { present: "meet", past: "met", translation: "encontrar / conhecer" },
+  { present: "write", past: "wrote", translation: "escrever" },
+  { present: "say", past: "said", translation: "dizer" },
+  { present: "do", past: "did", translation: "fazer" },
+  { present: "eat", past: "ate", translation: "comer" },
+  { present: "play", past: "played", translation: "jogar / brincar" },
+  { present: "wake", past: "woke", translation: "acordar" },
+  { present: "visit", past: "visited", translation: "visitar" },
+  { present: "buy", past: "bought", translation: "comprar" },
+  { present: "like", past: "liked", translation: "gostar" },
+  { present: "travel", past: "traveled", translation: "viajar" },
+  { present: "finish", past: "finished", translation: "terminar" },
+  { present: "arrive", past: "arrived", translation: "chegar" },
+  { present: "call", past: "called", translation: "chamar / ligar" },
+  { present: "choose", past: "chose", translation: "escolher" },
+  { present: "leave", past: "left", translation: "sair / deixar" },
+  { present: "see", past: "saw", translation: "ver" },
+  { present: "come", past: "came", translation: "vir" },
+  { present: "drink", past: "drank", translation: "beber" },
+  { present: "drive", past: "drove", translation: "dirigir" },
+  { present: "fly", past: "flew", translation: "voar" },
+  { present: "forget", past: "forgot", translation: "esquecer" },
+  { present: "give", past: "gave", translation: "dar" },
+  { present: "know", past: "knew", translation: "saber / conhecer" },
+  { present: "make", past: "made", translation: "fazer / fabricar" },
+  { present: "pay", past: "paid", translation: "pagar" },
+  { present: "put", past: "put", translation: "colocar" },
+  { present: "read", past: "read", translation: "ler (pronuncia-se 'red')" },
+  { present: "run", past: "ran", translation: "correr" },
+  { present: "send", past: "sent", translation: "enviar" },
+  { present: "sing", past: "sang", translation: "cantar" },
+  { present: "sit", past: "sat", translation: "sentar-se" },
+  { present: "speak", past: "spoke", translation: "falar" },
+  { present: "take", past: "took", translation: "pegar / levar" },
+  { present: "tell", past: "told", translation: "contar / dizer" },
+  { present: "understand", past: "understood", translation: "entender" },
+  { present: "win", past: "won", translation: "ganhar / vencer" },
+];
+
+// ============================================
 // DRILLING PRACTICE I - Substitution Practice (PAST TENSE)
 // ============================================
 const drillingExercises1 = [
@@ -100,11 +148,11 @@ const drillingExercises1 = [
 // ============================================
 const pastTenseExercises = [
   { id: 1, present: "I think about the problem.", past: "I thought about the problem.", userAnswer: "", audio: "" },
-  { id: 2, present: "They study together every day.", past: "They studied together yesterday.", userAnswer: "", audio: "" },
+  { id: 2, present: "They study together every day.", past: "They studied together every day.", userAnswer: "", audio: "" },
   { id: 3, present: "We need to write a story.", past: "We needed to write a story.", userAnswer: "", audio: "" },
   { id: 4, present: "She has great ideas.", past: "She had great ideas.", userAnswer: "", audio: "" },
-  { id: 5, present: "He goes to the office on Thursdays.", past: "He went to the office last Thursday.", userAnswer: "", audio: "" },
-  { id: 6, present: "She meets everybody on weekends.", past: "She met everybody last weekend.", userAnswer: "", audio: "" },
+  { id: 5, present: "He goes to the office on Thursdays.", past: "He went to the office on Thursdays.", userAnswer: "", audio: "" },
+  { id: 6, present: "She meets everybody on weekends.", past: "She met everybody on weekends.", userAnswer: "", audio: "" },
 ];
 
 // ============================================
@@ -448,6 +496,7 @@ export default function Lesson36() {
   // Estados para controle de expansão das seções
   const [sections, setSections] = useState({
     listen: true,
+    englishShots: true,
     drilling1: true,
     pastTense: true,
     presentPerfect: true,
@@ -802,8 +851,6 @@ export default function Lesson36() {
                 👂 Ouça o áudio descrevendo as imagens. Clique nas imagens <strong className="font-bold">NA ORDEM QUE VOCÊ OUVE</strong> (1 → 2 → 3).
               </p>
               
-              {/* Sequência correta removida - NÃO MOSTRA MAIS A RESPOSTA */}
-
               {/* Imagens embaralhadas sem números nos containers */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 {shuffledListenItems.map((item) => (
@@ -830,7 +877,7 @@ export default function Lesson36() {
                 ))}
               </div>
 
-              {/* Exibição da sequência - SEM MOSTRAR A RESPOSTA CORRETA ATÉ VERIFICAR */}
+              {/* Exibição da sequência */}
               <div className="bg-purple-100 rounded-xl p-5 mb-6">
                 <h3 className="font-bold text-purple-800 mb-3">📋 Sua sequência (ordem que você clicou):</h3>
                 <div className="flex flex-wrap gap-3 items-center">
@@ -941,6 +988,69 @@ export default function Lesson36() {
         </div>
 
         {/* ============================================ */}
+        {/* ENGLISH SHOTS - Verb Table (Present → Past) */}
+        {/* ============================================ */}
+        <div className="bg-amber-50 border-2 border-amber-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-amber-600 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">📊 ENGLISH SHOTS - Verb Table</h2>
+              <button onClick={() => toggleSection('englishShots')} className="ml-4 p-2 rounded-full hover:bg-amber-700 transition">
+                {sections.englishShots ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+            <span className="text-sm bg-amber-700 px-3 py-1 rounded-full">Present → Past</span>
+          </div>
+
+          {sections.englishShots && (
+            <div className="p-8">
+              <p className="text-amber-700 mb-4 italic">
+                📚 <strong>Study these verbs!</strong> They appear in the exercises below. 
+                Click the 🔊 to hear the pronunciation.
+              </p>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse bg-white rounded-xl overflow-hidden shadow-md">
+                  <thead>
+                    <tr className="bg-amber-600 text-white">
+                      <th className="py-3 px-4 text-left font-semibold">📖 PRESENTE (Present)</th>
+                      <th className="py-3 px-4 text-left font-semibold">⏪ PASSADO (Past)</th>
+                      <th className="py-3 px-4 text-left font-semibold">🇧🇷 TRADUÇÃO</th>
+                      <th className="py-3 px-4 text-center font-semibold">🔊 Áudio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {verbTableData.map((verb, index) => (
+                      <tr 
+                        key={index} 
+                        className={`border-b border-amber-100 hover:bg-amber-50 transition ${
+                          index % 2 === 0 ? 'bg-white' : 'bg-amber-50/50'
+                        }`}
+                      >
+                        <td className="py-3 px-4 font-medium text-gray-800">{verb.present}</td>
+                        <td className="py-3 px-4 font-bold text-amber-700">{verb.past}</td>
+                        <td className="py-3 px-4 text-gray-600">{verb.translation}</td>
+                        <td className="py-3 px-4 text-center">
+                          <AudioPlayer src="" textToSpeak={`${verb.present} - ${verb.past}`} compact />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-6 bg-amber-100 rounded-xl p-4 border border-amber-200">
+                <h4 className="font-bold text-amber-800 mb-2">💡 DICA DE ESTUDO:</h4>
+                <ul className="text-amber-700 text-sm space-y-1 list-disc list-inside">
+                  <li><strong>Verbos Regulares:</strong> acrescenta <span className="font-bold text-amber-900">-ED</span> no final (study → studied, need → needed)</li>
+                  <li><strong>Verbos Irregulares:</strong> mudam completamente a forma (think → thought, go → went)</li>
+                  <li>Pratique escrevendo frases no passado usando os verbos da tabela!</li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ============================================ */}
         {/* SUBSTITUTION PRACTICE - PAST TENSE */}
         {/* ============================================ */}
         <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
@@ -993,7 +1103,7 @@ export default function Lesson36() {
         </div>
 
         {/* ============================================ */}
-        {/* SIMPLE PAST TENSE EXERCISES */}
+        {/* SIMPLE PAST TENSE EXERCISES - CORRIGIDO */}
         {/* ============================================ */}
         <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-orange-600 text-white py-4 px-8 flex items-center justify-between">
@@ -1011,12 +1121,14 @@ export default function Lesson36() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {pastTenseEx.map((exercise) => (
                   <div key={exercise.id} className="bg-white p-6 rounded-xl border border-orange-200 shadow-md">
+                    {/* Present */}
                     <div className="flex justify-between items-start mb-2">
                       <p className="text-md font-medium text-gray-700">Present:</p>
                       <AudioPlayer src="" textToSpeak={exercise.present} compact />
                     </div>
                     <p className="text-lg font-bold text-gray-900 mb-4">{exercise.present}</p>
                     
+                    {/* Write the past form */}
                     <p className="text-sm text-gray-500 mb-1">Write the past form:</p>
                     <textarea
                       value={exercise.userAnswer}
@@ -1024,11 +1136,17 @@ export default function Lesson36() {
                       placeholder="Write the past tense sentence here..."
                       className="w-full h-20 p-3 border border-orange-300 rounded-md resize-none mb-3"
                     />
+                    
                     <div className="flex gap-2">
                       <button onClick={() => handlePastTenseCheck(exercise.id, exercise.past)} className="flex-1 bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition">Check</button>
                       <button onClick={() => handlePastTenseChange(exercise.id, "")} className="px-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Clear</button>
                     </div>
-                    {showPastTenseResults[exercise.id] && <AnswerResult isCorrect={pastTenseResults[exercise.id] || false} correctAnswer={exercise.past} />}
+                    
+                    {showPastTenseResults[exercise.id] && (
+                      <div className="mt-3">
+                        <AnswerResult isCorrect={pastTenseResults[exercise.id] || false} correctAnswer={exercise.past} />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

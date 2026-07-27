@@ -172,16 +172,16 @@ const negativePractice = [
 ];
 
 // ==============================
-// AFFIRMATIVE PRACTICE
+// AFFIRMATIVE PRACTICE - Future tense is now NEGATIVE for transformation practice
 // ==============================
 const affirmativePractice = [
-  { id: 1, negative: "I am not his friend.", affirmative: "I am his friend.", portuguese: "Eu não sou amigo dele.", future: "I will be his friend.", futurePortuguese: "Eu serei amigo dele." },
-  { id: 2, negative: "He is not a kind person.", affirmative: "He is a kind person.", portuguese: "Ele não é uma pessoa gentil.", future: "He will be a kind person.", futurePortuguese: "Ele será uma pessoa gentil." },
-  { id: 3, negative: "They are not Spanish.", affirmative: "They are Spanish.", portuguese: "Eles não são espanhóis.", future: "They will be Spanish.", futurePortuguese: "Eles serão espanhóis." },
-  { id: 4, negative: "We are not doctors.", affirmative: "We are doctors.", portuguese: "Nós não somos médicos.", future: "We will be doctors.", futurePortuguese: "Nós seremos médicos." },
-  { id: 5, negative: "She is not upset today.", affirmative: "She is upset today.", portuguese: "Ela não está chateada hoje.", future: "She will be upset today.", futurePortuguese: "Ela estará chateada hoje." },
-  { id: 6, negative: "These are not my reports.", affirmative: "These are my reports.", portuguese: "Estes não são meus relatórios.", future: "These will be my reports.", futurePortuguese: "Estes serão meus relatórios." },
-  { id: 7, negative: "Those are not my sunglasses.", affirmative: "Those are my sunglasses.", portuguese: "Aqueles não são meus óculos de sol.", future: "Those will be my sunglasses.", futurePortuguese: "Aqueles serão meus óculos de sol." }
+  { id: 1, negative: "I am not his friend.", affirmative: "I am his friend.", portuguese: "Eu não sou amigo dele.", future: "I won't be his friend.", futurePortuguese: "Eu não serei amigo dele." },
+  { id: 2, negative: "He is not a kind person.", affirmative: "He is a kind person.", portuguese: "Ele não é uma pessoa gentil.", future: "He won't be a kind person.", futurePortuguese: "Ele não será uma pessoa gentil." },
+  { id: 3, negative: "They are not Spanish.", affirmative: "They are Spanish.", portuguese: "Eles não são espanhóis.", future: "They won't be Spanish.", futurePortuguese: "Eles não serão espanhóis." },
+  { id: 4, negative: "We are not doctors.", affirmative: "We are doctors.", portuguese: "Nós não somos médicos.", future: "We won't be doctors.", futurePortuguese: "Nós não seremos médicos." },
+  { id: 5, negative: "She is not upset today.", affirmative: "She is upset today.", portuguese: "Ela não está chateada hoje.", future: "She won't be upset today.", futurePortuguese: "Ela não estará chateada hoje." },
+  { id: 6, negative: "These are not my reports.", affirmative: "These are my reports.", portuguese: "Estes não são meus relatórios.", future: "These won't be my reports.", futurePortuguese: "Estes não serão meus relatórios." },
+  { id: 7, negative: "Those are not my sunglasses.", affirmative: "Those are my sunglasses.", portuguese: "Aqueles não são meus óculos de sol.", future: "Those won't be my sunglasses.", futurePortuguese: "Aqueles não serão meus óculos de sol." }
 ];
 
 // ==============================
@@ -441,6 +441,57 @@ const AudioPlayerSimulated = ({ text, compact = false }: AudioPlayerProps) => {
 };
 
 // ==============================
+// COMPONENT: CLICKABLE TEXT WITH AUDIO
+// ==============================
+interface ClickableTextProps {
+  text: string;
+  className?: string;
+}
+
+const ClickableTextWithAudio = ({ text, className = "" }: ClickableTextProps) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  const speak = () => {
+    if (utteranceRef.current) {
+      window.speechSynthesis.cancel();
+      setIsPlaying(false);
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.8;
+    utterance.onend = () => {
+      setIsPlaying(false);
+      utteranceRef.current = null;
+    };
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+    setIsPlaying(true);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (utteranceRef.current) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  return (
+    <span 
+      onClick={speak}
+      className={`cursor-pointer hover:bg-gray-100 px-1 rounded transition-colors flex items-center gap-1 ${className}`}
+      title="Click to hear pronunciation"
+    >
+      {text}
+      <Volume2 size={12} className="text-gray-400 inline-block" />
+      {isPlaying && <span className="text-xs text-emerald-500">🔊</span>}
+    </span>
+  );
+};
+
+// ==============================
 // COMPONENT: SUBSTITUTION DRILL
 // ==============================
 interface SubstitutionDrillProps {
@@ -523,9 +574,7 @@ const SubstitutionDrill = ({ exercise, onUpdate }: SubstitutionDrillProps) => {
       </div>
 
       <div className="mb-4">
-        <p className="text-lg font-bold text-gray-800 mb-2">
-          {currentText}
-        </p>
+        <ClickableTextWithAudio text={currentText} className="text-lg font-bold text-gray-800 mb-2 block" />
         {showPortuguese && (
           <>
             <p className="text-md text-gray-600 italic border-l-4 pl-3" 
@@ -605,62 +654,164 @@ const TransformationExercise = ({
 
   const getAllNegativeForms = (text: string): string[] => {
     const forms: string[] = [];
-    if (text.includes('am')) {
-      forms.push(text.replace('am', 'am not'));
+    
+    // Handle "I am" variations
+    if (text.includes('I am')) {
+      forms.push(text.replace('I am', 'I am not'));
+      forms.push(text.replace('I am', "I'm not"));
     }
+    
+    // Handle "He/She/It is" variations
     if (text.includes('is')) {
       forms.push(text.replace('is', 'is not'));
       forms.push(text.replace('is', "isn't"));
     }
+    
+    // Handle "You/We/They are" variations
     if (text.includes('are')) {
       forms.push(text.replace('are', 'are not'));
       forms.push(text.replace('are', "aren't"));
     }
-    if (text.includes("'re")) {
-      forms.push(text.replace("'re", " are not"));
-      forms.push(text.replace("'re", " aren't"));
-    }
-    if (text.includes("'s")) {
-      forms.push(text.replace("'s", " is not"));
-      forms.push(text.replace("'s", " isn't"));
-    }
-    if (text.includes("I'm")) {
-      forms.push("I am not");
-      forms.push("I'm not");
-    }
-    const verbPatterns = ['am', 'is', 'are'];
-    for (const verb of verbPatterns) {
-      if (text.includes(verb)) {
-        forms.push(text.replace(verb, `${verb} not`));
-      }
-    }
-    return forms;
+    
+    // Remove duplicates while preserving order
+    return [...new Set(forms)];
   };
 
-  const getCorrectAnswer = (item: any) => {
+  const getCorrectAnswer = (item: any): string[] => {
     if (transformType === 'negative') {
       const original = item.english;
-      if (original.includes("am")) return original.replace("am", "am not");
-      if (original.includes("is")) return original.replace("is", "is not");
-      if (original.includes("are")) return original.replace("are", "are not");
-      return `not ${original}`;
+      const forms: string[] = [];
+      
+      // For "They are" - return both forms
+      if (original.includes("are")) {
+        forms.push(original.replace("are", "are not"));
+        forms.push(original.replace("are", "aren't"));
+      }
+      // For "He is" or "She is" or "It is"
+      else if (original.includes("is")) {
+        forms.push(original.replace("is", "is not"));
+        forms.push(original.replace("is", "isn't"));
+      }
+      // For "I am"
+      else if (original.includes("am")) {
+        forms.push(original.replace("am", "am not"));
+        forms.push(original.replace("I am", "I'm not"));
+      }
+      
+      // If no specific form was found, return the original
+      if (forms.length === 0) {
+        forms.push(original);
+      }
+      
+      return [...new Set(forms)];
     }
-    return item.affirmative;
+    
+    // For AFFIRMATIVE transformation
+    const negative = item.negative;
+    const forms: string[] = [];
+    
+    // For "I am not" -> "I am his friend" and "I'm his friend"
+    if (negative.includes("I am not")) {
+      forms.push(negative.replace("I am not", "I am"));
+      forms.push(negative.replace("I am not", "I'm"));
+    }
+    // For "He is not" -> "He is" and "He's"
+    else if (negative.includes("He is not")) {
+      forms.push(negative.replace("He is not", "He is"));
+      forms.push(negative.replace("He is not", "He's"));
+    }
+    // For "She is not" -> "She is" and "She's"
+    else if (negative.includes("She is not")) {
+      forms.push(negative.replace("She is not", "She is"));
+      forms.push(negative.replace("She is not", "She's"));
+    }
+    // For "They are not" -> "They are" and "They're"
+    else if (negative.includes("They are not")) {
+      forms.push(negative.replace("They are not", "They are"));
+      forms.push(negative.replace("They are not", "They're"));
+    }
+    // For "We are not" -> "We are" and "We're"
+    else if (negative.includes("We are not")) {
+      forms.push(negative.replace("We are not", "We are"));
+      forms.push(negative.replace("We are not", "We're"));
+    }
+    // For "These are not" -> "These are"
+    else if (negative.includes("These are not")) {
+      forms.push(negative.replace("These are not", "These are"));
+    }
+    // For "Those are not" -> "Those are"
+    else if (negative.includes("Those are not")) {
+      forms.push(negative.replace("Those are not", "Those are"));
+    }
+    // For "You are not" -> "You are" and "You're"
+    else if (negative.includes("You are not")) {
+      forms.push(negative.replace("You are not", "You are"));
+      forms.push(negative.replace("You are not", "You're"));
+    }
+    // For "It is not" -> "It is" and "It's"
+    else if (negative.includes("It is not")) {
+      forms.push(negative.replace("It is not", "It is"));
+      forms.push(negative.replace("It is not", "It's"));
+    }
+    // Fallback
+    else {
+      forms.push(item.affirmative);
+    }
+    
+    return [...new Set(forms)];
   };
 
-  const getFutureCorrectAnswer = (item: any) => {
+  const getFutureCorrectAnswers = (item: any): string[] => {
     if (transformType === 'negative') {
       const future = item.future;
-      if (future.includes("will be")) {
-        return future.replace("will be", "will not be");
-      }
-      return future.replace("will be", "will not be");
+      // Return both "will not be" and "won't be" forms
+      const willNotForm = future.replace("will be", "will not be");
+      const wontForm = future.replace("will be", "won't be");
+      return [willNotForm, wontForm];
     }
-    return item.future;
+    
+    // For AFFIRMATIVE future - the input is already negative (won't be)
+    // We need to transform it to affirmative (will be) with both forms
+    const future = item.future;
+    const forms: string[] = [];
+    
+    // Replace "won't be" with "will be" and "'ll be"
+    if (future.includes("won't be")) {
+      const base = future.replace("won't be", "will be");
+      forms.push(base);
+      
+      // Add contracted forms based on the subject
+      if (base.includes("I will be")) {
+        forms.push(base.replace("I will be", "I'll be"));
+      } else if (base.includes("He will be")) {
+        forms.push(base.replace("He will be", "He'll be"));
+      } else if (base.includes("She will be")) {
+        forms.push(base.replace("She will be", "She'll be"));
+      } else if (base.includes("They will be")) {
+        forms.push(base.replace("They will be", "They'll be"));
+      } else if (base.includes("We will be")) {
+        forms.push(base.replace("We will be", "We'll be"));
+      } else if (base.includes("These will be")) {
+        forms.push(base);
+      } else if (base.includes("Those will be")) {
+        forms.push(base);
+      } else if (base.includes("You will be")) {
+        forms.push(base.replace("You will be", "You'll be"));
+      } else if (base.includes("It will be")) {
+        forms.push(base.replace("It will be", "It'll be"));
+      } else {
+        forms.push(base);
+      }
+    } else {
+      // Fallback
+      forms.push(future.replace("will not be", "will be"));
+    }
+    
+    return [...new Set(forms)];
   };
 
   const getInstruction = () => {
-    if (transformType === 'negative') return "Transform into negative using the verb TO BE + NOT (isn't / aren't / am not / 're not / 's not):";
+    if (transformType === 'negative') return "Transform into negative using the verb TO BE + NOT:";
     return "Transform into affirmative:";
   };
 
@@ -668,52 +819,62 @@ const TransformationExercise = ({
     setShowFuture(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleCheckClick = (item: any, correctAnswer: string, isFuture: boolean) => {
+  const handleCheckClick = (item: any, correctAnswers: string[], isFuture: boolean) => {
     const userAns = answers[item.id] || "";
     const normalizedUser = userAns.toLowerCase().replace(/\s+/g, ' ').trim();
-    const normalizedCorrect = correctAnswer.toLowerCase().replace(/\s+/g, ' ').trim();
     
-    const allForms = isFuture ? [normalizedCorrect] : getAllNegativeForms(normalizedCorrect);
-    allForms.push(normalizedCorrect);
-    
-    const isCorrect = allForms.some(form => {
-      const normalizedForm = form.toLowerCase().replace(/\s+/g, ' ').trim();
-      return normalizedUser === normalizedForm || 
-             (normalizedUser.length > 5 && normalizedForm.includes(normalizedUser));
+    // Check if user answer matches any of the correct answers
+    const isCorrect = correctAnswers.some(correct => {
+      const normalizedCorrect = correct.toLowerCase().replace(/\s+/g, ' ').trim();
+      // Exact match
+      if (normalizedUser === normalizedCorrect) return true;
+      // Allow minor variations (extra spaces, punctuation)
+      const cleanUser = normalizedUser.replace(/[^a-zA-Z\s']/g, '');
+      const cleanCorrect = normalizedCorrect.replace(/[^a-zA-Z\s']/g, '');
+      return cleanUser === cleanCorrect;
     });
     
-    const userClean = normalizedUser.replace(/[^a-zA-Z\s']/g, '');
-    const isCorrectClean = allForms.some(form => {
-      const clean = form.toLowerCase().replace(/[^a-zA-Z\s']/g, '');
-      return userClean === clean;
-    });
-    
-    const finalResult = isCorrect || isCorrectClean;
-    
-    setCorrectness(item.id, finalResult);
+    setCorrectness(item.id, isCorrect);
     setShowResults(item.id, true);
-    onCheck(item.id, userAns, correctAnswer);
+    onCheck(item.id, userAns, correctAnswers[0]);
   };
 
   return (
     <div className="bg-white p-5 rounded-xl border-2 shadow-md" style={{ borderColor: `${LESSON_THEME_COLOR}30` }}>
       <h3 className="text-xl font-bold mb-4" style={{ color: LESSON_THEME_COLOR }}>{title}</h3>
       <p className="text-gray-600 mb-5 italic text-sm">{getInstruction()}</p>
-      <p className="text-xs text-gray-500 mb-4">✅ Accepted forms: isn't / is not / aren't / are not / 're not / 's not / am not / I'm not</p>
+      {transformType === 'negative' && (
+        <div className="flex flex-wrap gap-2 mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <span className="text-xs text-blue-700 font-medium">✅ Accepted forms:</span>
+          <span className="text-xs text-blue-600">isn't / is not</span>
+          <span className="text-xs text-blue-600">aren't / are not</span>
+          <span className="text-xs text-blue-600">am not / I'm not</span>
+          <span className="text-xs text-blue-600">won't be / will not be (Future)</span>
+        </div>
+      )}
+      {transformType === 'affirmative' && (
+        <div className="flex flex-wrap gap-2 mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
+          <span className="text-xs text-green-700 font-medium">✅ Accepted forms:</span>
+          <span className="text-xs text-green-600">I am / I'm</span>
+          <span className="text-xs text-green-600">He is / He's</span>
+          <span className="text-xs text-green-600">She is / She's</span>
+          <span className="text-xs text-green-600">They are / They're</span>
+          <span className="text-xs text-green-600">We are / We're</span>
+          <span className="text-xs text-green-600">These are / Those are</span>
+          <span className="text-xs text-green-600">will / 'll (Future)</span>
+        </div>
+      )}
       
       <div className="space-y-5">
         {items.map((item) => {
           const isFuture = showFuture[item.id] || false;
           const displayText = isFuture ? item.future : getOriginalText(item);
-          const correctAnswer = isFuture ? getFutureCorrectAnswer(item) : getCorrectAnswer(item);
-          const possibleForms = isFuture ? [] : getAllNegativeForms(correctAnswer);
+          const correctAnswers = isFuture ? getFutureCorrectAnswers(item) : getCorrectAnswer(item);
           
           return (
             <div key={item.id} className="border-b pb-4 last:border-b-0">
               <div className="flex justify-between items-start mb-2">
-                <p className="font-medium text-gray-800">
-                  {displayText}
-                </p>
+                <ClickableTextWithAudio text={displayText} className="font-medium text-gray-800" />
                 <button
                   onClick={() => toggleFuture(item.id)}
                   className={`text-xs px-2 py-0.5 rounded-full transition ${isFuture ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'}`}
@@ -725,10 +886,21 @@ const TransformationExercise = ({
                 🇧🇷 {isFuture && item.futurePortuguese ? item.futurePortuguese : item.portuguese}
               </p>
               
-              {!isFuture && transformType === 'negative' && possibleForms.length > 0 && (
-                <div className="text-xs text-gray-400 mb-2">
-                  <span className="font-medium">Accepted forms:</span> {possibleForms.slice(0, 4).join(', ')}
-                  {possibleForms.length > 4 && ` + ${possibleForms.length - 4} more`}
+              {!isFuture && (
+                <div className="text-xs text-gray-400 mb-2 flex flex-wrap gap-1">
+                  <span className="font-medium">Accepted forms:</span>
+                  {correctAnswers.map((form, idx) => (
+                    <span key={idx} className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-600">{form}</span>
+                  ))}
+                </div>
+              )}
+              
+              {isFuture && (
+                <div className="text-xs text-gray-400 mb-2 flex flex-wrap gap-1">
+                  <span className="font-medium">Transform to affirmative:</span>
+                  {correctAnswers.map((form, idx) => (
+                    <span key={idx} className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-600">{form}</span>
+                  ))}
                 </div>
               )}
               
@@ -742,11 +914,23 @@ const TransformationExercise = ({
               />
               <div className="flex gap-3 mt-2">
                 <button
-                  onClick={() => handleCheckClick(item, correctAnswer, isFuture)}
+                  onClick={() => handleCheckClick(item, correctAnswers, isFuture)}
                   className="text-white px-4 py-1.5 rounded-lg transition font-medium text-sm hover:opacity-90"
                   style={{ backgroundColor: LESSON_THEME_COLOR }}
                 >
                   Check Answer
+                </button>
+                <button
+                  onClick={() => {
+                    // Play audio of the first correct answer
+                    const utterance = new SpeechSynthesisUtterance(correctAnswers[0]);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.8;
+                    window.speechSynthesis.speak(utterance);
+                  }}
+                  className="flex items-center gap-1 px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg transition text-gray-700 text-sm"
+                >
+                  <Volume2 size={14} /> Listen
                 </button>
               </div>
               {showResults[item.id] && (
@@ -759,21 +943,30 @@ const TransformationExercise = ({
                     )}
                     <div>
                       <p className={`font-medium text-sm ${correctness[item.id] ? 'text-green-700' : 'text-red-700'}`}>
-                        {correctness[item.id] ? 'Correct!' : 'Not quite right.'}
+                        {correctness[item.id] ? '✅ Correct!' : '❌ Not quite right.'}
                       </p>
                       {!correctness[item.id] && (
                         <div>
-                          <p className="text-gray-700 text-xs">
+                          <p className="text-gray-700 text-xs mt-1">
                             <span className="font-medium">Suggested answers:</span>
                           </p>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {!isFuture && transformType === 'negative' ? 
-                              getAllNegativeForms(correctAnswer).slice(0, 3).map((form, idx) => (
-                                <span key={idx} className="text-xs bg-gray-200 px-2 py-0.5 rounded text-gray-700">{form}</span>
-                              ))
-                              :
-                              <span className="text-xs bg-gray-200 px-2 py-0.5 rounded text-gray-700">{correctAnswer}</span>
-                            }
+                            {correctAnswers.map((form, idx) => (
+                              <span key={idx} className="text-xs bg-gray-200 px-2 py-0.5 rounded text-gray-700">{form}</span>
+                            ))}
+                          </div>
+                          <div className="mt-2">
+                            <button
+                              onClick={() => {
+                                const utterance = new SpeechSynthesisUtterance(correctAnswers[0]);
+                                utterance.lang = 'en-US';
+                                utterance.rate = 0.8;
+                                window.speechSynthesis.speak(utterance);
+                              }}
+                              className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                            >
+                              <Volume2 size={12} /> Listen to correct answer
+                            </button>
                           </div>
                         </div>
                       )}
@@ -822,9 +1015,7 @@ const FluencyCard = ({ item, index }: { item: any; index: number }) => {
         </button>
       </div>
       <div className="flex items-center justify-between">
-        <p className="text-md font-medium text-gray-800">
-          {showFuture && item.future ? item.future : item.sentence}
-        </p>
+        <ClickableTextWithAudio text={showFuture && item.future ? item.future : item.sentence} className="text-md font-medium text-gray-800" />
         <AudioPlayerSimulated text={showFuture && item.future ? item.future : item.sentence} compact />
       </div>
       {showPortuguese && (
@@ -860,9 +1051,7 @@ const SpeakingCard = ({ item, index }: { item: any; index: number }) => {
         </button>
       </div>
       <div className="flex items-center justify-between">
-        <p className="text-md font-medium text-gray-800">
-          {item.question}
-        </p>
+        <ClickableTextWithAudio text={item.question} className="text-md font-medium text-gray-800" />
         <AudioPlayerSimulated text={item.question} compact />
       </div>
       {showPortuguese && (
@@ -1072,16 +1261,16 @@ export default function Lesson40HealthFeelingsProfessions() {
                 <h3 className="text-lg font-bold text-red-600 mb-3">❌ Negative</h3>
                 <ul className="space-y-2 text-gray-700">
                   <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">I am not</span> (I'm not)</li>
-                  <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">You / We / They are not</span> (aren't / 're not)</li>
-                  <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">He / She / It is not</span> (isn't / 's not)</li>
+                  <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">You / We / They are not</span> (aren't)</li>
+                  <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">He / She / It is not</span> (isn't)</li>
                 </ul>
               </div>
               <div className="bg-white p-4 rounded-xl shadow-md border-2 border-emerald-200">
                 <h3 className="text-lg font-bold text-emerald-600 mb-3">🔮 Future (will)</h3>
                 <ul className="space-y-2 text-gray-700">
-                  <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">I will be</span></li>
-                  <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">You / We / They will be</span></li>
-                  <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">He / She / It will be</span></li>
+                  <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">I will be</span> (I'll be)</li>
+                  <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">You / We / They will be</span> (You'll / We'll / They'll)</li>
+                  <li><span className="font-mono bg-gray-100 px-2 py-1 rounded">He / She / It will be</span> (He'll / She'll / It'll)</li>
                   <li className="text-xs text-gray-500 mt-1">Negative: <span className="font-mono bg-gray-100 px-2 py-1 rounded">will not be</span> (won't be)</li>
                 </ul>
               </div>
@@ -1138,7 +1327,8 @@ export default function Lesson40HealthFeelingsProfessions() {
                 setShowResults={setNegativeShowResult}
               />
               <div className="mt-5 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                <p className="text-yellow-700 text-xs">💡 Tip: Use verb TO BE + NOT (am not / is not / are not / isn't / aren't / 're not / 's not) or WILL NOT BE for future</p>
+                <p className="text-yellow-700 text-xs">💡 Tip: Use verb TO BE + NOT (am not / is not / are not / isn't / aren't) or WILL NOT BE / WON'T BE for future</p>
+                <p className="text-yellow-700 text-xs mt-1">🔊 Click the &quot;Listen&quot; button to hear the correct pronunciation</p>
               </div>
             </div>
           )}
@@ -1169,6 +1359,9 @@ export default function Lesson40HealthFeelingsProfessions() {
                 setCorrectness={setAffirmativeCorrectness}
                 setShowResults={setAffirmativeShowResult}
               />
+              <div className="mt-5 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                <p className="text-yellow-700 text-xs">💡 In Future mode, transform the negative future (won't be) into affirmative future (will be / 'll be)</p>
+              </div>
             </div>
           )}
         </div>
@@ -1332,8 +1525,9 @@ export default function Lesson40HealthFeelingsProfessions() {
             <AlertCircle size={20} /> 👩‍🏫 TEACHER TIP (Important)
           </h3>
           <p className="text-yellow-700 text-sm">
-            Always emphasize: Affirmative → Negative / Negative → Affirmative. Have students repeat out loud (drilling). Correct using: ✔️ correct model / ❌ repeat error directly. <strong>NEW:</strong> Practice Future tense with "will be" to expand students' fluency and timeline understanding. <strong>Multiple negative forms accepted:</strong> isn't, is not, aren't, are not, 're not, 's not, am not, I'm not.
+            Always emphasize: Affirmative → Negative / Negative → Affirmative. Have students repeat out loud (drilling). Correct using: ✔️ correct model / ❌ repeat error directly. <strong>NEW:</strong> Practice Future tense with "will be" to expand students' fluency and timeline understanding. <strong>Multiple negative forms accepted:</strong> isn't, is not, aren't, are not, am not, I'm not, won't be, will not be. <strong>Affirmative forms accepted:</strong> I am, I'm, He is, He's, She is, She's, They are, They're, We are, We're, These are, Those are, will, 'll.
           </p>
+          <p className="text-yellow-700 text-sm mt-2">🔊 <strong>NEW:</strong> Click on any English sentence to hear its pronunciation!</p>
         </div>
 
         {/* FOOTER */}
@@ -1359,8 +1553,10 @@ export default function Lesson40HealthFeelingsProfessions() {
         <div className="mt-6 text-center text-gray-500 text-xs">
           <p>Lesson {LESSON_NUMBER}: {LESSON_TITLE} - {LESSON_SUBTITLE} • Interactive English Practice • All answers are saved in your browser</p>
           <p className="mt-1">🩺 Stay healthy, express your feelings, and keep practicing English every day!</p>
-          <p className="mt-1 text-emerald-600">🔮 New: Future tense with "will be" added for extra practice!</p>
-          <p className="mt-1 text-blue-600">✅ Multiple negative forms accepted: isn't, is not, aren't, are not, 're not, 's not, am not, I'm not</p>
+          <p className="mt-1 text-emerald-600">🔮 Future tense with "will be" / "won't be" for extra practice!</p>
+          <p className="mt-1 text-blue-600">✅ Multiple negative forms accepted: isn't, is not, aren't, are not, am not, I'm not, won't be, will not be</p>
+          <p className="mt-1 text-green-600">✅ Affirmative forms accepted: I am, I'm, He is, He's, She is, She's, They are, They're, We are, We're, These are, Those are, will, 'll</p>
+          <p className="mt-1 text-purple-600">🔊 Click any English sentence to hear pronunciation!</p>
         </div>
       </div>
     </div>

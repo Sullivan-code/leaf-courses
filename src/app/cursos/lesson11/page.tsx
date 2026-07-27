@@ -362,7 +362,7 @@ export default function LessonFamilyAndOccupations() {
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('i see my husband')}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu vejo meu esposo</span> / minha esposa / colega de trabalho</p>
-                  <p className="text-sm text-gray-500 mt-1">I see my husband. / my wife / colleague</p>
+                  <p className="text-sm text-gray-500 mt-1">I see my husband. / my wife. / co-worker.</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('he works in france')}>
@@ -402,7 +402,7 @@ export default function LessonFamilyAndOccupations() {
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('i study with my parents')}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Eu estudo com meus pais</span> / filhos / colegas de trabalho</p>
-                  <p className="text-sm text-gray-500 mt-1">I study with my parents. / children / colleagues</p>
+                  <p className="text-sm text-gray-500 mt-1">I study with my parents. / children / co-workers</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => playAudio('i see my wife')}>
@@ -855,7 +855,7 @@ export default function LessonFamilyAndOccupations() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 REAL LIFE</h2>
+              <h2 className="text-2xl font-bold">🔹 MAKE IT YOURS</h2>
               <PencilIcon onClick={() => openNoteModal('Real Life Practice')} />
             </div>
             <div className="text-sm text-blue-100">
@@ -1150,7 +1150,7 @@ export default function LessonFamilyAndOccupations() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 CHECK IT OUT!</h2>
+              <h2 className="text-2xl font-bold">🔹 WRAP UP!</h2>
               <PencilIcon onClick={() => openNoteModal('Check It Out')} />
             </div>
             <p className="text-sm text-blue-100">

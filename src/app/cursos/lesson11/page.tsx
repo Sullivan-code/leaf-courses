@@ -84,8 +84,8 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
   );
 }
 
-// Componente CheckItOutHorizontal
-function CheckItOutHorizontal() {
+// Componente WrapUpHorizontal (renomeado de CheckItOutHorizontal)
+function WrapUpHorizontal() {
   const playAudio = (text: string) => {
     const audioMap: Record<string, string> = {
       'to go to the u.s.a.': 'https://github.com/Sullivan-code/english-audios/raw/main/to-go-to-the-usa.mp3',
@@ -1146,12 +1146,12 @@ export default function LessonFamilyAndOccupations() {
           </div>
         </div>
 
-        {/* Seção 6 - Check It Out */}
+        {/* Seção 6 - Wrap Up */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
               <h2 className="text-2xl font-bold">🔹 WRAP UP!</h2>
-              <PencilIcon onClick={() => openNoteModal('Check It Out')} />
+              <PencilIcon onClick={() => openNoteModal('Wrap Up')} />
             </div>
             <p className="text-sm text-blue-100">
               Practice essential structures with "to go to" and prepositions
@@ -1159,7 +1159,7 @@ export default function LessonFamilyAndOccupations() {
           </div>
           
           <div className="p-6">
-            <CheckItOutHorizontal />
+            <WrapUpHorizontal />
           </div>
         </div>
 

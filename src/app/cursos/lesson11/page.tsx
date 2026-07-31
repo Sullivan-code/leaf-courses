@@ -84,7 +84,7 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
   );
 }
 
-// Componente WrapUpHorizontal (renomeado de CheckItOutHorizontal)
+// Componente WrapUpHorizontal (RENOMEADO - NÃO USE CheckItOutHorizontal)
 function WrapUpHorizontal() {
   const playAudio = (text: string) => {
     const audioMap: Record<string, string> = {

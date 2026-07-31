@@ -6,12 +6,107 @@ import { useEffect, useState, useRef } from "react";
 import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle, ChevronLeft, ChevronRight, Send } from "lucide-react";
 
 // ============================================
+// TEXT-TO-SPEECH FUNCTION - FEMININE VOICE
+// ============================================
+
+const speakWithFemaleVoice = (text: string, rate: number = 0.9, pitch: number = 1.1) => {
+  if (!window.speechSynthesis) {
+    console.warn("Browser doesn't support speech synthesis");
+    return;
+  }
+
+  // Cancel any ongoing speech
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = rate;
+  utterance.pitch = pitch;
+  utterance.volume = 1;
+
+  // Try to find a female voice
+  const voices = window.speechSynthesis.getVoices();
+  
+  // List of female voice names (common across browsers)
+  const femaleVoicePatterns = [
+    'Samantha',    // MacOS
+    'Google UK English Female', // Chrome
+    'Microsoft Zira', // Windows
+    'Microsoft Hazel', // Windows
+    'Victoria',    // Some systems
+    'Karen',       // Some systems
+    'Female',      // Generic
+    'Amy',         // Some systems
+    'Siri',        // Some systems
+    'Allison'      // Some systems
+  ];
+
+  let selectedVoice = voices.find(voice => 
+    femaleVoicePatterns.some(pattern => 
+      voice.name.toLowerCase().includes(pattern.toLowerCase())
+    )
+  );
+
+  // If no female voice found, try to find any English voice
+  if (!selectedVoice) {
+    selectedVoice = voices.find(voice => 
+      voice.lang.includes('en') && voice.lang.includes('US')
+    );
+  }
+
+  // If still no voice found, use the first available
+  if (!selectedVoice && voices.length > 0) {
+    selectedVoice = voices[0];
+  }
+
+  if (selectedVoice) {
+    utterance.voice = selectedVoice;
+    console.log(`Using voice: ${selectedVoice.name} (${selectedVoice.lang})`);
+  }
+
+  utterance.onerror = (event) => {
+    console.error('Speech error:', event);
+  };
+
+  window.speechSynthesis.speak(utterance);
+};
+
+// ============================================
+// SPEAKABLE TEXT COMPONENT
+// ============================================
+
+interface SpeakableTextProps {
+  text: string;
+  className?: string;
+  children?: React.ReactNode;
+}
+
+const SpeakableText = ({ text, className = "", children }: SpeakableTextProps) => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (text?.trim()) {
+      speakWithFemaleVoice(text);
+    }
+  };
+
+  return (
+    <span 
+      onClick={handleClick}
+      className={`cursor-pointer hover:text-blue-600 transition-colors duration-200 ${className}`}
+      title={`Click to listen: ${text}`}
+    >
+      {children || text}
+    </span>
+  );
+};
+
+// ============================================
 // LISTEN AND NUMBER - Items com imagens
 // ============================================
 const listenItemsOriginal = [
   { 
     key: "image-a", 
-    label: "Dois hambúrgueres grandes com alface e queijo",
+    label: "",
     image: "/images/hamburgers.jpg",
     placeholder: "🍔🍔",
     description: "Dois hambúrgueres grandes",
@@ -19,7 +114,7 @@ const listenItemsOriginal = [
   },
   { 
     key: "image-b", 
-    label: "Um grupo de amigos comendo pizza",
+    label: "",
     image: "/images/friends-pizza.jpg",
     placeholder: "👥🍕",
     description: "Amigos comendo pizza",
@@ -27,15 +122,15 @@ const listenItemsOriginal = [
   },
   { 
     key: "image-c", 
-    label: "Pessoas conversando em um restaurante/bar",
+    label: "",
     image: "/images/restaurant-talk.jpg",
     placeholder: "🗣️🍷",
-    description: "Pessoas conversando no bar",
+    description: "",
     correctNumber: 4
   },
   { 
     key: "image-d", 
-    label: "Um prato de macarrão com molho",
+    label: "",
     image: "/images/pasta.jpg",
     placeholder: "🍝",
     description: "Prato de macarrão",
@@ -43,7 +138,7 @@ const listenItemsOriginal = [
   },
   { 
     key: "image-e", 
-    label: "Uma mulher comendo salada",
+    label: "",
     image: "/images/salad.jpg",
     placeholder: "🥗👩",
     description: "Mulher comendo salada",
@@ -51,7 +146,7 @@ const listenItemsOriginal = [
   },
   { 
     key: "image-f", 
-    label: "Um homem (chef/garçom) preparando ou provando comida",
+    label: "",
     image: "/images/chef.jpg",
     placeholder: "👨‍🍳",
     description: "Chef preparando comida",
@@ -268,6 +363,12 @@ export default function Lesson48EatingOut() {
   const [showListenResults, setShowListenResults] = useState<Record<string, boolean>>({});
   const [allChecked, setAllChecked] = useState(false);
 
+  // Audio player state
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioProgress, setAudioProgress] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   // Exercise states
   const [subs1Answers, setSubs1Answers] = useState<Record<number, number>>({});
   const [subs2Answers, setSubs2Answers] = useState<Record<number, number>>({});
@@ -328,6 +429,47 @@ export default function Lesson48EatingOut() {
 
   const toggleSection = (section: keyof typeof expandedSections) => 
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+
+  // Audio player functions
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const restartAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      setAudioProgress(0);
+      if (!isPlaying) {
+        audioRef.current.play();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  const handleAudioTimeUpdate = () => {
+    if (audioRef.current) {
+      const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
+      setAudioProgress(progress);
+    }
+  };
+
+  const handleAudioLoadedMetadata = () => {
+    if (audioRef.current) {
+      setAudioDuration(audioRef.current.duration);
+    }
+  };
+
+  const handleAudioEnded = () => {
+    setIsPlaying(false);
+    setAudioProgress(0);
+  };
 
   // Listen and Number handlers
   const handleNumberChange = (key: string, value: string) => {
@@ -407,23 +549,64 @@ export default function Lesson48EatingOut() {
         {/* ============================================ */}
         {/* LISTEN AND NUMBER SECTION */}
         {/* ============================================ */}
-        <div className="bg-indigo-50 border-2 border-indigo-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-indigo-600 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-blue-50 border-2 border-blue-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-blue-600 text-white py-4 px-8 flex justify-between items-center">
             <h2 className="text-2xl font-bold">🎧 LISTEN AND NUMBER</h2>
-            <button onClick={() => toggleSection('listenAndNumber')} className="p-2 rounded-full hover:bg-indigo-700">
+            <button onClick={() => toggleSection('listenAndNumber')} className="p-2 rounded-full hover:bg-blue-700">
               {expandedSections.listenAndNumber ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
             </button>
           </div>
           
           {expandedSections.listenAndNumber && (
             <div className="p-8">
-              <p className="text-gray-600 mb-6 text-center">Observe as imagens e relacione com os números (1-6) de acordo com os áudios.</p>
+              <p className="text-gray-600 mb-6 text-center">🎵 Clique no player abaixo para ouvir o áudio. Depois, numere as imagens de acordo com a ordem em que você ouviu.</p>
               
+              {/* Audio Player */}
+              <div className="bg-blue-100 rounded-xl p-6 mb-8 shadow-md">
+                <div className="flex items-center gap-4">
+                  <button 
+                    onClick={toggleAudio}
+                    className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-colors"
+                  >
+                    {isPlaying ? <Pause size={24} /> : <Play size={24} />}
+                  </button>
+                  <button 
+                    onClick={restartAudio}
+                    className="bg-gray-500 text-white p-3 rounded-full hover:bg-gray-600 transition-colors"
+                  >
+                    <RotateCcw size={24} />
+                  </button>
+                  <div className="flex-1">
+                    <div className="w-full bg-gray-300 rounded-full h-2.5">
+                      <div 
+                        className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
+                        style={{ width: `${audioProgress}%` }}
+                      ></div>
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-600 mt-1">
+                      <span>{Math.floor((audioProgress / 100) * audioDuration)}s</span>
+                      <span>{Math.floor(audioDuration)}s</span>
+                    </div>
+                  </div>
+                  <Volume2 size={20} className="text-blue-600" />
+                </div>
+                <p className="text-center text-sm text-gray-600 mt-2">📻 L48 - Listen and Number</p>
+              </div>
+
+              {/* Audio element */}
+              <audio
+                ref={audioRef}
+                src="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/L48listenandnumber.mp3"
+                onTimeUpdate={handleAudioTimeUpdate}
+                onLoadedMetadata={handleAudioLoadedMetadata}
+                onEnded={handleAudioEnded}
+                className="hidden"
+              />
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {listenItems.map((item) => (
-                  <div key={item.key} className="bg-white rounded-xl border-2 border-indigo-200 overflow-hidden shadow-sm">
+                  <div key={item.key} className="bg-white rounded-xl border-2 border-blue-200 overflow-hidden shadow-sm">
                     <div className="h-48 bg-gray-100 flex items-center justify-center relative">
-                      {/* Placeholder image - in production, use actual images */}
                       <div className="text-center p-4">
                         <span className="text-6xl">{item.placeholder}</span>
                         <p className="text-sm text-gray-500 mt-2">{item.label}</p>
@@ -438,12 +621,12 @@ export default function Lesson48EatingOut() {
                           max="6"
                           value={userNumbers[item.key] || ""}
                           onChange={(e) => handleNumberChange(item.key, e.target.value)}
-                          className="w-20 px-3 py-2 border border-indigo-300 rounded-md focus:ring-2 focus:ring-indigo-500 text-center"
+                          className="w-20 px-3 py-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500 text-center"
                           placeholder="1-6"
                         />
                         <button
                           onClick={() => checkListenAnswer(item.key, userNumbers[item.key] || "", item.correctNumber)}
-                          className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
+                          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
                         >
                           Check
                         </button>
@@ -461,7 +644,7 @@ export default function Lesson48EatingOut() {
               <div className="flex justify-center mt-4">
                 <button
                   onClick={checkAllListenAnswers}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full transition"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full transition"
                 >
                   Check All Answers
                 </button>
@@ -470,7 +653,7 @@ export default function Lesson48EatingOut() {
               {allChecked && (
                 <div className="mt-6 p-4 bg-green-100 rounded-xl border border-green-300 text-center">
                   <p className="text-green-700 font-medium">📋 Answer Key:</p>
-                  <p className="text-gray-600">a → 3 (Hambúrgueres) | b → 6 (Pizza com amigos) | c → 4 (Conversa no bar) | d → 2 (Macarrão) | e → 1 (Salada) | f → 5 (Chef)</p>
+                  <p className="text-gray-600">1 → Salada (e) | 2 → Macarrão (d) | 3 → Hambúrgueres (a) | 4 → Conversa no bar (c) | 5 → Chef (f) | 6 → Pizza com amigos (b)</p>
                 </div>
               )}
             </div>
@@ -495,7 +678,7 @@ export default function Lesson48EatingOut() {
                   <div key={ex.id} className="bg-white p-4 rounded-lg shadow-sm">
                     <p className="text-gray-700 mb-2 font-medium">{ex.portuguese}</p>
                     <div className="p-3 bg-orange-50 rounded-md mb-2">
-                      <p className="text-orange-700 font-medium text-lg">{getSubs1CurrentPhrase(ex)}</p>
+                      <SpeakableText text={getSubs1CurrentPhrase(ex)} className="text-orange-700 font-medium text-lg" />
                     </div>
                     <div className="flex flex-wrap gap-2 mt-2">
                       <button 
@@ -578,7 +761,7 @@ export default function Lesson48EatingOut() {
                   <div key={ex.id} className="bg-white p-4 rounded-lg shadow-sm">
                     <p className="text-gray-700 mb-2 font-medium">{ex.portuguese}</p>
                     <div className="p-3 bg-purple-50 rounded-md mb-2">
-                      <p className="text-purple-700 font-medium text-lg">{getSubs2CurrentPhrase(ex)}</p>
+                      <SpeakableText text={getSubs2CurrentPhrase(ex)} className="text-purple-700 font-medium text-lg" />
                     </div>
                     <div className="flex flex-wrap gap-2 mt-2">
                       <button 
@@ -646,16 +829,16 @@ export default function Lesson48EatingOut() {
         {/* ============================================ */}
         {/* CHANGE INTO INTERROGATIVE */}
         {/* ============================================ */}
-        <div className="bg-blue-50 border-2 border-blue-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-600 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-cyan-50 border-2 border-cyan-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-cyan-600 text-white py-4 px-8 flex justify-between items-center">
             <h2 className="text-2xl font-bold">❓ CHANGE INTO INTERROGATIVE</h2>
-            <button onClick={() => toggleSection('interrogative')} className="p-2 rounded-full hover:bg-blue-700">
+            <button onClick={() => toggleSection('interrogative')} className="p-2 rounded-full hover:bg-cyan-700">
               {expandedSections.interrogative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
             </button>
           </div>
           {expandedSections.interrogative && (
             <div className="p-8">
-              <div className="bg-blue-100 rounded-xl p-6 space-y-4">
+              <div className="bg-cyan-100 rounded-xl p-6 space-y-4">
                 {interrogativeExercisesData.map(ex => (
                   <div key={ex.id} className="bg-white p-4 rounded-lg">
                     <p className="mb-2 font-medium text-gray-700">{ex.sentence}</p>
@@ -664,12 +847,12 @@ export default function Lesson48EatingOut() {
                         type="text" 
                         value={writtenAnswers[`int-${ex.id}`] || ""} 
                         onChange={(e) => handleWrittenAnswerChange(`int-${ex.id}`, e.target.value)} 
-                        className="flex-1 px-3 py-2 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                        className="flex-1 px-3 py-2 border border-cyan-300 rounded-md focus:ring-2 focus:ring-cyan-500" 
                         placeholder="Write interrogative form..." 
                       />
                       <button 
                         onClick={() => handleCheckAnswer(`int-${ex.id}`, writtenAnswers[`int-${ex.id}`] || "", ex.answer)} 
-                        className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition"
+                        className="bg-cyan-600 text-white px-3 py-2 rounded-md hover:bg-cyan-700 transition"
                       >
                         Check
                       </button>
@@ -694,11 +877,11 @@ export default function Lesson48EatingOut() {
           </div>
           {expandedSections.speaking && (
             <div className="p-8">
-              <p className="text-gray-600 mb-6">Responda com frases completas:</p>
+              <p className="text-gray-600 mb-6">Responda com frases completas. Clique nas perguntas para ouvir a pronúncia:</p>
               <div className="space-y-4">
                 {speakingQuestions.map(q => (
                   <div key={q.id} className="bg-white p-4 rounded-lg border border-teal-200">
-                    <p className="font-bold text-teal-700 mb-2">{q.id}. {q.question}</p>
+                    <SpeakableText text={q.question} className="font-bold text-teal-700 mb-2 block" />
                     <textarea
                       value={speakingAnswers[q.id] || ""}
                       onChange={(e) => handleSpeakingAnswerChange(q.id, e.target.value)}
@@ -744,11 +927,11 @@ export default function Lesson48EatingOut() {
                   <div className="bg-white p-4 rounded-lg">
                     <p className="font-bold text-amber-700">💡 Practice with:</p>
                     <ul className="list-disc pl-5 mt-2 space-y-1 text-gray-600">
-                      <li><span className="font-medium">I usually...</span> (Eu geralmente...)</li>
-                      <li><span className="font-medium">I sometimes...</span> (Eu às vezes...)</li>
-                      <li><span className="font-medium">I never...</span> (Eu nunca...)</li>
-                      <li><span className="font-medium">My favorite dish is...</span> (Meu prato favorito é...)</li>
-                      <li><span className="font-medium">I often...</span> (Eu frequentemente...)</li>
+                      <li><SpeakableText text="I usually..." className="font-medium text-amber-600" /> (Eu geralmente...)</li>
+                      <li><SpeakableText text="I sometimes..." className="font-medium text-amber-600" /> (Eu às vezes...)</li>
+                      <li><SpeakableText text="I never..." className="font-medium text-amber-600" /> (Eu nunca...)</li>
+                      <li><SpeakableText text="My favorite dish is..." className="font-medium text-amber-600" /> (Meu prato favorito é...)</li>
+                      <li><SpeakableText text="I often..." className="font-medium text-amber-600" /> (Eu frequentemente...)</li>
                     </ul>
                   </div>
                 </div>
@@ -766,7 +949,7 @@ export default function Lesson48EatingOut() {
             <button onClick={() => router.push("/cursos/lesson47")} className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors">
               ← Previous Lesson
             </button>
-            <button onClick={() => router.push("/cursos/lesson49")} className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">
+            <button onClick={() => router.push("/cursos/lesson49")} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">
               Next Lesson →
             </button>
           </div>
@@ -775,7 +958,7 @@ export default function Lesson48EatingOut() {
         {/* Credits */}
         <div className="mt-8 text-center text-gray-500 text-sm">
           <p>Lesson 48: Eating Out • Restaurant Conversations & Grammar Practice</p>
-          <p className="text-xs mt-1">🍽️ "How often do you go out with your friends?" - Practice real-life conversations!</p>
+          <p className="text-xs mt-1">🍽️ <SpeakableText text="How often do you go out with your friends?" className="text-gray-500 hover:text-blue-500" /> - Practice real-life conversations!</p>
         </div>
       </div>
     </div>

@@ -204,7 +204,7 @@ export default function Lesson45EatingOut() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 VERBS (to open / to close)</h2>
+              <h2 className="text-2xl font-bold">🔹 VERBS</h2>
               <PencilIcon onClick={() => openNoteModal('Verbs')} />
             </div>
             <button 
@@ -342,7 +342,7 @@ export default function Lesson45EatingOut() {
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 NEW WORDS (Vocabulary)</h2>
+              <h2 className="text-2xl font-bold">🔹 NEW WORDS</h2>
               <PencilIcon onClick={() => openNoteModal('New Words')} />
             </div>
             <button 

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Save, Check, XCircle } from "lucide-react";
+import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Save, Check, XCircle, Speaker, Headphones } from "lucide-react";
 
 // ============================================
 // LESSON 44 – EATING OUT
@@ -11,16 +11,16 @@ import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Save, Check
 
 // Fluency Practice sentences
 const fluencyItems = [
-  { key: "a", english: "We love that cake.", expected: "That's our favorite cake.", audio: "/audios/lesson44-a.mp3" },
-  { key: "b", english: "I really like this book.", expected: "That's my favorite book.", audio: "/audios/lesson44-b.mp3" },
-  { key: "c", english: "I love that TV series.", expected: "That's my favorite TV series.", audio: "/audios/lesson44-c.mp3" },
-  { key: "d", english: "You love this pizza place.", expected: "That's your favorite pizza place.", audio: "/audios/lesson44-d.mp3" },
-  { key: "e", english: "Suzanne really likes that movie.", expected: "That's her favorite movie.", audio: "/audios/lesson44-e.mp3" },
-  { key: "f", english: "Lynda and George really like that museum.", expected: "That's their favorite museum.", audio: "/audios/lesson44-f.mp3" },
-  { key: "g", english: "My father loves this hamburger.", expected: "That's his favorite hamburger.", audio: "/audios/lesson44-g.mp3" },
-  { key: "h", english: "Jeremy and I love that store.", expected: "That's our favorite store.", audio: "/audios/lesson44-h.mp3" },
-  { key: "i", english: "Connor and Josh love that dish.", expected: "That's their favorite dish.", audio: "/audios/lesson44-i.mp3" },
-  { key: "j", english: "Wendy loves this dessert.", expected: "That's her favorite dessert.", audio: "/audios/lesson44-j.mp3" },
+  { key: "a", english: "We love that cake.", expected: "That's our favorite cake." },
+  { key: "b", english: "I really like this book.", expected: "That's my favorite book." },
+  { key: "c", english: "I love that TV series.", expected: "That's my favorite TV series." },
+  { key: "d", english: "You love this pizza place.", expected: "That's your favorite pizza place." },
+  { key: "e", english: "Suzanne really likes that movie.", expected: "That's her favorite movie." },
+  { key: "f", english: "Lynda and George really like that museum.", expected: "That's their favorite museum." },
+  { key: "g", english: "My father loves this hamburger.", expected: "That's his favorite hamburger." },
+  { key: "h", english: "Jeremy and I love that store.", expected: "That's our favorite store." },
+  { key: "i", english: "Connor and Josh love that dish.", expected: "That's their favorite dish." },
+  { key: "j", english: "Wendy loves this dessert.", expected: "That's her favorite dessert." },
 ];
 
 // Substitution Practice I (ALL IN ENGLISH NOW)
@@ -226,111 +226,73 @@ const videoVocabulary = [
 ];
 
 // ============================================
-// COMPONENTS
+// TEXT-TO-SPEECH FUNCTION - FEMININE VOICE
 // ============================================
 
-interface AudioPlayerProps {
-  src: string;
-  compact?: boolean;
-}
+const speakWithFemaleVoice = (text: string, rate: number = 0.9, pitch: number = 1.1) => {
+  if (!window.speechSynthesis) {
+    alert("Your browser doesn't support speech synthesis. Please use Chrome, Safari, or Edge.");
+    return;
+  }
 
-const AudioPlayer = ({ src, compact = false }: AudioPlayerProps) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressBarRef = useRef<HTMLDivElement>(null);
+  // Cancel any ongoing speech
+  window.speechSynthesis.cancel();
 
-  useEffect(() => {
-    const audio = audioRef.current || new Audio(src);
-    if (!audioRef.current) audioRef.current = audio;
-    else audio.src = src;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = rate;
+  utterance.pitch = pitch;
+  utterance.volume = 1;
 
-    const updateProgress = () => {
-      if (audio.duration) {
-        setProgress((audio.currentTime / audio.duration) * 100);
-      }
-    };
+  // Try to find a female voice
+  const voices = window.speechSynthesis.getVoices();
+  
+  // List of female voice names (common across browsers)
+  const femaleVoicePatterns = [
+    'Samantha',    // MacOS
+    'Google UK English Female', // Chrome
+    'Microsoft Zira', // Windows
+    'Microsoft Hazel', // Windows
+    'Victoria',    // Some systems
+    'Karen',       // Some systems
+    'Female',      // Generic
+    'Amy'          // Some systems
+  ];
 
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setProgress(100);
-    };
-
-    audio.addEventListener("timeupdate", updateProgress);
-    audio.addEventListener("ended", handleEnded);
-
-    return () => {
-      audio.removeEventListener("timeupdate", updateProgress);
-      audio.removeEventListener("ended", handleEnded);
-      audio.pause();
-    };
-  }, [src]);
-
-  const togglePlayPause = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play().catch((err) => console.error("Audio error:", err));
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const resetAudio = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      setIsPlaying(false);
-      setProgress(0);
-    }
-  };
-
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || !progressBarRef.current) return;
-    
-    const rect = progressBarRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const width = rect.width;
-    const percent = offsetX / width;
-    audio.currentTime = percent * audio.duration;
-    setProgress(percent * 100);
-  };
-
-  return (
-    <div className={`flex items-center gap-2 ${compact ? "ml-2" : ""}`}>
-      <button 
-        onClick={togglePlayPause} 
-        className={`${compact ? "p-1" : "p-2"} bg-orange-500 text-white rounded-full hover:bg-orange-600 transition`}
-      >
-        {isPlaying ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
-      </button>
-      <button 
-        onClick={resetAudio} 
-        className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600 transition`}
-      >
-        <RotateCcw size={compact ? 12 : 16} />
-      </button>
-      
-      {!compact && (
-        <div 
-          ref={progressBarRef}
-          className="w-20 h-1 bg-gray-300 rounded-full overflow-hidden cursor-pointer"
-          onClick={handleProgressClick}
-        >
-          <div 
-            className="h-full bg-orange-500 transition-all duration-200" 
-            style={{ width: `${progress}%` }} 
-          />
-        </div>
-      )}
-      
-      <audio ref={audioRef} src={src} preload="auto" />
-    </div>
+  let selectedVoice = voices.find(voice => 
+    femaleVoicePatterns.some(pattern => 
+      voice.name.toLowerCase().includes(pattern.toLowerCase())
+    )
   );
+
+  // If no female voice found, try to find any English voice
+  if (!selectedVoice) {
+    selectedVoice = voices.find(voice => 
+      voice.lang.includes('en') && voice.lang.includes('US')
+    );
+  }
+
+  // If still no voice found, use the first available
+  if (!selectedVoice && voices.length > 0) {
+    selectedVoice = voices[0];
+  }
+
+  if (selectedVoice) {
+    utterance.voice = selectedVoice;
+    console.log(`Using voice: ${selectedVoice.name} (${selectedVoice.lang})`);
+  }
+
+  // Event to check if it's working
+  utterance.onerror = (event) => {
+    console.error('Speech error:', event);
+  };
+
+  window.speechSynthesis.speak(utterance);
 };
+
+// ============================================
+// COMPONENTS
+// ============================================
 
 interface AnswerResultProps {
   isCorrect: boolean;
@@ -357,12 +319,67 @@ const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
   );
 };
 
-// Answer checking helper
-const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
-  const normalize = (text: string) => 
-    text.toLowerCase().trim().replace(/[.,?!]/g, '');
-  
-  return normalize(userAnswer) === normalize(correctAnswer);
+// ============================================
+// AUDIO BUTTON COMPONENT
+// ============================================
+
+interface SpeakButtonProps {
+  text: string;
+  label?: string;
+  compact?: boolean;
+  className?: string;
+}
+
+const SpeakButton = ({ text, label = "🔊", compact = false, className = "" }: SpeakButtonProps) => {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const handleSpeak = () => {
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    setIsSpeaking(true);
+    speakWithFemaleVoice(text);
+
+    // Reset speaking state after speech ends
+    const checkSpeaking = setInterval(() => {
+      if (!window.speechSynthesis.speaking) {
+        setIsSpeaking(false);
+        clearInterval(checkSpeaking);
+      }
+    }, 100);
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  return (
+    <button
+      onClick={handleSpeak}
+      className={`inline-flex items-center gap-1 transition-all duration-200 ${className} ${
+        isSpeaking ? 'text-red-500 animate-pulse' : 'text-blue-600 hover:text-blue-800'
+      }`}
+      title={`Listen to: ${text}`}
+    >
+      {isSpeaking ? (
+        <>
+          <Volume2 size={compact ? 16 : 20} className="animate-pulse" />
+          <span className={`${compact ? 'text-xs' : 'text-sm'}`}>🔊</span>
+        </>
+      ) : (
+        <>
+          <Volume2 size={compact ? 16 : 20} />
+          <span className={`${compact ? 'text-xs' : 'text-sm'}`}>{label}</span>
+        </>
+      )}
+    </button>
+  );
 };
 
 // ============================================
@@ -423,6 +440,17 @@ export default function Lesson44() {
 
   // State for saved answers
   const [savedAnswers, setSavedAnswers] = useState<Record<string, any>>({});
+
+  // Load voices on component mount
+  useEffect(() => {
+    // Preload voices
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+  }, []);
 
   // ============================================
   // PERSISTENCE SYSTEM - LOAD
@@ -676,6 +704,14 @@ export default function Lesson44() {
     setSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
+  // Answer checking helper
+  const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
+    const normalize = (text: string) => 
+      text.toLowerCase().trim().replace(/[.,?!]/g, '');
+    
+    return normalize(userAnswer) === normalize(correctAnswer);
+  };
+
   return (
     <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/lesson-bg.jpg')` }}>
       <div className="max-w-7xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
@@ -684,7 +720,7 @@ export default function Lesson44() {
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">📘 LESSON 44 – EATING OUT</h1>
           <h2 className="text-2xl font-semibold text-orange-600 mb-4">🗣️ FLUENCY</h2>
-          <div className="flex justify-center items-center gap-4 mb-4">
+          <div className="flex flex-wrap justify-center items-center gap-4 mb-4">
             <button onClick={saveAllAnswers} className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-6 rounded-full transition flex items-center gap-2">
               <Save size={18} /> Save Progress
             </button>
@@ -729,18 +765,21 @@ export default function Lesson44() {
                       <span className="text-gray-700">They love that restaurant.</span>
                       <span className="text-orange-500 font-bold">→</span>
                       <span className="text-green-700 font-medium">That's their favorite restaurant.</span>
+                      <SpeakButton text="That's their favorite restaurant." compact />
                     </div>
                     <div className="flex items-center gap-4 p-3 bg-orange-50 rounded-lg">
                       <span className="font-medium text-orange-800">2.</span>
                       <span className="text-gray-700">We really like this book.</span>
                       <span className="text-orange-500 font-bold">→</span>
                       <span className="text-green-700 font-medium">That's our favorite book.</span>
+                      <SpeakButton text="That's our favorite book." compact />
                     </div>
                     <div className="flex items-center gap-4 p-3 bg-orange-50 rounded-lg">
                       <span className="font-medium text-orange-800">3.</span>
                       <span className="text-gray-700">She loves this dessert.</span>
                       <span className="text-orange-500 font-bold">→</span>
                       <span className="text-green-700 font-medium">That's her favorite dessert.</span>
+                      <SpeakButton text="That's her favorite dessert." compact />
                     </div>
                   </div>
                   <p className="text-sm text-orange-600 mt-3 text-center">
@@ -753,7 +792,7 @@ export default function Lesson44() {
                     <div key={item.key} className="flex flex-col bg-white p-5 rounded-xl shadow-md border border-orange-200">
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-sm font-medium text-gray-500">Transform {item.key.toUpperCase()}</span>
-                        <AudioPlayer src={item.audio} compact />
+                        <SpeakButton text={item.english} label="🔊 Listen" compact />
                       </div>
                       <p className="text-orange-700 font-medium mb-2">📝 {item.english}</p>
                       <textarea
@@ -762,13 +801,16 @@ export default function Lesson44() {
                         onChange={(e) => handleChange(item.key, e.target.value)}
                         className="w-full h-[80px] resize-none p-3 border border-orange-300 rounded-md text-sm focus:ring-2 focus:ring-orange-500"
                       />
-                      <div className="flex gap-3 mt-3">
+                      <div className="flex gap-3 mt-3 flex-wrap">
                         <button onClick={() => handleCheck(item.key)} disabled={!notes[item.key]?.trim()} className={`flex-1 py-2 px-4 rounded-md transition font-medium ${!notes[item.key]?.trim() ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-orange-500 text-white hover:bg-orange-600'}`}>
                           Check Answer
                         </button>
                         <button onClick={() => { handleChange(item.key, ""); setShowAnswerResults(prev => ({ ...prev, [item.key]: false })); }} className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">
                           Clear
                         </button>
+                        {notes[item.key]?.trim() && (
+                          <SpeakButton text={notes[item.key]} label="🎤 Listen Answer" compact />
+                        )}
                       </div>
                       {showAnswerResults[item.key] && <AnswerResult isCorrect={answerResults[item.key]} correctAnswer={item.expected} />}
                     </div>
@@ -799,12 +841,24 @@ export default function Lesson44() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                   {substitutionPracticeI.map((exercise) => (
                     <div key={exercise.id} className="bg-white p-4 rounded-lg border border-blue-200">
-                      <p className="font-medium text-blue-700 mb-3">{exercise.original}</p>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-medium text-blue-700">{exercise.original}</p>
+                        <SpeakButton text={exercise.original} compact />
+                      </div>
                       <div className="space-y-3">
                         {exercise.variations.map((variation: string, index: number) => (
                           <div key={index} className="flex items-center gap-2">
                             <span className="text-sm text-blue-600 w-28">{variation}:</span>
-                            <input type="text" value={substitutionIAnswers[`${exercise.id}-${index}`] || ""} onChange={(e) => handleSubstitutionIChange(`${exercise.id}-${index}`, e.target.value)} className="flex-1 p-2 border border-blue-300 rounded-md text-sm" placeholder="Type the complete sentence" />
+                            <input 
+                              type="text" 
+                              value={substitutionIAnswers[`${exercise.id}-${index}`] || ""} 
+                              onChange={(e) => handleSubstitutionIChange(`${exercise.id}-${index}`, e.target.value)} 
+                              className="flex-1 p-2 border border-blue-300 rounded-md text-sm" 
+                              placeholder="Type the complete sentence" 
+                            />
+                            {substitutionIAnswers[`${exercise.id}-${index}`]?.trim() && (
+                              <SpeakButton text={substitutionIAnswers[`${exercise.id}-${index}`]} compact label="🔊" />
+                            )}
                             {showSubstitutionIResults[exercise.id] && substitutionIAnswerResults[`${exercise.id}-${index}`] !== undefined && (
                               <span className={`text-sm font-medium ${substitutionIAnswerResults[`${exercise.id}-${index}`] ? 'text-green-600' : 'text-red-600'}`}>
                                 {substitutionIAnswerResults[`${exercise.id}-${index}`] ? '✓' : '✗'}
@@ -813,7 +867,7 @@ export default function Lesson44() {
                           </div>
                         ))}
                       </div>
-                      <div className="flex gap-2 mt-3">
+                      <div className="flex gap-2 mt-3 flex-wrap">
                         <button onClick={() => handleSubstitutionICheck(exercise.id, exercise.correctAnswers)} className="bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600 transition text-sm">Check All</button>
                         <button onClick={() => { exercise.variations.forEach((_, i) => handleSubstitutionIChange(`${exercise.id}-${i}`, "")); setShowSubstitutionIResults(prev => ({ ...prev, [exercise.id]: false })); }} className="bg-gray-200 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-300 transition text-sm">Clear All</button>
                       </div>
@@ -846,12 +900,24 @@ export default function Lesson44() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                   {substitutionPracticeII.map((exercise) => (
                     <div key={exercise.id} className="bg-white p-4 rounded-lg border border-teal-200">
-                      <p className="font-medium text-teal-700 mb-3">{exercise.original}</p>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-medium text-teal-700">{exercise.original}</p>
+                        <SpeakButton text={exercise.original} compact />
+                      </div>
                       <div className="space-y-3">
                         {exercise.variations.map((variation: string, index: number) => (
                           <div key={index} className="flex items-center gap-2">
                             <span className="text-sm text-teal-600 w-32">{variation}:</span>
-                            <input type="text" value={substitutionIIAnswers[`${exercise.id}-${index}`] || ""} onChange={(e) => handleSubstitutionIIChange(`${exercise.id}-${index}`, e.target.value)} className="flex-1 p-2 border border-teal-300 rounded-md text-sm" placeholder="Type the complete sentence" />
+                            <input 
+                              type="text" 
+                              value={substitutionIIAnswers[`${exercise.id}-${index}`] || ""} 
+                              onChange={(e) => handleSubstitutionIIChange(`${exercise.id}-${index}`, e.target.value)} 
+                              className="flex-1 p-2 border border-teal-300 rounded-md text-sm" 
+                              placeholder="Type the complete sentence" 
+                            />
+                            {substitutionIIAnswers[`${exercise.id}-${index}`]?.trim() && (
+                              <SpeakButton text={substitutionIIAnswers[`${exercise.id}-${index}`]} compact label="🔊" />
+                            )}
                             {showSubstitutionIIResults[exercise.id] && substitutionIIAnswerResults[`${exercise.id}-${index}`] !== undefined && (
                               <span className={`text-sm font-medium ${substitutionIIAnswerResults[`${exercise.id}-${index}`] ? 'text-green-600' : 'text-red-600'}`}>
                                 {substitutionIIAnswerResults[`${exercise.id}-${index}`] ? '✓' : '✗'}
@@ -860,7 +926,7 @@ export default function Lesson44() {
                           </div>
                         ))}
                       </div>
-                      <div className="flex gap-2 mt-3">
+                      <div className="flex gap-2 mt-3 flex-wrap">
                         <button onClick={() => handleSubstitutionIICheck(exercise.id, exercise.correctAnswers)} className="bg-teal-500 text-white py-1 px-3 rounded-md hover:bg-teal-600 transition text-sm">Check All</button>
                         <button onClick={() => { exercise.variations.forEach((_, i) => handleSubstitutionIIChange(`${exercise.id}-${i}`, "")); setShowSubstitutionIIResults(prev => ({ ...prev, [exercise.id]: false })); }} className="bg-gray-200 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-300 transition text-sm">Clear All</button>
                       </div>
@@ -894,8 +960,22 @@ export default function Lesson44() {
                     <div key={exercise.id} className="bg-white p-4 rounded-lg border border-red-200">
                       <div className="flex items-start gap-3">
                         <div className="flex-1">
-                          <p className="font-medium text-red-700 mb-2">{exercise.sentence}</p>
-                          <input type="text" value={negativeAnswers[exercise.id] || ""} onChange={(e) => handleNegativeChange(exercise.id, e.target.value)} className="w-full p-2 border border-red-300 rounded-md" placeholder="Write the negative form" />
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="font-medium text-red-700">{exercise.sentence}</p>
+                            <SpeakButton text={exercise.sentence} compact />
+                          </div>
+                          <input 
+                            type="text" 
+                            value={negativeAnswers[exercise.id] || ""} 
+                            onChange={(e) => handleNegativeChange(exercise.id, e.target.value)} 
+                            className="w-full p-2 border border-red-300 rounded-md" 
+                            placeholder="Write the negative form" 
+                          />
+                          {negativeAnswers[exercise.id]?.trim() && (
+                            <div className="mt-1">
+                              <SpeakButton text={negativeAnswers[exercise.id]} label="🎤 Listen Answer" compact />
+                            </div>
+                          )}
                           {showNegativeResults[exercise.id] && <div className="mt-2"><AnswerResult isCorrect={negativeAnswerResults[exercise.id]} correctAnswer={exercise.correctAnswer} /></div>}
                         </div>
                         <div className="flex flex-col gap-2">
@@ -932,8 +1012,22 @@ export default function Lesson44() {
                     <div key={exercise.id} className="bg-white p-4 rounded-lg border border-green-200">
                       <div className="flex items-start gap-3">
                         <div className="flex-1">
-                          <p className="font-medium text-green-700 mb-2">{exercise.sentence}</p>
-                          <input type="text" value={affirmativeAnswers[exercise.id] || ""} onChange={(e) => handleAffirmativeChange(exercise.id, e.target.value)} className="w-full p-2 border border-green-300 rounded-md" placeholder="Write the affirmative form" />
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="font-medium text-green-700">{exercise.sentence}</p>
+                            <SpeakButton text={exercise.sentence} compact />
+                          </div>
+                          <input 
+                            type="text" 
+                            value={affirmativeAnswers[exercise.id] || ""} 
+                            onChange={(e) => handleAffirmativeChange(exercise.id, e.target.value)} 
+                            className="w-full p-2 border border-green-300 rounded-md" 
+                            placeholder="Write the affirmative form" 
+                          />
+                          {affirmativeAnswers[exercise.id]?.trim() && (
+                            <div className="mt-1">
+                              <SpeakButton text={affirmativeAnswers[exercise.id]} label="🎤 Listen Answer" compact />
+                            </div>
+                          )}
                           {showAffirmativeResults[exercise.id] && <div className="mt-2"><AnswerResult isCorrect={affirmativeAnswerResults[exercise.id]} correctAnswer={exercise.correctAnswer} /></div>}
                         </div>
                         <div className="flex flex-col gap-2">
@@ -970,8 +1064,22 @@ export default function Lesson44() {
                     <div key={exercise.id} className="bg-white p-4 rounded-lg border border-purple-200">
                       <div className="flex items-start gap-3">
                         <div className="flex-1">
-                          <p className="font-medium text-purple-700 mb-2">{exercise.sentence}</p>
-                          <input type="text" value={interrogativeAnswers[exercise.id] || ""} onChange={(e) => handleInterrogativeChange(exercise.id, e.target.value)} className="w-full p-2 border border-purple-300 rounded-md" placeholder="Write the question form" />
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="font-medium text-purple-700">{exercise.sentence}</p>
+                            <SpeakButton text={exercise.sentence} compact />
+                          </div>
+                          <input 
+                            type="text" 
+                            value={interrogativeAnswers[exercise.id] || ""} 
+                            onChange={(e) => handleInterrogativeChange(exercise.id, e.target.value)} 
+                            className="w-full p-2 border border-purple-300 rounded-md" 
+                            placeholder="Write the question form" 
+                          />
+                          {interrogativeAnswers[exercise.id]?.trim() && (
+                            <div className="mt-1">
+                              <SpeakButton text={interrogativeAnswers[exercise.id]} label="🎤 Listen Answer" compact />
+                            </div>
+                          )}
                           {showInterrogativeResults[exercise.id] && <div className="mt-2"><AnswerResult isCorrect={interrogativeAnswerResults[exercise.id]} correctAnswer={exercise.correctAnswer} /></div>}
                         </div>
                         <div className="flex flex-col gap-2">
@@ -1006,11 +1114,20 @@ export default function Lesson44() {
                 <div className="space-y-6">
                   {speakingQuestions.map((question, index) => (
                     <div key={index} className="bg-white p-4 rounded-lg border border-yellow-200">
-                      <p className="font-medium text-yellow-700 mb-3">{question}</p>
-                      <textarea value={questionAnswers[`q${index}`] || ""} onChange={(e) => handleQuestionChange(index, e.target.value)} className="w-full h-24 p-3 border border-yellow-300 rounded-md resize-none" placeholder="Write your answer here..." />
-                      <div className="flex gap-3 mt-3">
-                        <button onClick={() => { const utterance = new SpeechSynthesisUtterance(question); utterance.lang = 'en-US'; window.speechSynthesis.speak(utterance); }} className="bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 transition">🔊 Listen Question</button>
-                        {questionAnswers[`q${index}`] && <button onClick={() => { const utterance = new SpeechSynthesisUtterance(questionAnswers[`q${index}`]); utterance.lang = 'en-US'; window.speechSynthesis.speak(utterance); }} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition">🔊 Listen Answer</button>}
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="font-medium text-yellow-700">{question}</p>
+                        <SpeakButton text={question} label="🔊 Listen Question" compact />
+                      </div>
+                      <textarea 
+                        value={questionAnswers[`q${index}`] || ""} 
+                        onChange={(e) => handleQuestionChange(index, e.target.value)} 
+                        className="w-full h-24 p-3 border border-yellow-300 rounded-md resize-none" 
+                        placeholder="Write your answer here..." 
+                      />
+                      <div className="flex gap-3 mt-3 flex-wrap">
+                        {questionAnswers[`q${index}`] && (
+                          <SpeakButton text={questionAnswers[`q${index}`]} label="🎤 Listen Answer" compact />
+                        )}
                       </div>
                     </div>
                   ))}
@@ -1053,6 +1170,7 @@ export default function Lesson44() {
                       <span className="font-medium text-indigo-700">{word.english}</span>
                       <span className="text-indigo-400">→</span>
                       <span className="text-indigo-600">{word.portuguese}</span>
+                      <SpeakButton text={word.english} compact label="🔊" className="ml-auto" />
                     </div>
                   ))}
                 </div>
@@ -1062,13 +1180,23 @@ export default function Lesson44() {
               <div className="space-y-6">
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-indigo-200 shadow-sm hover:shadow-md transition">
-                    <h4 className="text-lg font-semibold text-indigo-700 mb-3">
-                      {question.question}
-                      {question.isPersonal && <span className="ml-2 text-sm text-indigo-500">(Personal)</span>}
-                    </h4>
-                    <textarea value={videoAnswers[question.id] || ""} onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)} placeholder="Write your answer..." className="w-full h-24 p-3 border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none resize-none" />
-                    <div className="flex gap-3 mt-3">
-                      <button onClick={() => { if (videoAnswers[question.id]?.trim()) { const utterance = new SpeechSynthesisUtterance(videoAnswers[question.id]); utterance.lang = 'en-US'; window.speechSynthesis.speak(utterance); } else { alert('Please write your answer first.'); } }} className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl transition">Listen to your answer</button>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-lg font-semibold text-indigo-700">
+                        {question.question}
+                        {question.isPersonal && <span className="ml-2 text-sm text-indigo-500">(Personal)</span>}
+                      </h4>
+                      <SpeakButton text={question.question} label="🔊 Listen" compact />
+                    </div>
+                    <textarea 
+                      value={videoAnswers[question.id] || ""} 
+                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)} 
+                      placeholder="Write your answer..." 
+                      className="w-full h-24 p-3 border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none resize-none" 
+                    />
+                    <div className="flex gap-3 mt-3 flex-wrap">
+                      {videoAnswers[question.id]?.trim() && (
+                        <SpeakButton text={videoAnswers[question.id]} label="🎤 Listen to your answer" compact />
+                      )}
                       <button onClick={() => handleVideoAnswerChange(question.id, "")} className="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl transition">Clear</button>
                     </div>
                   </div>

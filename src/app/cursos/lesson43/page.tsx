@@ -140,7 +140,6 @@ export default function Lesson43EatingOut() {
     realLife: false,
     checkItOut: false,
   });
-  const [showCheckItOutExplanation, setShowCheckItOutExplanation] = useState(false);
   
   const [noteModal, setNoteModal] = useState({
     isOpen: false,
@@ -177,13 +176,12 @@ export default function Lesson43EatingOut() {
   const restaurantImage = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
   const foodImage = "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
 
-  // Lesson 43 - Verbs (to make, to give)
+  // Dados organizados
   const verbs = [
     { english: "to make", portuguese: "fazer" },
     { english: "to give", portuguese: "dar" },
   ];
 
-  // Lesson 43 - New Words
   const newWords = [
     { english: "dish", portuguese: "prato" },
     { english: "hamburger", portuguese: "hambúrguer" },
@@ -203,6 +201,16 @@ export default function Lesson43EatingOut() {
     { english: "any", portuguese: "algum / nenhum" },
   ];
 
+  const grammarExamples = [
+    { english: "I have some friends in Germany.", portuguese: "Eu tenho alguns amigos na Alemanha." },
+    { english: "Some people don't like to eat fast food.", portuguese: "Algumas pessoas não gostam de comida rápida." },
+    { english: "I don't have any money here.", portuguese: "Eu não tenho dinheiro aqui." },
+    { english: "He still doesn't have any children.", portuguese: "Ele ainda não tem filhos." },
+    { english: "Do you have any tips?", portuguese: "Você tem alguma dica?" },
+    { english: "Do you know any good TV series?", portuguese: "Você conhece alguma série boa?" },
+    { english: "Do you want some popcorn?", portuguese: "Você quer um pouco de pipoca?" },
+  ];
+
   const usefulPhrases = [
     { english: "This is the best restaurant in the city.", portuguese: "Este é o melhor restaurante da cidade." },
     { english: "I want a slice of pie for dessert.", portuguese: "Eu quero uma fatia de torta de sobremesa." },
@@ -214,17 +222,7 @@ export default function Lesson43EatingOut() {
     { english: "This is my best friend.", portuguese: "Este é o meu melhor amigo" },
   ];
 
-  const grammarExamples = [
-    { english: "I have some friends in Germany.", portuguese: "Eu tenho alguns amigos na Alemanha." },
-    { english: "Some people don't like to eat fast food.", portuguese: "Algumas pessoas não gostam de comida rápida." },
-    { english: "I don't have any money here.", portuguese: "Eu não tenho dinheiro aqui." },
-    { english: "He still doesn't have any children.", portuguese: "Ele ainda não tem filhos." },
-    { english: "Do you have any tips?", portuguese: "Você tem alguma dica?" },
-    { english: "Do you know any good TV series?", portuguese: "Você conhece alguma série boa?" },
-    { english: "Do you want some popcorn?", portuguese: "Você quer um pouco de pipoca?" },
-  ];
-
-  // Real Life Sentences (MISTURADAS com Future, Negative, Have Been, I've, What have you, Have you ever)
+  // Lista principal de frases da vida real
   const realLifeSentences = [
     { english: "Do you know how to make chocolate popcorn?", portuguese: "Você sabe fazer pipoca de chocolate?" },
     { english: "I want to make your favorite dish tonight.", portuguese: "Eu quero fazer seu prato favorito hoje à noite." },
@@ -252,7 +250,16 @@ export default function Lesson43EatingOut() {
     { english: "Have you ever been to a Michelin star restaurant?", portuguese: "Você já foi a um restaurante com estrela Michelin?" },
   ];
 
-  // Check it out practice items
+  // Frases extras para os Drills (incluídas com tradução)
+  const extraPhrasesWithTranslation = [
+    { english: "My mother makes cakes on weekends.", portuguese: "Minha mãe faz bolos nos fins de semana. / pizza / pipoca" },
+    { english: "The rice is cold.", portuguese: "O arroz está frio. / O frango / A carne" },
+    { english: "The soup is very hot.", portuguese: "A sopa está muito quente. / O macarrão / comida" },
+    { english: "I want to give a tip.", portuguese: "Eu quero dar uma gorjeta. / ao garçom / à garçonete" },
+    { english: "What do you want for dessert?", portuguese: "O que você quer comer de sobremesa? / no almoço / no jantar" },
+    { english: "This is the best dish in the restaurant.", portuguese: "Este é o melhor prato do restaurante. / a melhor pizza / a melhor torta" }
+  ];
+
   const checkItOutItems = [
     { item: "a cake", verb: "to make" },
     { item: "popcorn", verb: "to make" },
@@ -276,7 +283,7 @@ export default function Lesson43EatingOut() {
     >
       <div className="max-w-6xl mx-auto bg-[#f0f8ff] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         
-        {/* Centered title with image below */}
+        {/* Título centralizado */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-[#0c4a6e] mb-6">
             🍽️ Lesson 43 - Eating Out
@@ -293,11 +300,11 @@ export default function Lesson43EatingOut() {
           </div>
         </div>
 
-        {/* Section 1 - VERBS (to make, to give) with Drill */}
+        {/* Section 1 - VERBS */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 VERBS (to make / fazer, to give / dar)</h2>
+              <h2 className="text-2xl font-bold">🔹 VERBS </h2>
               <PencilIcon onClick={() => openNoteModal('Verbs')} />
             </div>
             <button 
@@ -398,11 +405,11 @@ export default function Lesson43EatingOut() {
           </div>
         </div>
 
-        {/* Section 2 - NEW WORDS with Drill */}
+        {/* Section 2 - NEW WORDS */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 NEW WORDS (Vocabulary)</h2>
+              <h2 className="text-2xl font-bold">🔹 NEW WORDS </h2>
               <PencilIcon onClick={() => openNoteModal('New Words')} />
             </div>
             <button 
@@ -428,59 +435,26 @@ export default function Lesson43EatingOut() {
             
             {openDrills.vocabulary && (
               <div className="mt-4 bg-green-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">🍕 <span className="text-green-600 font-bold">pizza</span> / hamburger / fast food</p>
-                    <p className="text-sm text-gray-600 mt-1">pizza / hambúrguer / comida rápida</p>
+                {extraPhrasesWithTranslation.map((item, index) => (
+                  <div key={index} className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
+                    <div>
+                      <p className="text-lg font-medium text-gray-800">{item.english}</p>
+                      <p className="text-sm text-gray-600 mt-1">{item.portuguese}</p>
+                    </div>
+                    <AudioButton text={item.english} />
                   </div>
-                  <AudioButton text="pizza" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">🍰 <span className="text-green-600 font-bold">cake</span> / ice cream / popcorn</p>
-                    <p className="text-sm text-gray-600 mt-1">bolo / sorvete / pipoca</p>
-                  </div>
-                  <AudioButton text="cake" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">👨‍🍳 <span className="text-green-600 font-bold">waiter</span> / waitress / tip</p>
-                    <p className="text-sm text-gray-600 mt-1">garçom / garçonete / gorjeta</p>
-                  </div>
-                  <AudioButton text="waiter" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">🔥 <span className="text-green-600 font-bold">hot</span> / cold / favorite</p>
-                    <p className="text-sm text-gray-600 mt-1">quente / frio / favorito(a)</p>
-                  </div>
-                  <AudioButton text="hot" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">👥 <span className="text-green-600 font-bold">our</span> / their / any</p>
-                    <p className="text-sm text-gray-600 mt-1">nosso / deles / algum/nenhum</p>
-                  </div>
-                  <AudioButton text="our" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">🍽️ <span className="text-green-600 font-bold">dish</span> / ice cream / popcorn</p>
-                    <p className="text-sm text-gray-600 mt-1">prato / sorvete / pipoca</p>
-                  </div>
-                  <AudioButton text="dish" />
-                </div>
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 3 - GRAMMAR (Some/Any) with Drill */}
+        {/* Section 3 - GRAMMAR (Some/Any) */}
         <div className="bg-white border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 Speak Like a Native (Some / Any)</h2>
-              <PencilIcon onClick={() => openNoteModal('Speak Like a Native')} />
+              <h2 className="text-2xl font-bold">🔹 GRAMMAR (Some & Any)</h2>
+              <PencilIcon onClick={() => openNoteModal('Grammar')} />
             </div>
             <button 
               onClick={() => toggleDrill('grammar')}
@@ -491,32 +465,15 @@ export default function Lesson43EatingOut() {
           </div>
           
           <div className="p-8">
-            <div className="bg-purple-100 p-4 rounded-xl border border-purple-300 mb-6">
-              <h3 className="font-bold text-purple-800 text-lg mb-2">📚 Some vs Any - Explanation</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-purple-800">
-                <div className="bg-white p-3 rounded-lg border border-purple-200">
-                  <p className="font-bold text-green-600">✅ SOME</p>
-                  <p className="text-sm">Usado em frases <strong>afirmativas</strong></p>
-                  <p className="text-sm mt-1">Ex: <span className="font-bold">I have <span className="text-green-600">some</span> friends.</span></p>
-                  <p className="text-xs text-gray-500">Eu tenho alguns amigos.</p>
-                </div>
-                <div className="bg-white p-3 rounded-lg border border-purple-200">
-                  <p className="font-bold text-red-600">❌ ANY</p>
-                  <p className="text-sm">Usado em frases <strong>negativas</strong> e <strong>interrogativas</strong></p>
-                  <p className="text-sm mt-1">Ex: <span className="font-bold">I don't have <span className="text-red-600">any</span> money.</span></p>
-                  <p className="text-xs text-gray-500">Eu não tenho dinheiro.</p>
-                </div>
-              </div>
-            </div>
-
-            <p className="text-md text-gray-600 mb-4 italic">Some = affirmative / Any = negative and interrogative</p>
-            <div className="bg-purple-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
-              {grammarExamples.map((example, index) => (
-                <div key={index} className="flex items-center justify-between">
+            <p className="text-md text-gray-600 mb-4 italic">Some = used in positive sentences; Any = used in negative sentences and questions</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              {grammarExamples.map((ex, index) => (
+                <div key={index} className="bg-purple-50 p-4 rounded-xl border border-purple-200 flex items-center justify-between">
                   <div>
-                    <span className="text-purple-600 font-bold">{example.english}</span> = {example.portuguese}
+                    <p className="text-purple-700 font-bold">{ex.english}</p>
+                    <p className="text-sm text-gray-600 mt-1">{ex.portuguese}</p>
                   </div>
-                  <AudioButton text={example.english} />
+                  <AudioButton text={ex.english} />
                 </div>
               ))}
             </div>
@@ -525,91 +482,35 @@ export default function Lesson43EatingOut() {
               <div className="mt-4 bg-purple-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
                   <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">She has some books at home</span> / at the office / at the company</p>
-                    <p className="text-sm text-gray-600 mt-1">Ela tem alguns livros em casa / no escritório / na empresa</p>
+                    <p className="text-lg font-medium text-gray-800">📝 <span className="text-purple-600 font-bold">I have some water.</span></p>
+                    <p className="text-sm text-gray-600 mt-1">Eu tenho um pouco de água.</p>
                   </div>
-                  <AudioButton text="She has some books at home" />
+                  <AudioButton text="I have some water" />
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
                   <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">My neighbor has some friends abroad</span> / cousins / relatives</p>
-                    <p className="text-sm text-gray-600 mt-1">Meu vizinho tem alguns amigos no exterior / primos / parentes</p>
+                    <p className="text-lg font-medium text-gray-800">🚫 <span className="text-purple-600 font-bold">I don't have any money.</span></p>
+                    <p className="text-sm text-gray-600 mt-1">Eu não tenho nenhum dinheiro.</p>
                   </div>
-                  <AudioButton text="My neighbor has some friends abroad" />
+                  <AudioButton text="I don't have any money" />
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
                   <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">Some people do not like to eat hamburgers</span> / pizza / popcorn</p>
-                    <p className="text-sm text-gray-600 mt-1">Algumas pessoas não gostam de comer hambúrguer / pizza / pipoca</p>
+                    <p className="text-lg font-medium text-gray-800">❓ <span className="text-purple-600 font-bold">Do you have any questions?</span></p>
+                    <p className="text-sm text-gray-600 mt-1">Você tem alguma pergunta?</p>
                   </div>
-                  <AudioButton text="Some people do not like to eat hamburgers" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">I don't want any bread, thanks</span></p>
-                    <p className="text-sm text-gray-600 mt-1">Eu não quero nenhum pão, obrigado</p>
-                  </div>
-                  <AudioButton text="I don't want any bread thanks" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">I don't have any butter</span> / jam / honey</p>
-                    <p className="text-sm text-gray-600 mt-1">Eu não tenho nenhuma manteiga / geleia / mel</p>
-                  </div>
-                  <AudioButton text="I don't have any butter" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">I don't know any schools here</span></p>
-                    <p className="text-sm text-gray-600 mt-1">Eu não conheço nenhuma escola aqui</p>
-                  </div>
-                  <AudioButton text="I don't know any schools here" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">He doesn't know any good TV series</span> / books / stories</p>
-                    <p className="text-sm text-gray-600 mt-1">Ele não conhece nenhuma série boa / livro / história</p>
-                  </div>
-                  <AudioButton text="He doesn't know any good TV series" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">Do you have any tips to give me?</span></p>
-                    <p className="text-sm text-gray-600 mt-1">Você tem alguma dica para me dar?</p>
-                  </div>
-                  <AudioButton text="Do you have any tips to give me" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">Do you want some popcorn?</span> / chips / candy</p>
-                    <p className="text-sm text-gray-600 mt-1">Você quer um pouco de pipoca? / batatas fritas / doce</p>
-                  </div>
-                  <AudioButton text="Do you want some popcorn" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">Did you have any problems at the restaurant?</span></p>
-                    <p className="text-sm text-gray-600 mt-1">Você teve algum problema no restaurante?</p>
-                  </div>
-                  <AudioButton text="Did you have any problems at the restaurant" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600 font-bold">I will bring some dessert to the party</span> / drinks / snacks</p>
-                    <p className="text-sm text-gray-600 mt-1">Eu trarei alguma sobremesa para a festa / bebidas / petiscos</p>
-                  </div>
-                  <AudioButton text="I will bring some dessert to the party" />
+                  <AudioButton text="Do you have any questions" />
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 4 - USEFUL PHRASES with Drill */}
+        {/* Section 4 - USEFUL PHRASES */}
         <div className="bg-white border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 USEFUL PHRASES (Frases Úteis)</h2>
+              <h2 className="text-2xl font-bold">🔹 SPEAK LIKE A NATIVE</h2>
               <PencilIcon onClick={() => openNoteModal('Useful Phrases')} />
             </div>
             <button 
@@ -798,7 +699,7 @@ export default function Lesson43EatingOut() {
           </div>
         </div>
 
-        {/* Section 6 - WRAP UP! (Practice "to make") */}
+        {/* Section 6 - WRAP UP! */}
         <div className="bg-white border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -806,15 +707,15 @@ export default function Lesson43EatingOut() {
               <PencilIcon onClick={() => openNoteModal('Wrap Up')} />
             </div>
             <button 
-              onClick={() => setShowCheckItOutExplanation(!showCheckItOutExplanation)}
+              onClick={() => toggleDrill('checkItOut')}
               className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800 active:animate-glow"
             >
-              {showCheckItOutExplanation ? 'Hide Practice' : 'Show Practice'}
+              {openDrills.checkItOut ? 'Hide Practice' : 'Show Practice'}
             </button>
           </div>
 
           <div className="p-8">
-            {showCheckItOutExplanation && (
+            {openDrills.checkItOut && (
               <div className="mb-6 p-4 bg-teal-50 rounded-xl border border-teal-200 animate-fadeIn">
                 <p className="text-teal-800 text-sm">📚 <strong>Practice:</strong> Use the verb "to make" (fazer) with the words below. Click on each item to hear the pronunciation.</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-4">

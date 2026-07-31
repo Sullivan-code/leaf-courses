@@ -111,7 +111,7 @@ function CheckItOutHorizontal() {
       {/* HEADER */}
       <div className="flex items-center justify-between px-6 py-3 bg-white border-b-2 border-gray-800">
         <h2 className="text-xl font-bold tracking-widest text-gray-900">
-          CHECK IT OUT!
+          WRAP UP!
         </h2>
         <div className="flex items-center gap-3 text-gray-600">
           <span className="cursor-pointer hover:text-gray-900">≡</span>

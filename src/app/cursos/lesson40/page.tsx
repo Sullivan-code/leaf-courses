@@ -674,7 +674,7 @@ const TransformationExercise = ({
     }
     
     // Remove duplicates while preserving order
-    return [...new Set(forms)];
+    return Array.from(new Set(forms));
   };
 
   const getCorrectAnswer = (item: any): string[] => {
@@ -703,7 +703,7 @@ const TransformationExercise = ({
         forms.push(original);
       }
       
-      return [...new Set(forms)];
+      return Array.from(new Set(forms));
     }
     
     // For AFFIRMATIVE transformation
@@ -758,7 +758,7 @@ const TransformationExercise = ({
       forms.push(item.affirmative);
     }
     
-    return [...new Set(forms)];
+    return Array.from(new Set(forms));
   };
 
   const getFutureCorrectAnswers = (item: any): string[] => {
@@ -807,7 +807,7 @@ const TransformationExercise = ({
       forms.push(future.replace("will not be", "will be"));
     }
     
-    return [...new Set(forms)];
+    return Array.from(new Set(forms));
   };
 
   const getInstruction = () => {

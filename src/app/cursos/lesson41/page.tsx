@@ -441,7 +441,7 @@ export default function Lesson41HealthFeelingsProfessions() {
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 NEW WORDS (Months & Vocabulary)</h2>
+              <h2 className="text-2xl font-bold">🔹 NEW WORDS</h2>
               <PencilIcon onClick={() => openNoteModal('New Words')} />
             </div>
             <button 
@@ -560,7 +560,7 @@ export default function Lesson41HealthFeelingsProfessions() {
         <div className="bg-white border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 Speak Like a Native (Useful Phrases)</h2>
+              <h2 className="text-2xl font-bold">🔹 Speak Like a Native</h2>
               <PencilIcon onClick={() => openNoteModal('Speak Like a Native')} />
             </div>
             <button 

@@ -1,6 +1,10 @@
+// src/app/api/tts/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { openai, OPENAI_CONFIG } from '@/lib/openai';
+
+// ✅ FORÇAR ROTA DINÂMICA
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {

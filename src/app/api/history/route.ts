@@ -1,6 +1,10 @@
+// src/app/api/history/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
+
+// ✅ FORÇAR ROTA DINÂMICA
+export const dynamic = 'force-dynamic';
 
 // GET - Buscar conversas
 export async function GET(req: NextRequest) {
@@ -18,7 +22,7 @@ export async function GET(req: NextRequest) {
     const conversationId = searchParams.get('conversationId');
 
     if (conversationId) {
-      // @ts-ignore - Ignorando erro de tipo temporariamente
+      // @ts-ignore
       const conversation = await prisma.conversation.findUnique({
         where: {
           id: conversationId,
@@ -49,7 +53,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // @ts-ignore - Ignorando erro de tipo temporariamente
+    // @ts-ignore
     const conversations = await prisma.conversation.findMany({
       where: { 
         userId: userId 
@@ -108,7 +112,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // @ts-ignore - Ignorando erro de tipo temporariamente
+    // @ts-ignore
     const existingConversation = await prisma.conversation.findUnique({
       where: {
         id: conversationId,
@@ -139,7 +143,7 @@ export async function POST(req: NextRequest) {
       };
     }
 
-    // @ts-ignore - Ignorando erro de tipo temporariamente
+    // @ts-ignore
     const updatedConversation = await prisma.conversation.update({
       where: {
         id: conversationId,
@@ -185,7 +189,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    // @ts-ignore - Ignorando erro de tipo temporariamente
+    // @ts-ignore
     const existingConversation = await prisma.conversation.findUnique({
       where: {
         id: conversationId,
@@ -200,7 +204,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    // @ts-ignore - Ignorando erro de tipo temporariamente
+    // @ts-ignore
     await prisma.conversation.delete({
       where: {
         id: conversationId,

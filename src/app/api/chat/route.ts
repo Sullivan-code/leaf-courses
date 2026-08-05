@@ -5,6 +5,9 @@ import { openai, OPENAI_CONFIG } from '@/lib/openai';
 import { SYSTEM_PROMPT } from '@/lib/prompts';
 import { prisma } from '@/lib/prisma';
 
+// ✅ FORÇAR ROTA DINÂMICA
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     console.log('🔵 [CHAT] Iniciando requisição...');
@@ -75,13 +78,11 @@ export async function POST(req: NextRequest) {
     ];
 
     console.log('🔵 [CHAT] Chamando OpenAI com modelo:', OPENAI_CONFIG.model);
-    console.log('🔵 [CHAT] Mensagens:', JSON.stringify(formattedMessages, null, 2));
 
     try {
-      // ✅ CORREÇÃO: Usar as any para evitar erro de tipo
       const response = await openai.chat.completions.create({
         model: OPENAI_CONFIG.model,
-        messages: formattedMessages as any,  // ← CORRIGIDO
+        messages: formattedMessages as any,
         temperature: OPENAI_CONFIG.temperature,
         max_tokens: OPENAI_CONFIG.maxTokens,
       });
@@ -123,7 +124,6 @@ export async function POST(req: NextRequest) {
       console.error('🔴 [CHAT] Erro na OpenAI:');
       console.error('🔴 [CHAT] Mensagem:', openaiError.message);
       console.error('🔴 [CHAT] Status:', openaiError.status);
-      console.error('🔴 [CHAT] Response:', openaiError.response?.data || 'Sem dados');
       
       return NextResponse.json(
         { error: 'OpenAI error: ' + (openaiError.message || 'Unknown') },

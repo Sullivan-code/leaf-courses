@@ -1,5 +1,9 @@
 "use client";
 
+// ✅ FORÇAR ROTA DINÂMICA
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import React, { useState, useEffect } from 'react';
 import { useChat } from '@/hooks/useChat';
 import { useVoice } from '@/hooks/useVoice';
@@ -40,9 +44,7 @@ export default function AssistantPage() {
     onTranscriptionComplete: async (text) => {
       if (text.trim()) {
         console.log('🎤 Transcrição:', text);
-        // Envia a mensagem transcrita
         const result = await sendMessage(text);
-        // Gera áudio da resposta
         if (result?.content) {
           generateAudioResponse(result.content);
         }
@@ -192,7 +194,6 @@ export default function AssistantPage() {
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden">
-      {/* Sidebar */}
       <ChatSidebar
         conversations={conversations}
         currentConversationId={currentConversationId}
@@ -203,9 +204,7 @@ export default function AssistantPage() {
         onClose={() => setIsSidebarOpen(false)}
       />
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col ml-0 md:ml-80 transition-all duration-300">
-        {/* Header */}
         <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 md:hidden">
           <button
             onClick={toggleSidebar}
@@ -221,13 +220,11 @@ export default function AssistantPage() {
           <div className="w-10" />
         </header>
 
-        {/* Chat Messages */}
         <ChatMessages
           messages={messages}
           isLoading={isChatLoading || isProcessing}
         />
 
-        {/* Audio Player */}
         {audioUrl && (
           <div className="px-4 pb-2">
             <AudioPlayer
@@ -247,7 +244,6 @@ export default function AssistantPage() {
           </div>
         )}
 
-        {/* Message Input */}
         <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <div className="container mx-auto max-w-4xl">
             <MessageInput
@@ -261,7 +257,6 @@ export default function AssistantPage() {
         </div>
       </div>
 
-      {/* Voice Recorder - Mostra quando está gravando */}
       <div className="fixed bottom-24 right-8 z-50">
         <VoiceRecorder
           isRecording={isRecording}
@@ -275,7 +270,6 @@ export default function AssistantPage() {
         />
       </div>
 
-      {/* Loading Overlay */}
       {isProcessing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-sm w-full mx-4">

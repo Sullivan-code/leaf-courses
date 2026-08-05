@@ -1,9 +1,5 @@
 "use client";
 
-// ✅ FORÇAR ROTA DINÂMICA
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 import React, { useState, useEffect } from 'react';
 import { useChat } from '@/hooks/useChat';
 import { useVoice } from '@/hooks/useVoice';

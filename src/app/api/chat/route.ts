@@ -5,7 +5,6 @@ import { openai, OPENAI_CONFIG } from '@/lib/openai';
 import { SYSTEM_PROMPT } from '@/lib/prompts';
 import { prisma } from '@/lib/prisma';
 
-// ✅ FORÇAR ROTA DINÂMICA
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {

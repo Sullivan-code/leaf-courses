@@ -34,7 +34,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Gera áudio usando OpenAI TTS
     const mp3 = await openai.audio.speech.create({
       model: OPENAI_CONFIG.speechModel,
       voice: OPENAI_CONFIG.voice,
@@ -43,8 +42,6 @@ export async function POST(req: NextRequest) {
     });
 
     const buffer = Buffer.from(await mp3.arrayBuffer());
-
-    // Converte para base64
     const base64Audio = buffer.toString('base64');
     const audioUrl = `data:audio/mp3;base64,${base64Audio}`;
 

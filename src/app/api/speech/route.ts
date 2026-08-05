@@ -29,11 +29,9 @@ export async function POST(req: NextRequest) {
 
     console.log(`🎤 Áudio recebido: ${audioFile.name}, ${audioFile.size} bytes, ${audioFile.type}`);
 
-    // Converter File para Buffer
     const arrayBuffer = await audioFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Transcrever usando Whisper
     const transcription = await openai.audio.transcriptions.create({
       file: new File([buffer], audioFile.name, { type: audioFile.type }),
       model: 'whisper-1',

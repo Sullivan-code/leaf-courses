@@ -1,11 +1,9 @@
-// src/app/api/history/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
-// GET - Buscar conversas
 export async function GET(req: NextRequest) {
   try {
     const { userId } = await auth();
@@ -89,7 +87,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST - Salvar/Atualizar conversa
 export async function POST(req: NextRequest) {
   try {
     const { userId } = await auth();
@@ -166,7 +163,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// DELETE - Deletar conversa
 export async function DELETE(req: NextRequest) {
   try {
     const { userId } = await auth();

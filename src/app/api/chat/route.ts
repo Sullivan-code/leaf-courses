@@ -1,4 +1,3 @@
-// src/app/api/chat/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { openai, OPENAI_CONFIG } from '@/lib/openai';

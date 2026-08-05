@@ -186,7 +186,7 @@ export default function Lesson5FoodAndDrink() {
                   <p className="text-sm text-gray-500 mt-1">Você prefere arroz ou feijão? / carne ou peixe / frango ou salada</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">They prefer <span className="text-blue-600 font-bold">bread</span> with butter. / <span className="text-blue-600 font-bold">eggs</span> / <span className="text-blue-600 font-bold">French fries</span></p>
+                  <p className="text-lg font-medium text-gray-800">They prefer <span className="text-blue-600 font-bold">bread</span> and butter. / <span className="text-blue-600 font-bold">eggs</span> / <span className="text-blue-600 font-bold">French fries</span></p>
                   <p className="text-sm text-gray-500 mt-1">Eles preferem pão com manteiga. / ovos / batata frita</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">

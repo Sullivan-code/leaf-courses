@@ -125,7 +125,7 @@ const listenItemsOriginal = [
     label: "",
     image: "/images/restaurant-talk.jpg",
     placeholder: "🗣️🍷",
-    description: "",
+    description: "Conversa no bar",
     correctNumber: 4
   },
   { 
@@ -154,7 +154,7 @@ const listenItemsOriginal = [
   },
 ];
 
-// Embaralhar array
+// Embaralhar array - Função pura
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -357,11 +357,12 @@ export default function Lesson48EatingOut() {
   });
 
   // Listen and Number state
-  const [listenItems, setListenItems] = useState(() => shuffleArray(listenItemsOriginal));
+  const [listenItems, setListenItems] = useState(listenItemsOriginal); // Começa com a ordem original
   const [userNumbers, setUserNumbers] = useState<Record<string, string>>({});
   const [listenResults, setListenResults] = useState<Record<string, boolean>>({});
   const [showListenResults, setShowListenResults] = useState<Record<string, boolean>>({});
   const [allChecked, setAllChecked] = useState(false);
+  const [isClient, setIsClient] = useState(false); // Novo estado para controle de hidratação
 
   // Audio player state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -379,8 +380,16 @@ export default function Lesson48EatingOut() {
   // Speaking answers state
   const [speakingAnswers, setSpeakingAnswers] = useState<Record<string, string>>({});
 
+  // Effect para embaralhar apenas no cliente
+  useEffect(() => {
+    setIsClient(true);
+    setListenItems(shuffleArray(listenItemsOriginal));
+  }, []);
+
   // Load saved data from localStorage
   useEffect(() => {
+    if (!isClient) return; // Só executa no cliente
+    
     const savedAnswers = localStorage.getItem("lesson48Answers");
     if (savedAnswers) {
       try {
@@ -396,7 +405,7 @@ export default function Lesson48EatingOut() {
         console.log("Data loaded for Lesson 48");
       } catch (error) { console.error("Error loading answers:", error); }
     }
-  }, []);
+  }, [isClient]);
 
   // Save all answers
   const saveAllAnswers = () => {
@@ -557,7 +566,7 @@ export default function Lesson48EatingOut() {
             </button>
           </div>
           
-          {expandedSections.listenAndNumber && (
+          {expandedSections.listenAndNumber && isClient && (
             <div className="p-8">
               <p className="text-gray-600 mb-6 text-center">🎵 Clique no player abaixo para ouvir o áudio. Depois, numere as imagens de acordo com a ordem em que você ouviu.</p>
               
@@ -608,7 +617,9 @@ export default function Lesson48EatingOut() {
                   <div key={item.key} className="bg-white rounded-xl border-2 border-blue-200 overflow-hidden shadow-sm">
                     <div className="h-48 bg-gray-100 flex items-center justify-center relative">
                       <div className="text-center p-4">
-                        <span className="text-6xl">{item.placeholder}</span>
+                        <span className="text-6xl" role="img" aria-label={item.description}>
+                          {item.placeholder}
+                        </span>
                         <p className="text-sm text-gray-500 mt-2">{item.label}</p>
                       </div>
                     </div>

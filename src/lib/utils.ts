@@ -330,10 +330,18 @@ export function groupBy<T>(array: T[], key: keyof T): Record<string, T[]> {
 }
 
 /**
- * Remove duplicatas de um array
+ * Remove duplicatas de um array (CORRIGIDO)
  */
 export function uniqueArray<T>(array: T[]): T[] {
-  return [...new Set(array)];
+  const result: T[] = [];
+  const seen = new Set<T>();
+  for (const item of array) {
+    if (!seen.has(item)) {
+      seen.add(item);
+      result.push(item);
+    }
+  }
+  return result;
 }
 
 /**
@@ -465,9 +473,9 @@ export function throttle<T extends (...args: any[]) => any>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
-  let inThrottle: boolean;
+  let inThrottle: boolean = false;
   let lastFunc: NodeJS.Timeout;
-  let lastRan: number;
+  let lastRan: number = 0;
 
   return function executedFunction(...args: Parameters<T>) {
     if (!inThrottle) {

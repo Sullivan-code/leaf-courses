@@ -123,7 +123,7 @@ export default async function MeusCursos() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-lg border-red-300 text-red-700 hover:bg-red-50">
-                <Link href="/ver-todas-frances">
+                <Link href="/ver-todas-fr">
                   Ver Todas as Lições
                 </Link>
               </Button>

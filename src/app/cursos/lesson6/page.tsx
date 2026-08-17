@@ -144,6 +144,8 @@ interface PracticeItem {
   isNegative?: boolean;
   isInterrogative?: boolean;
   usesThirdPerson?: boolean;
+  baseWord?: string;
+  isSubstituted?: boolean;
 }
 
 interface NumberingAnswer {
@@ -164,13 +166,119 @@ interface Dialogue {
   fixed: boolean;
 }
 
+// Dados para substituição interativa
+const substitutionData = [
+  // Substitution Practice I
+  { 
+    id: 1, 
+    sentence: "I prefer to eat cookies. And you?",
+    baseWord: "cookies",
+    correctAnswer: "crackers",
+    wrongOption: "soda"
+  },
+  { 
+    id: 2, 
+    sentence: "I like to eat toast with jam.",
+    baseWord: "jam",
+    correctAnswer: "butter",
+    wrongOption: "pancakes"
+  },
+  { 
+    id: 3, 
+    sentence: "I prefer to drink soda.",
+    baseWord: "soda",
+    correctAnswer: "orange juice",
+    wrongOption: "apple pie"
+  },
+  { 
+    id: 4, 
+    sentence: "I love to eat French fries for lunch.",
+    baseWord: "French fries",
+    correctAnswer: "vegetables",
+    wrongOption: "yogurt"
+  },
+  { 
+    id: 5, 
+    sentence: "I want to drink a cup of tea.",
+    baseWord: "tea",
+    correctAnswer: "coffee",
+    wrongOption: "yogurt"
+  },
+  // Substitution Practice II
+  { 
+    id: 12, 
+    sentence: "Do you drink coffee?",
+    baseWord: "coffee",
+    correctAnswer: "juice",
+    wrongOption: "tea"
+  },
+  { 
+    id: 13, 
+    sentence: "Do you eat bread?",
+    baseWord: "bread",
+    correctAnswer: "rice",
+    wrongOption: "pasta"
+  },
+  { 
+    id: 14, 
+    sentence: "Do you like eggs?",
+    baseWord: "eggs",
+    correctAnswer: "yogurt",
+    wrongOption: "soup"
+  },
+  { 
+    id: 15, 
+    sentence: "Do you prefer pizza?",
+    baseWord: "pizza",
+    correctAnswer: "spaghetti",
+    wrongOption: "burger"
+  },
+  // Substitution Practice III (He/She)
+  { 
+    id: 16, 
+    sentence: "She drinks coffee for breakfast.",
+    baseWord: "coffee",
+    correctAnswer: "tea",
+    wrongOption: "milk"
+  },
+  { 
+    id: 17, 
+    sentence: "He eats bread with butter.",
+    baseWord: "butter",
+    correctAnswer: "jam",
+    wrongOption: "honey"
+  },
+  { 
+    id: 18, 
+    sentence: "She likes to eat pizza.",
+    baseWord: "pizza",
+    correctAnswer: "pasta",
+    wrongOption: "salad"
+  },
+  { 
+    id: 19, 
+    sentence: "He wants to drink soda.",
+    baseWord: "soda",
+    correctAnswer: "water",
+    wrongOption: "juice"
+  },
+  { 
+    id: 20, 
+    sentence: "She prefers sweet cookies.",
+    baseWord: "sweet cookies",
+    correctAnswer: "savory cookies",
+    wrongOption: "cake"
+  }
+];
+
 export default function Lesson6FoodDrink() {
   const router = useRouter();
   const [showSaveNotification, setShowSaveNotification] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   
-  // Estado inicial completo
+  const [substitutionStates, setSubstitutionStates] = useState<Record<number, { isSubstituted: boolean, currentWord: string }>>({});
+  
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [dialogues, setDialogues] = useState<Dialogue[]>([
     { speaker: "Customer", text: "", fixed: false },
@@ -190,11 +298,11 @@ export default function Lesson6FoodDrink() {
  
   const [practiceItems, setPracticeItems] = useState<PracticeItem[]>([
     // Substitution Practice I
-    { id: 1, sentence: "I prefer to eat cookies. And you?", options: ["crackers", "soda"], correctAnswer: "crackers", userAnswer: "" },
-    { id: 2, sentence: "I like to eat toast with jam.", options: ["butter", "pancakes"], correctAnswer: "butter", userAnswer: "" },
-    { id: 3, sentence: "I prefer to drink soda.", options: ["orange juice", "apple pie"], correctAnswer: "orange juice", userAnswer: "" },
-    { id: 4, sentence: "I love to eat French fries for lunch.", options: ["yogurt", "vegetables"], correctAnswer: "vegetables", userAnswer: "" },
-    { id: 5, sentence: "I want to drink a cup of tea.", options: ["coffee", "yogurt"], correctAnswer: "coffee", userAnswer: "" },
+    { id: 1, sentence: "I prefer to eat cookies. And you?", options: ["crackers", "soda"], correctAnswer: "crackers", userAnswer: "", baseWord: "cookies", isSubstituted: false },
+    { id: 2, sentence: "I like to eat toast with jam.", options: ["butter", "pancakes"], correctAnswer: "butter", userAnswer: "", baseWord: "jam", isSubstituted: false },
+    { id: 3, sentence: "I prefer to drink soda.", options: ["orange juice", "apple pie"], correctAnswer: "orange juice", userAnswer: "", baseWord: "soda", isSubstituted: false },
+    { id: 4, sentence: "I love to eat French fries for lunch.", options: ["yogurt", "vegetables"], correctAnswer: "vegetables", userAnswer: "", baseWord: "French fries", isSubstituted: false },
+    { id: 5, sentence: "I want to drink a cup of tea.", options: ["coffee", "yogurt"], correctAnswer: "coffee", userAnswer: "", baseWord: "tea", isSubstituted: false },
    
     // Change into Negative
     { id: 6, sentence: "I want to eat crackers and jam.", options: [], correctAnswer: "I don't want to eat crackers and jam.", userAnswer: "", isNegative: true },
@@ -205,17 +313,17 @@ export default function Lesson6FoodDrink() {
     { id: 11, sentence: "I want to drink a glass of water.", options: [], correctAnswer: "I don't want to drink a glass of water.", userAnswer: "", isNegative: true },
    
     // Substitution Practice II
-    { id: 12, sentence: "Do you drink coffee?", options: ["juice", "tea", "milk", "coke"], correctAnswer: "juice", userAnswer: "" },
-    { id: 13, sentence: "Do you eat bread?", options: ["rice", "pasta", "pancakes"], correctAnswer: "rice", userAnswer: "" },
-    { id: 14, sentence: "Do you like eggs?", options: ["yogurt", "soup", "salad"], correctAnswer: "yogurt", userAnswer: "" },
-    { id: 15, sentence: "Do you prefer pizza?", options: ["spaghetti", "burger", "hotdog", "soup"], correctAnswer: "spaghetti", userAnswer: "" },
+    { id: 12, sentence: "Do you drink coffee?", options: ["juice", "tea", "milk", "coke"], correctAnswer: "juice", userAnswer: "", baseWord: "coffee", isSubstituted: false },
+    { id: 13, sentence: "Do you eat bread?", options: ["rice", "pasta", "pancakes"], correctAnswer: "rice", userAnswer: "", baseWord: "bread", isSubstituted: false },
+    { id: 14, sentence: "Do you like eggs?", options: ["yogurt", "soup", "salad"], correctAnswer: "yogurt", userAnswer: "", baseWord: "eggs", isSubstituted: false },
+    { id: 15, sentence: "Do you prefer pizza?", options: ["spaghetti", "burger", "hotdog", "soup"], correctAnswer: "spaghetti", userAnswer: "", baseWord: "pizza", isSubstituted: false },
    
     // Substitution Practice III - Third Person
-    { id: 16, sentence: "She drinks coffee for breakfast.", options: ["tea", "milk", "juice"], correctAnswer: "tea", userAnswer: "", usesThirdPerson: true },
-    { id: 17, sentence: "He eats bread with butter.", options: ["jam", "honey", "cheese"], correctAnswer: "jam", userAnswer: "", usesThirdPerson: true },
-    { id: 18, sentence: "She likes to eat pizza.", options: ["pasta", "salad", "soup"], correctAnswer: "pasta", userAnswer: "", usesThirdPerson: true },
-    { id: 19, sentence: "He wants to drink soda.", options: ["water", "juice", "coffee"], correctAnswer: "water", userAnswer: "", usesThirdPerson: true },
-    { id: 20, sentence: "She prefers sweet cookies.", options: ["savory cookies", "cake", "pie"], correctAnswer: "savory cookies", userAnswer: "", usesThirdPerson: true },
+    { id: 16, sentence: "She drinks coffee for breakfast.", options: ["tea", "milk", "juice"], correctAnswer: "tea", userAnswer: "", usesThirdPerson: true, baseWord: "coffee", isSubstituted: false },
+    { id: 17, sentence: "He eats bread with butter.", options: ["jam", "honey", "cheese"], correctAnswer: "jam", userAnswer: "", usesThirdPerson: true, baseWord: "butter", isSubstituted: false },
+    { id: 18, sentence: "She likes to eat pizza.", options: ["pasta", "salad", "soup"], correctAnswer: "pasta", userAnswer: "", usesThirdPerson: true, baseWord: "pizza", isSubstituted: false },
+    { id: 19, sentence: "He wants to drink soda.", options: ["water", "juice", "coffee"], correctAnswer: "water", userAnswer: "", usesThirdPerson: true, baseWord: "soda", isSubstituted: false },
+    { id: 20, sentence: "She prefers sweet cookies.", options: ["savory cookies", "cake", "pie"], correctAnswer: "savory cookies", userAnswer: "", usesThirdPerson: true, baseWord: "sweet cookies", isSubstituted: false },
    
     // Change into Affirmative
     { id: 21, sentence: "I don't like to eat rice.", options: [], correctAnswer: "I like to eat rice.", userAnswer: "" },
@@ -263,7 +371,6 @@ export default function Lesson6FoodDrink() {
     { id: 8, question: "What do you prefer to eat for lunch?", userAnswer: "" },
     { id: 9, question: "What do you want to eat for dinner?", userAnswer: "" },
     { id: 10, question: "What do you prefer: French fries or vegetables?", userAnswer: "" },
-    // Third Person Questions
     { id: 11, question: "Does she drink coffee?", userAnswer: "" },
     { id: 12, question: "Does he eat beef?", userAnswer: "" },
     { id: 13, question: "Does she love chocolate?", userAnswer: "" },
@@ -361,7 +468,112 @@ export default function Lesson6FoodDrink() {
 
   const [lastSaved, setLastSaved] = useState<string | null>(null);
 
-  // Função para salvar todos os dados - SEM Auto-save
+  // Função para substituir a palavra na frase (Substitution Practice I - com verificação)
+  const handleSubstitutionClick = (id: number, option: string, baseWord: string, correctAnswer: string) => {
+    const isCorrect = option === correctAnswer;
+    
+    setSubstitutionStates(prev => {
+      const current = prev[id];
+      const isCurrentlySubstituted = current?.isSubstituted || false;
+      
+      if (isCurrentlySubstituted && current?.currentWord === option) {
+        return {
+          ...prev,
+          [id]: {
+            isSubstituted: false,
+            currentWord: baseWord
+          }
+        };
+      }
+      
+      if (isCorrect) {
+        return {
+          ...prev,
+          [id]: {
+            isSubstituted: true,
+            currentWord: option
+          }
+        };
+      }
+      
+      alert(`❌ "${option}" não é a opção correta. Tente novamente!`);
+      return prev;
+    });
+    
+    setPracticeItems(prevItems => 
+      prevItems.map(item => 
+        item.id === id 
+          ? { ...item, userAnswer: isCorrect ? option : item.userAnswer }
+          : item
+      )
+    );
+  };
+
+  // Função para substituir a palavra na frase (Substitution Practice II e III - todas as opções são válidas)
+  const handleSubstitutionClickAll = (id: number, option: string, baseWord: string) => {
+    setSubstitutionStates(prev => {
+      const current = prev[id];
+      const isCurrentlySubstituted = current?.isSubstituted || false;
+      
+      if (isCurrentlySubstituted && current?.currentWord === option) {
+        return {
+          ...prev,
+          [id]: {
+            isSubstituted: false,
+            currentWord: baseWord
+          }
+        };
+      }
+      
+      return {
+        ...prev,
+        [id]: {
+          isSubstituted: true,
+          currentWord: option
+        }
+      };
+    });
+    
+    setPracticeItems(prevItems => 
+      prevItems.map(item => 
+        item.id === id 
+          ? { ...item, userAnswer: option }
+          : item
+      )
+    );
+  };
+
+  // Função para renderizar a frase com a palavra substituída
+  const renderSubstitutedSentence = (sentence: string, baseWord: string, id: number) => {
+    const state = substitutionStates[id];
+    const currentWord = state?.isSubstituted ? state.currentWord : baseWord;
+    
+    const parts = sentence.split(baseWord);
+    
+    if (parts.length === 2) {
+      return (
+        <span>
+          {parts[0]}
+          <span 
+            className={`inline-block px-2 py-1 mx-1 rounded-md font-bold transition-all duration-200 ${
+              state?.isSubstituted 
+                ? 'bg-green-500 text-white' 
+                : 'bg-blue-100 text-blue-700'
+            }`}
+          >
+            {currentWord}
+            {state?.isSubstituted && (
+              <span className="ml-1 text-xs">✓</span>
+            )}
+          </span>
+          {parts[1]}
+        </span>
+      );
+    }
+    
+    return <span>{sentence}</span>;
+  };
+
   const saveAllData = () => {
     try {
       const lessonData = {
@@ -372,6 +584,7 @@ export default function Lesson6FoodDrink() {
         questions,
         videoQuestions,
         sections,
+        substitutionStates,
         lastSaved: new Date().toLocaleString()
       };
       
@@ -380,8 +593,6 @@ export default function Lesson6FoodDrink() {
       setSaveMessage("✅ Progresso salvo com sucesso!");
       setShowSaveNotification(true);
       setTimeout(() => setShowSaveNotification(false), 3000);
-      
-      console.log("Dados salvos:", lessonData);
     } catch (error) {
       console.error("Erro ao salvar:", error);
       setSaveMessage("❌ Erro ao salvar progresso");
@@ -390,7 +601,6 @@ export default function Lesson6FoodDrink() {
     }
   };
 
-  // Função para carregar todos os dados
   const loadAllData = () => {
     try {
       setIsLoading(true);
@@ -402,19 +612,22 @@ export default function Lesson6FoodDrink() {
         setDialogues(parsedData.dialogues || dialogues);
         setNumberingAnswers(parsedData.numberingAnswers || numberingAnswers);
         
-        // Carregar practice items
+        if (parsedData.substitutionStates) {
+          setSubstitutionStates(parsedData.substitutionStates);
+        }
+        
         if (parsedData.practiceItems) {
           const mergedPracticeItems = practiceItems.map(item => {
             const loadedItem = parsedData.practiceItems.find((li: PracticeItem) => li.id === item.id);
             return {
               ...item,
-              userAnswer: loadedItem?.userAnswer || ""
+              userAnswer: loadedItem?.userAnswer || "",
+              isSubstituted: loadedItem?.isSubstituted || false
             };
           });
           setPracticeItems(mergedPracticeItems);
         }
         
-        // Carregar questions
         if (parsedData.questions) {
           const mergedQuestions = questions.map(q => {
             const loadedQ = parsedData.questions.find((lq: any) => lq.id === q.id);
@@ -426,7 +639,6 @@ export default function Lesson6FoodDrink() {
           setQuestions(mergedQuestions);
         }
         
-        // Carregar video questions
         if (parsedData.videoQuestions) {
           const mergedVideoQuestions = videoQuestions.map(vq => {
             const loadedVQ = parsedData.videoQuestions.find((lvq: VideoQuestion) => lvq.id === vq.id);
@@ -444,8 +656,6 @@ export default function Lesson6FoodDrink() {
         setSaveMessage("✅ Progresso carregado com sucesso!");
         setShowSaveNotification(true);
         setTimeout(() => setShowSaveNotification(false), 3000);
-        
-        console.log("Dados carregados:", parsedData);
       }
       setIsLoading(false);
     } catch (error) {
@@ -457,12 +667,10 @@ export default function Lesson6FoodDrink() {
     }
   };
 
-  // Função para limpar todos os dados
   const clearAllData = () => {
     if (window.confirm("Tem certeza que deseja limpar todo o progresso?")) {
       localStorage.removeItem('lesson6FoodDrink');
       
-      // Resetar todos os estados
       setNotes({});
       setDialogues([
         { speaker: "Customer", text: "", fixed: false },
@@ -473,14 +681,10 @@ export default function Lesson6FoodDrink() {
       setNumberingAnswers({ dish1: null, dish2: null, dish3: null });
       setIsNumberingChecked(false);
       setIsNumberingCorrect(false);
+      setSubstitutionStates({});
       
-      // Reset practice items
-      setPracticeItems(prev => prev.map(item => ({ ...item, userAnswer: "" })));
-      
-      // Reset questions
+      setPracticeItems(prev => prev.map(item => ({ ...item, userAnswer: "", isSubstituted: false })));
       setQuestions(prev => prev.map(q => ({ ...q, userAnswer: "" })));
-      
-      // Reset video questions
       setVideoQuestions(prev => prev.map(vq => ({ ...vq, userAnswer: "" })));
       
       setLastSaved(null);
@@ -491,10 +695,9 @@ export default function Lesson6FoodDrink() {
     }
   };
 
-  // Carregar dados apenas uma vez ao iniciar
   useEffect(() => {
     loadAllData();
-  }, []); // Array vazio = executa apenas uma vez
+  }, []);
 
   const toggleSection = (section: keyof typeof sections) => {
     setSections(prev => ({
@@ -515,7 +718,6 @@ export default function Lesson6FoodDrink() {
     });
   };
 
-  // Função para adicionar nova linha de diálogo
   const addDialogue = () => {
     setDialogues(prev => [
       ...prev,
@@ -523,7 +725,6 @@ export default function Lesson6FoodDrink() {
     ]);
   };
 
-  // Função para remover linha de diálogo
   const removeDialogue = (index: number) => {
     if (dialogues.length <= 1) {
       alert("Mantenha pelo menos uma linha de diálogo.");
@@ -626,7 +827,6 @@ export default function Lesson6FoodDrink() {
 
   return (
     <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/l5-orange-juice.jpg')` }}>
-      {/* Notificação de salvamento */}
       {showSaveNotification && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
           {saveMessage}
@@ -635,7 +835,7 @@ export default function Lesson6FoodDrink() {
 
       <div className="max-w-6xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         {/* Barra de controle de progresso */}
-        <div className="mb-8 flex justify-between items-center bg-gray-100 p-4 rounded-xl">
+        <div className="mb-8 flex justify-between items-center bg-gray-100 p-4 rounded-xl flex-wrap gap-2">
           <div className="flex items-center gap-4">
             <h3 className="font-semibold text-gray-700">💾 Progresso:</h3>
             {lastSaved ? (
@@ -644,7 +844,7 @@ export default function Lesson6FoodDrink() {
               <span className="text-sm text-gray-600">Nenhum progresso salvo</span>
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={saveAllData}
               className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
@@ -721,7 +921,7 @@ export default function Lesson6FoodDrink() {
               {/* Numbering Exercise */}
               <div className="mb-8 flex justify-center">
                 <div className="max-w-4xl w-full">
-                  <div className="flex justify-between items-center mb-4">
+                  <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
                     <h3 className="text-lg font-bold text-blue-700">Numere as imagens na ordem correta:</h3>
                     <div className="flex gap-2">
                       <button
@@ -879,38 +1079,55 @@ export default function Lesson6FoodDrink() {
 
           {sections.drilling && (
             <div className="p-8">
-              {/* Substitution Practice I */}
+              {/* Substitution Practice I - com verificação */}
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-green-700 mb-4">👉 Substitution Practice I</h3>
-                <p className="text-green-600 mb-4 italic">Repita trocando a última palavra pela opção correta.</p>
+                <p className="text-green-600 mb-4 italic">Clique nas opções abaixo para substituir a palavra destacada na frase.</p>
                 <div className="space-y-4">
-                  {practiceItems.slice(0, 5).map((item) => (
-                    <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
-                      <p className="font-medium text-gray-700 mb-2">{item.sentence}</p>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {item.options.map((option, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => handlePracticeAnswer(item.id, option)}
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              item.userAnswer === option
-                                ? 'bg-green-500 text-white'
-                                : 'bg-green-100 text-green-700 hover:bg-green-200'
-                            }`}
-                          >
-                            {option}
-                          </button>
-                        ))}
-                      </div>
-                      {item.userAnswer && (
-                        <div className={`text-sm ${
-                          item.userAnswer === item.correctAnswer ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                          {item.userAnswer === item.correctAnswer ? '✅ Correto!' : '❌ Tente novamente'}
+                  {practiceItems.slice(0, 5).map((item) => {
+                    const data = substitutionData.find(d => d.id === item.id);
+                    if (!data) return null;
+                    
+                    return (
+                      <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
+                        <p className="font-medium text-gray-700 mb-3">
+                          {renderSubstitutedSentence(item.sentence, data.baseWord, item.id)}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {item.options.map((option, idx) => {
+                            const isSelected = substitutionStates[item.id]?.isSubstituted && 
+                                              substitutionStates[item.id]?.currentWord === option;
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => handleSubstitutionClick(
+                                  item.id, 
+                                  option, 
+                                  data.baseWord, 
+                                  data.correctAnswer
+                                )}
+                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                                  isSelected
+                                    ? 'bg-green-500 text-white scale-105 shadow-md'
+                                    : option === data.correctAnswer
+                                    ? 'bg-green-100 text-green-700 hover:bg-green-200 hover:scale-105'
+                                    : 'bg-red-100 text-red-700 hover:bg-red-200 hover:scale-105'
+                                }`}
+                              >
+                                {option}
+                                {isSelected && ' ✓'}
+                              </button>
+                            );
+                          })}
                         </div>
-                      )}
-                    </div>
-                  ))}
+                        {substitutionStates[item.id]?.isSubstituted && (
+                          <div className="mt-3 text-sm text-green-600">
+                            ✅ Substituição correta! "{data.baseWord}" → "{data.correctAnswer}"
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -946,59 +1163,101 @@ export default function Lesson6FoodDrink() {
                 </div>
               </div>
 
-              {/* Substitution Practice II */}
+              {/* Substitution Practice II - todas as opções são válidas */}
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-green-700 mb-4">👉 Substitution Practice II</h3>
-                <p className="text-green-600 mb-4 italic">Repita substituindo pelas palavras entre parênteses.</p>
+                <p className="text-green-600 mb-4 italic">Clique nas opções abaixo para substituir a palavra destacada na frase.</p>
                 <div className="space-y-4">
-                  {practiceItems.slice(11, 15).map((item) => (
-                    <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
-                      <p className="font-medium text-gray-700 mb-2">{item.sentence}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {item.options.map((option, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => handlePracticeAnswer(item.id, option)}
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              item.userAnswer === option
-                                ? 'bg-green-500 text-white'
-                                : 'bg-green-100 text-green-700 hover:bg-green-200'
-                            }`}
-                          >
-                            {option}
-                          </button>
-                        ))}
+                  {practiceItems.slice(11, 15).map((item) => {
+                    const data = substitutionData.find(d => d.id === item.id);
+                    if (!data) return null;
+                    
+                    return (
+                      <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
+                        <p className="font-medium text-gray-700 mb-3">
+                          {renderSubstitutedSentence(item.sentence, data.baseWord, item.id)}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {item.options.map((option, idx) => {
+                            const isSelected = substitutionStates[item.id]?.isSubstituted && 
+                                              substitutionStates[item.id]?.currentWord === option;
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => handleSubstitutionClickAll(
+                                  item.id, 
+                                  option, 
+                                  data.baseWord
+                                )}
+                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                                  isSelected
+                                    ? 'bg-green-500 text-white scale-105 shadow-md'
+                                    : 'bg-green-100 text-green-700 hover:bg-green-200 hover:scale-105'
+                                }`}
+                              >
+                                {option}
+                                {isSelected && ' ✓'}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {substitutionStates[item.id]?.isSubstituted && (
+                          <div className="mt-3 text-sm text-green-600">
+                            ✅ Substituição: "{data.baseWord}" → "{substitutionStates[item.id]?.currentWord}"
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Substitution Practice III - Third Person */}
+              {/* Substitution Practice III - Third Person - todas as opções são válidas */}
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-green-700 mb-4">👉 Substitution Practice III (He/She)</h3>
-                <p className="text-green-600 mb-4 italic">Repita substituindo pelas palavras entre parênteses usando he/she.</p>
+                <p className="text-green-600 mb-4 italic">Clique nas opções abaixo para substituir a palavra destacada na frase.</p>
                 <div className="space-y-4">
-                  {practiceItems.slice(15, 20).map((item) => (
-                    <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
-                      <p className="font-medium text-gray-700 mb-2">{item.sentence}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {item.options.map((option, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => handlePracticeAnswer(item.id, option)}
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              item.userAnswer === option
-                                ? 'bg-green-500 text-white'
-                                : 'bg-green-100 text-green-700 hover:bg-green-200'
-                            }`}
-                          >
-                            {option}
-                          </button>
-                        ))}
+                  {practiceItems.slice(15, 20).map((item) => {
+                    const data = substitutionData.find(d => d.id === item.id);
+                    if (!data) return null;
+                    
+                    return (
+                      <div key={item.id} className="bg-white p-4 rounded-lg border border-green-200">
+                        <p className="font-medium text-gray-700 mb-3">
+                          {renderSubstitutedSentence(item.sentence, data.baseWord, item.id)}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {item.options.map((option, idx) => {
+                            const isSelected = substitutionStates[item.id]?.isSubstituted && 
+                                              substitutionStates[item.id]?.currentWord === option;
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => handleSubstitutionClickAll(
+                                  item.id, 
+                                  option, 
+                                  data.baseWord
+                                )}
+                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                                  isSelected
+                                    ? 'bg-green-500 text-white scale-105 shadow-md'
+                                    : 'bg-green-100 text-green-700 hover:bg-green-200 hover:scale-105'
+                                }`}
+                              >
+                                {option}
+                                {isSelected && ' ✓'}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {substitutionStates[item.id]?.isSubstituted && (
+                          <div className="mt-3 text-sm text-green-600">
+                            ✅ Substituição: "{data.baseWord}" → "{substitutionStates[item.id]?.currentWord}"
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1016,6 +1275,19 @@ export default function Lesson6FoodDrink() {
                         placeholder="Escreva a frase afirmativa..."
                         className="w-full p-2 border border-green-300 rounded-md resize-none h-12"
                       />
+                      {item.userAnswer && (
+                        <div className="mt-2">
+                          <button
+                            onClick={() => {
+                              const isCorrect = item.userAnswer.toLowerCase().trim() === item.correctAnswer.toLowerCase().trim();
+                              alert(isCorrect ? '✅ Correto!' : `❌ Resposta correta: ${item.correctAnswer}`);
+                            }}
+                            className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                          >
+                            Verificar
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1035,6 +1307,19 @@ export default function Lesson6FoodDrink() {
                         placeholder="Escreva a frase afirmativa..."
                         className="w-full p-2 border border-green-300 rounded-md resize-none h-12"
                       />
+                      {item.userAnswer && (
+                        <div className="mt-2">
+                          <button
+                            onClick={() => {
+                              const isCorrect = item.userAnswer.toLowerCase().trim() === item.correctAnswer.toLowerCase().trim();
+                              alert(isCorrect ? '✅ Correto!' : `❌ Resposta correta: ${item.correctAnswer}`);
+                            }}
+                            className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                          >
+                            Verificar
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1054,6 +1339,19 @@ export default function Lesson6FoodDrink() {
                         placeholder="Escreva a pergunta..."
                         className="w-full p-2 border border-green-300 rounded-md resize-none h-12"
                       />
+                      {item.userAnswer && (
+                        <div className="mt-2">
+                          <button
+                            onClick={() => {
+                              const isCorrect = item.userAnswer.toLowerCase().trim() === item.correctAnswer.toLowerCase().trim();
+                              alert(isCorrect ? '✅ Correto!' : `❌ Resposta correta: ${item.correctAnswer}`);
+                            }}
+                            className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                          >
+                            Verificar
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1073,6 +1371,19 @@ export default function Lesson6FoodDrink() {
                         placeholder="Escreva a pergunta..."
                         className="w-full p-2 border border-green-300 rounded-md resize-none h-12"
                       />
+                      {item.userAnswer && (
+                        <div className="mt-2">
+                          <button
+                            onClick={() => {
+                              const isCorrect = item.userAnswer.toLowerCase().trim() === item.correctAnswer.toLowerCase().trim();
+                              alert(isCorrect ? '✅ Correto!' : `❌ Resposta correta: ${item.correctAnswer}`);
+                            }}
+                            className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                          >
+                            Verificar
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1092,6 +1403,19 @@ export default function Lesson6FoodDrink() {
                         placeholder="Escreva a frase negativa..."
                         className="w-full p-2 border border-green-300 rounded-md resize-none h-12"
                       />
+                      {item.userAnswer && (
+                        <div className="mt-2">
+                          <button
+                            onClick={() => {
+                              const isCorrect = item.userAnswer.toLowerCase().trim() === item.correctAnswer.toLowerCase().trim();
+                              alert(isCorrect ? '✅ Correto!' : `❌ Resposta correta: ${item.correctAnswer}`);
+                            }}
+                            className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                          >
+                            Verificar
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1170,7 +1494,6 @@ export default function Lesson6FoodDrink() {
                   Watch the video and answer the questions below:
                 </h3>
                
-                {/* Container do vídeo do YouTube */}
                 <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
                   <div className="aspect-w-16 aspect-h-9">
                     <iframe
@@ -1321,7 +1644,6 @@ export default function Lesson6FoodDrink() {
                 ))}
               </div>
 
-              {/* Learning Tips */}
               <div className="mt-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-teal-800 mb-4">💡 Tips for Better Listening:</h3>
                 <ul className="list-disc pl-5 space-y-2 text-teal-700 text-sm">
@@ -1337,7 +1659,7 @@ export default function Lesson6FoodDrink() {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between gap-4 mt-8">
+        <div className="flex justify-between gap-4 mt-8 flex-wrap">
           <button
             onClick={() => {
               router.push("/cursos/lesson5");
@@ -1363,7 +1685,6 @@ export default function Lesson6FoodDrink() {
           </button>
         </div>
 
-        {/* Indicador de último save */}
         <div className="mt-4 text-center text-sm text-gray-500">
           <p>{lastSaved ? `📅 Último save: ${lastSaved}` : '💾 Clique em "Salvar Progresso" para guardar suas respostas'}</p>
         </div>

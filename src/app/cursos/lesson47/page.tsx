@@ -103,9 +103,9 @@ const SpeakableText = ({ text, className = "", children }: SpeakableTextProps) =
 
 function CheckItOutHorizontal() {
   return (
-    <div className="w-full mx-auto border-2 border-blue-600 rounded-lg overflow-hidden shadow-lg">
-      {/* HEADER */}
-      <div className="flex items-center justify-between px-6 py-3 bg-blue-600 text-white border-b-2 border-blue-800">
+    <div className="w-full mx-auto border-2 border-blue-200 rounded-lg overflow-hidden shadow-lg">
+      {/* HEADER - agora com gradiente azul-roxo */}
+      <div className="flex items-center justify-between px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-b-2 border-blue-300">
         <h2 className="text-xl font-bold tracking-widest">
           🔍 WRAP UP! - IDIOMATIC EXPRESSIONS
         </h2>
@@ -116,9 +116,9 @@ function CheckItOutHorizontal() {
         </div>
       </div>
 
-      {/* CONTENT */}
+      {/* CONTENT - cores das colunas ajustadas para manter harmonia */}
       <div className="grid grid-cols-1 md:grid-cols-3 text-sm">
-        {/* COLUMN 1 - To turn a blind eye */}
+        {/* COLUMN 1 */}
         <div className="bg-blue-50 p-6 space-y-3">
           <p className="font-bold text-blue-800 text-base">
             <SpeakableText text="To turn a blind eye" className="text-blue-800 hover:text-blue-600" />
@@ -135,7 +135,7 @@ function CheckItOutHorizontal() {
           <p className="text-gray-600 text-sm">📌 Às vezes os pais fingem não ver os erros dos filhos.</p>
         </div>
 
-        {/* COLUMN 2 - To bite the bullet */}
+        {/* COLUMN 2 */}
         <div className="bg-blue-100 p-6 space-y-3">
           <p className="font-bold text-blue-800 text-base">
             <SpeakableText text="To bite the bullet" className="text-blue-800 hover:text-blue-600" />
@@ -152,7 +152,7 @@ function CheckItOutHorizontal() {
           <p className="text-gray-600 text-sm">📌 Ele criou coragem e se desculpou pelo erro dele.</p>
         </div>
 
-        {/* COLUMN 3 - To bind watch */}
+        {/* COLUMN 3 */}
         <div className="bg-blue-200 p-6 space-y-3">
           <p className="font-bold text-blue-800 text-base">
             <SpeakableText text="To bind watch" className="text-blue-800 hover:text-blue-600" />
@@ -182,6 +182,7 @@ export default function Lesson47() {
     grammar: false,
     realLife: false,
   });
+  const [showGrammarExplanation, setShowGrammarExplanation] = useState(false);
 
   // Load voices on component mount
   useEffect(() => {
@@ -211,9 +212,9 @@ export default function Lesson47() {
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
+      <div className="max-w-5xl mx-auto bg-[#f0f8ff] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         
-        {/* Hero Image - Person ordering food delivery */}
+        {/* Hero Image */}
         <div className="mb-8 rounded-2xl overflow-hidden shadow-xl">
           <div className="relative w-full h-64 md:h-96">
             <Image
@@ -254,15 +255,15 @@ export default function Lesson47() {
         </div>
 
         {/* Seção 1 - Verbs */}
-        <div className="bg-white border-2 border-blue-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">1️⃣ VERBS</h2>
               <p className="mt-2 text-blue-100 italic">Clique nas palavras em inglês para ouvir a pronúncia</p>
             </div>
             <button 
               onClick={() => toggleDrill('verbs')}
-              className="text-sm bg-blue-800 hover:bg-blue-900 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.verbs ? 'Ocultar Prática' : 'Mostrar Prática'}
             </button>
@@ -288,7 +289,7 @@ export default function Lesson47() {
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <p className="text-lg font-medium text-blue-800 mb-4">🔁 PRÁTICA – VERBS</p>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I call." className="text-blue-600 font-medium hover:text-blue-800" />
                   <p className="text-gray-600 text-sm mt-1">Eu chamo.</p>
                   <SpeakableText text="They call." className="text-blue-600 font-medium hover:text-blue-800 mt-2 block" />
@@ -297,21 +298,21 @@ export default function Lesson47() {
                   <p className="text-gray-600 text-sm mt-1">Nós chamamos.</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-blue-600 font-medium">
                     <SpeakableText text="She doesn't call." className="text-blue-600 hover:text-blue-800" /> / <SpeakableText text="He doesn't call." className="text-blue-600 hover:text-blue-800" /> / <SpeakableText text="I don't call." className="text-blue-600 hover:text-blue-800" />
                   </p>
                   <p className="text-gray-600 text-sm mt-1">Ela não liga. / Ele não liga. / Eu não ligo.</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-blue-600 font-medium">
                     <SpeakableText text="Do you call?" className="text-blue-600 hover:text-blue-800" /> / <SpeakableText text="Do you want to call?" className="text-blue-600 hover:text-blue-800" /> / <SpeakableText text="need to" className="text-blue-600 hover:text-blue-800" />
                   </p>
                   <p className="text-gray-600 text-sm mt-1">Você liga? / Você quer ligar? / precisa</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I need to call my father." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu preciso ligar para meu pai.</p>
                   <SpeakableText text="I need to call the manager." className="text-blue-600 font-medium hover:text-blue-800 mt-2 block" />
@@ -320,13 +321,13 @@ export default function Lesson47() {
                   <p className="text-gray-600 text-sm mt-1">chefe</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="Do you want to call your friend?" className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Você quer chamar seu amigo?</p>
                   <p className="text-gray-600 text-sm mt-1">colega de trabalho / colega de classe</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I wait." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu espero.</p>
                   <SpeakableText text="They wait." className="text-blue-600 font-medium hover:text-blue-800 mt-2 block" />
@@ -335,21 +336,21 @@ export default function Lesson47() {
                   <p className="text-gray-600 text-sm mt-1">Ela espera.</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-blue-600 font-medium">
                     <SpeakableText text="I don't wait." className="text-blue-600 hover:text-blue-800" /> / <SpeakableText text="We" className="text-blue-600 hover:text-blue-800" /> / <SpeakableText text="You all" className="text-blue-600 hover:text-blue-800" />
                   </p>
                   <p className="text-gray-600 text-sm mt-1">Eu não espero. / Nós / Vocês</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-blue-600 font-medium">
                     <SpeakableText text="Do you wait?" className="text-blue-600 hover:text-blue-800" /> / <SpeakableText text="Does he" className="text-blue-600 hover:text-blue-800" /> / <SpeakableText text="Does she" className="text-blue-600 hover:text-blue-800" />
                   </p>
                   <p className="text-gray-600 text-sm mt-1">Vocês esperam? / Ele / Ela</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="Wait for me!" className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Espere por mim!</p>
                   <SpeakableText text="Wait for the students." className="text-blue-600 font-medium hover:text-blue-800 mt-2 block" />
@@ -358,13 +359,13 @@ export default function Lesson47() {
                   <p className="text-gray-600 text-sm mt-1">Espere o ônibus.</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I wait for my friend at the station." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu espero meu amigo na estação.</p>
                   <p className="text-gray-600 text-sm mt-1">no escritório / no curso</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="Where do you wait for your husband?" className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Onde você espera seu marido?</p>
                   <p className="text-gray-600 text-sm mt-1">sua esposa / seus filhos</p>
@@ -375,15 +376,15 @@ export default function Lesson47() {
         </div>
 
         {/* Seção 2 - New Words */}
-        <div className="bg-white border-2 border-blue-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">2️⃣ NEW WORDS</h2>
               <p className="mt-2 text-blue-100 italic">Clique nas palavras em inglês para ouvir a pronúncia</p>
             </div>
             <button 
               onClick={() => toggleDrill('vocabulary')}
-              className="text-sm bg-blue-800 hover:bg-blue-900 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.vocabulary ? 'Ocultar Prática' : 'Mostrar Prática'}
             </button>
@@ -412,67 +413,67 @@ export default function Lesson47() {
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <p className="text-lg font-medium text-blue-800 mb-4">🔁 PRÁTICA – NEW WORDS</p>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="This house is very comfortable." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Esta casa é muito confortável.</p>
                   <p className="text-gray-600 text-sm mt-1">Este apartamento / Este restaurante</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I rarely buy beverages here." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu raramente compro bebidas aqui.</p>
                   <p className="text-gray-600 text-sm mt-1">lanches / milk-shake</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="We want to have a snack." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Nós queremos fazer um lanche.</p>
                   <p className="text-gray-600 text-sm mt-1">um churrasco / tomar sorvete</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="How often do you have a barbecue?" className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Com que frequência você faz um churrasco?</p>
                   <p className="text-gray-600 text-sm mt-1">come sobremesa / toma sorvete</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="How often do you call your parents?" className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Com que frequência você liga para seus pais?</p>
                   <p className="text-gray-600 text-sm mt-1">avós / parentes</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I always go to the bar with my friends." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu sempre vou ao bar com meus amigos.</p>
                   <p className="text-gray-600 text-sm mt-1">frequentemente / às vezes</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="He never calls the chef." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Ele nunca chama o chefe de cozinha.</p>
                   <p className="text-gray-600 text-sm mt-1">sempre / às vezes</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I'm a vegan." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu sou vegana.</p>
                   <p className="text-gray-600 text-sm mt-1">vegetariana / Ela é</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I'm a vegan, so I never eat meat." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu sou vegano, então eu nunca como carne.</p>
                   <p className="text-gray-600 text-sm mt-1">Ele é / Ela é</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="She's almost ready." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Ela está quase pronta.</p>
                   <p className="text-gray-600 text-sm mt-1">Nós / Eu</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="The dish is almost ready." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">O prato está quase pronto.</p>
                   <p className="text-gray-600 text-sm mt-1">A sobremesa / A pizza</p>
@@ -483,15 +484,15 @@ export default function Lesson47() {
         </div>
 
         {/* Seção 3 - Useful Phrases */}
-        <div className="bg-white border-2 border-blue-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">3️⃣ Speak Like a Native</h2>
               <p className="mt-2 text-blue-100 italic">Clique nas frases em inglês para ouvir a pronúncia</p>
             </div>
             <button 
               onClick={() => toggleDrill('usefulPhrases')}
-              className="text-sm bg-blue-800 hover:bg-blue-900 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.usefulPhrases ? 'Ocultar Prática' : 'Mostrar Prática'}
             </button>
@@ -517,46 +518,65 @@ export default function Lesson47() {
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <p className="text-lg font-medium text-blue-800 mb-4">🔁 PRÁTICA – USEFUL PHRASES</p>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="Are you in a hurry?" className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Você está com pressa?</p>
                   <p className="text-gray-600 text-sm mt-1">Eles / Por quê</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="He isn't in a hurry today." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Ele não está com pressa hoje.</p>
                   <p className="text-gray-600 text-sm mt-1">Nós / Eu</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="Hurry up! We have to go now." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Apresse-se! Nós temos que ir agora.</p>
                   <p className="text-gray-600 text-sm mt-1">pegar o táxi / o ônibus</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="Are you on time?" className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Você está no horário?</p>
                   <p className="text-gray-600 text-sm mt-1">Eles / Eu</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="The chef is always on time." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">O chefe de cozinha está sempre no horário.</p>
                   <p className="text-gray-600 text-sm mt-1">O garçom / O gerente</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I'm in a hurry to go to the airport." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu estou com pressa para ir ao aeroporto.</p>
                   <p className="text-gray-600 text-sm mt-1">escritório / banco</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="He is always on time." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Ele sempre está no horário.</p>
                   <p className="text-gray-600 text-sm mt-1">geralmente / nunca</p>
+                </div>
+
+                {/* Novos drills com estrutura de substituição */}
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <SpeakableText text="She is never late." className="text-blue-600 font-medium hover:text-blue-800 block" />
+                  <p className="text-gray-600 text-sm mt-1">Ela nunca se atrasa.</p>
+                  <p className="text-gray-600 text-sm mt-1">Ele / Meu chefe</p>
+                </div>
+
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <SpeakableText text="They are usually on time." className="text-blue-600 font-medium hover:text-blue-800 block" />
+                  <p className="text-gray-600 text-sm mt-1">Eles geralmente chegam no horário.</p>
+                  <p className="text-gray-600 text-sm mt-1">Nós / Os clientes</p>
+                </div>
+
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
+                  <SpeakableText text="I'm not in a hurry right now." className="text-blue-600 font-medium hover:text-blue-800 block" />
+                  <p className="text-gray-600 text-sm mt-1">Eu não estou com pressa agora.</p>
+                  <p className="text-gray-600 text-sm mt-1">Ela / Eles</p>
                 </div>
               </div>
             )}
@@ -564,18 +584,26 @@ export default function Lesson47() {
         </div>
 
         {/* Seção 4 - Grammar */}
-        <div className="bg-white border-2 border-blue-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">4️⃣ GRAMMAR - Somebody / Anybody</h2>
               <p className="mt-2 text-blue-100 italic">Clique nas frases em inglês para ouvir a pronúncia</p>
             </div>
-            <button 
-              onClick={() => toggleDrill('grammar')}
-              className="text-sm bg-blue-800 hover:bg-blue-900 text-white px-4 py-1 rounded-full transition-colors"
-            >
-              {openDrills.grammar ? 'Ocultar Prática' : 'Mostrar Prática'}
-            </button>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setShowGrammarExplanation(!showGrammarExplanation)}
+                className="text-sm bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded-full transition-colors"
+              >
+                {showGrammarExplanation ? 'Ocultar Explicação' : 'Explicação'}
+              </button>
+              <button 
+                onClick={() => toggleDrill('grammar')}
+                className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
+              >
+                {openDrills.grammar ? 'Ocultar Prática' : 'Mostrar Prática'}
+              </button>
+            </div>
           </div>
           
           <div className="p-8">
@@ -600,66 +628,96 @@ export default function Lesson47() {
                 </p>
               </div>
             </div>
+
+            {/* Explicação gramatical (condicional) */}
+            {showGrammarExplanation && (
+              <div className="mt-4 bg-yellow-50 border-2 border-yellow-300 rounded-2xl p-6 space-y-3 animate-fadeIn">
+                <h3 className="text-xl font-bold text-yellow-800">📘 Explicação: SOMEBODY, ANYBODY e NOBODY</h3>
+                <div className="space-y-2 text-gray-800">
+                  <p><strong className="text-blue-700">SOMEBODY</strong> (alguém) – usado em <strong>frases afirmativas</strong>.</p>
+                  <ul className="list-disc list-inside ml-4 space-y-1 text-gray-700">
+                    <li><SpeakableText text="Somebody is here." className="text-blue-600 hover:text-blue-800" /> — <em>Alguém está aqui.</em></li>
+                    <li><SpeakableText text="I saw somebody at the door." className="text-blue-600 hover:text-blue-800" /> — <em>Eu vi alguém na porta.</em></li>
+                  </ul>
+
+                  <p><strong className="text-blue-700">ANYBODY</strong> (alguém, ninguém, qualquer um) – usado em <strong>frases negativas e interrogativas</strong>.</p>
+                  <ul className="list-disc list-inside ml-4 space-y-1 text-gray-700">
+                    <li><SpeakableText text="I don't know anybody here." className="text-blue-600 hover:text-blue-800" /> — <em>Eu não conheço ninguém aqui.</em></li>
+                    <li><SpeakableText text="Does anybody speak English?" className="text-blue-600 hover:text-blue-800" /> — <em>Alguém fala inglês?</em></li>
+                    <li>Também pode ser usado em afirmativas com sentido de <strong>"qualquer um"</strong>: <SpeakableText text="Anybody can do it." className="text-blue-600 hover:text-blue-800" /> — <em>Qualquer um pode fazer isso.</em></li>
+                  </ul>
+
+                  <p><strong className="text-blue-700">NOBODY</strong> (ninguém) – já tem sentido negativo, <strong>não usa "not"</strong> na frase.</p>
+                  <ul className="list-disc list-inside ml-4 space-y-1 text-gray-700">
+                    <li><SpeakableText text="Nobody is here." className="text-blue-600 hover:text-blue-800" /> — <em>Ninguém está aqui.</em></li>
+                    <li><SpeakableText text="Nobody called you." className="text-blue-600 hover:text-blue-800" /> — <em>Ninguém te ligou.</em></li>
+                  </ul>
+                </div>
+                <p className="mt-3 text-sm text-gray-600 border-t border-yellow-300 pt-3">
+                  💡 Dica: <strong>Somebody</strong> = afirmativa, <strong>Anybody</strong> = negativa/interrogativa, <strong>Nobody</strong> = negativa (sem "not").
+                </p>
+              </div>
+            )}
             
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
                 <p className="text-lg font-medium text-blue-800 mb-4">🔁 PRÁTICA – GRAMMAR</p>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="Somebody needs to call the chef." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Alguém precisa chamar o chefe de cozinha.</p>
                   <p className="text-gray-600 text-sm mt-1">o gerente / o vendedor</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I want to talk to somebody." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu quero falar com alguém.</p>
                   <p className="text-gray-600 text-sm mt-1">sobre o problema / sobre o relatório</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I have to meet somebody at the airport." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu tenho que encontrar alguém no aeroporto.</p>
                   <p className="text-gray-600 text-sm mt-1">na estação de trem / de metrô</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="Do you know anybody there?" className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Você conhece alguém lá?</p>
                   <p className="text-gray-600 text-sm mt-1">nos Estados Unidos / no Reino Unido</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="Do you need to visit anybody today?" className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Você precisa visitar alguém hoje?</p>
                   <p className="text-gray-600 text-sm mt-1">ver / falar com</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="Is he in a hurry?" className="text-blue-600 font-medium hover:text-blue-800" /> / <SpeakableText text="Is anybody in a hurry?" className="text-blue-600 font-medium hover:text-blue-800" />
                   <p className="text-gray-600 text-sm mt-1">Ele está com pressa? / Alguém está com pressa?</p>
                   <p className="text-gray-600 text-sm mt-1">com sede / com fome</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="I don't know anybody here." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eu não conheço ninguém aqui.</p>
                   <p className="text-gray-600 text-sm mt-1">Ela / Ele</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="He doesn't want to call anybody." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Ele não quer ligar para ninguém.</p>
                   <p className="text-gray-600 text-sm mt-1">Ela / Eles</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="They don't need to wait for anybody." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Eles não precisam esperar ninguém.</p>
                   <p className="text-gray-600 text-sm mt-1">Você / Ela</p>
                 </div>
                 
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <SpeakableText text="You know somebody here, I'm sure." className="text-blue-600 font-medium hover:text-blue-800 block" />
                   <p className="text-gray-600 text-sm mt-1">Você conhece alguém aqui, eu tenho certeza.</p>
                   <p className="text-gray-600 text-sm mt-1">não conhece</p>
@@ -670,15 +728,15 @@ export default function Lesson47() {
         </div>
 
         {/* Seção 5 - Real Life */}
-        <div className="bg-white border-2 border-blue-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-8 flex justify-between items-center">
+        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold">5️⃣ MAKE IT YOURS</h2>
               <p className="mt-2 text-blue-100 italic">Clique nas frases em inglês para ouvir a pronúncia</p>
             </div>
             <button 
               onClick={() => toggleDrill('realLife')}
-              className="text-sm bg-blue-800 hover:bg-blue-900 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.realLife ? 'Ocultar Prática' : 'Mostrar Prática'}
             </button>
@@ -686,6 +744,7 @@ export default function Lesson47() {
           
           <div className="p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              {/* Frases originais */}
               <div>
                 <SpeakableText text="I need to call my mother now." className="text-blue-600 hover:text-blue-800 block" />
                 <span className="text-gray-600 block text-sm">Eu preciso ligar para minha mãe agora.</span>
@@ -734,14 +793,48 @@ export default function Lesson47() {
                 <SpeakableText text="Do you know anybody in Germany?" className="text-blue-600 hover:text-blue-800 block" />
                 <span className="text-gray-600 block text-sm">Você conhece alguém na Alemanha?</span>
               </div>
+
+              {/* NOVAS FRASES com did, will, have been */}
+              <div>
+                <SpeakableText text="Did you call your mother yesterday?" className="text-blue-600 hover:text-blue-800 block" />
+                <span className="text-gray-600 block text-sm">Você ligou para sua mãe ontem?</span>
+              </div>
+              <div>
+                <SpeakableText text="She didn't call me last week." className="text-blue-600 hover:text-blue-800 block" />
+                <span className="text-gray-600 block text-sm">Ela não me ligou na semana passada.</span>
+              </div>
+              <div>
+                <SpeakableText text="I will call you as soon as I arrive." className="text-blue-600 hover:text-blue-800 block" />
+                <span className="text-gray-600 block text-sm">Eu vou te ligar assim que eu chegar.</span>
+              </div>
+              <div>
+                <SpeakableText text="Will you wait for me at the station?" className="text-blue-600 hover:text-blue-800 block" />
+                <span className="text-gray-600 block text-sm">Você vai me esperar na estação?</span>
+              </div>
+              <div>
+                <SpeakableText text="I have been waiting for you for an hour." className="text-blue-600 hover:text-blue-800 block" />
+                <span className="text-gray-600 block text-sm">Eu estou esperando por você há uma hora.</span>
+              </div>
+              <div>
+                <SpeakableText text="She has been calling you all morning." className="text-blue-600 hover:text-blue-800 block" />
+                <span className="text-gray-600 block text-sm">Ela está te ligando a manhã toda.</span>
+              </div>
+              <div>
+                <SpeakableText text="They have been waiting for the bus since 8am." className="text-blue-600 hover:text-blue-800 block" />
+                <span className="text-gray-600 block text-sm">Eles estão esperando o ônibus desde as 8h.</span>
+              </div>
+              <div>
+                <SpeakableText text="Did you have a barbecue last weekend?" className="text-blue-600 hover:text-blue-800 block" />
+                <span className="text-gray-600 block text-sm">Você fez um churrasco no fim de semana passado?</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Seção 6 - Check It Out */}
-        <div className="bg-white border-2 border-blue-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">🔹 CHECK IT OUT!</h2>
+        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
+            <h2 className="text-2xl font-bold">🔹 WRAP UP!</h2>
             <p className="mt-2 text-blue-100 italic">
               Clique nas expressões em inglês para ouvir a pronúncia
             </p>
@@ -762,7 +855,7 @@ export default function Lesson47() {
           </button>
           <button
             onClick={() => router.push("/cursos/lesson48")}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-purple-800 text-white font-semibold py-3 px-8 rounded-full transition-colors"
           >
             Próxima Lição &rarr;
           </button>

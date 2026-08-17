@@ -242,7 +242,7 @@ export default function Lesson15PersonalInfoRoutine() {
   ];
 
   const newWords = [
-    { english: "coffee shop", portuguese: "café / cafeteria" },
+    { english: "coffee shop", portuguese: "cafeteria" },
     { english: "restaurant", portuguese: "restaurante" },
     { english: "mall", portuguese: "shopping" },
     { english: "the movies", portuguese: "cinema" },
@@ -268,7 +268,7 @@ export default function Lesson15PersonalInfoRoutine() {
   const grammarExamples = [
     { english: "Do you want to go to the restaurant?", portuguese: "Você quer ir ao restaurante?" },
     { english: "Do you want to go to the movies with me?", portuguese: "Você quer ir ao cinema comigo?" },
-    { english: "They like to go to the coffee shop in the evening.", portuguese: "Eles gostam de ir ao café à noite." },
+    { english: "They like to go to the coffee shop in the evening.", portuguese: "Eles gostam de ir à cafeteria à noite." },
     { english: "We don't want to go to the mall today.", portuguese: "Nós não queremos ir ao shopping hoje." },
     { english: "I send e-mails to my boss every day.", portuguese: "Eu envio e-mails para meu chefe todos os dias." },
     { english: "I need to send this message to my friend.", portuguese: "Eu preciso enviar essa mensagem para meu amigo." }
@@ -376,19 +376,19 @@ export default function Lesson15PersonalInfoRoutine() {
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    3. <SpeakText text="You read at night" className="text-blue-600 font-bold">You read at night</SpeakText> / <SpeakText text="You read in the afternoon" className="text-blue-600 font-bold">in the afternoon</SpeakText> / <SpeakText text="You read in the morning" className="text-blue-600 font-bold">in the morning</SpeakText>.
+                    3. <SpeakText text="You read at night" className="text-blue-600 font-bold">You read at night</SpeakText> / <SpeakText text="in the afternoon" className="text-blue-600 font-bold">in the afternoon</SpeakText> / <SpeakText text="in the morning" className="text-blue-600 font-bold">in the morning</SpeakText>.
                   </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 você lê à noite / à tarde / de manhã</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    4. <SpeakText text="I read to my children" className="text-blue-600 font-bold">I read to my children</SpeakText> / <SpeakText text="I read to my teacher" className="text-blue-600 font-bold">my teacher</SpeakText> / <SpeakText text="I read to my friends" className="text-blue-600 font-bold">my friends</SpeakText>.
+                    4. <SpeakText text="I read to my children" className="text-blue-600 font-bold">I read to my children</SpeakText> / <SpeakText text="my teacher" className="text-blue-600 font-bold">my teacher</SpeakText> / <SpeakText text="my friends" className="text-blue-600 font-bold">my friends</SpeakText>.
                   </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 eu leio para meus filhos / minha professora / meus amigos</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    5. We like to <SpeakText text="read in English" className="text-blue-600 font-bold">read in English</SpeakText> / <SpeakText text="read in Spanish" className="text-blue-600 font-bold">Spanish</SpeakText> / <SpeakText text="read in Portuguese" className="text-blue-600 font-bold">Portuguese</SpeakText>.
+                    5. We like to <SpeakText text="read in English" className="text-blue-600 font-bold">read in English</SpeakText> / <SpeakText text="Spanish" className="text-blue-600 font-bold">Spanish</SpeakText> / <SpeakText text="Portuguese" className="text-blue-600 font-bold">Portuguese</SpeakText>.
                   </p>
                   <p className="text-sm text-gray-500 mt-1">🇧🇷 nós gostamos de ler em inglês / espanhol / português</p>
                 </div>
@@ -621,13 +621,13 @@ export default function Lesson15PersonalInfoRoutine() {
                   <p className="text-lg font-medium text-gray-800">
                     2. Do you <SpeakText text="go to the movies" className="text-blue-600 font-bold">go to the movies</SpeakText>? / <SpeakText text="go to the coffee shop" className="text-blue-600 font-bold">coffee shop</SpeakText>? / <SpeakText text="go to the restaurant" className="text-blue-600 font-bold">restaurant</SpeakText>?
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você vai ao cinema / café / restaurante?</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você vai ao cinema / à cafeteria / ao restaurante?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
                     3. We <SpeakText text="go shopping in the afternoon" className="text-blue-600 font-bold">go shopping in the afternoon</SpeakText> / <SpeakText text="go to the movies in the afternoon" className="text-blue-600 font-bold">to the movies</SpeakText> / <SpeakText text="go to the coffee shop in the afternoon" className="text-blue-600 font-bold">to the coffee shop</SpeakText>.
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 nós vamos fazer compras à tarde / ao cinema / ao café</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 nós vamos fazer compras à tarde / ao cinema / à cafeteria</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
@@ -639,13 +639,13 @@ export default function Lesson15PersonalInfoRoutine() {
                   <p className="text-lg font-medium text-gray-800">
                     5. Do you <SpeakText text="go to the restaurant alone" className="text-blue-600 font-bold">go to the restaurant alone</SpeakText>? / <SpeakText text="go to the coffee shop alone" className="text-blue-600 font-bold">coffee shop</SpeakText> / <SpeakText text="go to the movies alone" className="text-blue-600 font-bold">movies</SpeakText>?
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você vai ao restaurante sozinho / ao café / ao cinema?</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você vai ao restaurante sozinho / à cafeteria / ao cinema?</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
                     6. I <SpeakText text="go shopping every day" className="text-blue-600 font-bold">go shopping every day</SpeakText> / <SpeakText text="go to the coffee shop every day" className="text-blue-600 font-bold">to the coffee shop</SpeakText> / <SpeakText text="go to the restaurant every day" className="text-blue-600 font-bold">to the restaurant</SpeakText>.
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu vou fazer compras todos os dias / ao café / ao restaurante</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu vou fazer compras todos os dias / à cafeteria / ao restaurante</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
@@ -657,7 +657,7 @@ export default function Lesson15PersonalInfoRoutine() {
                   <p className="text-lg font-medium text-gray-800">
                     8. Do you want to <SpeakText text="go to the movies with me" className="text-blue-600 font-bold">go to the movies with me</SpeakText>? / <SpeakText text="go to the restaurant with me" className="text-blue-600 font-bold">restaurant</SpeakText> / <SpeakText text="go to the coffee shop with me" className="text-blue-600 font-bold">coffee shop</SpeakText>?
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você quer ir ao cinema comigo / ao restaurante / ao café?</p>
+                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você quer ir ao cinema comigo / ao restaurante / à cafeteria?</p>
                 </div>
               </div>
             )}
@@ -739,7 +739,7 @@ export default function Lesson15PersonalInfoRoutine() {
           </div>
         </div>
 
-        {/* Section 6 - Check It Out (print style) */}
+        {/* Section 6 - Check It Out (print style) - UPDATED with "on" explanation */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
@@ -751,7 +751,7 @@ export default function Lesson15PersonalInfoRoutine() {
           </div>
 
           <div className="flex flex-col md:flex-row">
-            {/* Left column - Phrases and Plural Rules */}
+            {/* Left column - Phrases, "on" explanation, Plural Rules */}
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-lg">
               <div className="mb-4">
                 <h3 className="font-bold text-lg mb-4 text-yellow-300">COMMON PHRASES</h3>
@@ -797,6 +797,26 @@ export default function Lesson15PersonalInfoRoutine() {
                   </div>
                   <p className="text-blue-200 text-sm">enviar um e-mail</p>
                 </div>
+              </div>
+
+              {/* NEW: Explanation of "on" with devices, platforms, apps, social media */}
+              <div className="mt-6 pt-6 border-t border-blue-700">
+                <h4 className="font-bold text-lg text-yellow-300 mb-3">📱 USING "ON" WITH DEVICES & APPS</h4>
+                <p className="text-blue-200 text-sm mb-2">
+                  Em inglês, usamos a preposição <strong className="text-white">"on"</strong> para:
+                </p>
+                <ul className="text-blue-200 text-sm space-y-1 list-disc pl-4">
+                  <li><strong className="text-white">Dispositivos:</strong> on my computer, on my cell phone, on my tablet</li>
+                  <li><strong className="text-white">Plataformas e aplicativos:</strong> on Instagram, on WhatsApp, on X (Twitter), on YouTube, on Facebook</li>
+                  <li><strong className="text-white">Sites e serviços:</strong> on the website, on Amazon, on Google, on Netflix</li>
+                  <li><strong className="text-white">Redes sociais (em geral):</strong> on social media, on LinkedIn</li>
+                </ul>
+                <p className="text-blue-200 text-sm mt-2">
+                  Exemplos: <span className="text-white">"I read the news <strong>on</strong> my phone."</span> — <span className="text-white">"She posts photos <strong>on</strong> Instagram."</span>
+                </p>
+                <p className="text-blue-200 text-sm mt-1">
+                  🔹 <span className="text-white">Atenção:</span> usamos <strong>"in"</strong> para países, cidades e lugares fechados (ex: in Brazil, in the kitchen), mas para dispositivos e plataformas digitais é sempre <strong>"on"</strong>.
+                </p>
               </div>
 
               {/* Plural Formation Section */}

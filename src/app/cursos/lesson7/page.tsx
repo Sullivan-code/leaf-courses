@@ -241,7 +241,7 @@ export default function LessonLanguagesAndCountries() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">New Vocabulary</h2>
+              <h2 className="text-2xl font-bold">New Words</h2>
               <p className="mt-2 text-blue-100 italic">
                 Click on each word to hear its correct pronunciation
               </p>
@@ -286,6 +286,12 @@ export default function LessonLanguagesAndCountries() {
               <li>
                 <button onClick={() => playAudio('your')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">your</button> = seu(s), sua(s)
               </li>
+                            <li>
+                <button onClick={() => playAudio('your')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">their</button> = deles, delas
+              </li>
+                            <li>
+                <button onClick={() => playAudio('your')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">our</button> = nosso, nossa
+              </li>
               <li>
                 <button onClick={() => playAudio('we')} className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors">we</button> = nós
               </li>
@@ -322,7 +328,7 @@ export default function LessonLanguagesAndCountries() {
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">They study with their <span className="text-blue-600 font-bold">teacher</span>. / friend / classmates</p>
-                  <p className="text-sm text-gray-500 mt-1">Eles estudam com seu professor. / amigo / colegas</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles estudam com seu professor. / amigo / colegas de classe</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">I speak Italian with <span className="text-blue-600 font-bold">my</span> friend. / your / our</p>
@@ -357,7 +363,7 @@ export default function LessonLanguagesAndCountries() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">Slangs and Fluency</h2>
+              <h2 className="text-2xl font-bold">Speak Like a Native</h2>
               <p className="mt-2 text-blue-100 italic">
                 Practice common phrases to talk about languages
               </p>

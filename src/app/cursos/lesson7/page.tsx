@@ -408,7 +408,7 @@ export default function LessonLanguagesAndCountries() {
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">Do you want to study <span className="text-blue-600 font-bold">with me</span>? / with us / with her</p>
-                  <p className="text-sm text-gray-500 mt-1">Você quer estudar comigo? / conosco / com ela</p>
+                  <p className="text-sm text-gray-500 mt-1">Você quer estudar comigo?? / conosco / com ela</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">I want to speak <span className="text-blue-600 font-bold">English fluently</span>. / Spanish / French</p>

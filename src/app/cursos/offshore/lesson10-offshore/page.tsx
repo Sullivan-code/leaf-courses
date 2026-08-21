@@ -669,7 +669,7 @@ export default function LessonSafetyOfficer() {
             onClick={() => router.push("/cursos/lesson15")}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
           >
-            Next Lesson (15) &rarr;
+            Next Lesson (15!) &rarr;
           </button>
         </div>
       </div>

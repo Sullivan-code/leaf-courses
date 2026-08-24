@@ -159,17 +159,41 @@ export default function LessonDynamicPositioning() {
             "Permitir que uma embarcação mantenha uma posição e um rumo fixos exclusivamente por meio de empuxo ativo.",
     };
 
-    // --- Degrees of Freedom ---
+    // --- Degrees of Freedom (updated with Portuguese terms and descriptions) ---
     const degreesOfFreedom = {
         controlled: [
-            { name: "Surge", description: "forward/backward movement" },
-            { name: "Sway", description: "side-to-side movement" },
-            { name: "Yaw", description: "rotation around vertical axis" },
+            {
+                name: "Surge",
+                portuguese: "Avanço / Recuo",
+                description: "Movimento linear para frente e para trás ao longo do eixo longitudinal da embarcação. É controlado pelo DP para manter a posição."
+            },
+            {
+                name: "Sway",
+                portuguese: "Abatimento",
+                description: "Movimento linear para os lados (bombordo e boreste) ao longo do eixo transversal. O DP controla este movimento para evitar desvios laterais."
+            },
+            {
+                name: "Yaw",
+                portuguese: "Cabeceio",
+                description: "Rotação em torno do eixo vertical da embarcação. O DP controla o yaw para manter o rumo (heading) definido."
+            },
         ],
         monitored: [
-            { name: "Pitch", description: "rotation around transversal axis" },
-            { name: "Roll", description: "rotation around longitudinal axis" },
-            { name: "Heave", description: "up/down movement" },
+            {
+                name: "Pitch",
+                portuguese: "Caturro",
+                description: "Rotação em torno do eixo transversal (de bombordo a boreste). É monitorado, mas NÃO controlado pelo DP — depende das condições do mar e do design do casco."
+            },
+            {
+                name: "Roll",
+                portuguese: "Balanço",
+                description: "Rotação em torno do eixo longitudinal (de proa a popa). É monitorado para segurança, mas NÃO é controlado ativamente pelo DP."
+            },
+            {
+                name: "Heave",
+                portuguese: "Arfagem",
+                description: "Movimento linear vertical para cima e para baixo. É monitorado, mas NÃO é controlado pelo DP, pois depende da ondulação do mar."
+            },
         ],
     };
 
@@ -267,7 +291,7 @@ export default function LessonDynamicPositioning() {
                 {/* ===== HEADER ===== */}
                 <div className="text-center mb-12">
                     <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0c4a6e] mb-4">
-                        ⚓ Lesson 1 — Dynamic Positioning
+                        ⚓ Lesson 19 — Dynamic Positioning
                     </h1>
                     <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto">
                         Learn the basics of <strong>Dynamic Positioning (DP)</strong> — how vessels maintain position and heading using active thrust.
@@ -459,12 +483,12 @@ export default function LessonDynamicPositioning() {
                     </div>
                 </div>
 
-                {/* ===== SECTION 5 — 6 DEGREES OF FREEDOM ===== */}
+                {/* ===== SECTION 5 — 6 DEGREES OF FREEDOM (Updated with Portuguese terms) ===== */}
                 <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
                     <div className="bg-blue-600 text-white py-4 px-6 flex flex-wrap justify-between items-center gap-3">
                         <div>
-                            <h2 className="text-2xl font-bold">🔹 6 Degrees of Freedom</h2>
-                            <p className="text-sm text-blue-100 italic">Which movements are controlled by DP?</p>
+                            <h2 className="text-2xl font-bold">🔹 6 Degrees of Freedom — Movimentos da Embarcação</h2>
+                            <p className="text-sm text-blue-100 italic">Quais movimentos são controlados pelo DP?</p>
                         </div>
                         <button
                             onClick={() => toggleDrill("degrees")}
@@ -474,49 +498,59 @@ export default function LessonDynamicPositioning() {
                         </button>
                     </div>
                     <div className="p-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="bg-green-50 border-2 border-green-300 p-4 rounded-xl">
-                                <p className="font-bold text-green-700">✅ Controlled by DP</p>
-                                <ul className="mt-2 space-y-1 text-gray-700">
-                                    {degreesOfFreedom.controlled.map((item) => (
-                                        <li key={item.name}>
-                                            •{" "}
+                        {/* Controlled by DP */}
+                        <div className="mb-6">
+                            <h3 className="text-lg font-bold text-green-700 mb-3">✅ Controlados pelo DP</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {degreesOfFreedom.controlled.map((item) => (
+                                    <div key={item.name} className="bg-green-50 border-2 border-green-300 p-4 rounded-xl">
+                                        <div className="flex items-center gap-2 mb-2">
                                             <button
                                                 onClick={() => playAudio(item.name)}
-                                                className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
+                                                className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 text-lg"
                                             >
                                                 {item.name}
-                                            </button>{" "}
-                                            — {item.description}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
-                                <p className="font-bold text-yellow-700">👁️ Monitored (not controlled)</p>
-                                <ul className="mt-2 space-y-1 text-gray-700">
-                                    {degreesOfFreedom.monitored.map((item) => (
-                                        <li key={item.name}>
-                                            •{" "}
-                                            <button
-                                                onClick={() => playAudio(item.name)}
-                                                className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
-                                            >
-                                                {item.name}
-                                            </button>{" "}
-                                            — {item.description}
-                                        </li>
-                                    ))}
-                                </ul>
+                                            </button>
+                                            <span className="text-gray-600 text-sm">({item.portuguese})</span>
+                                        </div>
+                                        <p className="text-sm text-gray-700">{item.description}</p>
+                                    </div>
+                                ))}
                             </div>
                         </div>
+
+                        {/* Monitored (not controlled) */}
+                        <div>
+                            <h3 className="text-lg font-bold text-yellow-700 mb-3">👁️ Monitorados (NÃO controlados)</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {degreesOfFreedom.monitored.map((item) => (
+                                    <div key={item.name} className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <button
+                                                onClick={() => playAudio(item.name)}
+                                                className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 text-lg"
+                                            >
+                                                {item.name}
+                                            </button>
+                                            <span className="text-gray-600 text-sm">({item.portuguese})</span>
+                                        </div>
+                                        <p className="text-sm text-gray-700">{item.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
                         {openDrills.degrees && (
-                            <div className="mt-5 bg-blue-50 p-4 rounded-xl animate-fadeIn">
+                            <div className="mt-6 bg-blue-50 p-4 rounded-xl animate-fadeIn">
                                 <p className="text-sm text-gray-700">
                                     📌 <strong>Exam Question:</strong>{" "}
                                     <em>Which of the following degrees of freedom is monitored (but NOT controlled) by the DP system?</em>
                                     <br />
-                                    <span className="font-bold text-blue-600">Answer: Pitch.</span>
+                                    <span className="font-bold text-blue-600">Answer: Pitch (Caturro).</span>
+                                </p>
+                                <p className="text-sm text-gray-700 mt-2">
+                                    💡 <strong>Resumo:</strong> O DP controla <strong>Surge (Avanço/Recuo)</strong>, <strong>Sway (Abatimento)</strong> e <strong>Yaw (Cabeceio)</strong> para manter a posição e o rumo. 
+                                    Os movimentos <strong>Pitch (Caturro)</strong>, <strong>Roll (Balanço)</strong> e <strong>Heave (Arfagem)</strong> são apenas monitorados, pois dependem das condições do mar.
                                 </p>
                             </div>
                         )}
@@ -781,8 +815,8 @@ export default function LessonDynamicPositioning() {
                                     <li>✅ <strong>Thruster</strong> = equipment that produces thrust</li>
                                     <li>✅ <strong>DP System</strong> = controls position and heading automatically</li>
                                     <li>✅ <strong>Main Purpose</strong> = maintain fixed position and heading using active thrust</li>
-                                    <li>✅ <strong>Controlled movements</strong> = Surge, Sway, Yaw</li>
-                                    <li>✅ <strong>Monitored movements</strong> = Pitch, Roll, Heave</li>
+                                    <li>✅ <strong>Controlled movements</strong> = Surge (Avanço/Recuo), Sway (Abatimento), Yaw (Cabeceio)</li>
+                                    <li>✅ <strong>Monitored movements</strong> = Pitch (Caturro), Roll (Balanço), Heave (Arfagem)</li>
                                 </ul>
                             </div>
                             <div className="md:w-1/2">

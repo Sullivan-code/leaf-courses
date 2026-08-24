@@ -1515,7 +1515,7 @@ export default function DPCoursePage() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 KEY DEFINITIONS</h2>
+              <h2 className="text-2xl font-bold">🔹 KEY DEFINITIONS!</h2>
               <PencilIcon onClick={() => openNoteModal("Definitions")} />
             </div>
             <button

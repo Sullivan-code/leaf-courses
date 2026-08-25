@@ -166,14 +166,9 @@ export default function DPCoursePage() {
   const [openSections, setOpenSections] = useState({ definitions: true, questions: false });
   const [noteModal, setNoteModal] = useState({ isOpen: false, sectionTitle: "", noteContent: "" });
   const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
-  const [showTranslations, setShowTranslations] = useState(true); // <-- NOVO ESTADO
 
   const toggleSection = (section: "definitions" | "questions") => {
     setOpenSections({ ...openSections, [section]: !openSections[section] });
-  };
-
-  const toggleTranslations = () => {
-    setShowTranslations(!showTranslations);
   };
 
   const openNoteModal = (sectionTitle: string) => {
@@ -1359,11 +1354,12 @@ export default function DPCoursePage() {
   // QUESTION ITEM COMPONENT
   // ============================================
 
-  function QuestionItem({ q, index, showTranslations }: { q: Question; index: number; showTranslations: boolean }) {
+  function QuestionItem({ q, index }: { q: Question; index: number }) {
     const [showOptions, setShowOptions] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [typedAnswer, setTypedAnswer] = useState("");
     const [showCorrect, setShowCorrect] = useState(false);
+    const [showTranslation, setShowTranslation] = useState(false); // <-- estado local para tradução
 
     const correctLetter = q.answer ? q.answer.charAt(0) : "";
     const correctText = q.answer;
@@ -1399,18 +1395,30 @@ export default function DPCoursePage() {
             <SpeakSentence text={q.question} className="text-gray-800 font-medium cursor-pointer block hover:text-blue-700">
               {q.question}
             </SpeakSentence>
-            {/* Pergunta em português - condicional */}
-            {showTranslations && q.questionPt && (
+            {/* Pergunta em português - condicional com base no estado local */}
+            {showTranslation && q.questionPt && (
               <p className="text-gray-500 text-sm mt-0.5">{q.questionPt}</p>
             )}
 
-            {/* Botão para mostrar opções */}
-            <button
-              onClick={() => setShowOptions(!showOptions)}
-              className="mt-3 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-1 rounded-full transition-colors"
-            >
-              {showOptions ? "Ocultar opções" : "Mostrar opções"}
-            </button>
+            {/* Botões de ação: mostrar opções e tradução */}
+            <div className="flex flex-wrap items-center gap-2 mt-3">
+              <button
+                onClick={() => setShowOptions(!showOptions)}
+                className="text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-1 rounded-full transition-colors"
+              >
+                {showOptions ? "Ocultar opções" : "Mostrar opções"}
+              </button>
+              <button
+                onClick={() => setShowTranslation(!showTranslation)}
+                className={`text-sm px-4 py-1 rounded-full transition-colors ${
+                  showTranslation
+                    ? "bg-purple-200 hover:bg-purple-300 text-purple-800"
+                    : "bg-green-100 hover:bg-green-200 text-green-700"
+                }`}
+              >
+                {showTranslation ? "Ocultar tradução" : "Mostrar tradução"}
+              </button>
+            </div>
 
             {showOptions && q.options && (
               <div className="mt-3 space-y-2">
@@ -1433,8 +1441,8 @@ export default function DPCoursePage() {
                       <SpeakText text={opt.text} className="text-gray-700 cursor-pointer hover:text-blue-600">
                         {opt.text}
                       </SpeakText>
-                      {/* Tradução da opção - condicional */}
-                      {showTranslations && opt.textPt && (
+                      {/* Tradução da opção - condicional com base no estado local */}
+                      {showTranslation && opt.textPt && (
                         <span className="text-gray-400 text-xs ml-2">({opt.textPt})</span>
                       )}
                     </div>
@@ -1475,8 +1483,8 @@ export default function DPCoursePage() {
                     <SpeakSentence text={correctText} className="text-green-700 font-medium cursor-pointer hover:text-green-900">
                       {correctText}
                     </SpeakSentence>
-                    {/* Tradução da resposta - condicional */}
-                    {showTranslations && q.answerPt && (
+                    {/* Tradução da resposta - condicional com base no estado local */}
+                    {showTranslation && q.answerPt && (
                       <p className="text-gray-500 text-sm">{q.answerPt}</p>
                     )}
                     {selectedOption || typedAnswer ? (
@@ -1574,21 +1582,12 @@ export default function DPCoursePage() {
               <h2 className="text-2xl font-bold">🔹 EXAM QUESTIONS ({questions.length})</h2>
               <PencilIcon onClick={() => openNoteModal("All Questions")} />
             </div>
-            <div className="flex items-center gap-4">
-              {/* BOTÃO DE TRADUÇÃO */}
-              <button
-                onClick={toggleTranslations}
-                className="inline-block rounded-full bg-white/20 hover:bg-white/30 text-white px-6 py-2 text-sm transition-all duration-300"
-              >
-                {showTranslations ? "Hide Translation" : "Show Translation"}
-              </button>
-              <button
-                onClick={() => toggleSection("questions")}
-                className="inline-block rounded-full bg-white/20 hover:bg-white/30 text-white px-6 py-2 text-sm transition-all duration-300"
-              >
-                {openSections.questions ? "Ocultar" : "Mostrar todas"}
-              </button>
-            </div>
+            <button
+              onClick={() => toggleSection("questions")}
+              className="inline-block rounded-full bg-white/20 hover:bg-white/30 text-white px-6 py-2 text-sm transition-all duration-300"
+            >
+              {openSections.questions ? "Ocultar" : "Mostrar todas"}
+            </button>
           </div>
 
           {openSections.questions && (
@@ -1599,7 +1598,7 @@ export default function DPCoursePage() {
 
               <div className="space-y-6">
                 {questions.map((q, idx) => (
-                  <QuestionItem key={idx} q={q} index={idx} showTranslations={showTranslations} />
+                  <QuestionItem key={idx} q={q} index={idx} />
                 ))}
               </div>
             </div>

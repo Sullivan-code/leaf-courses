@@ -166,9 +166,14 @@ export default function DPCoursePage() {
   const [openSections, setOpenSections] = useState({ definitions: true, questions: false });
   const [noteModal, setNoteModal] = useState({ isOpen: false, sectionTitle: "", noteContent: "" });
   const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
+  const [showTranslations, setShowTranslations] = useState(true); // <-- NOVO ESTADO
 
   const toggleSection = (section: "definitions" | "questions") => {
     setOpenSections({ ...openSections, [section]: !openSections[section] });
+  };
+
+  const toggleTranslations = () => {
+    setShowTranslations(!showTranslations);
   };
 
   const openNoteModal = (sectionTitle: string) => {
@@ -746,7 +751,6 @@ export default function DPCoursePage() {
         { letter: "D", text: "Check the weather forecast.", textPt: "Verificar a previsão do tempo." },
       ],
     },
-    // Q32 - (missing in PDF)
     // Q33
     {
       id: 33,
@@ -1013,7 +1017,7 @@ export default function DPCoursePage() {
         { letter: "D", text: "Consequence Analysis.", textPt: "Análise de Consequências." },
       ],
     },
-    // Q52 Follow-target mode
+    // Q52
     {
       id: 52,
       question: "A DP mode which allows a vessel to automatically follow an ROV is called:",
@@ -1237,7 +1241,7 @@ export default function DPCoursePage() {
         { letter: "D", text: "Heave.", textPt: "Heave." },
       ],
     },
-    // Q68 (duplicate of Q27)
+    // Q68
     {
       id: 68,
       question: "What would be a disadvantage of a DP system over anchored vessel control?",
@@ -1355,7 +1359,7 @@ export default function DPCoursePage() {
   // QUESTION ITEM COMPONENT
   // ============================================
 
-  function QuestionItem({ q, index }: { q: Question; index: number }) {
+  function QuestionItem({ q, index, showTranslations }: { q: Question; index: number; showTranslations: boolean }) {
     const [showOptions, setShowOptions] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [typedAnswer, setTypedAnswer] = useState("");
@@ -1366,12 +1370,12 @@ export default function DPCoursePage() {
 
     const handleOptionClick = (letter: string) => {
       setSelectedOption(letter);
-      setTypedAnswer(""); // limpa o texto se clicar em opção
+      setTypedAnswer("");
     };
 
     const handleTypedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setTypedAnswer(e.target.value);
-      setSelectedOption(null); // desmarca opção se digitar
+      setSelectedOption(null);
     };
 
     const handleCheck = () => {
@@ -1384,7 +1388,6 @@ export default function DPCoursePage() {
       setShowCorrect(false);
     };
 
-    // Determina se a resposta está correta
     const isCorrect = selectedOption === correctLetter || typedAnswer.trim().toUpperCase() === correctLetter;
 
     return (
@@ -1396,8 +1399,10 @@ export default function DPCoursePage() {
             <SpeakSentence text={q.question} className="text-gray-800 font-medium cursor-pointer block hover:text-blue-700">
               {q.question}
             </SpeakSentence>
-            {/* Pergunta em português */}
-            <p className="text-gray-500 text-sm mt-0.5">{q.questionPt}</p>
+            {/* Pergunta em português - condicional */}
+            {showTranslations && q.questionPt && (
+              <p className="text-gray-500 text-sm mt-0.5">{q.questionPt}</p>
+            )}
 
             {/* Botão para mostrar opções */}
             <button
@@ -1428,7 +1433,10 @@ export default function DPCoursePage() {
                       <SpeakText text={opt.text} className="text-gray-700 cursor-pointer hover:text-blue-600">
                         {opt.text}
                       </SpeakText>
-                      {opt.textPt && <span className="text-gray-400 text-xs ml-2">({opt.textPt})</span>}
+                      {/* Tradução da opção - condicional */}
+                      {showTranslations && opt.textPt && (
+                        <span className="text-gray-400 text-xs ml-2">({opt.textPt})</span>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -1467,7 +1475,8 @@ export default function DPCoursePage() {
                     <SpeakSentence text={correctText} className="text-green-700 font-medium cursor-pointer hover:text-green-900">
                       {correctText}
                     </SpeakSentence>
-                    {q.answerPt && (
+                    {/* Tradução da resposta - condicional */}
+                    {showTranslations && q.answerPt && (
                       <p className="text-gray-500 text-sm">{q.answerPt}</p>
                     )}
                     {selectedOption || typedAnswer ? (
@@ -1565,12 +1574,21 @@ export default function DPCoursePage() {
               <h2 className="text-2xl font-bold">🔹 EXAM QUESTIONS ({questions.length})</h2>
               <PencilIcon onClick={() => openNoteModal("All Questions")} />
             </div>
-            <button
-              onClick={() => toggleSection("questions")}
-              className="inline-block rounded-full bg-white/20 hover:bg-white/30 text-white px-6 py-2 text-sm transition-all duration-300"
-            >
-              {openSections.questions ? "Ocultar" : "Mostrar todas"}
-            </button>
+            <div className="flex items-center gap-4">
+              {/* BOTÃO DE TRADUÇÃO */}
+              <button
+                onClick={toggleTranslations}
+                className="inline-block rounded-full bg-white/20 hover:bg-white/30 text-white px-6 py-2 text-sm transition-all duration-300"
+              >
+                {showTranslations ? "Hide Translation" : "Show Translation"}
+              </button>
+              <button
+                onClick={() => toggleSection("questions")}
+                className="inline-block rounded-full bg-white/20 hover:bg-white/30 text-white px-6 py-2 text-sm transition-all duration-300"
+              >
+                {openSections.questions ? "Ocultar" : "Mostrar todas"}
+              </button>
+            </div>
           </div>
 
           {openSections.questions && (
@@ -1581,7 +1599,7 @@ export default function DPCoursePage() {
 
               <div className="space-y-6">
                 {questions.map((q, idx) => (
-                  <QuestionItem key={idx} q={q} index={idx} />
+                  <QuestionItem key={idx} q={q} index={idx} showTranslations={showTranslations} />
                 ))}
               </div>
             </div>

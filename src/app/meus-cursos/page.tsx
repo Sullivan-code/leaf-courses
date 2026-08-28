@@ -54,7 +54,7 @@ export default async function MeusCursos() {
         </h1>
         
         <div className="grid gap-8">
-          {/* Curso de Inglês Básico ao Intermediário */}
+          {/* Curso de Inglês Básico ao Intermediário (A1-B1) */}
           <div className="bg-white shadow-2xl rounded-3xl p-8 border-4 border-blue-300 hover:shadow-3xl transition-all duration-300 transform hover:scale-105">
             <div className="flex items-center gap-6 mb-6">
               <div className="text-6xl">🇺🇸</div>
@@ -86,6 +86,44 @@ export default async function MeusCursos() {
               </Button>
               <Button asChild variant="outline" size="lg" className="text-lg">
                 <Link href="/ver-todas">
+                  Ver Todas as Lições
+                </Link>
+              </Button>
+            </div>
+          </div>
+
+          {/* NOVO: Curso de Inglês Intermediário ao Avançado (B1-B2) */}
+          <div className="bg-white shadow-2xl rounded-3xl p-8 border-4 border-purple-300 hover:shadow-3xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center gap-6 mb-6">
+              <div className="text-6xl">📘</div>
+              <div>
+                <h2 className="text-3xl font-bold text-purple-700">
+                  Inglês Intermediário ao Avançado (B1-B2)
+                </h2>
+                <p className="text-xl text-gray-600 mt-2">
+                  Curso completo com 55 lições + 12 revisões
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-purple-50 p-6 rounded-2xl mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-lg font-semibold text-gray-700">Progresso</span>
+                <span className="text-lg font-semibold text-purple-600">10%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-4">
+                <div className="bg-green-500 h-4 rounded-full w-[10%]"></div>
+              </div>
+            </div>
+            
+            <div className="flex gap-4">
+              <Button asChild size="lg" className="flex-1 text-lg bg-purple-600 hover:bg-purple-700">
+                <Link href="/cursos/ingles-intermediario-avancado/lesson1">
+                  Continuar de Onde Parei
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="text-lg border-purple-300 text-purple-700 hover:bg-purple-50">
+                <Link href="/ver-todas-b1b2">
                   Ver Todas as Lições
                 </Link>
               </Button>

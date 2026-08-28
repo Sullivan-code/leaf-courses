@@ -376,7 +376,7 @@ export default function LessonFoodAndDrink() {
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold">🔹 New Vocabulary</h2>
+              <h2 className="text-2xl font-bold">🔹 New Words</h2>
               <p className="mt-2 text-blue-100 italic">
                 Click on each word to hear its correct pronunciation
               </p>
@@ -1218,7 +1218,7 @@ export default function LessonFoodAndDrink() {
                       onClick={() => playAudio("drink")} 
                       className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                     >
-                      drink
+                      like
                     </button> / 
                     <button 
                       onClick={() => playAudio("prefer")} 
@@ -1227,7 +1227,7 @@ export default function LessonFoodAndDrink() {
                       prefer
                     </button>
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">Você come queijo? / bebe / prefere</p>
+                  <p className="text-sm text-gray-500 mt-1">Você come queijo? / gosta de / prefere</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
@@ -1241,16 +1241,16 @@ export default function LessonFoodAndDrink() {
                       onClick={() => playAudio("eat")} 
                       className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                     >
-                      eat
+                      eat bread
                     </button> / 
                     <button 
                       onClick={() => playAudio("like")} 
                       className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                     >
-                      like
+                      need coffee
                     </button>
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">Nós bebemos chá. / comemos / gostamos</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós bebemos chá. / comemos pão / precisamos de café</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
@@ -1261,19 +1261,19 @@ export default function LessonFoodAndDrink() {
                       She drinks milk with coffee
                     </button>. / 
                     <button 
-                      onClick={() => playAudio("eats")} 
+                      onClick={() => playAudio("eats bread")} 
                       className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                     >
-                      eats
+                      eats bread
                     </button> / 
                     <button 
-                      onClick={() => playAudio("wants")} 
+                      onClick={() => playAudio("wants chamomile tea")} 
                       className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                     >
-                      wants
+                      wants chamomile tea
                     </button>
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">Ela bebe leite com café. / come / quer</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela bebe leite com café. / como pão / quer chá de camomila</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
@@ -1281,22 +1281,22 @@ export default function LessonFoodAndDrink() {
                       onClick={() => playAudio("They eat bread with butter")} 
                       className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                     >
-                      They eat bread with butter
-                    </button>. / 
+                      They eat bread and butter
+                    </button>. /  
                     <button 
                       onClick={() => playAudio("drink")} 
                       className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                     >
-                      drink
-                    </button> / 
+                      drink coffee
+                    </button> /  
                     <button 
                       onClick={() => playAudio("need")} 
                       className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
                     >
-                      need
+                      need water
                     </button>
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">Eles comem pão com manteiga. / bebem / precisam</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles comem pão com manteiga. / bebem café / precisam de</p>
                 </div>
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">

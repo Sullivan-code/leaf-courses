@@ -20,9 +20,10 @@ interface SpeakTextProps {
   text: string;
   children?: React.ReactNode;
   className?: string;
+  showIcon?: boolean; // Adicionado para controle do ícone
 }
 
-const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
+const SpeakText = ({ text, children, className = "", showIcon = true }: SpeakTextProps) => {
   const speak = () => {
     if (!text || typeof window === 'undefined') return;
     window.speechSynthesis.cancel();
@@ -56,7 +57,7 @@ const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
       title="Click to hear American pronunciation"
     >
       {children || text}
-      <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
+      {showIcon && <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />}
     </button>
   );
 };
@@ -171,7 +172,6 @@ function SubstitutionOptions({
 }) {
   const [showEnglish, setShowEnglish] = useState(true);
   
-  // Determina se as opções são objetos ou strings
   const isObjectOption = (opt: OptionType): opt is { label: string; replacement: string } => {
     return typeof opt === 'object' && opt !== null && 'label' in opt && 'replacement' in opt;
   };
@@ -179,10 +179,8 @@ function SubstitutionOptions({
   const currentOption = exercise.options[exercise.currentIndex];
   let currentSentence: string;
   if (isObjectOption(currentOption)) {
-    // Se for objeto, usa o replacement como a frase completa
     currentSentence = currentOption.replacement;
   } else {
-    // Caso contrário, substitui no template
     currentSentence = exercise.base.replace(/\{0\}/g, currentOption);
   }
 
@@ -276,7 +274,6 @@ export default function Lesson61MyHouseRoutine() {
   });
   const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
 
-  // Substitution state: maps exercise key to current index
   const [substitutionState, setSubstitutionState] = useState<Record<string, number>>({});
 
   const toggleDrill = (section: SectionKey) => {
@@ -307,19 +304,17 @@ export default function Lesson61MyHouseRoutine() {
     }
   }, []);
 
-  // Images
   const mainImage = "https://github.com/Sullivan-code/english-audios/blob/main/ChatGPT%20Image%202%20de%20set.%20de%202026%2C%2014_28_05.png?raw=true";
   const readingImage = "https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   const placesImage = "https://images.pexels.com/photos/3182746/pexels-photo-3182746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   const digitalImage = "https://images.pexels.com/photos/572056/pexels-photo-572056.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
 
   // ---------- SUBSTITUTION EXERCISES ----------
-  // VERBS (com flexão verbal para terceira pessoa)
   const verbsSubstitution: SubstitutionExercise[] = [
     {
       key: "verb-1",
       original: "Eu movo. / Ela move. / Nós movemos.",
-      base: "{0}", // não usado diretamente, mas mantido
+      base: "{0}",
       options: [
         { label: "I", replacement: "I move" },
         { label: "She", replacement: "She moves" },
@@ -340,7 +335,6 @@ export default function Lesson61MyHouseRoutine() {
     },
   ];
 
-  // NEW WORDS (opções simples)
   const vocabSubstitution: SubstitutionExercise[] = [
     {
       key: "vocab-1",
@@ -372,7 +366,6 @@ export default function Lesson61MyHouseRoutine() {
     },
   ];
 
-  // USEFUL PHRASES
   const phrasesSubstitution: SubstitutionExercise[] = [
     {
       key: "phrase-1",
@@ -390,7 +383,6 @@ export default function Lesson61MyHouseRoutine() {
     },
   ];
 
-  // GRAMMAR
   const grammarSubstitution: SubstitutionExercise[] = [
     {
       key: "grammar-1",
@@ -422,7 +414,6 @@ export default function Lesson61MyHouseRoutine() {
     },
   ];
 
-  // Combine all for the helper
   const allExercises = [...verbsSubstitution, ...vocabSubstitution, ...phrasesSubstitution, ...grammarSubstitution];
 
   const getExerciseWithIndex = (key: string) => {
@@ -431,7 +422,6 @@ export default function Lesson61MyHouseRoutine() {
     return { ...ex, currentIndex: getCurrentIndex(key) };
   };
 
-  // ---------- DADOS PARA SPEAK LIKE A NATIVE (COM TRADUÇÃO E PALAVRAS VERDES) ----------
   const usefulPhrasesData = [
     {
       en: "Put away these clothes in the closet, please.",
@@ -455,7 +445,6 @@ export default function Lesson61MyHouseRoutine() {
     }
   ];
 
-  // ---------- RENDER ----------
   return (
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
@@ -469,7 +458,6 @@ export default function Lesson61MyHouseRoutine() {
     >
       <div className="max-w-5xl mx-auto bg-[#f0faf5] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
 
-        {/* TITLE */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">🏠 Lesson 61 - My House & My Routine</h1>
           <SpeakSentence text="Learn to talk about your house, furniture, and daily routine activities." className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
@@ -480,7 +468,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* ===== SECTION 1 - VERBS ===== */}
+        {/* VERBS */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -520,7 +508,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* ===== SECTION 2 - NEW WORDS ===== */}
+        {/* NEW WORDS */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -578,7 +566,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* ===== SECTION 3 - USEFUL PHRASES (SPEAK LIKE A NATIVE) ===== */}
+        {/* USEFUL PHRASES */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -624,7 +612,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* ===== SECTION 4 - GRAMMAR ===== */}
+        {/* GRAMMAR */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -679,7 +667,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* ===== SECTION 5 - Make it yours! ===== */}
+        {/* Make it yours! */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -740,7 +728,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* ===== SECTION 6 - WRAP UP! ===== */}
+        {/* WRAP UP! */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div>

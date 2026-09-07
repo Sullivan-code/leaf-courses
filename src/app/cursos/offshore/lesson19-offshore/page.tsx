@@ -29,6 +29,11 @@ export default function LessonDynamicPositioning() {
 
     const [showGrammarExplanation, setShowGrammarExplanation] = useState(false);
     const [showMustExplanation, setShowMustExplanation] = useState(false);
+    const [showUsefulTranslations, setShowUsefulTranslations] = useState(false);
+
+    // Estado para o carrossel de imagens
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
     const toggleDrill = (section: SectionKey) => {
         setOpenDrills((prev) => ({
@@ -48,21 +53,49 @@ export default function LessonDynamicPositioning() {
         console.log("🔊 Speaking:", text);
     };
 
-    // --- Image URLs (Unsplash - vessels & offshore) ---
+    // --- Image URLs ---
     const vesselImage =
-        "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80";
+        "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%207%20de%20set.%20de%202026%2C%2013_11_20.png";
     const offshoreImage =
-        "https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80";
+        "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%207%20de%20set.%20de%202026%2C%2013_11_20.png";
     const controlRoomImage =
-        "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80";
+        "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%207%20de%20set.%20de%202026%2C%2013_11_20.png";
     const vesselAtSeaImage =
-        "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80";
+        "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%207%20de%20set.%20de%202026%2C%2013_11_20.png";
     const shipImage =
-        "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80";
-    const offshorePlatformImage =
-        "https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80";
+        "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%207%20de%20set.%20de%202026%2C%2013_11_20.png";
 
-    // --- Vocabulary Data ---
+    // --- Imagens do carrossel (Six Degrees of Freedom) ---
+    const degreeImages = [
+        "https://raw.githubusercontent.com/Sullivan-code/leaf-courses/main/6MVMTS.1.png",
+        "https://raw.githubusercontent.com/Sullivan-code/leaf-courses/main/6MVMTS.2.png",
+    ];
+
+    const goToPrevious = () => {
+        setCurrentImageIndex((prev) =>
+            prev === 0 ? degreeImages.length - 1 : prev - 1
+        );
+    };
+
+    const goToNext = () => {
+        setCurrentImageIndex((prev) =>
+            prev === degreeImages.length - 1 ? 0 : prev + 1
+        );
+    };
+
+    const goToImage = (index: number) => {
+        setCurrentImageIndex(index);
+    };
+
+    const openLightbox = () => {
+        setIsLightboxOpen(true);
+    };
+
+    const closeLightbox = () => {
+        setIsLightboxOpen(false);
+    };
+
+    // --- Vocabulary Data with contextual sentences ---
     const vocabulary = [
         { english: "vessel", portuguese: "embarcação / navio" },
         { english: "position", portuguese: "posição" },
@@ -79,24 +112,25 @@ export default function LessonDynamicPositioning() {
         { english: "movement", portuguese: "movimento" },
         { english: "degree", portuguese: "grau" },
         { english: "freedom", portuguese: "liberdade" },
-        { english: "surge", portuguese: "avanço / recuo" },
-        { english: "sway", portuguese: "movimento lateral" },
-        { english: "yaw", portuguese: "rotação vertical" },
-        { english: "pitch", portuguese: "rotação transversal" },
-        { english: "roll", portuguese: "rotação longitudinal" },
-        { english: "heave", portuguese: "movimento vertical" },
     ];
 
-    // --- Word Combinations ---
-    const wordCombinations = [
-        { english: "maintain position", portuguese: "manter a posição" },
-        { english: "maintain heading", portuguese: "manter o rumo" },
-        { english: "control the vessel", portuguese: "controlar a embarcação" },
-        { english: "produce thrust", portuguese: "produzir empuxo" },
-        { english: "active thrust", portuguese: "empuxo ativo" },
-        { english: "DP system", portuguese: "sistema DP" },
-        { english: "DP vessel", portuguese: "embarcação DP" },
-        { english: "fixed position", portuguese: "posição fixa" },
+    // Frases de contexto para cada palavra (mesmo índice)
+    const vocabularySentences = [
+        "The vessel is sailing in the Atlantic Ocean.",
+        "The DP system maintains the vessel's position.",
+        "The captain changed the heading to 180 degrees.",
+        "The thrusters produce thrust to move the ship.",
+        "A thruster is used for active propulsion.",
+        "The DP system automatically controls the vessel.",
+        "The pilot controls the thrusters manually.",
+        "The vessel must maintain its position and heading.",
+        "The vessel stays in a fixed position during operations.",
+        "The system automatically corrects any drift.",
+        "Active thrust is essential for DP.",
+        "The main purpose of DP is to hold position.",
+        "Any movement is quickly corrected by the system.",
+        "Each degree of freedom is monitored.",
+        "The system gives the vessel six degrees of freedom."
     ];
 
     // --- Basic Questions ---
@@ -159,42 +193,42 @@ export default function LessonDynamicPositioning() {
             "Permitir que uma embarcação mantenha uma posição e um rumo fixos exclusivamente por meio de empuxo ativo.",
     };
 
-    // --- Degrees of Freedom (updated with Portuguese terms and descriptions) ---
-    const degreesOfFreedom = {
-        controlled: [
+    // --- Degrees of Freedom (atualizado) ---
+    const degreesData = {
+        linear: [
             {
-                name: "Surge",
-                portuguese: "Avanço / Recuo",
-                description: "Movimento linear para frente e para trás ao longo do eixo longitudinal da embarcação. É controlado pelo DP para manter a posição."
+                name: "SURGE",
+                portuguese: "Avanço e recuo",
+                description: "Movimento para frente e para trás, ao longo do eixo longitudinal do navio."
             },
             {
-                name: "Sway",
-                portuguese: "Abatimento",
-                description: "Movimento linear para os lados (bombordo e boreste) ao longo do eixo transversal. O DP controla este movimento para evitar desvios laterais."
+                name: "SWAY",
+                portuguese: "Deriva / deslocamento lateral",
+                description: "Movimento de um lado para o outro, entre bombordo e boreste."
             },
             {
-                name: "Yaw",
-                portuguese: "Cabeceio",
-                description: "Rotação em torno do eixo vertical da embarcação. O DP controla o yaw para manter o rumo (heading) definido."
-            },
+                name: "HEAVE",
+                portuguese: "Movimento vertical",
+                description: "Movimento de subida e descida vertical da embarcação, sem inclinação."
+            }
         ],
-        monitored: [
+        rotational: [
             {
-                name: "Pitch",
-                portuguese: "Caturro",
-                description: "Rotação em torno do eixo transversal (de bombordo a boreste). É monitorado, mas NÃO controlado pelo DP — depende das condições do mar e do design do casco."
+                name: "ROLL",
+                portuguese: "Rolamento",
+                description: "Inclinação da embarcação de bombordo para boreste e de boreste para bombordo."
             },
             {
-                name: "Roll",
-                portuguese: "Balanço",
-                description: "Rotação em torno do eixo longitudinal (de proa a popa). É monitorado para segurança, mas NÃO é controlado ativamente pelo DP."
-            },
-            {
-                name: "Heave",
+                name: "PITCH",
                 portuguese: "Arfagem",
-                description: "Movimento linear vertical para cima e para baixo. É monitorado, mas NÃO é controlado pelo DP, pois depende da ondulação do mar."
+                description: "Movimento de proa para cima e para baixo; a proa sobe enquanto a popa desce, e vice-versa."
             },
-        ],
+            {
+                name: "YAW",
+                portuguese: "Guinada",
+                description: "Rotação da embarcação em torno do eixo vertical, fazendo a proa apontar para uma direção diferente."
+            }
+        ]
     };
 
     // --- Grammar: Present Simple ---
@@ -206,8 +240,8 @@ export default function LessonDynamicPositioning() {
     ];
 
     const presentSimpleNegative = [
-        { english: "The DP system does not use anchors.", portuguese: "O sistema DP não usa âncoras." },
-        { english: "ROVs do not need oxygen.", portuguese: "ROVs não precisam de oxigênio." },
+        { english: "The DP system doesn't use anchors.", portuguese: "O sistema DP não usa âncoras." },
+        { english: "ROVs don't need oxygen.", portuguese: "ROVs não precisam de oxigênio." },
     ];
 
     const presentSimpleQuestions = [
@@ -261,18 +295,18 @@ export default function LessonDynamicPositioning() {
         { question: "Which three degrees of freedom are controlled by DP?", answer: "Surge, Sway and Yaw." },
     ];
 
-    // --- Useful Expressions ---
+    // --- Useful Expressions (com traduções) ---
     const usefulExpressions = [
-        "The vessel maintains its position.",
-        "The vessel maintains its heading.",
-        "The DP system controls the vessel automatically.",
-        "Thrusters produce active thrust.",
-        "The vessel is in Auto-DP mode.",
-        "We have visual contact.",
-        "Maintain your heading.",
-        "The mission has been completed successfully.",
-        "The thrusters are working properly.",
-        "The vessel is at sea.",
+        { english: "The vessel maintains its position.", portuguese: "A embarcação mantém sua posição." },
+        { english: "The vessel maintains its heading.", portuguese: "A embarcação mantém seu rumo." },
+        { english: "The DP system controls the vessel automatically.", portuguese: "O sistema DP controla a embarcação automaticamente." },
+        { english: "Thrusters produce active thrust.", portuguese: "Os propulsores produzem empuxo ativo." },
+        { english: "The vessel is in Auto-DP mode.", portuguese: "A embarcação está em modo Auto-DP." },
+        { english: "We have visual contact.", portuguese: "Temos contato visual." },
+        { english: "Maintain your heading.", portuguese: "Mantenha seu rumo." },
+        { english: "The mission has been completed successfully.", portuguese: "A missão foi concluída com sucesso." },
+        { english: "The thrusters are working properly.", portuguese: "Os propulsores estão funcionando corretamente." },
+        { english: "The vessel is at sea.", portuguese: "A embarcação está no mar." },
     ];
 
     return (
@@ -336,16 +370,18 @@ export default function LessonDynamicPositioning() {
 
                         {openDrills.vocabulary && (
                             <div className="mt-6 bg-blue-50 rounded-2xl p-5 space-y-3 animate-fadeIn">
-                                {vocabulary.slice(0, 12).map((item, index) => (
+                                {vocabulary.map((item, index) => (
                                     <div key={index} className="p-3 bg-white rounded-xl border border-blue-200">
                                         <p className="text-lg font-medium text-gray-800">
-                                            {index + 1}.{" "}
                                             <span
                                                 className="text-blue-600 font-bold cursor-pointer hover:text-blue-800"
                                                 onClick={() => playAudio(item.english)}
                                             >
                                                 {item.english}
                                             </span> — {item.portuguese}
+                                        </p>
+                                        <p className="text-sm text-gray-600 mt-1">
+                                            📝 {vocabularySentences[index]}
                                         </p>
                                     </div>
                                 ))}
@@ -354,30 +390,7 @@ export default function LessonDynamicPositioning() {
                     </div>
                 </div>
 
-                {/* ===== SECTION 2 — WORD COMBINATIONS ===== */}
-                <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
-                    <div className="bg-blue-600 text-white py-4 px-6">
-                        <h2 className="text-2xl font-bold">🔹 Word Combinations</h2>
-                        <p className="text-sm text-blue-100 italic">Learn these phrases together</p>
-                    </div>
-                    <div className="p-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            {wordCombinations.map((item, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => playAudio(item.english)}
-                                    className="bg-blue-50 hover:bg-blue-100 p-3 rounded-xl text-left transition-colors border border-blue-200"
-                                >
-                                    <span className="text-blue-700 font-bold">{item.english}</span>
-                                    <br />
-                                    <span className="text-sm text-gray-600">{item.portuguese}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* ===== SECTION 3 — READING ===== */}
+                {/* ===== SECTION 2 — READING ===== */}
                 <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
                     <div className="bg-blue-600 text-white py-4 px-6 flex flex-wrap justify-between items-center gap-3">
                         <div>
@@ -451,7 +464,7 @@ export default function LessonDynamicPositioning() {
                     </div>
                 </div>
 
-                {/* ===== SECTION 4 — BASIC QUESTIONS ===== */}
+                {/* ===== SECTION 3 — BASIC QUESTIONS ===== */}
                 <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
                     <div className="bg-blue-600 text-white py-4 px-6 flex flex-wrap justify-between items-center gap-3">
                         <div>
@@ -483,12 +496,12 @@ export default function LessonDynamicPositioning() {
                     </div>
                 </div>
 
-                {/* ===== SECTION 5 — 6 DEGREES OF FREEDOM (Updated with Portuguese terms) ===== */}
+                {/* ===== SECTION 4 — 6 DEGREES OF FREEDOM (COM CARROSSEL DE IMAGENS) ===== */}
                 <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
                     <div className="bg-blue-600 text-white py-4 px-6 flex flex-wrap justify-between items-center gap-3">
                         <div>
                             <h2 className="text-2xl font-bold">🔹 6 Degrees of Freedom — Movimentos da Embarcação</h2>
-                            <p className="text-sm text-blue-100 italic">Quais movimentos são controlados pelo DP?</p>
+                            <p className="text-sm text-blue-100 italic">Os seis movimentos que uma embarcação pode ter</p>
                         </div>
                         <button
                             onClick={() => toggleDrill("degrees")}
@@ -498,11 +511,11 @@ export default function LessonDynamicPositioning() {
                         </button>
                     </div>
                     <div className="p-6">
-                        {/* Controlled by DP */}
+                        {/* Movimentos Lineares */}
                         <div className="mb-6">
-                            <h3 className="text-lg font-bold text-green-700 mb-3">✅ Controlados pelo DP</h3>
+                            <h3 className="text-lg font-bold text-green-700 mb-3">📏 Lineares (deslocamento)</h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {degreesOfFreedom.controlled.map((item) => (
+                                {degreesData.linear.map((item) => (
                                     <div key={item.name} className="bg-green-50 border-2 border-green-300 p-4 rounded-xl">
                                         <div className="flex items-center gap-2 mb-2">
                                             <button
@@ -519,11 +532,11 @@ export default function LessonDynamicPositioning() {
                             </div>
                         </div>
 
-                        {/* Monitored (not controlled) */}
+                        {/* Movimentos Rotacionais */}
                         <div>
-                            <h3 className="text-lg font-bold text-yellow-700 mb-3">👁️ Monitorados (NÃO controlados)</h3>
+                            <h3 className="text-lg font-bold text-yellow-700 mb-3">🔄 Rotacionais (inclinação/rotação)</h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {degreesOfFreedom.monitored.map((item) => (
+                                {degreesData.rotational.map((item) => (
                                     <div key={item.name} className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
                                         <div className="flex items-center gap-2 mb-2">
                                             <button
@@ -540,24 +553,186 @@ export default function LessonDynamicPositioning() {
                             </div>
                         </div>
 
+                        {/* Carrossel de imagens */}
+                        <div className="mt-8">
+                            <h4 className="text-lg font-bold text-blue-700 mb-4 text-center">
+                                🖼️ Visualização dos Movimentos
+                            </h4>
+                            <div className="relative bg-gray-100 rounded-2xl p-4 shadow-inner">
+                                {/* Container da imagem com navegação */}
+                                <div className="relative flex items-center justify-center">
+                                    {/* Botão anterior */}
+                                    <button
+                                        onClick={goToPrevious}
+                                        className="absolute left-2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all hover:scale-110"
+                                        aria-label="Imagem anterior"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                    </button>
+
+                                    {/* Imagem */}
+                                    <div
+                                        className="cursor-pointer rounded-xl overflow-hidden shadow-md max-w-3xl mx-auto"
+                                        onClick={openLightbox}
+                                    >
+                                        <img
+                                            src={degreeImages[currentImageIndex]}
+                                            alt={`Six Degrees of Freedom - ${currentImageIndex + 1}`}
+                                            className="w-full h-auto max-h-96 object-contain transition-transform hover:scale-[1.01]"
+                                        />
+                                    </div>
+
+                                    {/* Botão próximo */}
+                                    <button
+                                        onClick={goToNext}
+                                        className="absolute right-2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all hover:scale-110"
+                                        aria-label="Próxima imagem"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                {/* Indicadores de página */}
+                                <div className="flex justify-center gap-2 mt-4">
+                                    {degreeImages.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => goToImage(index)}
+                                            className={`h-2.5 rounded-full transition-all ${
+                                                currentImageIndex === index
+                                                    ? "w-8 bg-blue-600"
+                                                    : "w-2.5 bg-gray-400 hover:bg-gray-500"
+                                            }`}
+                                            aria-label={`Ir para imagem ${index + 1}`}
+                                        />
+                                    ))}
+                                </div>
+
+                                {/* Legenda e botão expandir */}
+                                <div className="flex justify-between items-center mt-3 px-2">
+                                    <span className="text-sm text-gray-500">
+                                        Imagem {currentImageIndex + 1} de {degreeImages.length}
+                                    </span>
+                                    <button
+                                        onClick={openLightbox}
+                                        className="text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-1.5 rounded-full transition-colors flex items-center gap-1"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5h-4m4 0v-4m0 4l-5-5" />
+                                        </svg>
+                                        Expandir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Resumo e vídeo do YouTube incorporado */}
+                        <div className="mt-6 bg-blue-50 p-4 rounded-xl">
+                            <p className="text-sm text-gray-700">
+                                💡 <strong>Resumo:</strong> <br />
+                                <strong>SURGE + SWAY + HEAVE</strong> = deslocamento linear (frente/trás, lateral, vertical).<br />
+                                <strong>ROLL + PITCH + YAW</strong> = rotação/inclinação (lateral, proa/popa, eixo vertical).
+                            </p>
+                            <div className="mt-4 aspect-w-16 aspect-h-9 w-full max-w-2xl mx-auto">
+                                <iframe
+                                    className="w-full h-64 rounded-xl shadow-lg"
+                                    src="https://www.youtube.com/embed/5yRKj-At5ps?start=94"
+                                    title="Six Degrees of Freedom explained"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
+                        </div>
+
                         {openDrills.degrees && (
-                            <div className="mt-6 bg-blue-50 p-4 rounded-xl animate-fadeIn">
+                            <div className="mt-4 bg-blue-50 p-4 rounded-xl animate-fadeIn">
                                 <p className="text-sm text-gray-700">
-                                    📌 <strong>Exam Question:</strong>{" "}
-                                    <em>Which of the following degrees of freedom is monitored (but NOT controlled) by the DP system?</em>
-                                    <br />
-                                    <span className="font-bold text-blue-600">Answer: Pitch (Caturro).</span>
-                                </p>
-                                <p className="text-sm text-gray-700 mt-2">
-                                    💡 <strong>Resumo:</strong> O DP controla <strong>Surge (Avanço/Recuo)</strong>, <strong>Sway (Abatimento)</strong> e <strong>Yaw (Cabeceio)</strong> para manter a posição e o rumo. 
-                                    Os movimentos <strong>Pitch (Caturro)</strong>, <strong>Roll (Balanço)</strong> e <strong>Heave (Arfagem)</strong> são apenas monitorados, pois dependem das condições do mar.
+                                    📌 <strong>Dica de memorização:</strong> <br />
+                                    • <strong>Lineares:</strong> SURGE (frente/trás), SWAY (esquerda/direita), HEAVE (cima/baixo).<br />
+                                    • <strong>Rotacionais:</strong> ROLL (inclina lateral), PITCH (proa sobe/desce), YAW (gira para mudar o rumo).
                                 </p>
                             </div>
                         )}
                     </div>
                 </div>
 
-                {/* ===== SECTION 6 — GRAMMAR ===== */}
+                {/* ===== LIGHTBOX (TELA CHEIA) ===== */}
+                {isLightboxOpen && (
+                    <div
+                        className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center"
+                        onClick={closeLightbox}
+                        style={{ animation: "fadeIn 0.3s ease-out" }}
+                    >
+                        <div
+                            className="relative max-w-6xl w-full mx-4"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Botão fechar */}
+                            <button
+                                onClick={closeLightbox}
+                                className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors text-3xl"
+                                aria-label="Fechar"
+                            >
+                                ✕
+                            </button>
+
+                            {/* Imagem em tela cheia */}
+                            <img
+                                src={degreeImages[currentImageIndex]}
+                                alt={`Six Degrees of Freedom - ${currentImageIndex + 1}`}
+                                className="w-full h-auto max-h-[85vh] object-contain rounded-xl shadow-2xl"
+                            />
+
+                            {/* Navegação na lightbox */}
+                            <div className="flex justify-between items-center mt-4 px-4">
+                                <button
+                                    onClick={goToPrevious}
+                                    className="bg-white/20 hover:bg-white/30 text-white rounded-full p-3 transition-colors"
+                                    aria-label="Anterior"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                                <span className="text-white text-sm">
+                                    {currentImageIndex + 1} / {degreeImages.length}
+                                </span>
+                                <button
+                                    onClick={goToNext}
+                                    className="bg-white/20 hover:bg-white/30 text-white rounded-full p-3 transition-colors"
+                                    aria-label="Próximo"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            {/* Indicadores da lightbox */}
+                            <div className="flex justify-center gap-2 mt-3">
+                                {degreeImages.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => goToImage(index)}
+                                        className={`h-2 rounded-full transition-all ${
+                                            currentImageIndex === index
+                                                ? "w-6 bg-white"
+                                                : "w-2 bg-white/40 hover:bg-white/60"
+                                        }`}
+                                        aria-label={`Ir para imagem ${index + 1}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* ===== SECTION 5 — GRAMMAR ===== */}
                 <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
                     <div className="bg-blue-600 text-white py-4 px-6 flex flex-wrap justify-between items-center gap-3">
                         <div>
@@ -603,8 +778,8 @@ export default function LessonDynamicPositioning() {
                                         </div>
                                     </div>
                                     <div>
-                                        <p className="font-bold text-blue-600">Negative</p>
-                                        <p className="text-sm text-gray-600">Subject + do/does + not + verb</p>
+                                        <p className="font-bold text-blue-600">Negative (usando <span className="text-red-600">don't</span> e <span className="text-red-600">doesn't</span>)</p>
+                                        <p className="text-sm text-gray-600">Subject + don't/doesn't + verb</p>
                                         <div className="mt-2 space-y-2">
                                             {presentSimpleNegative.map((ex, i) => (
                                                 <button
@@ -696,7 +871,7 @@ export default function LessonDynamicPositioning() {
                     </div>
                 </div>
 
-                {/* ===== SECTION 7 — CONVERSATION ===== */}
+                {/* ===== SECTION 6 — CONVERSATION ===== */}
                 <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
                     <div className="bg-blue-600 text-white py-4 px-6 flex flex-wrap justify-between items-center gap-3">
                         <div>
@@ -749,28 +924,41 @@ export default function LessonDynamicPositioning() {
                     </div>
                 </div>
 
-                {/* ===== SECTION 8 — USEFUL EXPRESSIONS ===== */}
+                {/* ===== SECTION 7 — USEFUL EXPRESSIONS ===== */}
                 <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
-                    <div className="bg-blue-600 text-white py-4 px-6">
-                        <h2 className="text-2xl font-bold">🔹 Useful Expressions</h2>
-                        <p className="text-sm text-blue-100 italic">Professional offshore communication</p>
+                    <div className="bg-blue-600 text-white py-4 px-6 flex flex-wrap justify-between items-center gap-3">
+                        <div>
+                            <h2 className="text-2xl font-bold">🔹 Useful Expressions</h2>
+                            <p className="text-sm text-blue-100 italic">Professional offshore communication</p>
+                        </div>
+                        <button
+                            onClick={() => setShowUsefulTranslations(!showUsefulTranslations)}
+                            className="text-sm bg-blue-700 hover:bg-blue-800 text-white px-4 py-1.5 rounded-full transition-colors"
+                        >
+                            {showUsefulTranslations ? "Hide Translations" : "Show Translations"}
+                        </button>
                     </div>
                     <div className="p-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {usefulExpressions.map((expr, index) => (
                                 <button
                                     key={index}
-                                    onClick={() => playAudio(expr)}
+                                    onClick={() => playAudio(expr.english)}
                                     className="bg-blue-50 hover:bg-blue-100 p-3 rounded-xl text-left transition-colors text-blue-700 font-medium border border-blue-200"
                                 >
-                                    {expr}
+                                    {expr.english}
+                                    {showUsefulTranslations && (
+                                        <div className="text-sm text-gray-600 font-normal mt-1">
+                                            {expr.portuguese}
+                                        </div>
+                                    )}
                                 </button>
                             ))}
                         </div>
                     </div>
                 </div>
 
-                {/* ===== SECTION 9 — SPEAKING PRACTICE ===== */}
+                {/* ===== SECTION 8 — SPEAKING PRACTICE ===== */}
                 <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
                     <div className="bg-blue-600 text-white py-4 px-6 flex flex-wrap justify-between items-center gap-3">
                         <div>
@@ -798,7 +986,7 @@ export default function LessonDynamicPositioning() {
                     </div>
                 </div>
 
-                {/* ===== SECTION 10 — FINAL REVIEW ===== */}
+                {/* ===== SECTION 9 — FINAL REVIEW ===== */}
                 <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-4 px-6">
                         <h2 className="text-2xl font-bold">⭐ Final Review — Lesson 1</h2>
@@ -815,8 +1003,8 @@ export default function LessonDynamicPositioning() {
                                     <li>✅ <strong>Thruster</strong> = equipment that produces thrust</li>
                                     <li>✅ <strong>DP System</strong> = controls position and heading automatically</li>
                                     <li>✅ <strong>Main Purpose</strong> = maintain fixed position and heading using active thrust</li>
-                                    <li>✅ <strong>Controlled movements</strong> = Surge (Avanço/Recuo), Sway (Abatimento), Yaw (Cabeceio)</li>
-                                    <li>✅ <strong>Monitored movements</strong> = Pitch (Caturro), Roll (Balanço), Heave (Arfagem)</li>
+                                    <li>✅ <strong>Linear movements</strong> = SURGE (forward/back), SWAY (side), HEAVE (up/down)</li>
+                                    <li>✅ <strong>Rotational movements</strong> = ROLL (side tilt), PITCH (bow up/down), YAW (turn)</li>
                                 </ul>
                             </div>
                             <div className="md:w-1/2">

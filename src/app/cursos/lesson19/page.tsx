@@ -1,9 +1,144 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Volume2 } from "lucide-react";
 
 type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar';
+
+interface NoteModalState {
+  isOpen: boolean;
+  sectionTitle: string;
+  noteContent: string;
+}
+
+// ============================================
+// SPEECH SYSTEM WITH AMERICAN FEMALE VOICE
+// ============================================
+
+interface SpeakTextProps {
+  text: string;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
+  const speak = () => {
+    if (!text || typeof window === 'undefined') return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    const voices = window.speechSynthesis.getVoices();
+    const americanFemaleVoices = voices.filter(voice =>
+      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+      (voice.name.toLowerCase().includes('samantha') ||
+       voice.name.toLowerCase().includes('google us english') ||
+       voice.name.toLowerCase().includes('siri') ||
+       voice.name.toLowerCase().includes('female') ||
+       voice.name === 'Google US English' ||
+       voice.name === 'Samantha')
+    );
+    const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+    if (americanFemaleVoices.length > 0) utterance.voice = americanFemaleVoices[0];
+    else if (americanVoices.length > 0) utterance.voice = americanVoices[0];
+    window.speechSynthesis.speak(utterance);
+  };
+
+  return (
+    <button
+      onClick={speak}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
+      title="Click to hear American pronunciation"
+    >
+      {children || text}
+      <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+    </button>
+  );
+};
+
+const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
+  return (
+    <button
+      onClick={() => {
+        const speechText = children && typeof children === 'string' ? children : text;
+        if (speechText && typeof window !== 'undefined') {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(speechText);
+          utterance.lang = 'en-US';
+          utterance.rate = 0.85;
+          utterance.pitch = 1.0;
+          const voices = window.speechSynthesis.getVoices();
+          const americanFemaleVoices = voices.filter(voice =>
+            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+            (voice.name.toLowerCase().includes('samantha') ||
+             voice.name.toLowerCase().includes('google us english') ||
+             voice.name === 'Google US English')
+          );
+          const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+          if (americanFemaleVoices.length > 0) utterance.voice = americanFemaleVoices[0];
+          else if (americanVoices.length > 0) utterance.voice = americanVoices[0];
+          window.speechSynthesis.speak(utterance);
+        }
+      }}
+      className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors text-left w-full ${className}`}
+    >
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
+    </button>
+  );
+};
+
+// ============================================
+// NOTE MODAL
+// ============================================
+
+function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
+  isOpen: boolean;
+  onClose: () => void;
+  sectionTitle: string;
+  initialNote: string;
+  onSave: (note: string) => void;
+}) {
+  const [note, setNote] = useState(initialNote);
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6">
+          <h3 className="text-xl font-bold">📝 Anotações - {sectionTitle}</h3>
+          <p className="text-sm text-blue-100 mt-1">Escreva suas observações, dúvidas ou traduções</p>
+        </div>
+        <div className="p-6">
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Escreva aqui suas anotações..."
+            className="w-full h-64 p-4 border border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none"
+          />
+        </div>
+        <div className="flex justify-end gap-3 p-6 pt-0">
+          <button onClick={onClose} className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">Cancelar</button>
+          <button onClick={() => { onSave(note); onClose(); }} className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full hover:from-purple-600 hover:to-purple-800 transition-all duration-300">Salvar Anotação</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const PencilIcon = ({ onClick }: { onClick: () => void }) => (
+  <button onClick={onClick} className="ml-3 text-gray-400 hover:text-blue-500 transition-colors focus:outline-none" aria-label="Fazer anotações" title="Clique para fazer anotações">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+    </svg>
+  </button>
+);
+
+// ============================================
+// MAIN COMPONENT – LESSON 19
+// ============================================
 
 export default function Lesson19LifestyleWeeklyPlanning() {
   const router = useRouter();
@@ -13,37 +148,42 @@ export default function Lesson19LifestyleWeeklyPlanning() {
     usefulPhrases: false,
     grammar: false,
   });
+  const [noteModal, setNoteModal] = useState<NoteModalState>({
+    isOpen: false,
+    sectionTitle: '',
+    noteContent: '',
+  });
+  const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
   const [showNumberExplanation, setShowNumberExplanation] = useState(false);
   const [showTimeFormatExplanation, setShowTimeFormatExplanation] = useState(false);
   const [showTellingTimeExplanation, setShowTellingTimeExplanation] = useState(false);
 
   const toggleDrill = (section: SectionKey) => {
-    setOpenDrills({
-      ...openDrills,
-      [section]: !openDrills[section]
+    setOpenDrills(prev => ({ ...prev, [section]: !prev[section] }));
+  };
+
+  const openNoteModal = (sectionTitle: string) => {
+    setNoteModal({
+      isOpen: true,
+      sectionTitle,
+      noteContent: savedNotes[sectionTitle] || '',
     });
   };
 
-  const playAudio = (text: string) => {
-    const formattedText = text
-      .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^\w\s-]/g, '')
-      .replace(/'/g, '')
-      .trim();
-    
-    console.log('Trying to play audio:', `/audios/${formattedText}.mp3`);
-    
-    const audio = new Audio(`/audios/${formattedText}.mp3`);
-    audio.play().catch(e => console.error("Error playing audio:", e));
+  const saveNote = (note: string) => {
+    setSavedNotes(prev => ({ ...prev, [noteModal.sectionTitle]: note }));
   };
 
-  // Image URLs (using Unsplash/Pexels for planning theme)
+  useEffect(() => {
+    if (typeof window !== 'undefined') window.speechSynthesis.getVoices();
+  }, []);
+
+  // Images
   const mainImage = "https://images.unsplash.com/photo-1587614382346-4ec70e388b28?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
   const cookingImage = "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   const cleaningImage = "https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
 
-  // Lesson 19 data
+  // ========== LESSON 19 DATA ==========
   const verbs = [
     { english: "to cook", portuguese: "cozinhar" },
     { english: "to clean", portuguese: "limpar" }
@@ -97,6 +237,40 @@ export default function Lesson19LifestyleWeeklyPlanning() {
     { english: "I usually go to work at 7:00 a.m.", portuguese: "Eu geralmente vou trabalhar às 7:00 da manhã." }
   ];
 
+  // Define highlight words for each sentence (index -> array of words to highlight)
+  const highlightMap: Record<number, string[]> = {
+    0: ["cook", "lunch", "family"],
+    1: ["some", "sauce"],
+    2: ["sleep", "living room"],
+    3: ["do the laundry"],
+    4: ["study", "noon"],
+    5: ["clean", "bedroom"],
+    6: ["clean", "kitchen"],
+    7: ["sleep", "couch"],
+    8: ["go", "work"],
+    9: ["go", "work"]
+  };
+
+  // Helper to render sentence with highlighted words
+  const renderHighlightedSentence = (sentence: string, highlightWords: string[]) => {
+    const highlightedSentence = sentence.split(/(\s+)/).map((part, idx) => {
+      const trimmed = part.trim();
+      if (trimmed.length === 0) return part;
+      const match = highlightWords.find(hw => hw.toLowerCase() === trimmed.toLowerCase());
+      if (match) {
+        return <span key={idx} className="text-blue-600 font-bold">{part}</span>;
+      }
+      return part;
+    });
+    return <span>{highlightedSentence}</span>;
+  };
+
+  const getHighlightedSentence = (index: number) => {
+    const sentence = realLifeSentences[index].english;
+    const highlights = highlightMap[index] || [];
+    return renderHighlightedSentence(sentence, highlights);
+  };
+
   return (
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
@@ -110,424 +284,459 @@ export default function Lesson19LifestyleWeeklyPlanning() {
     >
       <div className="max-w-5xl mx-auto bg-[#f0f8ff] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         
-        {/* Centered title with image below */}
+        {/* Título central com imagem */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-[#0c4a6e] mb-6">
+          <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
             🕒 Lesson 19 - Lifestyle & Weekly Planning
           </h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Learn to talk about daily routines, house chores, telling time, and weekly planning.
-          </p>
+          <SpeakSentence text="Learn to talk about daily routines, house chores, telling time, and weekly planning." className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
+            📚 Learn to talk about daily routines, house chores, telling time, and weekly planning.
+          </SpeakSentence>
           <div className="w-64 h-64 mx-auto">
-            <img
-              src={mainImage}
-              alt="Weekly planning calendar"
-              className="w-full h-full object-cover rounded-2xl shadow-md"
-            />
+            <img src={mainImage} alt="Weekly planning calendar" className="w-full h-full object-cover rounded-2xl shadow-md" />
           </div>
         </div>
 
-        {/* Section 1 - Verbs with Drill */}
+        {/* ===================== SECTION 1 – VERBS ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold">🔹 Verbs</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Clique nos verbos para ouvir a pronúncia e praticar suas formas
-              </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 VERBS</h2>
+              <PencilIcon onClick={() => openNoteModal('Verbs')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('verbs')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
-              {openDrills.verbs ? 'Esconder Prática' : 'Mostrar Prática'}
+              {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
           <div className="p-8">
+            <SpeakSentence text="Click on the verbs to hear the pronunciation and practice their forms" className="text-md text-gray-600 mb-4 italic">
+              🎧 Click on the verbs to hear the pronunciation and practice their forms
+            </SpeakSentence>
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
               {verbs.map((verb, index) => (
                 <li key={index}>
-                  <button 
-                    onClick={() => playAudio(verb.english)} 
-                    className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                  >
-                    {verb.english}
-                  </button> = {verb.portuguese}
+                  <SpeakText text={verb.english} className="text-blue-600 font-bold">{verb.english}</SpeakText> = {verb.portuguese}
                 </li>
               ))}
             </ul>
-            
+
             {openDrills.verbs && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('cook')}>cook</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I cook')}>I cook</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We cook')}>We cook</span>.
+                    <span className="block text-xl font-semibold">
+                      1. <SpeakText text="I cook" className="text-blue-600 font-bold">I cook</SpeakText> / <SpeakText text="We cook" className="text-blue-600 font-bold">We cook</SpeakText>.
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 eu cozinho / nós cozinhamos</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">cozinhar / Eu cozinho / Nós cozinhamos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They cook')}>They cook</span>.
+                    <span className="block text-xl font-semibold">
+                      2. <SpeakText text="They cook" className="text-blue-600 font-bold">They cook</SpeakText>.
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 eles/elas cozinham</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Eles/Elas cozinham</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I do not cook at home')}>I do not cook at home</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They do not cook')}>They</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We do not cook')}>We</span>.
+                    <span className="block text-xl font-semibold">
+                      3. <SpeakText text="I do not cook at home" className="text-blue-600 font-bold">I do not cook at home</SpeakText> / <SpeakText text="They do not cook" className="text-blue-600 font-bold">They</SpeakText> / <SpeakText text="We do not cook" className="text-blue-600 font-bold">We</SpeakText>.
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 eu não cozinho em casa / eles não cozinham / nós não cozinhamos</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Eu não cozinho em casa. / Eles não cozinham / Nós não cozinhamos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you cook')}>Do you cook</span>? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('What do you cook')}>What do you cook</span>? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('When do you cook')}>When</span>?
+                    <span className="block text-xl font-semibold">
+                      4. <SpeakText text="Do you cook?" className="text-blue-600 font-bold">Do you cook?</SpeakText> / <SpeakText text="What do you cook?" className="text-blue-600 font-bold">What do you cook?</SpeakText> / <SpeakText text="When do you cook?" className="text-blue-600 font-bold">When do you cook?</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 você cozinha? / o que você cozinha? / quando?</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Você cozinha? / O que você cozinha? / Quando?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    5. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('What do you like to cook')}>What do you like to cook</span>? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('What do you want to cook')}>want</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('What do you prefer to cook')}>prefer</span>.
+                    <span className="block text-xl font-semibold">
+                      5. <SpeakText text="What do you like to cook?" className="text-blue-600 font-bold">What do you like to cook?</SpeakText> / <SpeakText text="What do you want to cook?" className="text-blue-600 font-bold">want?</SpeakText> / <SpeakText text="What do you prefer to cook?" className="text-blue-600 font-bold">prefer?</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 o que você gosta de cozinhar? / quer / prefere</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">O que você gosta de cozinhar? / quer / prefere</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I cook for my wife')}>I cook for my wife</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I cook for my mother')}>my mother</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I cook for my children')}>my children</span>.
+                    <span className="block text-xl font-semibold">
+                      6. <SpeakText text="I cook for my wife" className="text-blue-600 font-bold">I cook for my wife</SpeakText> / <SpeakText text="my mother" className="text-blue-600 font-bold">my mother</SpeakText> / <SpeakText text="my children" className="text-blue-600 font-bold">my children</SpeakText>.
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 eu cozinho para minha esposa / minha mãe / meus filhos</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Eu cozinho para minha esposa. / minha mãe / meus filhos</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    7. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I like to cook for you')}>I like to cook for you</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We like to cook for you')}>We</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They like to cook for you')}>They</span>.
+                    <span className="block text-xl font-semibold">
+                      7. <SpeakText text="I like to cook for you" className="text-blue-600 font-bold">I like to cook for you</SpeakText> / <SpeakText text="We" className="text-blue-600 font-bold">We</SpeakText> / <SpeakText text="They" className="text-blue-600 font-bold">They</SpeakText>.
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 eu gosto de cozinhar para você / nós / eles/elas</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Eu gosto de cozinhar para você. / Nós / Eles/Elas</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    8. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('clean')}>clean</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I clean')}>I clean</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We clean')}>We</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They clean')}>They</span>.
+                    <span className="block text-xl font-semibold">
+                      8. <SpeakText text="clean" className="text-blue-600 font-bold">clean</SpeakText> / <SpeakText text="I clean" className="text-blue-600 font-bold">I clean</SpeakText> / <SpeakText text="We clean" className="text-blue-600 font-bold">We</SpeakText> / <SpeakText text="They clean" className="text-blue-600 font-bold">They</SpeakText>.
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 limpar / eu limpo / nós limpamos / eles limpam</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">limpar / Eu limpo / Nós limpamos / Eles limpam</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    9. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I do not clean')}>I do not clean</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('We do not clean')}>We</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They do not clean')}>They</span>.
+                    <span className="block text-xl font-semibold">
+                      9. <SpeakText text="I do not clean" className="text-blue-600 font-bold">I do not clean</SpeakText> / <SpeakText text="We do not clean" className="text-blue-600 font-bold">We</SpeakText> / <SpeakText text="They do not clean" className="text-blue-600 font-bold">They</SpeakText>.
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 eu não limpo / nós não limpamos / eles não limpam</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Eu não limpo. / Nós não limpamos / Eles não limpam</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 2 - Vocabulary with Drill */}
+        {/* ===================== SECTION 2 – VOCABULARY ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold">🔹 New Vocabulary</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Clique em cada palavra para ouvir sua pronúncia correta
-              </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 NEW WORDS</h2>
+              <PencilIcon onClick={() => openNoteModal('New Words')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('vocabulary')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
-              {openDrills.vocabulary ? 'Esconder Prática' : 'Mostrar Prática'}
+              {openDrills.vocabulary ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
           <div className="p-8">
-            <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <SpeakSentence text="Click on each word to hear its correct pronunciation" className="text-md text-gray-600 mb-4 italic">
+              🎧 Click on each word to hear its correct pronunciation
+            </SpeakSentence>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {newWords.map((word, index) => (
-                <li key={index}>
-                  <button 
-                    onClick={() => playAudio(word.english)} 
-                    className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                  >
+                <div key={index} className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                  <SpeakText text={word.english} className="text-blue-600 font-bold cursor-pointer text-left w-full block">
                     {word.english}
-                  </button> = {word.portuguese}
-                </li>
+                  </SpeakText>
+                  <div className="text-gray-600 text-sm mt-1">{word.portuguese}</div>
+                </div>
               ))}
-            </ul>
-            
+            </div>
+
             {openDrills.vocabulary && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I love to eat pasta for dinner')}>I love to eat pasta for dinner</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I love to eat chicken for dinner')}>chicken</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I love to eat fish for dinner')}>fish</span>.
+                    <span className="block text-xl font-semibold">
+                      1. <SpeakText text="I love to eat pasta for dinner" className="text-blue-600 font-bold">I love to eat pasta for dinner</SpeakText> / <SpeakText text="chicken" className="text-blue-600 font-bold">chicken</SpeakText> / <SpeakText text="fish" className="text-blue-600 font-bold">fish</SpeakText>.
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 eu adoro comer macarrão no jantar / frango / peixe</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Eu adoro comer macarrão no jantar. / frango / peixe</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They want to cook pasta today')}>They want to cook pasta today</span>. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They want to cook vegetables today')}>vegetables</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('They want to cook beans today')}>beans</span>.
+                    <span className="block text-xl font-semibold">
+                      2. <SpeakText text="They want to cook pasta today" className="text-blue-600 font-bold">They want to cook pasta today</SpeakText> / <SpeakText text="vegetables" className="text-blue-600 font-bold">vegetables</SpeakText> / <SpeakText text="beans" className="text-blue-600 font-bold">beans</SpeakText>.
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 eles querem cozinhar macarrão hoje / legumes / feijão</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Eles querem cozinhar macarrão hoje. / legumes / feijão</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    3. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you want some sauce')}>Do you want some sauce</span>? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you want some coffee')}>coffee</span> / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you want some tea')}>tea</span>.
+                    <span className="block text-xl font-semibold">
+                      3. <SpeakText text="Do you want some sauce?" className="text-blue-600 font-bold">Do you want some sauce?</SpeakText> / <SpeakText text="Do you want some coffee?" className="text-blue-600 font-bold">coffee?</SpeakText> / <SpeakText text="Do you want some tea?" className="text-blue-600 font-bold">tea?</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 você quer um pouco de molho? / café? / chá?</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Você quer um pouco de molho? / café / chá</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    4. Eu quero um pouco de sopa, por favor. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I want some water please')}>I want some water, please</span>. / Eu quero um pouco de batatas fritas, por favor.
+                    <span className="block text-xl font-semibold">
+                      4. <SpeakText text="I want some soup, please." className="text-blue-600 font-bold">I want some soup, please.</SpeakText> / <SpeakText text="I want some water, please." className="text-blue-600 font-bold">I want some water, please.</SpeakText> / <SpeakText text="I want some french fries, please." className="text-blue-600 font-bold">I want some french fries, please.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Eu quero um pouco de sopa, por favor. / Eu quero um pouco de água, por favor. / Eu quero um pouco de batatas fritas, por favor.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">I want some soup, please. / I want some water, please. / I want some fries, please.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    5. Eu tenho alguns amigos no Reino Unido. / Eu tenho alguns amigos nos Estados Unidos.
+                    <span className="block text-xl font-semibold">
+                      5. <SpeakText text="I have some friends in the United Kingdom." className="text-blue-600 font-bold">I have some friends in the United Kingdom.</SpeakText> / <SpeakText text="I have some friends in the United States." className="text-blue-600 font-bold">I have some friends in the United States.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Eu tenho alguns amigos no Reino Unido. / Eu tenho alguns amigos nos Estados Unidos.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">I have some friends in the United Kingdom. / I have some friends in the United States.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('Do you have time to study')}>Do you have time to study</span>? / Você tem tempo para ir ao restaurante? / Você tem tempo para ir ao shopping?
+                    <span className="block text-xl font-semibold">
+                      6. <SpeakText text="Do you have time to study?" className="text-blue-600 font-bold">Do you have time to study?</SpeakText> / <SpeakText text="Do you have time to go to the restaurant?" className="text-blue-600 font-bold">Do you have time to go to the restaurant?</SpeakText> / <SpeakText text="Do you have time to go to the mall?" className="text-blue-600 font-bold">Do you have time to go to the mall?</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Você tem tempo para estudar? / Você tem tempo para ir ao restaurante? / Você tem tempo para ir ao shopping?</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Você tem tempo para estudar? / Do you have time to go to the restaurant? / Do you have time to go to the mall?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    7. Eu não quero limpar o banheiro agora. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I do not want to clean the kitchen now')}>I do not want to clean the kitchen now</span>. / Eu não quero limpar a mesa agora.
+                    <span className="block text-xl font-semibold">
+                      7. <SpeakText text="I don't want to clean the bathroom now." className="text-blue-600 font-bold">I don't want to clean the bathroom now.</SpeakText> / <SpeakText text="I don't want to clean the kitchen now." className="text-blue-600 font-bold">I don't want to clean the kitchen now.</SpeakText> / <SpeakText text="I don't want to clean the table now." className="text-blue-600 font-bold">I don't want to clean the table now.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Eu não quero limpar o banheiro agora. / Eu não quero limpar a cozinha agora. / Eu não quero limpar a mesa agora.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">I don't want to clean the bathroom now. / I don't want to clean the kitchen now. / I don't want to clean the table now.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    8. Quando você limpa seu quarto? / Quando você limpa sua cozinha? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('When do you clean your couch')}>When do you clean your couch</span>?
+                    <span className="block text-xl font-semibold">
+                      8. <SpeakText text="When do you clean your bedroom?" className="text-blue-600 font-bold">When do you clean your bedroom?</SpeakText> / <SpeakText text="When do you clean your kitchen?" className="text-blue-600 font-bold">When do you clean your kitchen?</SpeakText> / <SpeakText text="When do you clean your couch?" className="text-blue-600 font-bold">When do you clean your couch?</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Quando você limpa seu quarto? / Quando você limpa sua cozinha? / Quando você limpa seu sofá?</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">When do you clean your bedroom? / When do you clean your kitchen? / When do you clean your couch?</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 3 - Useful Phrases with Drill */}
+        {/* ===================== SECTION 3 – USEFUL PHRASES ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold">🔹 Useful Phrases</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Pratique frases comuns para comunicação diária e dizer as horas
-              </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 Speak Like a Native</h2>
+              <PencilIcon onClick={() => openNoteModal('Useful Phrases')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('usefulPhrases')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
-              {openDrills.usefulPhrases ? 'Esconder Prática' : 'Mostrar Prática'}
+              {openDrills.usefulPhrases ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
           <div className="p-8">
-            <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
+            <SpeakSentence text="Practice common phrases for daily communication and telling time" className="text-md text-gray-600 mb-4 italic">
+              💬 Practice common phrases for daily communication and telling time
+            </SpeakSentence>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               {usefulPhrases.map((phrase, index) => (
-                <li key={index}>
-                  <button 
-                    onClick={() => playAudio(phrase.english)} 
-                    className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                  >
+                <div key={index} className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <SpeakSentence text={phrase.english} className="text-blue-600 font-bold cursor-pointer text-lg mb-2 block">
                     {phrase.english}
-                  </button> = {phrase.portuguese}
-                </li>
+                  </SpeakSentence>
+                  <div className="text-gray-600">{phrase.portuguese}</div>
+                </div>
               ))}
-            </ul>
-            
+            </div>
+
             {openDrills.usefulPhrases && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('What time is it')}>What time is it</span>? / São três horas. / São cinco horas. / São nove horas.
+                    <span className="block text-xl font-semibold">
+                      1. <SpeakText text="It's seven o'clock." className="text-blue-600 font-bold">It's seven o'clock.</SpeakText> / <SpeakText text="It's three o'clock." className="text-blue-600 font-bold">It's three o'clock.</SpeakText> / <SpeakText text="It's five o'clock." className="text-blue-600 font-bold">It's five o'clock.</SpeakText> / <SpeakText text="It's nine o'clock." className="text-blue-600 font-bold">It's nine o'clock.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 São sete horas. / São três horas. / São cinco horas. / São nove horas.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Que horas são? / It's three o'clock. / It's five o'clock. / It's nine o'clock.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    2. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('It is two o clock')}>It's two o'clock</span>. / É meio-dia. / É meia-noite.
+                    <span className="block text-xl font-semibold">
+                      2. <SpeakText text="It's two o'clock." className="text-blue-600 font-bold">It's two o'clock.</SpeakText> / <SpeakText text="It's noon." className="text-blue-600 font-bold">It's noon.</SpeakText> / <SpeakText text="It's midnight." className="text-blue-600 font-bold">It's midnight.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 São duas horas. / É meio-dia. / É meia-noite.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">São duas horas. / It's noon. / It's midnight.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    3. Eu almoço com meus colegas de trabalho. / Eu almoço com meus amigos.
+                    <span className="block text-xl font-semibold">
+                      3. <SpeakText text="I have lunch with my coworkers." className="text-blue-600 font-bold">I have lunch with my coworkers.</SpeakText> / <SpeakText text="I have lunch with my friends." className="text-blue-600 font-bold">I have lunch with my friends.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Eu almoço com meus colegas de trabalho. / Eu almoço com meus amigos.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">I have lunch with my coworkers. / I have lunch with my friends.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    4. Eu janto em casa. / Eu janto no trabalho. / Eu janto no restaurante.
+                    <span className="block text-xl font-semibold">
+                      4. <SpeakText text="I have dinner at home." className="text-blue-600 font-bold">I have dinner at home.</SpeakText> / <SpeakText text="I have dinner at work." className="text-blue-600 font-bold">I have dinner at work.</SpeakText> / <SpeakText text="I have dinner at the restaurant." className="text-blue-600 font-bold">I have dinner at the restaurant.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Eu janto em casa. / Eu janto no trabalho. / Eu janto no restaurante.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">I have dinner at home. / I have dinner at work. / I have dinner at the restaurant.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    5. Você toma café da manhã sozinho?
+                    <span className="block text-xl font-semibold">
+                      5. <SpeakText text="Do you have breakfast alone?" className="text-blue-600 font-bold">Do you have breakfast alone?</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Você toma café da manhã sozinho?</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Do you have breakfast alone?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    6. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I do the dishes every day')}>I do the dishes every day</span>. / Eu lavo a louça de manhã. / Eu lavo a louça à noite.
+                    <span className="block text-xl font-semibold">
+                      6. <SpeakText text="I do the dishes every day." className="text-blue-600 font-bold">I do the dishes every day.</SpeakText> / <SpeakText text="I do the dishes in the morning." className="text-blue-600 font-bold">I do the dishes in the morning.</SpeakText> / <SpeakText text="I do the dishes at night." className="text-blue-600 font-bold">I do the dishes at night.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Eu lavo a louça todos os dias. / Eu lavo a louça de manhã. / Eu lavo a louça à noite.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Eu lavo a louça todos os dias. / I do the dishes in the morning. / I do the dishes at night.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    7. Você precisa lavar roupa hoje? / Você precisa lavar roupa agora? / Você precisa lavar roupa à tarde?
+                    <span className="block text-xl font-semibold">
+                      7. <SpeakText text="Do you need to do the laundry today?" className="text-blue-600 font-bold">Do you need to do the laundry today?</SpeakText> / <SpeakText text="Do you need to do the laundry now?" className="text-blue-600 font-bold">now?</SpeakText> / <SpeakText text="Do you need to do the laundry in the afternoon?" className="text-blue-600 font-bold">in the afternoon?</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Você precisa lavar roupa hoje? / Você precisa lavar roupa agora? / Você precisa lavar roupa à tarde?</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Do you need to do the laundry today? / Do you need to do the laundry now? / Do you need to do the laundry in the afternoon?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    8. Eu não gosto de lavar louça. / E você? / Eles não gostam de lavar louça. / Nós não gostamos de lavar louça.
+                    <span className="block text-xl font-semibold">
+                      8. <SpeakText text="I don't like to do the dishes." className="text-blue-600 font-bold">I don't like to do the dishes.</SpeakText> / <SpeakText text="And you?" className="text-blue-600 font-bold">And you?</SpeakText> / <SpeakText text="They don't like to do the dishes." className="text-blue-600 font-bold">They don't like to do the dishes.</SpeakText> / <SpeakText text="We don't like to do the dishes." className="text-blue-600 font-bold">We don't like to do the dishes.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Eu não gosto de lavar louça. / E você? / Eles não gostam de lavar louça. / Nós não gostamos de lavar louça.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">I don't like to do the dishes. / And you? / They don't like to do the dishes. / We don't like to do the dishes.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    9. Eu não quero lavar roupa agora. / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I do not want to have lunch now')}>I do not want to have lunch now</span>. / Eu não quero jantar agora.
+                    <span className="block text-xl font-semibold">
+                      9. <SpeakText text="I don't want to do the laundry now." className="text-blue-600 font-bold">I don't want to do the laundry now.</SpeakText> / <SpeakText text="I don't want to have lunch now." className="text-blue-600 font-bold">I don't want to have lunch now.</SpeakText> / <SpeakText text="I don't want to have dinner now." className="text-blue-600 font-bold">I don't want to have dinner now.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Eu não quero lavar roupa agora. / Eu não quero almoçar agora. / Eu não quero jantar agora.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">I don't want to do the laundry now. / I don't want to have lunch now. / I don't want to have dinner now.</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 4 - Grammar with Drill */}
+        {/* ===================== SECTION 4 – GRAMMAR ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold">🔹 Grammar</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Estruturas para perguntar sobre rotinas diárias e horários
-              </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 GRAMMAR</h2>
+              <PencilIcon onClick={() => openNoteModal('Grammar')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('grammar')}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full transition-colors"
+              className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
-              {openDrills.grammar ? 'Esconder Prática' : 'Mostrar Prática'}
+              {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
           <div className="p-8">
+            <SpeakSentence text="Structures for asking about daily routines and schedules" className="text-md text-gray-600 mb-4 italic">
+              📚 Structures for asking about daily routines and schedules
+            </SpeakSentence>
             <div className="bg-blue-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
               {grammarExamples.map((example, index) => (
-                <p key={index}>
-                  <button 
-                    onClick={() => playAudio(example.english)} 
-                    className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 transition-colors"
-                  >
+                <div key={index} className="p-3 bg-white rounded-lg">
+                  <SpeakSentence text={example.english} className="text-blue-600 font-bold cursor-pointer text-left w-full block">
                     {example.english}
-                  </button> = {example.portuguese}
-                </p>
+                  </SpeakSentence>
+                  <div className="text-gray-600 text-sm mt-1">{example.portuguese}</div>
+                </div>
               ))}
             </div>
-            
+
             {openDrills.grammar && (
-              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+              <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    1. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('What time do you go to bed')}>What time do you go to bed</span>?
+                    <span className="block text-xl font-semibold">
+                      1. <SpeakText text="What time do you go to bed?" className="text-blue-600 font-bold">What time do you go to bed?</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 A que horas você vai dormir?</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">A que horas você vai dormir?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    2. A que horas você toma banho? / A que horas você lê seus e-mails? / A que horas você estuda inglês?
+                    <span className="block text-xl font-semibold">
+                      2. <SpeakText text="What time do you take a shower?" className="text-blue-600 font-bold">What time do you take a shower?</SpeakText> / <SpeakText text="What time do you read your emails?" className="text-blue-600 font-bold">What time do you read your emails?</SpeakText> / <SpeakText text="What time do you study English?" className="text-blue-600 font-bold">What time do you study English?</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 A que horas você toma banho? / A que horas você lê seus e-mails? / A que horas você estuda inglês?</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">What time do you take a shower? / What time do you read your emails? / What time do you study English?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    3. A que horas você quer ir ao shopping? / A que horas você quer ir ao restaurante? / <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('What time do you want to go to the hospital')}>What time do you want to go to the hospital</span>?
+                    <span className="block text-xl font-semibold">
+                      3. <SpeakText text="What time do you want to go to the mall?" className="text-blue-600 font-bold">What time do you want to go to the mall?</SpeakText> / <SpeakText text="What time do you want to go to the restaurant?" className="text-blue-600 font-bold">What time do you want to go to the restaurant?</SpeakText> / <SpeakText text="What time do you want to go to the hospital?" className="text-blue-600 font-bold">What time do you want to go to the hospital?</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 A que horas você quer ir ao shopping? / A que horas você quer ir ao restaurante? / A que horas você quer ir ao hospital?</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">What time do you want to go to the mall? / What time do you want to go to the restaurant? / What time do you want to go to the hospital?</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    4. <span className="text-blue-600 font-bold cursor-pointer hover:text-blue-800" onClick={() => playAudio('I go to school at seven o clock')}>I go to school at seven o'clock</span>. / Eu vou para a escola às seis horas. / Eu vou para a escola às oito horas.
+                    <span className="block text-xl font-semibold">
+                      4. <SpeakText text="I go to school at seven o'clock." className="text-blue-600 font-bold">I go to school at seven o'clock.</SpeakText> / <SpeakText text="I go to school at six o'clock." className="text-blue-600 font-bold">I go to school at six o'clock.</SpeakText> / <SpeakText text="I go to school at eight o'clock." className="text-blue-600 font-bold">I go to school at eight o'clock.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Eu vou para a escola às sete horas. / Eu vou para a escola às seis horas. / Eu vou para a escola às oito horas.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">Eu vou para a escola às sete horas. / I go to school at six o'clock. / I go to school at eight o'clock.</p>
                 </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200">
+                <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <p className="text-lg font-medium text-gray-800">
-                    5. Eu não vou dormir às onze horas. / Eu não vou dormir às dez horas. / Eu não vou dormir à meia-noite.
+                    <span className="block text-xl font-semibold">
+                      5. <SpeakText text="I don't go to bed at eleven o'clock." className="text-blue-600 font-bold">I don't go to bed at eleven o'clock.</SpeakText> / <SpeakText text="I don't go to bed at ten o'clock." className="text-blue-600 font-bold">I don't go to bed at ten o'clock.</SpeakText> / <SpeakText text="I don't go to bed at midnight." className="text-blue-600 font-bold">I don't go to bed at midnight.</SpeakText>
+                    </span>
+                    <span className="block text-sm text-gray-500 mt-1">🇧🇷 Eu não vou dormir às onze horas. / Eu não vou dormir às dez horas. / Eu não vou dormir à meia-noite.</span>
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">I don't go to bed at eleven o'clock. / I don't go to bed at ten o'clock. / I don't go to bed at midnight.</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 5 - Real Life Practice */}
+        {/* ===================== SECTION 5 – MAKE IT YOURS ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">🔹 Real Life Practice</h2>
-            <p className="mt-2 text-blue-100 italic">
-              Pratique rotinas diárias, tarefas domésticas e gerenciamento de tempo em situações cotidianas
-            </p>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">🔹 Make It Yours</h2>
+              <PencilIcon onClick={() => openNoteModal('Make It Yours')} />
+            </div>
+            <div className="text-sm text-blue-100">
+              Practice daily routines, house chores, and time management
+            </div>
           </div>
-          
           <div className="p-8">
+            {/* Legenda para substituição */}
+            <div className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
+              <p className="text-sm text-gray-700">
+                <span className="font-bold">💡 Dica:</span> Substitua as palavras destacadas em <span className="text-blue-600 font-bold">azul</span> ou <span className="text-purple-600 font-bold">roxo</span> por outras palavras para criar novas frases. 
+                Por exemplo: <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">"I <span className="text-blue-600 font-bold">cook</span> <span className="text-purple-600 font-bold">lunch</span> for my <span className="text-blue-600 font-bold">family</span>."</span> → 
+                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">"I <span className="text-blue-600 font-bold">clean</span> the <span className="text-purple-600 font-bold">kitchen</span> for my <span className="text-blue-600 font-bold">mother</span>."</span>
+              </p>
+            </div>
+
             <div className="bg-blue-50 rounded-[20px] p-6">
               <div className="flex flex-col lg:flex-row gap-8">
-                {/* Sentences - 2/3 width on large */}
-                <div className="lg:w-2/3 space-y-6">
+                {/* Sentences – with highlighted words */}
+                <div className="lg:w-2/3 space-y-4">
                   {realLifeSentences.map((sentence, index) => (
                     <div key={index} className="group">
                       <div className="flex items-start">
-                        <button 
-                          onClick={() => playAudio(sentence.english)} 
-                          className="mr-3 mt-1 text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0"
-                          aria-label="Play audio"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
-                          </svg>
-                        </button>
-                        <div>
-                          <p className="text-lg font-medium">
-                            {index + 1}. {sentence.english}
-                          </p>
-                          <p className="text-sm text-gray-600">{sentence.portuguese}</p>
-                        </div>
+                        <SpeakSentence text={sentence.english} className="text-base font-medium">
+                          <span className="mr-1">{index + 1}.</span>
+                          {getHighlightedSentence(index)}
+                        </SpeakSentence>
                       </div>
+                      <p className="text-sm text-gray-600 mt-0.5 ml-6">{sentence.portuguese}</p>
                     </div>
                   ))}
                 </div>
 
-                {/* Image container - 1/3 width on large */}
+                {/* Images */}
                 <div className="lg:w-1/3 flex flex-col gap-4">
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
-                    <div className="relative h-64 w-full">
-                      <img
-                        src={cookingImage}
-                        alt="Cooking and meal preparation"
-                        className="rounded-xl object-cover w-full h-full"
-                      />
+                    <div className="relative h-40 w-full">
+                      <img src={cookingImage} alt="Cooking and meal preparation" className="rounded-xl object-cover w-full h-full" />
                     </div>
-                    <p className="text-center mt-2 text-gray-700 italic">
-                      Cooking meals and preparing food
-                    </p>
+                    <p className="text-center mt-2 text-gray-700 italic">Cooking meals and preparing food</p>
                   </div>
-                  
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
-                    <div className="relative h-64 w-full">
-                      <img
-                        src={cleaningImage}
-                        alt="Cleaning and house chores"
-                        className="rounded-xl object-cover w-full h-full"
-                      />
+                    <div className="relative h-40 w-full">
+                      <img src={cleaningImage} alt="Cleaning and house chores" className="rounded-xl object-cover w-full h-full" />
                     </div>
-                    <p className="text-center mt-2 text-gray-700 italic">
-                      Cleaning and house maintenance
-                    </p>
+                    <p className="text-center mt-2 text-gray-700 italic">Cleaning and house maintenance</p>
                   </div>
                 </div>
               </div>
@@ -535,28 +744,28 @@ export default function Lesson19LifestyleWeeklyPlanning() {
           </div>
         </div>
 
-        {/* Section 6 - Check It Out (print style) */}
+        {/* ===================== SECTION 6 – WRAP UP ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-blue-500 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
-              <h2 className="text-3xl font-bold">🔹 CHECK IT OUT!</h2>
-              <p className="mt-2 text-blue-100 italic">
-                Numbers, telling time, and daily routines
-              </p>
+              <h2 className="text-3xl font-bold">🔹 WRAP UP!</h2>
+              <SpeakSentence text="Numbers, telling time, and daily routines" className="mt-2 text-blue-100 italic">
+                📝 Numbers, telling time, and daily routines
+              </SpeakSentence>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row">
-            {/* Left column - Numbers and Time */}
+            {/* Left column – Numbers and Time */}
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-lg">
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-lg text-yellow-300">NUMBERS</h3>
-                  <button 
+                  <button
                     onClick={() => setShowNumberExplanation(!showNumberExplanation)}
                     className="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded-full transition-colors"
                   >
-                    {showNumberExplanation ? 'Esconder Explicação' : 'Mostrar Explicação'}
+                    {showNumberExplanation ? 'Hide Explanation' : 'Show Explanation'}
                   </button>
                 </div>
                 {showNumberExplanation && (
@@ -572,23 +781,23 @@ export default function Lesson19LifestyleWeeklyPlanning() {
                     <p className="text-blue-200 text-sm mt-2">For time: Use "o'clock" only with exact hours: 3:00 = three o'clock</p>
                   </div>
                 )}
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-blue-800 rounded-lg">
-                  <p className="font-bold text-xl">30</p>
-                  <p className="text-blue-200">thirty</p>
-                </div>
-                <div className="p-3 bg-blue-800 rounded-lg">
-                  <p className="font-bold text-xl">40</p>
-                  <p className="text-blue-200">forty</p>
-                </div>
-                <div className="p-3 bg-blue-800 rounded-lg">
-                  <p className="font-bold text-xl">50</p>
-                  <p className="text-blue-200">fifty</p>
-                </div>
-                <div className="p-3 bg-blue-800 rounded-lg">
-                  <p className="font-bold text-xl">60</p>
-                  <p className="text-blue-200">sixty</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 bg-blue-800 rounded-lg">
+                    <p className="font-bold text-xl">30</p>
+                    <p className="text-blue-200">thirty</p>
+                  </div>
+                  <div className="p-3 bg-blue-800 rounded-lg">
+                    <p className="font-bold text-xl">40</p>
+                    <p className="text-blue-200">forty</p>
+                  </div>
+                  <div className="p-3 bg-blue-800 rounded-lg">
+                    <p className="font-bold text-xl">50</p>
+                    <p className="text-blue-200">fifty</p>
+                  </div>
+                  <div className="p-3 bg-blue-800 rounded-lg">
+                    <p className="font-bold text-xl">60</p>
+                    <p className="text-blue-200">sixty</p>
+                  </div>
                 </div>
               </div>
 
@@ -596,14 +805,13 @@ export default function Lesson19LifestyleWeeklyPlanning() {
               <div className="mt-8 pt-6 border-t border-blue-700">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-bold text-lg text-yellow-300">TELLING TIME</h4>
-                  <button 
+                  <button
                     onClick={() => setShowTellingTimeExplanation(!showTellingTimeExplanation)}
                     className="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded-full transition-colors"
                   >
-                    {showTellingTimeExplanation ? 'Esconder Explicação' : 'Mostrar Explicação'}
+                    {showTellingTimeExplanation ? 'Hide Explanation' : 'Show Explanation'}
                   </button>
                 </div>
-                
                 {showTellingTimeExplanation && (
                   <div className="mb-4 p-4 bg-blue-800 rounded-lg border border-blue-700">
                     <p className="text-yellow-200 text-sm font-medium mb-2">⏰ Telling Time Rules:</p>
@@ -617,93 +825,58 @@ export default function Lesson19LifestyleWeeklyPlanning() {
                     <p className="text-blue-200 text-sm mt-2">Use "past" for minutes 1-30, "to" for minutes 31-59</p>
                   </div>
                 )}
-                
                 <div className="space-y-3">
                   <div className="p-3 bg-blue-800 rounded-lg">
                     <div className="flex items-center mb-2">
-                      <button 
-                        onClick={() => playAudio("four o clock")}
-                        className="mr-2 text-blue-200 hover:text-white transition-colors"
-                        aria-label="Play audio"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                        </svg>
-                      </button>
+                      <SpeakText text="four o'clock" className="mr-2 text-blue-200 hover:text-white">
+                        <Volume2 size={16} className="inline" />
+                      </SpeakText>
                       <div>
                         <p className="font-bold">4:00</p>
                         <p className="text-blue-200 text-sm">It's four o'clock</p>
                       </div>
                     </div>
                   </div>
-                  
                   {showTellingTimeExplanation && (
                     <>
                       <div className="p-3 bg-blue-800 rounded-lg">
                         <div className="flex items-center mb-2">
-                          <button 
-                            onClick={() => playAudio("four fifteen")}
-                            className="mr-2 text-blue-200 hover:text-white transition-colors"
-                            aria-label="Play audio"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                            </svg>
-                          </button>
+                          <SpeakText text="four fifteen" className="mr-2 text-blue-200 hover:text-white">
+                            <Volume2 size={16} className="inline" />
+                          </SpeakText>
                           <div>
                             <p className="font-bold">4:15</p>
                             <p className="text-blue-200 text-sm">It's four fifteen</p>
                           </div>
                         </div>
                       </div>
-                      
                       <div className="p-3 bg-blue-800 rounded-lg">
                         <div className="flex items-center mb-2">
-                          <button 
-                            onClick={() => playAudio("four thirty")}
-                            className="mr-2 text-blue-200 hover:text-white transition-colors"
-                            aria-label="Play audio"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                            </svg>
-                          </button>
+                          <SpeakText text="four thirty" className="mr-2 text-blue-200 hover:text-white">
+                            <Volume2 size={16} className="inline" />
+                          </SpeakText>
                           <div>
                             <p className="font-bold">4:30</p>
                             <p className="text-blue-200 text-sm">It's four thirty</p>
                           </div>
                         </div>
                       </div>
-                      
                       <div className="p-3 bg-blue-800 rounded-lg">
                         <div className="flex items-center mb-2">
-                          <button 
-                            onClick={() => playAudio("four fifty")}
-                            className="mr-2 text-blue-200 hover:text-white transition-colors"
-                            aria-label="Play audio"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                            </svg>
-                          </button>
+                          <SpeakText text="four fifty" className="mr-2 text-blue-200 hover:text-white">
+                            <Volume2 size={16} className="inline" />
+                          </SpeakText>
                           <div>
                             <p className="font-bold">4:50</p>
                             <p className="text-blue-200 text-sm">It's four fifty</p>
                           </div>
                         </div>
                       </div>
-                      
                       <div className="p-3 bg-blue-800 rounded-lg">
                         <div className="flex items-center mb-2">
-                          <button 
-                            onClick={() => playAudio("ten to five")}
-                            className="mr-2 text-blue-200 hover:text-white transition-colors"
-                            aria-label="Play audio"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                            </svg>
-                          </button>
+                          <SpeakText text="ten to five" className="mr-2 text-blue-200 hover:text-white">
+                            <Volume2 size={16} className="inline" />
+                          </SpeakText>
                           <div>
                             <p className="font-bold">4:50</p>
                             <p className="text-blue-200 text-sm">It's ten to five</p>
@@ -717,17 +890,17 @@ export default function Lesson19LifestyleWeeklyPlanning() {
               </div>
             </div>
 
-            {/* Right column - AM/PM and Meal Times */}
+            {/* Right column – Time Formats and Meal Times */}
             <div className="bg-blue-800 text-white flex-1 p-6 space-y-4 text-lg">
               <div className="space-y-6">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-bold text-lg text-yellow-300">TIME FORMATS</h3>
-                    <button 
+                    <button
                       onClick={() => setShowTimeFormatExplanation(!showTimeFormatExplanation)}
                       className="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded-full transition-colors"
                     >
-                      {showTimeFormatExplanation ? 'Esconder Explicação' : 'Mostrar Explicação'}
+                      {showTimeFormatExplanation ? 'Hide Explanation' : 'Show Explanation'}
                     </button>
                   </div>
                   {showTimeFormatExplanation && (
@@ -759,68 +932,46 @@ export default function Lesson19LifestyleWeeklyPlanning() {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Meal Times Section */}
                 <div className="pt-6 border-t border-blue-700">
                   <div className="flex items-center mb-3">
                     <h4 className="font-bold text-lg text-yellow-300">MEAL TIMES</h4>
                   </div>
-                  
                   <div className="space-y-4">
                     <div className="p-3 bg-blue-900 rounded-lg">
                       <div className="flex items-center mb-2">
-                        <button 
-                          onClick={() => playAudio("to have breakfast")}
-                          className="mr-2 text-blue-200 hover:text-white transition-colors"
-                          aria-label="Play audio"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                          </svg>
-                        </button>
+                        <SpeakText text="to have breakfast" className="mr-2 text-blue-200 hover:text-white">
+                          <Volume2 size={16} className="inline" />
+                        </SpeakText>
                         <div>
                           <p className="font-bold">to have breakfast</p>
                           <p className="text-blue-200 text-sm">to have breakfast</p>
                         </div>
                       </div>
                     </div>
-                    
                     <div className="p-3 bg-blue-900 rounded-lg">
                       <div className="flex items-center mb-2">
-                        <button 
-                          onClick={() => playAudio("to have dinner")}
-                          className="mr-2 text-blue-200 hover:text-white transition-colors"
-                          aria-label="Play audio"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                          </svg>
-                        </button>
+                        <SpeakText text="to have dinner" className="mr-2 text-blue-200 hover:text-white">
+                          <Volume2 size={16} className="inline" />
+                        </SpeakText>
                         <div>
                           <p className="font-bold">to have dinner</p>
                           <p className="text-blue-200 text-sm">to have dinner</p>
                         </div>
                       </div>
                     </div>
-                    
                     <div className="p-3 bg-blue-900 rounded-lg">
                       <div className="flex items-center mb-2">
-                        <button 
-                          onClick={() => playAudio("to have lunch")}
-                          className="mr-2 text-blue-200 hover:text-white transition-colors"
-                          aria-label="Play audio"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                          </svg>
-                        </button>
+                        <SpeakText text="to have lunch" className="mr-2 text-blue-200 hover:text-white">
+                          <Volume2 size={16} className="inline" />
+                        </SpeakText>
                         <div>
                           <p className="font-bold">to have lunch</p>
                           <p className="text-blue-200 text-sm">to have lunch</p>
                         </div>
                       </div>
                     </div>
-                    
                     <div className="mt-4 p-4 bg-blue-700 rounded-lg border border-blue-600">
                       <h5 className="font-bold text-yellow-200 mb-3">📋 Meal Times</h5>
                       <div className="space-y-3">
@@ -840,7 +991,7 @@ export default function Lesson19LifestyleWeeklyPlanning() {
                       <div className="mt-3 p-3 bg-blue-900 rounded-md">
                         <p className="text-yellow-100 text-sm font-medium">💡 Remember:</p>
                         <p className="text-blue-200 text-sm">In English, we use "have" with meals:</p>
-                        <p className="text-blue-200 text-sm">• <span className="cursor-pointer hover:text-blue-100" onClick={() => playAudio("I have breakfast at 7 a.m.")}>I have breakfast at 7 a.m.</span></p>
+                        <p className="text-blue-200 text-sm">• <span className="cursor-pointer hover:text-blue-100" onClick={() => { const u = new SpeechSynthesisUtterance("I have breakfast at 7 a.m."); u.lang='en-US'; window.speechSynthesis.speak(u); }}>I have breakfast at 7 a.m.</span></p>
                         <p className="text-blue-200 text-sm">• We have lunch at noon.</p>
                         <p className="text-blue-200 text-sm">• They have dinner at 8 p.m.</p>
                       </div>
@@ -852,7 +1003,7 @@ export default function Lesson19LifestyleWeeklyPlanning() {
           </div>
         </div>
 
-        {/* Next lesson button */}
+        {/* ===================== NAVIGATION ===================== */}
         <div className="flex justify-center gap-4 mt-8">
           <button
             onClick={() => router.push("/cursos/lesson18")}
@@ -866,8 +1017,24 @@ export default function Lesson19LifestyleWeeklyPlanning() {
           >
             Next Lesson (20) &rarr;
           </button>
-        </div>  
+        </div>
       </div>
+
+      {/* Note Modal */}
+      <NoteModal
+        isOpen={noteModal.isOpen}
+        onClose={() => setNoteModal(prev => ({ ...prev, isOpen: false }))}
+        sectionTitle={noteModal.sectionTitle}
+        initialNote={noteModal.noteContent}
+        onSave={saveNote}
+      />
+
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

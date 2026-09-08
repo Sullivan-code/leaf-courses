@@ -20,7 +20,7 @@ interface SpeakTextProps {
   text: string;
   children?: React.ReactNode;
   className?: string;
-  showIcon?: boolean; // Adicionado para controle do ícone
+  showIcon?: boolean;
 }
 
 const SpeakText = ({ text, children, className = "", showIcon = true }: SpeakTextProps) => {
@@ -151,14 +151,14 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
 }
 
 // ============================================
-// SUBSTITUTION EXERCISE COMPONENT (LIÇÃO 8 STYLE) COM OLHINHO
+// SUBSTITUTION EXERCISE COMPONENT WITH EYE TOGGLE
 // ============================================
 type OptionType = string | { label: string; replacement: string };
 
 interface SubstitutionExercise {
   key: string;
   original: string;
-  base: string;
+  base?: string; // optional, not used when options are objects with replacement
   options: OptionType[];
   currentIndex: number;
 }
@@ -181,7 +181,8 @@ function SubstitutionOptions({
   if (isObjectOption(currentOption)) {
     currentSentence = currentOption.replacement;
   } else {
-    currentSentence = exercise.base.replace(/\{0\}/g, currentOption);
+    // fallback – should not happen if we use objects
+    currentSentence = String(currentOption);
   }
 
   const toggleVisibility = () => {
@@ -192,7 +193,7 @@ function SubstitutionOptions({
     if (isObjectOption(opt)) {
       return opt.label;
     }
-    return opt;
+    return String(opt);
   };
 
   return (
@@ -258,6 +259,9 @@ function HighlightedPhrase({ text, greenWords, translation }: { text: string; gr
   );
 }
 
+// ============================================
+// MAIN COMPONENT – LESSON 61
+// ============================================
 export default function Lesson61MyHouseRoutine() {
   const router = useRouter();
   const [openDrills, setOpenDrills] = useState({
@@ -275,6 +279,9 @@ export default function Lesson61MyHouseRoutine() {
   const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
 
   const [substitutionState, setSubstitutionState] = useState<Record<string, number>>({});
+
+  // Estado para o modal de imagem da Grammar
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills(prev => ({ ...prev, [section]: !prev[section] }));
@@ -304,116 +311,371 @@ export default function Lesson61MyHouseRoutine() {
     }
   }, []);
 
-  const mainImage = "https://github.com/Sullivan-code/english-audios/blob/main/ChatGPT%20Image%202%20de%20set.%20de%202026%2C%2014_28_05.png?raw=true";
+  // ===== IMAGENS =====
+  // MAIN IMAGE ATUALIZADA com a nova URL fornecida
+  const mainImage = "https://github.com/Sullivan-code/english-audios/blob/main/ChatGPT%20Image%207%20de%20set.%20de%202026%2C%2023_39_19%20(1).png?raw=true";
   const readingImage = "https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   const placesImage = "https://images.pexels.com/photos/3182746/pexels-photo-3182746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   const digitalImage = "https://images.pexels.com/photos/572056/pexels-photo-572056.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+  const grammarImage = "https://github.com/Sullivan-code/english-audios/blob/main/ChatGPT%20Image%207%20de%20set.%20de%202026%2C%2023_04_40.png?raw=true";
 
-  // ---------- SUBSTITUTION EXERCISES ----------
+  // ============================================================
+  // EXERCÍCIOS DE SUBSTITUIÇÃO – BASEADOS NO ARQUIVO VERBS.txt
+  // ============================================================
+
+  // ---------- VERBS ----------
   const verbsSubstitution: SubstitutionExercise[] = [
     {
       key: "verb-1",
-      original: "Eu movo. / Ela move. / Nós movemos.",
-      base: "{0}",
+      original: "Eu coloco, ponho. / ela / nós",
       options: [
-        { label: "I", replacement: "I move" },
-        { label: "She", replacement: "She moves" },
-        { label: "We", replacement: "We move" }
+        { label: "Eu", replacement: "I put." },
+        { label: "Ela", replacement: "She puts." },
+        { label: "Nós", replacement: "We put." }
       ],
       currentIndex: 0,
     },
     {
       key: "verb-2",
-      original: "Eu coloco. / Elas colocam. / Nós colocamos.",
-      base: "{0}",
+      original: "Você muda. / eles / nós",
       options: [
-        { label: "I", replacement: "I put" },
-        { label: "They", replacement: "They put" },
-        { label: "We", replacement: "We put" }
+        { label: "Você", replacement: "You move." },
+        { label: "Eles", replacement: "They move." },
+        { label: "Nós", replacement: "We move." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-3",
+      original: "Ele move. / ela / vocês",
+      options: [
+        { label: "Ele", replacement: "He moves." },
+        { label: "Ela", replacement: "She moves." },
+        { label: "Vocês", replacement: "You move." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-4",
+      original: "Eu quero mudar. / nós / eles",
+      options: [
+        { label: "Eu", replacement: "I want to move." },
+        { label: "Nós", replacement: "We want to move." },
+        { label: "Eles", replacement: "They want to move." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-5",
+      original: "Ela põe. / ele / eu",
+      options: [
+        { label: "Ela", replacement: "She puts." },
+        { label: "Ele", replacement: "He puts." },
+        { label: "Eu", replacement: "I put." }
       ],
       currentIndex: 0,
     },
   ];
 
+  // ---------- NEW WORDS ----------
   const vocabSubstitution: SubstitutionExercise[] = [
     {
       key: "vocab-1",
       original: "Eu quero colocar uma cadeira aqui. / poltrona / tapete",
-      base: "I want to put {0} here.",
-      options: ["a chair", "an armchair", "a carpet"],
+      options: [
+        { label: "cadeira", replacement: "I want to put a chair here." },
+        { label: "poltrona", replacement: "I want to put an armchair here." },
+        { label: "tapete", replacement: "I want to put a carpet here." }
+      ],
       currentIndex: 0,
     },
     {
       key: "vocab-2",
-      original: "Vamos mover o sofá para a esquerda. / para a direita",
-      base: "Let's move the sofa to the {0}.",
-      options: ["left", "right"],
+      original: "Meu quarto está bagunçado. / arrumado / sujo",
+      options: [
+        { label: "bagunçado", replacement: "My bedroom is messy." },
+        { label: "arrumado", replacement: "My bedroom is tidy." },
+        { label: "sujo", replacement: "My bedroom is dirty." }
+      ],
       currentIndex: 0,
     },
     {
       key: "vocab-3",
-      original: "Por favor, coloque a cadeira quebrada na outra sala. / escrivaninha / poltrona",
-      base: "Please, put the broken {0} in the other room.",
-      options: ["chair", "desk", "armchair"],
+      original: "Esta cadeira está suja. / escrivaninha / cômoda",
+      options: [
+        { label: "cadeira", replacement: "This chair is dirty." },
+        { label: "escrivaninha", replacement: "This desk is dirty." },
+        { label: "cômoda", replacement: "This dresser is dirty." }
+      ],
       currentIndex: 0,
     },
     {
       key: "vocab-4",
-      original: "O guarda-roupa dele está sempre bagunçado. / arrumado / sujo",
-      base: "His closet is always {0}.",
-      options: ["messy", "tidy", "dirty"],
+      original: "Vamos mover a escrivaninha para a direita. / para a esquerda",
+      options: [
+        { label: "para a direita", replacement: "Let's move the desk to the right." },
+        { label: "para a esquerda", replacement: "Let's move the desk to the left." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-5",
+      original: "Vamos colocar uma cadeira ao lado do meu guarda-roupa. / escrivaninha / poltrona",
+      options: [
+        { label: "cadeira", replacement: "Let's put a chair next to my closet." },
+        { label: "escrivaninha", replacement: "Let's put a desk next to my closet." },
+        { label: "poltrona", replacement: "Let's put an armchair next to my closet." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-6",
+      original: "Eu não quero colocar uma poltrona na minha sala. / mesa de centro / tapete",
+      options: [
+        { label: "poltrona", replacement: "I don't want to put an armchair in my living room." },
+        { label: "mesa de centro", replacement: "I don't want to put a coffee table in my living room." },
+        { label: "tapete", replacement: "I don't want to put a carpet in my living room." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-7",
+      original: "Este tapete está sujo. / limpo / velho",
+      options: [
+        { label: "sujo", replacement: "This carpet is dirty." },
+        { label: "limpo", replacement: "This carpet is clean." },
+        { label: "velho", replacement: "This carpet is old." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-8",
+      original: "Por favor, coloque a cadeira quebrada na outra sala. / escrivaninha / poltrona",
+      options: [
+        { label: "cadeira", replacement: "Please, put the broken chair in the other room." },
+        { label: "escrivaninha", replacement: "Please, put the broken desk in the other room." },
+        { label: "poltrona", replacement: "Please, put the broken armchair in the other room." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-9",
+      original: "Vamos mover o sofá para a esquerda. / para a direita",
+      options: [
+        { label: "para a esquerda", replacement: "Let's move the sofa to the left." },
+        { label: "para a direita", replacement: "Let's move the sofa to the right." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-10",
+      original: "Ela quer mover esta mesa para sala de estar. / cadeira / poltrona",
+      options: [
+        { label: "mesa", replacement: "She wants to move this table to the living room." },
+        { label: "cadeira", replacement: "She wants to move this chair to the living room." },
+        { label: "poltrona", replacement: "She wants to move this armchair to the living room." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-11",
+      original: "O quarto dela está arrumado. / bagunçado / sujo",
+      options: [
+        { label: "arrumado", replacement: "Her bedroom is tidy." },
+        { label: "bagunçado", replacement: "Her bedroom is messy." },
+        { label: "sujo", replacement: "Her bedroom is dirty." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-12",
+      original: "O guarda-roupa dele está sempre bagunçado. / arrumado / limpo",
+      options: [
+        { label: "bagunçado", replacement: "His closet is always messy." },
+        { label: "arrumado", replacement: "His closet is always tidy." },
+        { label: "limpo", replacement: "His closet is always clean." }
+      ],
       currentIndex: 0,
     },
   ];
 
+  // ---------- SPEAK LIKE A NATIVE ----------
   const phrasesSubstitution: SubstitutionExercise[] = [
     {
       key: "phrase-1",
-      original: "Que bagunça! Guarde suas roupas, por favor. / livros / sapatos",
-      base: "What a mess! Put away your {0}, please.",
-      options: ["clothes", "books", "shoes"],
+      original: "Que bagunça! Guarde suas roupas, por favor. / livros",
+      options: [
+        { label: "roupas", replacement: "What a mess! Put your clothes away, please." },
+        { label: "livros", replacement: "What a mess! Put your books away, please." }
+      ],
       currentIndex: 0,
     },
     {
       key: "phrase-2",
+      original: "Guarde suas coisas e venha aqui, por favor. / bolsa / sacola",
+      options: [
+        { label: "coisas", replacement: "Put away your stuff and come here, please." },
+        { label: "bolsa", replacement: "Put away your bag and come here, please." },
+        { label: "sacola", replacement: "Put away your shopping bag and come here, please." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-3",
       original: "Ela precisa limpar o quarto dela. / carro / guarda-roupa",
-      base: "She needs to clean her {0}.",
-      options: ["bedroom", "car", "closet"],
+      options: [
+        { label: "quarto", replacement: "She needs to clean her bedroom." },
+        { label: "carro", replacement: "She needs to clean her car." },
+        { label: "guarda-roupa", replacement: "She needs to clean her closet." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-4",
+      original: "Que bagunça! Você precisa de ajuda? / quer",
+      options: [
+        { label: "precisa", replacement: "What a mess! Do you need help?" },
+        { label: "quer", replacement: "What a mess! Do you want help?" }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-5",
+      original: "Não compre esta cadeira. Está quebrada. / mesa / poltrona",
+      options: [
+        { label: "cadeira", replacement: "Don't buy this chair. It's broken." },
+        { label: "mesa", replacement: "Don't buy this table. It's broken." },
+        { label: "poltrona", replacement: "Don't buy this armchair. It's broken." }
+      ],
       currentIndex: 0,
     },
   ];
 
+  // ---------- GRAMMAR ----------
   const grammarSubstitution: SubstitutionExercise[] = [
     {
       key: "grammar-1",
-      original: "Tem um shopping perto daqui? / praça / museu",
-      base: "Is there a {0} near here?",
-      options: ["shopping mall", "square", "museum"],
+      original: "Que bagunça! Tem muitos livros aqui. / pessoas / sacolas",
+      options: [
+        { label: "livros", replacement: "What a mess! There are many books here." },
+        { label: "pessoas", replacement: "What a mess! There are many people here." },
+        { label: "sacolas", replacement: "What a mess! There are many bags here." }
+      ],
       currentIndex: 0,
     },
     {
       key: "grammar-2",
-      original: "Não tem uma cadeira para mim. / mesa / lugar",
-      base: "There isn't a {0} for me.",
-      options: ["chair", "table", "place"],
+      original: "Tem roupas em cima da cama. Guarde-as, por favor. / bolsas / remédios",
+      options: [
+        { label: "roupas", replacement: "There are clothes on the bed. Put them away, please." },
+        { label: "bolsas", replacement: "There are bags on the bed. Put them away, please." },
+        { label: "remédios", replacement: "There are medicines on the bed. Put them away, please." }
+      ],
       currentIndex: 0,
     },
     {
       key: "grammar-3",
-      original: "Tem muitos livros na sua mochila? / remédios / coisas",
-      base: "Are there many {0} in your backpack?",
-      options: ["books", "medicines", "things"],
+      original: "Não tem uma cadeira para mim. / mesa / lugar",
+      options: [
+        { label: "cadeira", replacement: "There isn't a chair for me." },
+        { label: "mesa", replacement: "There isn't a table for me." },
+        { label: "lugar", replacement: "There isn't a place for me." }
+      ],
       currentIndex: 0,
     },
     {
       key: "grammar-4",
       original: "Não tem mesas de centro nesta loja. / sapatos / camisetas",
-      base: "There aren't {0} at this store.",
-      options: ["coffee tables", "shoes", "t-shirts"],
+      options: [
+        { label: "mesas de centro", replacement: "There aren't coffee tables at this store." },
+        { label: "sapatos", replacement: "There aren't shoes at this store." },
+        { label: "camisetas", replacement: "There aren't t-shirts at this store." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-5",
+      original: "Tem um shopping perto daqui? / praça / museu",
+      options: [
+        { label: "shopping", replacement: "Is there a shopping mall near here?" },
+        { label: "praça", replacement: "Is there a square near here?" },
+        { label: "museu", replacement: "Is there a museum near here?" }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-6",
+      original: "Tem muitos livros na sua mochila? / remédios / coisas",
+      options: [
+        { label: "livros", replacement: "Are there a lot of books in your backpack?" },
+        { label: "remédios", replacement: "Are there a lot of medicines in your backpack?" },
+        { label: "coisas", replacement: "Are there a lot of things in your backpack?" }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-7",
+      original: "Coloque sua bolsa aqui. / sacola / passaporte",
+      options: [
+        { label: "bolsa", replacement: "Put your bag here." },
+        { label: "sacola", replacement: "Put your shopping bag here." },
+        { label: "passaporte", replacement: "Put your passport here." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-8",
+      original: "Tem um restaurante aqui? / estacionamento / piscina",
+      options: [
+        { label: "restaurante", replacement: "Is there a restaurant here?" },
+        { label: "estacionamento", replacement: "Is there a parking lot here?" },
+        { label: "piscina", replacement: "Is there a swimming pool here?" }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-9",
+      original: "Não tem muitos estrangeiros na minha cidade. / crianças / igrejas",
+      options: [
+        { label: "estrangeiros", replacement: "There aren't many foreigners in my city." },
+        { label: "crianças", replacement: "There aren't many children in my city." },
+        { label: "igrejas", replacement: "There aren't many churches in my city." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-10",
+      original: "Tem um caixa eletrônico aqui? / loja de departamento / outlet",
+      options: [
+        { label: "caixa eletrônico", replacement: "Is there an ATM here?" },
+        { label: "loja de departamento", replacement: "Is there a department store here?" },
+        { label: "outlet", replacement: "Is there an outlet here?" }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-11",
+      original: "Não tem um armário neste quarto. / cômoda / cadeira",
+      options: [
+        { label: "armário", replacement: "There isn't a closet in this bedroom." },
+        { label: "cômoda", replacement: "There isn't a dresser in this bedroom." },
+        { label: "cadeira", replacement: "There isn't a chair in this bedroom." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-12",
+      original: "Tem muitos alunos na sua escola? / estrangeiros / professores",
+      options: [
+        { label: "alunos", replacement: "Are there many students in your school?" },
+        { label: "estrangeiros", replacement: "Are there many foreigners in your school?" },
+        { label: "professores", replacement: "Are there many teachers in your school?" }
+      ],
       currentIndex: 0,
     },
   ];
 
+  // Combine all exercises for the helper function
   const allExercises = [...verbsSubstitution, ...vocabSubstitution, ...phrasesSubstitution, ...grammarSubstitution];
 
   const getExerciseWithIndex = (key: string) => {
@@ -422,6 +684,7 @@ export default function Lesson61MyHouseRoutine() {
     return { ...ex, currentIndex: getCurrentIndex(key) };
   };
 
+  // Dados para a seção "Speak Like a Native" (frases destacadas)
   const usefulPhrasesData = [
     {
       en: "Put away these clothes in the closet, please.",
@@ -468,7 +731,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* VERBS */}
+        {/* ===================== SECTION 1 – VERBS ===================== */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -508,7 +771,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* NEW WORDS */}
+        {/* ===================== SECTION 2 – NEW WORDS ===================== */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -539,6 +802,9 @@ export default function Lesson61MyHouseRoutine() {
                 { en: "to the left", pt: "para a esquerda" },
                 { en: "to the right", pt: "para a direita" },
                 { en: "next to", pt: "ao lado de" },
+                { en: "closet", pt: "guarda-roupa" },
+                { en: "dresser", pt: "cômoda" },
+                { en: "coffee table", pt: "mesa de centro" },
               ].map((word, idx) => (
                 <div key={idx} className="bg-green-50 p-3 rounded-lg border border-green-200">
                   <SpeakText text={word.en} className="text-green-600 font-bold cursor-pointer text-left w-full block">
@@ -566,7 +832,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* USEFUL PHRASES */}
+        {/* ===================== SECTION 3 – SPEAK LIKE A NATIVE ===================== */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -612,7 +878,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* GRAMMAR */}
+        {/* ===================== SECTION 4 – GRAMMAR (com imagem) ===================== */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -630,6 +896,17 @@ export default function Lesson61MyHouseRoutine() {
             <SpeakSentence text="Structures for talking about existence and location" className="text-md text-gray-600 mb-4 italic">
               📚 Structures for talking about existence and location
             </SpeakSentence>
+
+            {/* ===== IMAGEM INSERIDA AQUI ===== */}
+            <div className="mb-6 cursor-pointer" onClick={() => setIsImageModalOpen(true)}>
+              <img
+                src={grammarImage}
+                alt="Grammar illustration – There is / There are"
+                className="w-full max-h-64 object-cover rounded-2xl shadow-md hover:shadow-xl transition-shadow"
+              />
+              <p className="text-center text-sm text-gray-500 mt-2">👆 Clique na imagem para ampliar</p>
+            </div>
+
             <div className="bg-green-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
               {[
                 { en: "There is a closet in this room, too.", pt: "Tem um guarda-roupa neste quarto também." },
@@ -667,7 +944,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* Make it yours! */}
+        {/* ===================== SECTION 5 – MAKE IT YOURS ===================== */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -728,7 +1005,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* WRAP UP! */}
+        {/* ===================== SECTION 6 – WRAP UP! ===================== */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
@@ -782,7 +1059,7 @@ export default function Lesson61MyHouseRoutine() {
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* ===================== NAVIGATION ===================== */}
         <div className="flex justify-center gap-4 mt-8">
           <button onClick={() => router.push("/cursos/lesson60")} className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors">
             &larr; Previous Lesson (60)
@@ -792,6 +1069,28 @@ export default function Lesson61MyHouseRoutine() {
           </button>
         </div>
       </div>
+
+      {/* ===== MODAL PARA AMPLIAR A IMAGEM ===== */}
+      {isImageModalOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          onClick={() => setIsImageModalOpen(false)}
+        >
+          <div className="relative max-w-5xl max-h-full p-4">
+            <img
+              src={grammarImage}
+              alt="Grammar illustration – ampliada"
+              className="max-w-full max-h-screen object-contain rounded-lg shadow-2xl"
+            />
+            <button
+              onClick={() => setIsImageModalOpen(false)}
+              className="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 transition-colors"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
 
       <NoteModal
         isOpen={noteModal.isOpen}

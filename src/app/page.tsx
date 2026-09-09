@@ -1,6 +1,6 @@
 "use client";
 
-import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 
 export default function Home() {
@@ -8,31 +8,25 @@ export default function Home() {
 
   return (
     <div className="relative w-full bg-[#ffffff]">
-      {/* Hero Section com imagem de fundo em tela cheia - SEM BORDAS E SEM MARGENS */}
+      {/* Hero Section com imagem de fundo em tela cheia */}
       <div className="relative w-full min-h-screen">
-        {/* Imagem de fundo - cobre toda a largura e altura sem perder qualidade */}
-        <div 
+        <div
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: 'url("/images/mainpage.png")' }}
         >
-          {/* Overlay escuro para melhor contraste do texto */}
           <div className="absolute inset-0 bg-black/20"></div>
         </div>
 
-        {/* Conteúdo sobreposto à imagem */}
         <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
-          {/* Texto principal - título - movido mais para baixo */}
           <div className="text-center max-w-5xl mx-auto mt-32 md:mt-40 lg:mt-48">
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 text-white drop-shadow-lg leading-tight">
               Eric Sullivan - Fundador da LEAF - Inglês para Fluência Real.
             </h1>
           </div>
-          
-          {/* Container do Botão/Avatar */}
+
           <div className="inline-flex items-center justify-center mt-6">
             <SignedIn>
               <div className="relative group">
-                {/* Container redondo para a imagem do perfil - TAMANHO INTERMEDIÁRIO */}
                 <div className="w-14 h-14 md:w-20 md:h-20 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 p-0.5">
                   {user?.imageUrl ? (
                     <div className="w-full h-full rounded-full overflow-hidden">
@@ -53,18 +47,14 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                
-                {/* Badge de usuário online - TAMANHO INTERMEDIÁRIO */}
                 <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
-                
-                {/* Tooltip com nome do usuário */}
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
                   {user?.firstName || user?.username || "Usuário"}
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-800"></div>
                 </div>
               </div>
             </SignedIn>
-            
+
             <SignedOut>
               <div className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 text-base md:text-lg font-semibold transition-all duration-300 hover:from-purple-600 hover:to-purple-800 hover:scale-105 cursor-pointer shadow-lg">
                 <SignInButton />
@@ -72,7 +62,6 @@ export default function Home() {
             </SignedOut>
           </div>
 
-          {/* Texto "Bem-vindo" abaixo do botão/avatar */}
           <div className="text-center max-w-3xl mx-auto mt-8">
             <p className="text-base md:text-lg lg:text-xl text-white drop-shadow-lg">
               Bem-vindo ao curso que vai transformar sua relação com o inglês!
@@ -83,12 +72,38 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Espaçamento entre a imagem hero e o próximo conteúdo */}
       <div className="h-12 md:h-16 lg:h-20"></div>
 
-      {/* Main Content Container - Restante do conteúdo começa aqui */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* About Section with subtle background image */}
+        {/* VÍDEO VERTICAL COM IMAGEM DE FUNDO */}
+        <div className="relative flex justify-center items-center my-8 md:my-12">
+          {/* Imagem de fundo */}
+          <div
+            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat rounded-2xl"
+            style={{
+              backgroundImage:
+                'url("https://github.com/Sullivan-code/english-audios/raw/main/ChatGPT%20Image%209%20de%20set.%20de%202026%2C%2017_01_37.png")',
+            }}
+          >
+            {/* Overlay escuro para destacar o vídeo */}
+            <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
+          </div>
+
+          {/* Vídeo sobreposto */}
+          <div className="relative w-full max-w-sm aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/80 bg-black/50">
+            <iframe
+              src="https://player.mediadelivery.net/embed/748540/04725aa2-c483-45df-96e1-6fafbdc0814e"
+              title="Vídeo de apresentação"
+              className="absolute inset-0 w-full h-full"
+              frameBorder="0"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        {/* About Section */}
         <section className="relative bg-gradient-to-br from-blue-100 via-purple-100 to-blue-200 rounded-2xl shadow-xl p-8 mb-16 border-2 border-[#bfdbfe] overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <Image
@@ -106,7 +121,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Why Our Course Section with subtle background image */}
+        {/* Why Our Course Section */}
         <section className="relative bg-white rounded-2xl shadow-xl p-8 mb-16 border-2 border-[#bfdbfe] overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <Image
@@ -126,7 +141,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Tools Section with subtle background image */}
+        {/* Tools Section */}
         <section className="relative bg-gradient-to-br from-blue-100 via-purple-100 to-blue-200 rounded-2xl shadow-xl p-8 mb-16 border-2 border-[#bfdbfe] overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <Image
@@ -150,7 +165,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Public & Methodology with subtle background images */}
+        {/* Public & Methodology */}
         <div className="grid md:grid-cols-2 gap-10 mb-16">
           <div className="relative bg-white rounded-2xl shadow-xl p-8 border-2 border-[#bfdbfe] hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all duration-300 overflow-hidden group">
             <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300">
@@ -176,7 +191,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Metodologia LEAF - COM EFEITO ROXO NO HOVER */}
           <div className="relative bg-white rounded-2xl shadow-xl p-8 border-2 border-[#bfdbfe] hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-700 hover:text-white transition-all duration-300 overflow-hidden group">
             <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300">
               <Image
@@ -201,7 +215,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Planos Section with subtle background images */}
+        {/* Planos Section */}
         <section className="relative bg-white rounded-2xl shadow-xl p-8 mb-16 border-2 border-[#bfdbfe] overflow-hidden">
           <div className="absolute inset-0 opacity-5">
             <Image
@@ -214,7 +228,6 @@ export default function Home() {
           <div className="relative z-10">
             <h2 className="text-3xl font-bold mb-12 text-[#000000] text-center">Planos de Estudo</h2>
             <div className="grid md:grid-cols-3 gap-8 items-stretch">
-              {/* Plano Turma */}
               <div className="border-2 border-[#bfdbfe] rounded-xl p-8 bg-white hover:shadow-2xl transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300">
                   <Image
@@ -240,7 +253,6 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* Plano Individual */}
               <div className="border-2 border-[#bfdbfe] rounded-xl p-8 bg-white hover:shadow-2xl transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300">
                   <Image
@@ -265,7 +277,6 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* Plano Diamante */}
               <div className="border-2 border-[#bfdbfe] rounded-xl p-8 bg-white hover:shadow-2xl transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300">
                   <Image

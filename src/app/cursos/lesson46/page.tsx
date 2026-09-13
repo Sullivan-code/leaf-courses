@@ -34,41 +34,61 @@ const dialogueData = {
   ]
 };
 
-// Substitution Practice I (Portuguese to English)
+// Substitution Practice I (Portuguese to English) — 3 options each (original + 2 substitutions)
 const substitutionPractice1 = [
   { 
     key: "subs-1", 
     original: "Eu quero comprar algumas garrafas de refrigerante.",
-    options: ["latas", "copos"],
-    correctForms: ["I want to buy some cans of soda.", "I want to buy some glasses of soda."],
+    options: ["garrafas", "latas", "copos"],
+    correctForms: [
+      "I want to buy some bottles of soda.",
+      "I want to buy some cans of soda.",
+      "I want to buy some glasses of soda."
+    ],
     currentIndex: 0
   },
   { 
     key: "subs-2", 
     original: "Eles querem alguma coisa?",
-    options: ["Ela", "Você"],
-    correctForms: ["Does she want anything?", "Do you want anything?"],
+    options: ["Eles", "Ela", "Você"],
+    correctForms: [
+      "Do they want anything?",
+      "Does she want anything?",
+      "Do you want anything?"
+    ],
     currentIndex: 0
   },
   { 
     key: "subs-3", 
     original: "Eu não quero nada hoje, obrigada.",
-    options: ["esta tarde", "esta semana"],
-    correctForms: ["I don't want anything this afternoon, thanks.", "I don't want anything this week, thanks."],
+    options: ["hoje", "esta tarde", "esta semana"],
+    correctForms: [
+      "I don't want anything today, thanks.",
+      "I don't want anything this afternoon, thanks.",
+      "I don't want anything this week, thanks."
+    ],
     currentIndex: 0
   },
   { 
     key: "subs-4", 
     original: "Abra a lata para mim, por favor.",
-    options: ["a garrafa", "a mochila"],
-    correctForms: ["Open the bottle for me, please.", "Open the backpack for me, please."],
+    options: ["a lata", "a garrafa", "a mochila"],
+    correctForms: [
+      "Open the can for me, please.",
+      "Open the bottle for me, please.",
+      "Open the backpack for me, please."
+    ],
     currentIndex: 0
   },
   { 
     key: "subs-5", 
     original: "Você fecha seu escritório à noite?",
-    options: ["seu restaurante", "sua casa"],
-    correctForms: ["Do you close your restaurant at night?", "Do you close your house at night?"],
+    options: ["seu escritório", "seu restaurante", "sua casa"],
+    correctForms: [
+      "Do you close your office at night?",
+      "Do you close your restaurant at night?",
+      "Do you close your house at night?"
+    ],
     currentIndex: 0
   }
 ];
@@ -116,7 +136,7 @@ const substitutionPractice2 = [
   { 
     key: "subs2-5", 
     original: "A lanchonete fecha às 11:00 da noite.",
-    options: ["às 11:30", ["à meia-noite"]],
+    options: ["às 11:30", "à meia-noite"],
     correctForms: ["The snack bar closes at 11:30 PM.", "The snack bar closes at midnight."],
     currentIndex: 0
   }
@@ -575,7 +595,7 @@ export default function Lesson46ExpressYourself() {
                       <div className="p-3 bg-blue-50 rounded-md mb-2">
                         <p className="text-blue-700 font-medium text-lg">{currentAnswer}</p>
                       </div>
-                      <div className="flex gap-2 mt-2">
+                      <div className="flex flex-wrap gap-2 mt-2">
                         {ex.options.map((opt, idx) => (
                           <button key={idx} onClick={() => handleSubs1OptionClick(ex.key, idx)} 
                             className={`px-3 py-1 rounded-md text-sm transition ${ex.currentIndex === idx ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}>

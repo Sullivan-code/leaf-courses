@@ -23,31 +23,36 @@ interface SpeakTextProps {
   showIcon?: boolean;
 }
 
+// Helper: speaks English text with an American female voice when available.
+const speakEnglish = (text: string, rate = 0.9) => {
+  if (!text || typeof window === 'undefined') return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = rate;
+  utterance.pitch = 1.0;
+  const voices = window.speechSynthesis.getVoices();
+  const americanFemaleVoices = voices.filter(voice =>
+    (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+    (voice.name.toLowerCase().includes('samantha') ||
+     voice.name.toLowerCase().includes('google us english') ||
+     voice.name.toLowerCase().includes('siri') ||
+     voice.name.toLowerCase().includes('female') ||
+     voice.name === 'Google US English' ||
+     voice.name === 'Samantha')
+  );
+  const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+  if (americanFemaleVoices.length > 0) {
+    utterance.voice = americanFemaleVoices[0];
+  } else if (americanVoices.length > 0) {
+    utterance.voice = americanVoices[0];
+  }
+  window.speechSynthesis.speak(utterance);
+};
+
 const SpeakText = ({ text, children, className = "", showIcon = true }: SpeakTextProps) => {
   const speak = () => {
-    if (!text || typeof window === 'undefined') return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    const voices = window.speechSynthesis.getVoices();
-    const americanFemaleVoices = voices.filter(voice =>
-      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
-      (voice.name.toLowerCase().includes('samantha') ||
-       voice.name.toLowerCase().includes('google us english') ||
-       voice.name.toLowerCase().includes('siri') ||
-       voice.name.toLowerCase().includes('female') ||
-       voice.name === 'Google US English' ||
-       voice.name === 'Samantha')
-    );
-    const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
-    if (americanFemaleVoices.length > 0) {
-      utterance.voice = americanFemaleVoices[0];
-    } else if (americanVoices.length > 0) {
-      utterance.voice = americanVoices[0];
-    }
-    window.speechSynthesis.speak(utterance);
+    speakEnglish(text, 0.9);
   };
 
   return (
@@ -67,27 +72,7 @@ const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
     <button
       onClick={() => {
         const speechText = children && typeof children === 'string' ? children : text;
-        if (speechText && typeof window !== 'undefined') {
-          window.speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(speechText);
-          utterance.lang = 'en-US';
-          utterance.rate = 0.85;
-          utterance.pitch = 1.0;
-          const voices = window.speechSynthesis.getVoices();
-          const americanFemaleVoices = voices.filter(voice =>
-            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
-            (voice.name.toLowerCase().includes('samantha') ||
-             voice.name.toLowerCase().includes('google us english') ||
-             voice.name === 'Google US English')
-          );
-          const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
-          if (americanFemaleVoices.length > 0) {
-            utterance.voice = americanFemaleVoices[0];
-          } else if (americanVoices.length > 0) {
-            utterance.voice = americanVoices[0];
-          }
-          window.speechSynthesis.speak(utterance);
-        }
+        speakEnglish(speechText, 0.85);
       }}
       className={`group cursor-pointer hover:bg-green-50 px-1 rounded transition-colors text-left w-full ${className}`}
     >
@@ -196,6 +181,13 @@ function SubstitutionOptions({
     return String(opt);
   };
 
+  const getOptionReplacement = (opt: OptionType): string => {
+    if (isObjectOption(opt)) {
+      return opt.replacement;
+    }
+    return String(opt);
+  };
+
   return (
     <div className="bg-white p-4 rounded-lg border border-green-200">
       <div className="flex items-start justify-between mb-2">
@@ -219,14 +211,18 @@ function SubstitutionOptions({
         {exercise.options.map((option, index) => (
           <button
             key={index}
-            onClick={() => onOptionClick(exercise.key, index)}
+            onClick={() => {
+              onOptionClick(exercise.key, index);
+              // Play the ENGLISH replacement (never the Portuguese label)
+              speakEnglish(getOptionReplacement(option), 0.9);
+            }}
             className={`px-3 py-1 rounded-md text-sm font-medium transition ${
               exercise.currentIndex === index
                 ? 'bg-green-500 text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
-            <SpeakText text={getOptionLabel(option)} showIcon={false} />
+            {getOptionLabel(option)}
           </button>
         ))}
       </div>
@@ -282,6 +278,9 @@ export default function Lesson61MyHouseRoutine() {
 
   // Estado para o modal de imagem da Grammar
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+
+  // Estado para o modal da imagem principal da lição
+  const [isMainImageModalOpen, setIsMainImageModalOpen] = useState(false);
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills(prev => ({ ...prev, [section]: !prev[section] }));
@@ -727,7 +726,12 @@ export default function Lesson61MyHouseRoutine() {
             📚 Learn to talk about your house, furniture, and daily routine activities.
           </SpeakSentence>
           <div className="w-64 h-64 mx-auto">
-            <img src={mainImage} alt="House and daily routine" className="w-full h-full object-cover rounded-2xl shadow-md" />
+            <img
+              src={mainImage}
+              alt="House and daily routine"
+              onClick={() => setIsMainImageModalOpen(true)}
+              className="w-full h-full object-cover rounded-2xl shadow-md cursor-pointer"
+            />
           </div>
         </div>
 
@@ -897,12 +901,12 @@ export default function Lesson61MyHouseRoutine() {
               📚 Structures for talking about existence and location
             </SpeakSentence>
 
-            {/* ===== IMAGEM INSERIDA AQUI ===== */}
+            {/* ===== IMAGEM INSERIDA AQUI (agora exibida por inteiro) ===== */}
             <div className="mb-6 cursor-pointer" onClick={() => setIsImageModalOpen(true)}>
               <img
                 src={grammarImage}
                 alt="Grammar illustration – There is / There are"
-                className="w-full max-h-64 object-cover rounded-2xl shadow-md hover:shadow-xl transition-shadow"
+                className="w-full h-auto object-contain rounded-2xl shadow-md hover:shadow-xl transition-shadow"
               />
               <p className="text-center text-sm text-gray-500 mt-2">👆 Clique na imagem para ampliar</p>
             </div>
@@ -1070,7 +1074,7 @@ export default function Lesson61MyHouseRoutine() {
         </div>
       </div>
 
-      {/* ===== MODAL PARA AMPLIAR A IMAGEM ===== */}
+      {/* ===== MODAL PARA AMPLIAR A IMAGEM DA GRAMMAR ===== */}
       {isImageModalOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
@@ -1084,6 +1088,28 @@ export default function Lesson61MyHouseRoutine() {
             />
             <button
               onClick={() => setIsImageModalOpen(false)}
+              className="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 transition-colors"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===== MODAL PARA AMPLIAR A IMAGEM PRINCIPAL DA LIÇÃO ===== */}
+      {isMainImageModalOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          onClick={() => setIsMainImageModalOpen(false)}
+        >
+          <div className="relative max-w-5xl max-h-full p-4">
+            <img
+              src={mainImage}
+              alt="House and daily routine – ampliada"
+              className="max-w-full max-h-screen object-contain rounded-lg shadow-2xl"
+            />
+            <button
+              onClick={() => setIsMainImageModalOpen(false)}
               className="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 transition-colors"
             >
               &times;

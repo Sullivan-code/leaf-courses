@@ -164,7 +164,6 @@ interface VideoQuestion {
   vocabulary?: { english: string; portuguese: string }[];
 }
 
-// Sistema de avaliação de respostas
 const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
   const normalize = (text: string) => 
     text.toLowerCase().trim().replace(/[.,?!]/g, '');
@@ -172,7 +171,6 @@ const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
   return normalize(userAnswer) === normalize(correctAnswer);
 };
 
-// Componente para mostrar resultado da avaliação
 const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correctAnswer: string }) => {
   if (isCorrect) {
     return (
@@ -193,7 +191,6 @@ const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correc
   );
 };
 
-// Componente SpeakableText para leitura de texto
 const SpeakableText = ({ text, className }: { text: string; className?: string }) => {
   const speak = () => {
     if ('speechSynthesis' in window) {
@@ -205,14 +202,18 @@ const SpeakableText = ({ text, className }: { text: string; className?: string }
   };
 
   return (
-    <button onClick={speak} className={`hover:text-blue-600 transition-colors ${className}`}>
-      {text}
-      <Volume2 size={14} className="inline-block ml-1 opacity-60" />
+    <button
+      type="button"
+      onClick={speak}
+      className={`inline-flex items-center gap-1.5 hover:text-teal-500 transition-colors text-left ${className || ""}`}
+      title="Clique para ouvir"
+    >
+      <span>{text}</span>
+      <span className="text-[0.9em] opacity-70" aria-hidden="true">🔊</span>
     </button>
   );
 };
 
-// Componente AudioButton para ler textos
 const AudioButton = ({ text }: { text: string }) => {
   const speak = () => {
     if ('speechSynthesis' in window) {
@@ -224,8 +225,13 @@ const AudioButton = ({ text }: { text: string }) => {
   };
 
   return (
-    <button onClick={speak} className="ml-2 p-1 rounded-full hover:bg-teal-200 transition-colors">
-      <Volume2 size={16} className="text-teal-700" />
+    <button
+      type="button"
+      onClick={speak}
+      className="ml-2 p-1 rounded-full hover:bg-teal-200 transition-colors"
+      title="Ouvir"
+    >
+      <span aria-hidden="true">🔊</span>
     </button>
   );
 };
@@ -241,11 +247,11 @@ export default function LessonFoodAndDrink() {
       correctAnswer: "You can read interesting books, watch interesting content, and talk with people online.",
       userAnswer: "",
       vocabulary: [
-        { english: "brush your teeth", portuguese: "escovar os dentes" },
-        { english: "brush your hair", portuguese: "escovar o cabelo" },
-        { english: "whenever", portuguese: "sempre que" },
-        { english: "it takes time", portuguese: "leva tempo" },
-        { english: "it takes effort", portuguese: "requer esforço" }
+        { english: "tips", portuguese: "dicas" },
+        { english: "make English more fun", portuguese: "tornar o inglês mais divertido" },
+        { english: "read interesting books", portuguese: "ler livros interessantes" },
+        { english: "watch interesting content", portuguese: "assistir a conteúdos interessantes" },
+        { english: "talk with people online", portuguese: "conversar com pessoas online" }
       ]
     },
     {
@@ -254,10 +260,11 @@ export default function LessonFoodAndDrink() {
       correctAnswer: "You won't feel shy, and you can use websites like MeetUp to find new friends.",
       userAnswer: "",
       vocabulary: [
-        { english: "when you learn another language", portuguese: "quando você aprende outro idioma" },
-        { english: "you can meet new people", portuguese: "você pode conhecer novas pessoas" },
-        { english: "talk to people around the world", portuguese: "conversar com pessoas ao redor do mundo" },
-        { english: "You can talk to people around the world", portuguese: "Você pode conversar com pessoas ao redor do mundo" }
+        { english: "meet friends", portuguese: "conhecer amigos" },
+        { english: "help you with your English", portuguese: "ajudar você com o seu inglês" },
+        { english: "you won't feel shy", portuguese: "você não vai se sentir tímido" },
+        { english: "websites like MeetUp", portuguese: "sites como o MeetUp" },
+        { english: "find new friends", portuguese: "encontrar novos amigos" }
       ]
     },
     {
@@ -266,12 +273,11 @@ export default function LessonFoodAndDrink() {
       correctAnswer: "You can visit friends, watch movies, or go for a quiet drive.",
       userAnswer: "",
       vocabulary: [
-        { english: "Maybe you feel shy or scared", portuguese: "Talvez você se sinta tímido ou assustado" },
-        { english: "You feel more confident", portuguese: "Você se sente mais confiante" },
-        { english: "To improve, you need to make mistakes", portuguese: "Para melhorar, você precisa cometer erros" },
-        { english: "I drive slowly", portuguese: "Eu dirijo devagar" },
-        { english: "There many nice things you can do", portuguese: "Há muitas coisas legais que você pode fazer" },
-        { english: "rainy day", portuguese: "dia chuvoso" }
+        { english: "rainy day", portuguese: "dia chuvoso" },
+        { english: "things you can do", portuguese: "coisas que você pode fazer" },
+        { english: "visit friends", portuguese: "visitar amigos" },
+        { english: "watch movies", portuguese: "assistir a filmes" },
+        { english: "go for a quiet drive", portuguese: "dar um passeio tranquilo de carro" }
       ]
     }
   ]);
@@ -281,7 +287,6 @@ export default function LessonFoodAndDrink() {
   const [usedOptions, setUsedOptions] = useState<Set<string>>(new Set());
   const [mobileSelectedOption, setMobileSelectedOption] = useState<string | null>(null);
   
-  // Estados para controle de expansão/recolhimento das seções
   const [sections, setSections] = useState({
     listen: true,
     speak: true,
@@ -290,142 +295,87 @@ export default function LessonFoodAndDrink() {
     tuneIn: true
   });
 
-  // Estados para resultados de respostas
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
 
-  // Exercícios de arrastar e soltar para negativas
   const negativeExercises: DragExercise[] = [
-    {
-      id: 1,
-      sentence: "I ______ drink coffee.",
-      blank: "______",
-      options: ["don't", "do not"],
-      correctAnswers: ["don't", "do not"],
-      userAnswer: null
-    },
-    {
-      id: 2,
-      sentence: "He ______ eat meat.",
-      blank: "______",
-      options: ["doesn't", "does not"],
-      correctAnswers: ["doesn't", "does not"],
-      userAnswer: null
-    },
-    {
-      id: 3,
-      sentence: "We ______ want juice.",
-      blank: "______",
-      options: ["don't", "do not"],
-      correctAnswers: ["don't", "do not"],
-      userAnswer: null
-    },
-    {
-      id: 4,
-      sentence: "She ______ like tea.",
-      blank: "______",
-      options: ["doesn't", "does not"],
-      correctAnswers: ["doesn't", "does not"],
-      userAnswer: null
-    }
+    { id: 1, sentence: "I ______ drink coffee.", blank: "______", options: ["don't", "doesn't"], correctAnswers: ["don't"], userAnswer: null },
+    { id: 2, sentence: "He ______ eat meat.", blank: "______", options: ["don't", "doesn't"], correctAnswers: ["doesn't"], userAnswer: null },
+    { id: 3, sentence: "We ______ want juice.", blank: "______", options: ["don't", "doesn't"], correctAnswers: ["don't"], userAnswer: null },
+    { id: 4, sentence: "She ______ like tea.", blank: "______", options: ["don't", "doesn't"], correctAnswers: ["doesn't"], userAnswer: null }
   ];
 
-  // Exercícios de arrastar e soltar para pronomes
+  // CORRECT ANSWERS = verbos COM "s" (para he/she/it).
+  // As opções erradas (sem "s") ficam no painel como distratores.
   const pronounExercises: DragExercise[] = [
-    {
-      id: 6,
-      sentence: "My father ______ bread every morning.",
-      blank: "______",
-      options: ["eats", "has", "enjoys", "loves", "likes", "prefers"],
-      correctAnswers: ["eats", "has", "enjoys", "loves", "likes", "prefers"],
-      userAnswer: null
-    },
-    {
-      id: 7,
-      sentence: "The cat ______ milk.",
-      blank: "______",
-      options: ["drinks", "loves", "prefers", "enjoys", "likes", "wants"],
-      correctAnswers: ["drinks", "loves", "prefers", "enjoys", "likes", "wants"],
-      userAnswer: null
-    },
-    {
-      id: 8,
-      sentence: "John ______ green tea.",
-      blank: "______",
-      options: ["prefers", "likes", "drinks", "enjoys", "loves", "has"],
-      correctAnswers: ["prefers", "likes", "drinks", "enjoys", "loves", "has"],
-      userAnswer: null
-    }
+    { id: 6, sentence: "My father ______ bread every morning.", blank: "______", options: ["eats", "has", "enjoys", "loves", "likes", "prefers"], correctAnswers: ["eats", "has", "enjoys", "loves", "likes", "prefers"], userAnswer: null },
+    { id: 7, sentence: "The cat ______ milk.", blank: "______", options: ["drinks", "loves", "prefers", "enjoys", "likes", "wants"], correctAnswers: ["drinks", "loves", "prefers", "enjoys", "likes", "wants"], userAnswer: null },
+    { id: 8, sentence: "John ______ green tea.", blank: "______", options: ["prefers", "likes", "drinks", "enjoys", "loves", "has"], correctAnswers: ["prefers", "likes", "drinks", "enjoys", "loves", "has"], userAnswer: null }
   ];
 
   // ==============================
-  // SISTEMA DE PERSISTÊNCIA - CARREGAMENTO
+  // CARREGAMENTO
   // ==============================
   useEffect(() => {
     const savedAnswers = localStorage.getItem("lesson2Answers");
     if (savedAnswers) {
       try {
         const data = JSON.parse(savedAnswers);
-        
-        // Restaurar respostas de escuta
         setNotes(data.notes || {});
         setShowAnswers(data.showAnswers || {});
         setAnswerResults(data.answerResults || {});
         setShowAnswerResults(data.showAnswerResults || {});
         
-        // Restaurar questões de vídeo
-        if (data.videoQuestions) setVideoQuestions(data.videoQuestions);
+        if (data.videoQuestions) {
+          const mergedVideo = videoQuestions.map((original, idx) => {
+            const saved = data.videoQuestions[idx];
+            return saved ? { ...original, userAnswer: saved.userAnswer || "" } : original;
+          });
+          setVideoQuestions(mergedVideo);
+        }
         
-        // Restaurar exercícios de arrastar
         if (data.dragExercises) {
-          setDragExercises(data.dragExercises);
-          // Restaurar opções usadas
+          const allCurrent = [...negativeExercises, ...pronounExercises];
+          const merged = allCurrent.map(current => {
+            const saved = data.dragExercises.find((s: DragExercise) => s.id === current.id);
+            return saved ? { ...current, userAnswer: saved.userAnswer ?? null } : current;
+          });
+          setDragExercises(merged);
+
           const used = new Set<string>();
-          data.dragExercises.forEach((ex: DragExercise) => {
-            if (ex.userAnswer) used.add(ex.userAnswer);
+          merged.forEach((ex) => {
+            if (ex.id > 4 && ex.userAnswer && ex.correctAnswers.includes(ex.userAnswer)) {
+              used.add(ex.userAnswer);
+            }
           });
           setUsedOptions(used);
         } else {
-          // Inicializar exercícios de arrastar
           setDragExercises([...negativeExercises, ...pronounExercises]);
         }
         
-        // Restaurar estado das seções
         if (data.sections) setSections(data.sections);
-        
-        console.log("Dados carregados do localStorage para Lesson 2");
       } catch (error) {
         console.error("Erro ao carregar respostas salvas:", error);
-        // Inicializar exercícios de arrastar se houver erro
         setDragExercises([...negativeExercises, ...pronounExercises]);
       }
     } else {
-      // Inicializar exercícios de arrastar
       setDragExercises([...negativeExercises, ...pronounExercises]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ==============================
-  // SISTEMA DE PERSISTÊNCIA - SALVAMENTO
+  // SALVAMENTO
   // ==============================
   const saveAllAnswers = async () => {
     const data = {
-      // Respostas de escuta
       notes,
       showAnswers,
       answerResults,
       showAnswerResults,
-      
-      // Questões de vídeo
       videoQuestions,
-      
-      // Exercícios de arrastar
       dragExercises,
-      
-      // Estado das seções
       sections,
-      
-      // Metadados
       lastUpdated: new Date().toISOString(),
       lessonName: "Lesson 2 - Food & Drink",
       version: "1.0"
@@ -440,35 +390,22 @@ export default function LessonFoodAndDrink() {
     }
   };
 
-  // Função para limpar todas as respostas
   const clearAllAnswers = () => {
     if (confirm("Tem certeza que deseja limpar TODAS as suas respostas? Esta ação não pode ser desfeita.")) {
-      // Limpar respostas de escuta
       setNotes({});
       setShowAnswers({});
       setAnswerResults({});
       setShowAnswerResults({});
-      
-      // Limpar questões de vídeo
       setVideoQuestions(videoQuestions.map(q => ({ ...q, userAnswer: "" })));
-      
-      // Limpar exercícios de arrastar
       const resetExercises = dragExercises.map(ex => ({ ...ex, userAnswer: null }));
       setDragExercises(resetExercises);
       setUsedOptions(new Set());
-      
-      // Limpar seleções móveis
       setMobileSelectedOption(null);
-      
-      // Limpar do localStorage também
       localStorage.removeItem("lesson2Answers");
       alert("Todas as respostas foram limpas.");
     }
   };
 
-  // ==============================
-  // FUNÇÕES DE MANIPULAÇÃO DE ESTADOS
-  // ==============================
   const handleChange = (key: string, value: string) => {
     setNotes((prev) => ({ ...prev, [key]: value }));
   };
@@ -497,7 +434,6 @@ export default function LessonFoodAndDrink() {
     }
   };
 
-  // Funções para arrastar e soltar
   const handleDragStart = (id: number, option: string) => {
     setDraggedItem({ id, option });
     setIsDragging(true);
@@ -517,9 +453,8 @@ export default function LessonFoodAndDrink() {
       });
       setDragExercises(updatedExercises);
       
-      // Marcar a opção como usada se estiver correta
       const exercise = dragExercises.find(e => e.id === exerciseId);
-      if (exercise && exercise.correctAnswers.includes(draggedItem.option)) {
+      if (exercise && exercise.id > 4 && exercise.correctAnswers.includes(draggedItem.option)) {
         setUsedOptions(prev => new Set(prev).add(draggedItem.option));
       }
       
@@ -536,8 +471,7 @@ export default function LessonFoodAndDrink() {
   const resetDragExercise = (id: number) => {
     const updatedExercises = dragExercises.map(exercise => {
       if (exercise.id === id) {
-        // Remover da lista de opções usadas
-        if (exercise.userAnswer) {
+        if (exercise.userAnswer && exercise.id > 4) {
           setUsedOptions(prev => {
             const newSet = new Set(prev);
             newSet.delete(exercise.userAnswer!);
@@ -551,7 +485,6 @@ export default function LessonFoodAndDrink() {
     setDragExercises(updatedExercises);
   };
 
-  // Função para seleção móvel
   const handleMobileSelect = (option: string) => {
     setMobileSelectedOption(option);
   };
@@ -566,9 +499,8 @@ export default function LessonFoodAndDrink() {
       });
       setDragExercises(updatedExercises);
       
-      // Marcar a opção como usada se estiver correta
       const exercise = dragExercises.find(e => e.id === exerciseId);
-      if (exercise && exercise.correctAnswers.includes(mobileSelectedOption)) {
+      if (exercise && exercise.id > 4 && exercise.correctAnswers.includes(mobileSelectedOption)) {
         setUsedOptions(prev => new Set(prev).add(mobileSelectedOption));
       }
       
@@ -576,15 +508,10 @@ export default function LessonFoodAndDrink() {
     }
   };
 
-  // Função para alternar expansão de seções
   const toggleSection = (section: keyof typeof sections) => {
-    setSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
+    setSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  // Dividir a frase em partes para renderização
   const renderSentence = (exercise: DragExercise) => {
     const parts = exercise.sentence.split(exercise.blank);
     return (
@@ -609,13 +536,44 @@ export default function LessonFoodAndDrink() {
     );
   };
 
-  // Verificar resposta de exercício de arrastar
   const checkDragExerciseAnswer = (exercise: DragExercise) => {
     if (exercise.userAnswer) {
       return exercise.correctAnswers.includes(exercise.userAnswer);
     }
     return false;
   };
+
+  // Opções derivadas: 2 "don't" + 2 "doesn't"
+  const donUsedCount = dragExercises.filter(ex => ex.id <= 4).filter(ex => ex.userAnswer === "don't").length;
+  const doesntUsedCount = dragExercises.filter(ex => ex.id <= 4).filter(ex => ex.userAnswer === "doesn't").length;
+
+  const availableNegativeOptions: string[] = [
+    ...Array<string>(Math.max(0, 2 - donUsedCount)).fill("don't"),
+    ...Array<string>(Math.max(0, 2 - doesntUsedCount)).fill("doesn't"),
+  ];
+
+  // Opções do Pronoun Practice Drills:
+  // CORRETAS (com S) + ERRADAS (sem S) como distratores.
+  const pronounOptionsAll: string[] = [
+    // corretas (com S)
+    "drinks", "eats", "prefers", "loves", "enjoys", "has", "likes", "wants",
+    // erradas (sem S) — distratores
+    "drink", "eat", "prefer", "love", "enjoy", "have", "like", "want"
+  ];
+
+  const keyVocabulary: { en: string; pt: string }[] = [
+    { en: "brush your teeth", pt: "escovar os dentes" },
+    { en: "brush your hair", pt: "escovar o cabelo" },
+    { en: "whenever", pt: "sempre que" },
+    { en: "rainy day", pt: "dia chuvoso" },
+    { en: "it takes time", pt: "leva tempo" },
+    { en: "it takes effort", pt: "requer esforço" },
+    { en: "make mistakes", pt: "cometer erros" },
+    { en: "You can talk to people around the world", pt: "Você pode conversar com pessoas ao redor do mundo" },
+    { en: "feel shy or scared", pt: "sentir-se tímido ou assustado" },
+    { en: "feel more confident", pt: "sentir-se mais confiante" },
+    { en: "meet new people", pt: "conhecer novas pessoas" },
+  ];
 
   return (
     <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/lesson1-86.jpg')` }}>
@@ -811,30 +769,29 @@ export default function LessonFoodAndDrink() {
               )}
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Opções para arrastar */}
                 <div className="bg-white p-4 rounded-xl border-2 border-purple-300">
                   <h3 className="text-lg font-bold text-purple-700 mb-3">Opções:</h3>
                   <div className="flex flex-wrap gap-2">
-                    {["don't", "do not", "doesn't", "does not"]
-                      .filter(option => !usedOptions.has(option))
-                      .map((option, idx) => (
-                        <div
-                          key={`option-${idx}`}
-                          className={`px-4 py-2 bg-purple-200 text-purple-800 rounded-lg cursor-move transition-all ${
-                            draggedItem?.option === option ? 'opacity-50 scale-95 shadow-lg' : 'opacity-100'
-                          }`}
-                          draggable
-                          onDragStart={() => handleDragStart(0, option)}
-                          onDragEnd={handleDragEnd}
-                          onClick={() => handleMobileSelect(option)}
-                        >
-                          {option}
-                        </div>
-                      ))}
+                    {availableNegativeOptions.map((option, idx) => (
+                      <div
+                        key={`neg-option-${idx}-${option}`}
+                        className={`px-4 py-2 bg-purple-200 text-purple-800 rounded-lg cursor-move transition-all ${
+                          draggedItem?.option === option ? 'opacity-50 scale-95 shadow-lg' : 'opacity-100'
+                        }`}
+                        draggable
+                        onDragStart={() => handleDragStart(0, option)}
+                        onDragEnd={handleDragEnd}
+                        onClick={() => handleMobileSelect(option)}
+                      >
+                        {option}
+                      </div>
+                    ))}
+                    {availableNegativeOptions.length === 0 && (
+                      <span className="text-sm text-purple-500 italic">Todas as opções foram usadas.</span>
+                    )}
                   </div>
                 </div>
                 
-                {/* Frases para completar */}
                 <div className="space-y-4">
                   {dragExercises
                     .filter(ex => ex.id <= 4)
@@ -875,7 +832,7 @@ export default function LessonFoodAndDrink() {
           )}
         </div>
 
-        {/* PRONOUN PRACTICE DRILLS */}
+        {/* PRONOUN PRACTICE DRILLS — com opções erradas (sem S) */}
         <div className="bg-indigo-50 border-2 border-indigo-200 rounded-[30px] shadow-lg overflow-hidden mb-10">
           <div className="bg-indigo-600 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
@@ -919,11 +876,13 @@ export default function LessonFoodAndDrink() {
               )}
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Opções para arrastar */}
                 <div className="bg-white p-4 rounded-xl border-2 border-indigo-300">
                   <h3 className="text-lg font-bold text-indigo-700 mb-3">Opções:</h3>
+                  <p className="text-xs text-indigo-500 mb-2 italic">
+                    ⚠️ Atenção: algumas opções NÃO têm "s" e não se encaixam com he/she/it.
+                  </p>
                   <div className="flex flex-wrap gap-2">
-                    {["drinks", "eats", "prefers", "loves", "enjoys", "has", "likes", "wants"]
+                    {pronounOptionsAll
                       .filter(option => !usedOptions.has(option))
                       .map((option, idx) => (
                         <div
@@ -942,7 +901,6 @@ export default function LessonFoodAndDrink() {
                   </div>
                 </div>
                 
-                {/* Frases para completar */}
                 <div className="space-y-4">
                   {dragExercises
                     .filter(ex => ex.id > 4)
@@ -984,13 +942,14 @@ export default function LessonFoodAndDrink() {
         </div>
 
         {/* TUNE IN YOUR EARS */}
-        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg overflow-hidden">
-          <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
+        <div className="bg-gradient-to-br from-teal-50 via-cyan-50 to-teal-50 border-2 border-teal-200 rounded-[30px] shadow-xl overflow-hidden">
+          <div className="bg-gradient-to-r from-teal-500 via-teal-600 to-cyan-600 text-white py-5 px-8 flex items-center justify-between shadow-md">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS</h2>
+              <span className="text-3xl mr-3 drop-shadow">🎧</span>
+              <h2 className="text-2xl font-bold tracking-wide">TUNE IN YOUR EARS</h2>
               <button 
                 onClick={() => toggleSection('tuneIn')}
-                className="ml-4 p-2 rounded-full hover:bg-teal-600 transition"
+                className="ml-4 p-2 rounded-full hover:bg-white/20 transition"
               >
                 {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
@@ -998,133 +957,148 @@ export default function LessonFoodAndDrink() {
           </div>
 
           {sections.tuneIn && (
-            <div className="p-8">
-              <div className="mb-8 text-center">
-                <h3 className="text-2xl font-bold text-teal-700 mb-4">
-                  Watch the video and answer the questions below:
-                </h3>
+            <div className="p-6 md:p-10">
+              <div className="mb-10">
+                <div className="text-center mb-6">
+                  <span className="inline-block bg-teal-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-3 shadow">
+                    Watch &amp; Learn
+                  </span>
+                  <h3 className="text-2xl md:text-3xl font-bold text-teal-800">
+                    Watch the video and answer the questions below
+                  </h3>
+                </div>
                 
-                {/* Container do vídeo do YouTube */}
-                <div className="bg-black rounded-xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
-                  <div className="aspect-w-16 aspect-h-9">
-                    <iframe
-                      src="https://www.youtube.com/embed/zD_KUmTl4jE"
-                      title="English Learning Tips"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="w-full h-[400px] md:h-[500px]"
-                    />
-                  </div>
+                <div className="rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-4xl ring-4 ring-teal-300/60 ring-offset-4 ring-offset-white">
+                  <iframe
+                    src="https://www.youtube.com/embed/zD_KUmTl4jE"
+                    title="English Learning Tips"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-[400px] md:h-[500px] block"
+                  />
                 </div>
 
-                <div className="mt-4 text-sm text-teal-600">
-                  <p>Video: Tips for Making English Learning Fun and Effective</p>
-                </div>
+                <p className="mt-5 text-sm text-center text-teal-700 italic">
+                  🎬 Video: Tips for Making English Learning Fun and Effective
+                </p>
               </div>
 
-              {/* Vocabulary Help - Updated with the exact words requested */}
-              <div className="mb-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4 flex items-center gap-2">
-                  📖 Key Vocabulary from the Video:
+              <div className="mb-10 bg-white border-2 border-teal-200 rounded-2xl p-6 md:p-8 shadow-lg">
+                <h3 className="text-xl md:text-2xl font-bold text-teal-800 mb-6 flex items-center gap-2 border-b-2 border-teal-100 pb-4">
+                  📖 Key Vocabulary from the Video
                   <AudioButton text="Key Vocabulary from the Video" />
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    {[
-                      "brush your teeth - escovar os dentes",
-                      "brush your hair - escovar o cabelo",
-                      "whenever - sempre que",
-                      "rainy day - dia chuvoso",
-                      "it takes time - leva tempo",
-                      "it takes effort - requer esforço",
-                      "make mistakes - cometer erros"
-                    ].map((item, i) => (
-                      <div key={i} className="flex justify-between items-center p-2 bg-white rounded-lg">
-                        <SpeakableText text={item.split(' - ')[0]} className="font-medium text-teal-700" />
-                        <span className="text-teal-600">{item.split(' - ')[1]}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="space-y-3">
-                    {[
-                      "You can talk to people around the world - Você pode conversar com pessoas ao redor do mundo",
-                      "feel shy or scared - sentir-se tímido ou assustado",
-                      "feel more confident - sentir-se mais confiante",
-                      "meet new people - conhecer novas pessoas"
-                    ].map((item, i) => (
-                      <div key={i} className="flex justify-between items-center p-2 bg-white rounded-lg">
-                        <SpeakableText text={item.split(' - ')[0]} className="font-medium text-teal-700" />
-                        <span className="text-teal-600">{item.split(' - ')[1]}</span>
-                      </div>
-                    ))}
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {keyVocabulary.map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-3 p-3 bg-gradient-to-r from-teal-50 to-cyan-50 rounded-lg border border-teal-100 hover:border-teal-300 hover:shadow-sm transition-all"
+                    >
+                      <SpeakableText
+                        text={item.en}
+                        className="font-semibold text-teal-700 text-base leading-snug"
+                      />
+                      <span className="text-teal-400 font-bold">→</span>
+                      <span className="text-slate-600 text-base leading-snug">{item.pt}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Questions Section */}
               <div className="space-y-6">
-                {videoQuestions.map((question) => (
-                  <div key={question.id} className="bg-white p-6 rounded-xl border-2 border-teal-200 shadow-md">
-                    <h4 className="text-lg font-bold text-teal-700 mb-3">
-                      {question.question}
-                    </h4>
-                    
-                    {question.vocabulary && (
-                      <div className="mb-3 p-3 bg-teal-50 rounded-lg">
-                        <p className="text-sm font-medium text-teal-600 mb-1">Vocabulary hints:</p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {question.vocabulary.map((word, idx) => (
-                            <div key={idx} className="flex justify-between text-sm">
-                              <span className="text-teal-700 font-medium">{word.english}</span>
-                              <span className="text-teal-600">{word.portuguese}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    <textarea
-                      value={question.userAnswer}
-                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)}
-                      placeholder="Write your answer here..."
-                      className="w-full h-24 p-3 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
-                    />
-
-                    <div className="flex gap-3 mt-3">
-                      <button
-                        onClick={() => checkVideoAnswer(question.id)}
-                        className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition font-medium"
-                      >
-                        Check Answer
-                      </button>
-                      <button
-                        onClick={() => handleVideoAnswerChange(question.id, "")}
-                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md transition"
-                      >
-                        Clear
-                      </button>
+                {videoQuestions.map((question, idx) => (
+                  <div
+                    key={question.id}
+                    className="bg-white rounded-2xl border-2 border-teal-200 shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+                  >
+                    <div className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-5 py-4 flex items-center gap-3">
+                      <span className="flex items-center justify-center w-9 h-9 rounded-full bg-white/25 font-bold text-lg flex-shrink-0">
+                        {idx + 1}
+                      </span>
+                      <h4 className="text-base md:text-lg font-bold leading-snug">
+                        {question.question}
+                      </h4>
                     </div>
 
-                    {showAnswerResults[`video-${question.id}`] && (
-                      <div className="mt-3">
-                        <AnswerResult 
-                          isCorrect={answerResults[`video-${question.id}`]} 
-                          correctAnswer={question.correctAnswer}
-                        />
+                    <div className="p-5 md:p-6">
+                      {question.vocabulary && (
+                        <div className="mb-4 p-4 bg-teal-50 border border-teal-200 rounded-xl">
+                          <p className="text-xs font-bold text-teal-700 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            💡 Vocabulary hints
+                          </p>
+                          <div className="grid grid-cols-1 gap-2">
+                            {question.vocabulary.map((word, vIdx) => (
+                              <div
+                                key={vIdx}
+                                className="flex flex-wrap items-center gap-2 text-base bg-white px-3 py-2 rounded-lg border border-teal-100"
+                              >
+                                <SpeakableText
+                                  text={word.english}
+                                  className="font-semibold text-teal-700"
+                                />
+                                <span className="text-teal-400 font-bold">→</span>
+                                <span className="text-slate-600">{word.portuguese}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <textarea
+                        value={question.userAnswer}
+                        onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)}
+                        placeholder="Write your answer here..."
+                        className="w-full h-24 p-3 border-2 border-teal-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none text-slate-700"
+                      />
+
+                      <div className="flex flex-wrap gap-3 mt-4">
+                        <button
+                          onClick={() => checkVideoAnswer(question.id)}
+                          className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white px-5 py-2.5 rounded-lg transition font-semibold shadow-sm hover:shadow"
+                        >
+                          ✓ Check Answer
+                        </button>
+                        <button
+                          onClick={() => handleVideoAnswerChange(question.id, "")}
+                          className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-2.5 rounded-lg transition font-medium"
+                        >
+                          Clear
+                        </button>
                       </div>
-                    )}
+
+                      {showAnswerResults[`video-${question.id}`] && (
+                        <div className="mt-4">
+                          <AnswerResult
+                            isCorrect={answerResults[`video-${question.id}`]}
+                            correctAnswer={question.correctAnswer}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-8 bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-4">Dicas para Responder:</h3>
-                <ul className="list-disc pl-5 space-y-2 text-teal-700 text-sm">
-                  <li>Ouça com atenção as ideias principais do vídeo</li>
-                  <li>Use as dicas de vocabulário para ajudar a formar suas respostas</li>
-                  <li>Escreva frases completas em inglês</li>
-                  <li>Não se preocupe com a perfeição</li>
-                  <li>Você pode assistir ao vídeo várias vezes, se necessário</li>
+              <div className="mt-10 bg-gradient-to-br from-teal-100 to-cyan-100 border-2 border-teal-300 rounded-2xl p-6 shadow-inner">
+                <h3 className="text-xl font-bold text-teal-800 mb-4 flex items-center gap-2">
+                  ✨ Dicas para Responder
+                </h3>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-teal-800 text-sm">
+                  <li className="flex items-start gap-2 bg-white/60 rounded-lg p-2">
+                    <span>🎯</span><span>Ouça com atenção as ideias principais do vídeo</span>
+                  </li>
+                  <li className="flex items-start gap-2 bg-white/60 rounded-lg p-2">
+                    <span>📖</span><span>Use as dicas de vocabulário para ajudar a formar suas respostas</span>
+                  </li>
+                  <li className="flex items-start gap-2 bg-white/60 rounded-lg p-2">
+                    <span>✍️</span><span>Escreva frases completas em inglês</span>
+                  </li>
+                  <li className="flex items-start gap-2 bg-white/60 rounded-lg p-2">
+                    <span>💪</span><span>Não se preocupe com a perfeição</span>
+                  </li>
+                  <li className="flex items-start gap-2 bg-white/60 rounded-lg p-2 md:col-span-2">
+                    <span>🔁</span><span>Você pode assistir ao vídeo várias vezes, se necessário</span>
+                  </li>
                 </ul>
               </div>
             </div>

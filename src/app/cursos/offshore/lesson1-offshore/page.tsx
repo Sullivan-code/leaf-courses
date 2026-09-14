@@ -1,11 +1,178 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Volume2, Eye, EyeOff } from "lucide-react";
 
 type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar';
 
+// ============================================
+// SPEECH SYSTEM WITH AMERICAN FEMALE VOICE
+// ============================================
+
+interface SpeakTextProps {
+  text: string;
+  children?: React.ReactNode;
+  className?: string;
+  showIcon?: boolean;
+}
+
+// Helper: speaks English text with an American female voice when available.
+const speakEnglish = (text: string, rate = 0.9) => {
+  if (!text || typeof window === 'undefined') return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = rate;
+  utterance.pitch = 1.0;
+  const voices = window.speechSynthesis.getVoices();
+  const americanFemaleVoices = voices.filter(voice =>
+    (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+    (voice.name.toLowerCase().includes('samantha') ||
+     voice.name.toLowerCase().includes('google us english') ||
+     voice.name.toLowerCase().includes('siri') ||
+     voice.name.toLowerCase().includes('female') ||
+     voice.name === 'Google US English' ||
+     voice.name === 'Samantha')
+  );
+  const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+  if (americanFemaleVoices.length > 0) {
+    utterance.voice = americanFemaleVoices[0];
+  } else if (americanVoices.length > 0) {
+    utterance.voice = americanVoices[0];
+  }
+  window.speechSynthesis.speak(utterance);
+};
+
+const SpeakText = ({ text, children, className = "", showIcon = true }: SpeakTextProps) => {
+  const speak = () => {
+    speakEnglish(text, 0.9);
+  };
+
+  return (
+    <button
+      onClick={speak}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-blue-100 px-1 rounded transition-colors group ${className}`}
+      title="Click to hear American pronunciation"
+    >
+      {children || text}
+      {showIcon && <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />}
+    </button>
+  );
+};
+
+const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
+  return (
+    <button
+      onClick={() => {
+        const speechText = children && typeof children === 'string' ? children : text;
+        speakEnglish(speechText, 0.85);
+      }}
+      className={`group cursor-pointer hover:bg-blue-50 px-1 rounded transition-colors text-left w-full ${className}`}
+    >
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+    </button>
+  );
+};
+
+// ============================================
+// SUBSTITUTION EXERCISE COMPONENT WITH EYE TOGGLE
+// ============================================
+type OptionType = string | { label: string; replacement: string };
+
+interface SubstitutionExercise {
+  key: string;
+  original: string;
+  base?: string;
+  options: OptionType[];
+  currentIndex: number;
+}
+
+function SubstitutionOptions({
+  exercise,
+  onOptionClick,
+}: {
+  exercise: SubstitutionExercise;
+  onOptionClick: (key: string, index: number) => void;
+}) {
+  const [showEnglish, setShowEnglish] = useState(true);
+
+  const isObjectOption = (opt: OptionType): opt is { label: string; replacement: string } => {
+    return typeof opt === 'object' && opt !== null && 'label' in opt && 'replacement' in opt;
+  };
+
+  const currentOption = exercise.options[exercise.currentIndex];
+  let currentSentence: string;
+  if (isObjectOption(currentOption)) {
+    currentSentence = currentOption.replacement;
+  } else {
+    currentSentence = String(currentOption);
+  }
+
+  const toggleVisibility = () => {
+    setShowEnglish(prev => !prev);
+  };
+
+  const getOptionLabel = (opt: OptionType): string => {
+    if (isObjectOption(opt)) {
+      return opt.label;
+    }
+    return String(opt);
+  };
+
+  const getOptionReplacement = (opt: OptionType): string => {
+    if (isObjectOption(opt)) {
+      return opt.replacement;
+    }
+    return String(opt);
+  };
+
+  return (
+    <div className="bg-white p-4 rounded-lg border border-purple-200">
+      <div className="flex items-start justify-between mb-2">
+        <p className="text-blue-600 font-medium block">{exercise.original}</p>
+        <button
+          onClick={toggleVisibility}
+          className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-700 ml-2 flex-shrink-0"
+          title={showEnglish ? "Ocultar resposta em inglês" : "Mostrar resposta em inglês"}
+        >
+          {showEnglish ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
+
+      {showEnglish && (
+        <div className="mb-3 p-3 bg-blue-50 rounded-md">
+          <SpeakSentence text={currentSentence} className="text-blue-700 font-medium" />
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        {exercise.options.map((option, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              onOptionClick(exercise.key, index);
+              speakEnglish(getOptionReplacement(option), 0.9);
+            }}
+            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+              exercise.currentIndex === index
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {getOptionLabel(option)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// MAIN COMPONENT – LESSON 1 OFFSHORE: ENGINE ROOM
+// ============================================
 export default function LessonOffshoreOQM() {
   const router = useRouter();
   const [openDrills, setOpenDrills] = useState({
@@ -15,50 +182,385 @@ export default function LessonOffshoreOQM() {
     grammar: false,
   });
 
+  const [substitutionState, setSubstitutionState] = useState<Record<string, number>>({});
+
   const toggleDrill = (section: SectionKey) => {
-    setOpenDrills({
-      ...openDrills,
-      [section]: !openDrills[section]
-    });
+    setOpenDrills(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  const playAudio = (text: string) => {
-    // Using Web Speech API for female American English voice
-    if ('speechSynthesis' in window) {
-      // Cancel any ongoing speech
-      window.speechSynthesis.cancel();
-      
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.9;
-      utterance.pitch = 1.1;
-      utterance.volume = 1;
-      
-      // Try to get a female voice
-      const voices = window.speechSynthesis.getVoices();
-      const femaleVoice = voices.find(voice => 
-        voice.lang === 'en-US' && 
-        (voice.name.includes('Female') || 
-         voice.name.includes('Samantha') || 
-         voice.name.includes('Google US English') ||
-         voice.name.includes('Alex') === false)
-      );
-      
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
-      }
-      
-      window.speechSynthesis.speak(utterance);
-    } else {
-      console.error("Speech synthesis not supported");
+  const handleOptionClick = (key: string, index: number) => {
+    setSubstitutionState(prev => ({ ...prev, [key]: index }));
+  };
+
+  const getCurrentIndex = (key: string) => substitutionState[key] || 0;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.getVoices();
     }
+  }, []);
+
+  // ============================================================
+  // SUBSTITUTION EXERCISES – OFFSHORE ENGINE ROOM
+  // ============================================================
+
+  // ---------- VERBS ----------
+  const verbsSubstitution: SubstitutionExercise[] = [
+    {
+      key: "verb-1",
+      original: "Eu trabalho / Você trabalha / Ele trabalha",
+      options: [
+        { label: "Eu", replacement: "I work." },
+        { label: "Você", replacement: "You work." },
+        { label: "Ele", replacement: "He works." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-2",
+      original: "Eu lido com / Você lida com / Ela lida com",
+      options: [
+        { label: "Eu", replacement: "I deal with." },
+        { label: "Você", replacement: "You deal with." },
+        { label: "Ela", replacement: "She deals with." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-3",
+      original: "Eu trabalho na casa de máquinas.",
+      options: [
+        { label: "casa de máquinas", replacement: "I work in the engine room." },
+        { label: "sala de controle", replacement: "I work in the control room." },
+        { label: "convés", replacement: "I work on the deck." },
+        { label: "oficina", replacement: "I work in the workshop." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-4",
+      original: "Ele lida com o motor principal.",
+      options: [
+        { label: "motor principal", replacement: "He deals with the main engine." },
+        { label: "gerador", replacement: "He deals with the generator." },
+        { label: "bomba", replacement: "He deals with the pump." },
+        { label: "caldeira", replacement: "He deals with the boiler." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-5",
+      original: "Você trabalha no turno da noite?",
+      options: [
+        { label: "turno da noite", replacement: "Do you work on the night watch?" },
+        { label: "turno do dia", replacement: "Do you work on the day watch?" },
+        { label: "turno da tarde", replacement: "Do you work on the evening watch?" },
+        { label: "turno de 12 horas", replacement: "Do you work on the 12-hour shift?" }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-6",
+      original: "Nós trabalhamos juntos para verificar o painel de alarmes.",
+      options: [
+        { label: "painel de alarmes", replacement: "We work together to check the alarm panel." },
+        { label: "manômetro", replacement: "We work together to check the pressure gauge." },
+        { label: "sensor de temperatura", replacement: "We work together to check the temperature sensor." },
+        { label: "medidor de combustível", replacement: "We work together to check the fuel meter." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-7",
+      original: "Ela lida com situações de emergência na sala de controle.",
+      options: [
+        { label: "sala de controle", replacement: "She deals with emergency situations in the control room." },
+        { label: "casa de máquinas", replacement: "She deals with emergency situations in the engine room." },
+        { label: "passadiço", replacement: "She deals with emergency situations on the bridge." },
+        { label: "oficina", replacement: "She deals with emergency situations in the workshop." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-8",
+      original: "Eles lidam com vazamentos de combustível e derramamentos de óleo todos os dias.",
+      options: [
+        { label: "vazamentos de combustível e derramamentos de óleo", replacement: "They deal with fuel leaks and oil spills every day." },
+        { label: "alta pressão e baixa temperatura", replacement: "They deal with high pressure and low temperature every day." },
+        { label: "alarmes e avisos", replacement: "They deal with alarms and warnings every day." },
+        { label: "bombas e válvulas", replacement: "They deal with pumps and valves every day." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-9",
+      original: "Durante meu turno, eu trabalho e lido com qualquer ruído anormal do motor auxiliar.",
+      options: [
+        { label: "motor auxiliar", replacement: "During my watch, I work and I deal with any abnormal noise from the auxiliary engine." },
+        { label: "motor principal", replacement: "During my watch, I work and I deal with any abnormal noise from the main engine." },
+        { label: "gerador", replacement: "During my watch, I work and I deal with any abnormal noise from the generator." },
+        { label: "sistema de resfriamento", replacement: "During my watch, I work and I deal with any abnormal noise from the cooling system." }
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ---------- NEW WORDS ----------
+  const vocabSubstitution: SubstitutionExercise[] = [
+    {
+      key: "vocab-1",
+      original: "Verifique a pressão do óleo.",
+      options: [
+        { label: "pressão do óleo", replacement: "Check the oil pressure." },
+        { label: "pressão da água", replacement: "Check the water pressure." },
+        { label: "pressão do combustível", replacement: "Check the fuel pressure." },
+        { label: "pressão do ar", replacement: "Check the air pressure." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-2",
+      original: "A temperatura está alta.",
+      options: [
+        { label: "temperatura", replacement: "The temperature is high." },
+        { label: "pressão", replacement: "The pressure is high." },
+        { label: "nível", replacement: "The level is high." },
+        { label: "fluxo", replacement: "The flow is high." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-3",
+      original: "Eu vejo um pequeno vazamento no cano.",
+      options: [
+        { label: "vazamento", replacement: "I see a small leak in the pipe." },
+        { label: "rachadura", replacement: "I see a small crack in the pipe." },
+        { label: "bloqueio", replacement: "I see a small blockage in the pipe." },
+        { label: "ruído", replacement: "I see a small noise in the pipe." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-4",
+      original: "O alarme está ativo no gerador.",
+      options: [
+        { label: "gerador", replacement: "The alarm is active on the generator." },
+        { label: "motor principal", replacement: "The alarm is active on the main engine." },
+        { label: "caldeira", replacement: "The alarm is active on the boiler." },
+        { label: "bomba número 2", replacement: "The alarm is active on the pump number 2." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-5",
+      original: "Feche a válvula imediatamente.",
+      options: [
+        { label: "válvula", replacement: "Close the valve immediately." },
+        { label: "interruptor", replacement: "Close the switch immediately." },
+        { label: "disjuntor", replacement: "Close the breaker immediately." },
+        { label: "painel", replacement: "Close the panel immediately." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-6",
+      original: "Registre a temperatura e a pressão a cada hora.",
+      options: [
+        { label: "temperatura e pressão", replacement: "Record the temperature and the pressure every hour." },
+        { label: "nível de combustível e nível de óleo", replacement: "Record the fuel level and oil level every hour." },
+        { label: "rpm e horas", replacement: "Record the rpm and hours every hour." },
+        { label: "alarmes e avisos", replacement: "Record the alarms and warnings every hour." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-7",
+      original: "O vazamento no cano de combustível está perto da válvula.",
+      options: [
+        { label: "cano de combustível", replacement: "The leak in the fuel pipe is near the valve." },
+        { label: "cano de água", replacement: "The leak in the water pipe is near the valve." },
+        { label: "linha de óleo", replacement: "The leak in the oil line is near the valve." },
+        { label: "mangueira de resfriamento", replacement: "The leak in the cooling hose is near the valve." }
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ---------- USEFUL PHRASES ----------
+  const phrasesSubstitution: SubstitutionExercise[] = [
+    {
+      key: "phrase-1",
+      original: "Eu trabalho na casa de máquinas todos os dias.",
+      options: [
+        { label: "casa de máquinas", replacement: "I work in the engine room every day." },
+        { label: "sala de controle", replacement: "I work in the control room every day." },
+        { label: "oficina", replacement: "I work in the workshop every day." },
+        { label: "sala de bombas", replacement: "I work in the pump room every day." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-2",
+      original: "Você pode lidar com o alarme de alta temperatura?",
+      options: [
+        { label: "alta temperatura", replacement: "Can you deal with the high temperature alarm?" },
+        { label: "baixa pressão", replacement: "Can you deal with the low pressure alarm?" },
+        { label: "alta vibração", replacement: "Can you deal with the high vibration alarm?" },
+        { label: "baixo nível de óleo", replacement: "Can you deal with the low oil level alarm?" }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-3",
+      original: "Nós precisamos trabalhar juntos para consertar a bomba.",
+      options: [
+        { label: "bomba", replacement: "We need to work together to fix the pump." },
+        { label: "gerador", replacement: "We need to work together to fix the generator." },
+        { label: "válvula", replacement: "We need to work together to fix the valve." },
+        { label: "compressor", replacement: "We need to work together to fix the compressor." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-4",
+      original: "Eu sempre lido com vazamentos de combustível com cuidado.",
+      options: [
+        { label: "vazamentos de combustível", replacement: "I always deal with fuel leaks carefully." },
+        { label: "alarmes de emergência", replacement: "I always deal with emergency alarms carefully." },
+        { label: "derramamentos de óleo", replacement: "I always deal with oil spills carefully." },
+        { label: "problemas elétricos", replacement: "I always deal with electrical problems carefully." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-5",
+      original: "Segurança é minha primeira prioridade durante o turno.",
+      options: [
+        { label: "Segurança", replacement: "Safety is my first priority during the watch." },
+        { label: "Comunicação", replacement: "Communication is my first priority during the watch." },
+        { label: "Trabalho em equipe", replacement: "Teamwork is my first priority during the watch." },
+        { label: "Procedimento", replacement: "Procedure is my first priority during the watch." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-6",
+      original: "Por favor, reporte qualquer ruído anormal ao chefe de máquinas.",
+      options: [
+        { label: "chefe de máquinas", replacement: "Please report any abnormal noise to the chief engineer." },
+        { label: "oficial de quarto", replacement: "Please report any abnormal noise to the watch officer." },
+        { label: "supervisor da casa de máquinas", replacement: "Please report any abnormal noise to the engine room supervisor." },
+        { label: "capitão", replacement: "Please report any abnormal noise to the captain." }
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ---------- GRAMMAR ----------
+  const grammarSubstitution: SubstitutionExercise[] = [
+    {
+      key: "grammar-1",
+      original: "Eu trabalho da meia-noite às 6 da manhã.",
+      options: [
+        { label: "da meia-noite às 6 da manhã", replacement: "I work from midnight to 6 AM." },
+        { label: "das 6 da manhã ao meio-dia", replacement: "I work from 6 AM to noon." },
+        { label: "do meio-dia às 6 da tarde", replacement: "I work from noon to 6 PM." },
+        { label: "das 6 da tarde à meia-noite", replacement: "I work from 6 PM to midnight." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-2",
+      original: "Eu lido com os alarmes do motor principal.",
+      options: [
+        { label: "motor principal", replacement: "I deal with the main engine alarms." },
+        { label: "gerador", replacement: "I deal with the generator alarms." },
+        { label: "caldeira", replacement: "I deal with the boiler warnings." },
+        { label: "sistema de segurança", replacement: "I deal with the safety system alerts." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-3",
+      original: "Você trabalha no turno do gerador, certo?",
+      options: [
+        { label: "turno do gerador", replacement: "You work on the generator watch, right?" },
+        { label: "turno da bomba", replacement: "You work on the pump watch, right?" },
+        { label: "turno do motor", replacement: "You work on the engine watch, right?" },
+        { label: "turno da noite", replacement: "You work on the night watch, right?" }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-4",
+      original: "Nós lidamos com situações de emergência rapidamente.",
+      options: [
+        { label: "situações de emergência", replacement: "We deal with emergency situations fast." },
+        { label: "problemas diários", replacement: "We deal with daily problems fast." },
+        { label: "verificações de rotina", replacement: "We deal with routine checks fast." },
+        { label: "tarefas de manutenção", replacement: "We deal with maintenance tasks fast." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-5",
+      original: "Ela trabalha na sala de controle.",
+      options: [
+        { label: "sala de controle", replacement: "She works in the control room." },
+        { label: "casa de máquinas", replacement: "She works in the engine room." },
+        { label: "oficina", replacement: "She works in the workshop." },
+        { label: "escritório", replacement: "She works in the office." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-6",
+      original: "Eles trabalham juntos durante os treinos de emergência.",
+      options: [
+        { label: "treinos de emergência", replacement: "They work together during emergency drills." },
+        { label: "o turno da noite", replacement: "They work together during the night shift." },
+        { label: "períodos de manutenção", replacement: "They work together during maintenance periods." },
+        { label: "trocas de turno", replacement: "They work together during watch changes." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-7",
+      original: "Dia sim, dia não, eu verifico o nível de óleo no motor principal.",
+      options: [
+        { label: "nível de óleo", replacement: "Every other day, I check the oil level on the main engine." },
+        { label: "nível de líquido de arrefecimento", replacement: "Every other day, I check the coolant level on the main engine." },
+        { label: "nível de combustível", replacement: "Every other day, I check the fuel level on the main engine." },
+        { label: "nível de água", replacement: "Every other day, I check the water level on the main engine." }
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-8",
+      original: "Você precisa lidar com o problema de vibração antes do próximo turno começar.",
+      options: [
+        { label: "vibração", replacement: "You need to deal with the vibration problem before the next watch starts." },
+        { label: "superaquecimento", replacement: "You need to deal with the overheating problem before the next watch starts." },
+        { label: "ruído", replacement: "You need to deal with the noise problem before the next watch starts." },
+        { label: "queda de pressão", replacement: "You need to deal with the pressure drop problem before the next watch starts." }
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  const allExercises = [...verbsSubstitution, ...vocabSubstitution, ...phrasesSubstitution, ...grammarSubstitution];
+
+  const getExerciseWithIndex = (key: string) => {
+    const ex = allExercises.find(e => e.key === key);
+    if (!ex) return null;
+    return { ...ex, currentIndex: getCurrentIndex(key) };
   };
 
   return (
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
       style={{
-        backgroundImage: `url("https://images.pexels.com/photos/1430677/pexels-photo-1430677.jpeg?auto=compress&cs=tinysrgb&w=1600")`,
+        backgroundImage: `url("https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%2014%20de%20set.%20de%202026%2C%2012_57_25.png")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -66,7 +568,7 @@ export default function LessonOffshoreOQM() {
       }}
     >
       <div className="max-w-5xl mx-auto bg-[#f0f8ff] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
-        
+
         {/* TITLE WITH OFFSHORE PLATFORM IMAGE - MAX QUALITY */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
@@ -87,6 +589,9 @@ export default function LessonOffshoreOQM() {
             />
           </div>
           <p className="text-sm text-gray-500 mt-2">📍 Offshore Oil Platform - North Sea</p>
+          <p className="text-base text-blue-700 font-bold mt-2">
+            🏭 Engine Room = Praça de Máquinas
+          </p>
         </div>
 
         {/* SECTION 1 - VERBS */}
@@ -102,83 +607,23 @@ export default function LessonOffshoreOQM() {
           </div>
           <div className="p-8">
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
-              <li><button onClick={() => playAudio("to work")} className="text-blue-600 font-bold hover:underline">to work</button> = trabalhar</li>
-              <li><button onClick={() => playAudio("to deal with")} className="text-blue-600 font-bold hover:underline">to deal with</button> = lidar com</li>
-              <li><button onClick={() => playAudio("to check")} className="text-blue-600 font-bold hover:underline">to check</button> = verificar, inspecionar</li>
+              <li><SpeakText text="to work" className="text-blue-600 font-bold">to work</SpeakText> = trabalhar</li>
+              <li><SpeakText text="to deal with" className="text-blue-600 font-bold">to deal with</SpeakText> = lidar com</li>
+              <li><SpeakText text="to check" className="text-blue-600 font-bold">to check</SpeakText> = verificar, inspecionar</li>
             </ul>
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    I <span onClick={() => playAudio("work")} className="text-blue-600 font-bold cursor-pointer">work</span> / You <span onClick={() => playAudio("work")} className="text-blue-600 font-bold cursor-pointer">work</span> / He <span onClick={() => playAudio("works")} className="text-blue-600 font-bold cursor-pointer">works</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("I work, you work, he works")}>Eu trabalho / Você trabalha / Ele trabalha</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "work" with: <span className="text-green-600 font-medium">check</span> | <span className="text-green-600 font-medium">start</span> | <span className="text-green-600 font-medium">stop</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    I <span onClick={() => playAudio("deal with")} className="text-blue-600 font-bold cursor-pointer">deal with</span> / You <span onClick={() => playAudio("deal with")} className="text-blue-600 font-bold cursor-pointer">deal with</span> / She <span onClick={() => playAudio("deals with")} className="text-blue-600 font-bold cursor-pointer">deals with</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("I deal with, you deal with, she deals with")}>Eu lido com / Você lida com / Ela lida com</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "deal with" with: <span className="text-green-600 font-medium">fix</span> | <span className="text-green-600 font-medium">report</span> | <span className="text-green-600 font-medium">monitor</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    I work in the <span onClick={() => playAudio("engine room")} className="text-blue-600 font-bold cursor-pointer">engine room</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("I work in the engine room")}>Eu trabalho na casa de máquinas</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "engine room" with: <span className="text-green-600 font-medium">control room</span> | <span className="text-green-600 font-medium">deck</span> | <span className="text-green-600 font-medium">workshop</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    He <span onClick={() => playAudio("deals with")} className="text-blue-600 font-bold cursor-pointer">deals with</span> the <span onClick={() => playAudio("main engine")} className="text-blue-600 font-bold cursor-pointer">main engine</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("He deals with the main engine")}>Ele lida com o motor principal</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "main engine" with: <span className="text-green-600 font-medium">generator</span> | <span className="text-green-600 font-medium">pump</span> | <span className="text-green-600 font-medium">boiler</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    Do you <span onClick={() => playAudio("work")} className="text-blue-600 font-bold cursor-pointer">work</span> on the <span onClick={() => playAudio("night watch")} className="text-blue-600 font-bold cursor-pointer">night watch</span>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("Do you work on the night watch?")}>Você trabalha no turno da noite?</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "night watch" with: <span className="text-green-600 font-medium">day watch</span> | <span className="text-green-600 font-medium">evening watch</span> | <span className="text-green-600 font-medium">12-hour shift</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    We <span onClick={() => playAudio("work")} className="text-blue-600 font-bold cursor-pointer">work</span> together to <span onClick={() => playAudio("check")} className="text-blue-600 font-bold cursor-pointer">check</span> the <span onClick={() => playAudio("alarm panel")} className="text-blue-600 font-bold cursor-pointer">alarm panel</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("We work together to check the alarm panel")}>Nós trabalhamos juntos para verificar o painel de alarmes</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "alarm panel" with: <span className="text-green-600 font-medium">pressure gauge</span> | <span className="text-green-600 font-medium">temperature sensor</span> | <span className="text-green-600 font-medium">fuel meter</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    She <span onClick={() => playAudio("deals with")} className="text-blue-600 font-bold cursor-pointer">deals with</span> <span onClick={() => playAudio("emergency")} className="text-blue-600 font-bold cursor-pointer">emergency</span> situations in the <span onClick={() => playAudio("control room")} className="text-blue-600 font-bold cursor-pointer">control room</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("She deals with emergency situations in the control room")}>Ela lida com situações de emergência na sala de controle</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "control room" with: <span className="text-green-600 font-medium">engine room</span> | <span className="text-green-600 font-medium">bridge</span> | <span className="text-green-600 font-medium">workshop</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    They <span onClick={() => playAudio("deal with")} className="text-blue-600 font-bold cursor-pointer">deal with</span> <span onClick={() => playAudio("fuel leaks")} className="text-blue-600 font-bold cursor-pointer">fuel leaks</span> and <span onClick={() => playAudio("oil spills")} className="text-blue-600 font-bold cursor-pointer">oil spills</span> every day
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("They deal with fuel leaks and oil spills every day")}>Eles lidam com vazamentos de combustível e derramamentos de óleo todos os dias</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "fuel leaks and oil spills" with: <span className="text-green-600 font-medium">high pressure and low temperature</span> | <span className="text-green-600 font-medium">alarms and warnings</span> | <span className="text-green-600 font-medium">pumps and valves</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    During my <span onClick={() => playAudio("watch")} className="text-blue-600 font-bold cursor-pointer">watch</span>, I <span onClick={() => playAudio("work")} className="text-blue-600 font-bold cursor-pointer">work</span> and I <span onClick={() => playAudio("deal with")} className="text-blue-600 font-bold cursor-pointer">deal with</span> any <span onClick={() => playAudio("abnormal noise")} className="text-blue-600 font-bold cursor-pointer">abnormal noise</span> from the <span onClick={() => playAudio("auxiliary engine")} className="text-blue-600 font-bold cursor-pointer">auxiliary engine</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("During my watch, I work and I deal with any abnormal noise from the auxiliary engine")}>Durante meu turno, eu trabalho e lido com qualquer ruído anormal do motor auxiliar</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "auxiliary engine" with: <span className="text-green-600 font-medium">main engine</span> | <span className="text-green-600 font-medium">generator</span> | <span className="text-green-600 font-medium">cooling system</span></p>
-                </div>
+                {verbsSubstitution.map((ex) => {
+                  const currentEx = getExerciseWithIndex(ex.key);
+                  if (!currentEx) return null;
+                  return (
+                    <SubstitutionOptions
+                      key={ex.key}
+                      exercise={currentEx}
+                      onOptionClick={handleOptionClick}
+                    />
+                  );
+                })}
               </div>
             )}
           </div>
@@ -197,72 +642,29 @@ export default function LessonOffshoreOQM() {
           </div>
           <div className="p-8">
             <ul className="grid grid-cols-2 gap-2 mb-6">
-              <li><button onClick={() => playAudio("engine")} className="text-blue-600 font-bold hover:underline">engine</button> = motor</li>
-              <li><button onClick={() => playAudio("pump")} className="text-blue-600 font-bold hover:underline">pump</button> = bomba</li>
-              <li><button onClick={() => playAudio("generator")} className="text-blue-600 font-bold hover:underline">generator</button> = gerador</li>
-              <li><button onClick={() => playAudio("pressure")} className="text-blue-600 font-bold hover:underline">pressure</button> = pressão</li>
-              <li><button onClick={() => playAudio("temperature")} className="text-blue-600 font-bold hover:underline">temperature</button> = temperatura</li>
-              <li><button onClick={() => playAudio("valve")} className="text-blue-600 font-bold hover:underline">valve</button> = válvula</li>
-              <li><button onClick={() => playAudio("alarm")} className="text-blue-600 font-bold hover:underline">alarm</button> = alarme</li>
-              <li><button onClick={() => playAudio("leak")} className="text-blue-600 font-bold hover:underline">leak</button> = vazamento</li>
+              <li><SpeakText text="engine" className="text-blue-600 font-bold">engine</SpeakText> = motor</li>
+              <li><SpeakText text="engine room" className="text-blue-600 font-bold">engine room</SpeakText> = <span className="font-bold text-blue-700">praça de máquinas</span></li>
+              <li><SpeakText text="pump" className="text-blue-600 font-bold">pump</SpeakText> = bomba</li>
+              <li><SpeakText text="generator" className="text-blue-600 font-bold">generator</SpeakText> = gerador</li>
+              <li><SpeakText text="pressure" className="text-blue-600 font-bold">pressure</SpeakText> = pressão</li>
+              <li><SpeakText text="temperature" className="text-blue-600 font-bold">temperature</SpeakText> = temperatura</li>
+              <li><SpeakText text="valve" className="text-blue-600 font-bold">valve</SpeakText> = válvula</li>
+              <li><SpeakText text="alarm" className="text-blue-600 font-bold">alarm</SpeakText> = alarme</li>
+              <li><SpeakText text="leak" className="text-blue-600 font-bold">leak</SpeakText> = vazamento</li>
             </ul>
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    Check the <span onClick={() => playAudio("oil pressure")} className="text-blue-600 font-bold cursor-pointer">oil pressure</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("Check the oil pressure")}>Verifique a pressão do óleo</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "oil pressure" with: <span className="text-green-600 font-medium">water pressure</span> | <span className="text-green-600 font-medium">fuel pressure</span> | <span className="text-green-600 font-medium">air pressure</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    The <span onClick={() => playAudio("temperature")} className="text-blue-600 font-bold cursor-pointer">temperature</span> is high
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("The temperature is high")}>A temperatura está alta</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "temperature" with: <span className="text-green-600 font-medium">pressure</span> | <span className="text-green-600 font-medium">level</span> | <span className="text-green-600 font-medium">flow</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    I see a small <span onClick={() => playAudio("leak")} className="text-blue-600 font-bold cursor-pointer">leak</span> in the pipe
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("I see a small leak in the pipe")}>Eu vejo um pequeno vazamento no cano</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "leak" with: <span className="text-green-600 font-medium">crack</span> | <span className="text-green-600 font-medium">blockage</span> | <span className="text-green-600 font-medium">noise</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    The <span onClick={() => playAudio("alarm")} className="text-blue-600 font-bold cursor-pointer">alarm</span> is active on the <span onClick={() => playAudio("generator")} className="text-blue-600 font-bold cursor-pointer">generator</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("The alarm is active on the generator")}>O alarme está ativo no gerador</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "generator" with: <span className="text-green-600 font-medium">main engine</span> | <span className="text-green-600 font-medium">boiler</span> | <span className="text-green-600 font-medium">pump number 2</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    Close the <span onClick={() => playAudio("valve")} className="text-blue-600 font-bold cursor-pointer">valve</span> immediately
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("Close the valve immediately")}>Feche a válvula imediatamente</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "valve" with: <span className="text-green-600 font-medium">switch</span> | <span className="text-green-600 font-medium">breaker</span> | <span className="text-green-600 font-medium">panel</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    Record the <span onClick={() => playAudio("temperature")} className="text-blue-600 font-bold cursor-pointer">temperature</span> and the <span onClick={() => playAudio("pressure")} className="text-blue-600 font-bold cursor-pointer">pressure</span> every hour
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("Record the temperature and the pressure every hour")}>Registre a temperatura e a pressão a cada hora</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "temperature and pressure" with: <span className="text-green-600 font-medium">fuel level and oil level</span> | <span className="text-green-600 font-medium">rpm and hours</span> | <span className="text-green-600 font-medium">alarms and warnings</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    The <span onClick={() => playAudio("leak")} className="text-blue-600 font-bold cursor-pointer">leak</span> in the <span onClick={() => playAudio("fuel pipe")} className="text-blue-600 font-bold cursor-pointer">fuel pipe</span> is near the <span onClick={() => playAudio("valve")} className="text-blue-600 font-bold cursor-pointer">valve</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("The leak in the fuel pipe is near the valve")}>O vazamento no cano de combustível está perto da válvula</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "fuel pipe" with: <span className="text-green-600 font-medium">water pipe</span> | <span className="text-green-600 font-medium">oil line</span> | <span className="text-green-600 font-medium">cooling hose</span></p>
-                </div>
+                {vocabSubstitution.map((ex) => {
+                  const currentEx = getExerciseWithIndex(ex.key);
+                  if (!currentEx) return null;
+                  return (
+                    <SubstitutionOptions
+                      key={ex.key}
+                      exercise={currentEx}
+                      onOptionClick={handleOptionClick}
+                    />
+                  );
+                })}
               </div>
             )}
           </div>
@@ -281,58 +683,22 @@ export default function LessonOffshoreOQM() {
           </div>
           <div className="p-8">
             <ul className="list-disc pl-6 space-y-2 mb-6">
-              <li><button onClick={() => playAudio("I work on the watch from 4pm to 8pm")} className="text-blue-600 font-bold hover:underline">I work on the watch from 4pm to 8pm</button></li>
-              <li><button onClick={() => playAudio("I need to deal with this problem now")} className="text-blue-600 font-bold hover:underline">I need to deal with this problem now</button></li>
+              <li><SpeakSentence text="I work on the watch from 4pm to 8pm" className="text-blue-600 font-bold">I work on the watch from 4pm to 8pm</SpeakSentence></li>
+              <li><SpeakSentence text="I need to deal with this problem now" className="text-blue-600 font-bold">I need to deal with this problem now</SpeakSentence></li>
             </ul>
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    I <span onClick={() => playAudio("work")} className="text-blue-600 font-bold cursor-pointer">work</span> in the <span onClick={() => playAudio("engine room")} className="text-blue-600 font-bold cursor-pointer">engine room</span> every day
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("I work in the engine room every day")}>Eu trabalho na casa de máquinas todos os dias</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "engine room" with: <span className="text-green-600 font-medium">control room</span> | <span className="text-green-600 font-medium">workshop</span> | <span className="text-green-600 font-medium">pump room</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    Can you <span onClick={() => playAudio("deal with")} className="text-blue-600 font-bold cursor-pointer">deal with</span> the <span onClick={() => playAudio("high temperature")} className="text-blue-600 font-bold cursor-pointer">high temperature</span> alarm?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("Can you deal with the high temperature alarm?")}>Você pode lidar com o alarme de alta temperatura?</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "high temperature" with: <span className="text-green-600 font-medium">low pressure</span> | <span className="text-green-600 font-medium">high vibration</span> | <span className="text-green-600 font-medium">low oil level</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    We need to <span onClick={() => playAudio("work")} className="text-blue-600 font-bold cursor-pointer">work</span> together to <span onClick={() => playAudio("fix")} className="text-blue-600 font-bold cursor-pointer">fix</span> the <span onClick={() => playAudio("pump")} className="text-blue-600 font-bold cursor-pointer">pump</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("We need to work together to fix the pump")}>Nós precisamos trabalhar juntos para consertar a bomba</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "pump" with: <span className="text-green-600 font-medium">generator</span> | <span className="text-green-600 font-medium">valve</span> | <span className="text-green-600 font-medium">compressor</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    I always <span onClick={() => playAudio("deal with")} className="text-blue-600 font-bold cursor-pointer">deal with</span> <span onClick={() => playAudio("fuel leaks")} className="text-blue-600 font-bold cursor-pointer">fuel leaks</span> carefully
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("I always deal with fuel leaks carefully")}>Eu sempre lido com vazamentos de combustível com cuidado</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "fuel leaks" with: <span className="text-green-600 font-medium">emergency alarms</span> | <span className="text-green-600 font-medium">oil spills</span> | <span className="text-green-600 font-medium">electrical problems</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <span onClick={() => playAudio("Safety")} className="text-blue-600 font-bold cursor-pointer">Safety</span> is my first priority during the <span onClick={() => playAudio("watch")} className="text-blue-600 font-bold cursor-pointer">watch</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("Safety is my first priority during the watch")}>Segurança é minha primeira prioridade durante o turno</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "Safety" with: <span className="text-green-600 font-medium">Communication</span> | <span className="text-green-600 font-medium">Teamwork</span> | <span className="text-green-600 font-medium">Procedure</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    Please <span onClick={() => playAudio("report")} className="text-blue-600 font-bold cursor-pointer">report</span> any <span onClick={() => playAudio("abnormal noise")} className="text-blue-600 font-bold cursor-pointer">abnormal noise</span> to the <span onClick={() => playAudio("chief engineer")} className="text-blue-600 font-bold cursor-pointer">chief engineer</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("Please report any abnormal noise to the chief engineer")}>Por favor, reporte qualquer ruído anormal ao chefe de máquinas</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "chief engineer" with: <span className="text-green-600 font-medium">watch officer</span> | <span className="text-green-600 font-medium">engine room supervisor</span> | <span className="text-green-600 font-medium">captain</span></p>
-                </div>
+                {phrasesSubstitution.map((ex) => {
+                  const currentEx = getExerciseWithIndex(ex.key);
+                  if (!currentEx) return null;
+                  return (
+                    <SubstitutionOptions
+                      key={ex.key}
+                      exercise={currentEx}
+                      onOptionClick={handleOptionClick}
+                    />
+                  );
+                })}
               </div>
             )}
           </div>
@@ -351,75 +717,23 @@ export default function LessonOffshoreOQM() {
           </div>
           <div className="p-8">
             <div className="bg-blue-50 p-4 rounded-[20px] space-y-3 mb-6">
-              <p>✅ <button onClick={() => playAudio("I work in the engine room")} className="text-blue-600 font-bold hover:underline">I work in the engine room</button> = Eu trabalho na casa de máquinas</p>
-              <p>✅ <button onClick={() => playAudio("I deal with alarms")} className="text-blue-600 font-bold hover:underline">I deal with alarms</button> = Eu lido com alarmes</p>
-              <p>✅ <button onClick={() => playAudio("Every other day")} className="text-blue-600 font-bold hover:underline">Every other day</button> = Dia sim, dia não</p>
+              <p>✅ <SpeakSentence text="I work in the engine room" className="text-blue-600 font-bold">I work in the engine room</SpeakSentence> = Eu trabalho na casa de máquinas</p>
+              <p>✅ <SpeakSentence text="I deal with alarms" className="text-blue-600 font-bold">I deal with alarms</SpeakSentence> = Eu lido com alarmes</p>
+              <p>✅ <SpeakSentence text="Every other day" className="text-blue-600 font-bold">Every other day</SpeakSentence> = Dia sim, dia não</p>
             </div>
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    I <span onClick={() => playAudio("work")} className="text-blue-600 font-bold cursor-pointer">work</span> from <span onClick={() => playAudio("midnight")} className="text-blue-600 font-bold cursor-pointer">midnight</span> to 6 AM
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("I work from midnight to 6 AM")}>Eu trabalho da meia-noite às 6 da manhã</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "midnight to 6 AM" with: <span className="text-green-600 font-medium">6 AM to noon</span> | <span className="text-green-600 font-medium">noon to 6 PM</span> | <span className="text-green-600 font-medium">6 PM to midnight</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    I <span onClick={() => playAudio("deal with")} className="text-blue-600 font-bold cursor-pointer">deal with</span> the <span onClick={() => playAudio("main engine alarms")} className="text-blue-600 font-bold cursor-pointer">main engine alarms</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("I deal with the main engine alarms")}>Eu lido com os alarmes do motor principal</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "main engine alarms" with: <span className="text-green-600 font-medium">generator alarms</span> | <span className="text-green-600 font-medium">boiler warnings</span> | <span className="text-green-600 font-medium">safety system alerts</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    You <span onClick={() => playAudio("work")} className="text-blue-600 font-bold cursor-pointer">work</span> on the <span onClick={() => playAudio("generator watch")} className="text-blue-600 font-bold cursor-pointer">generator watch</span>, right?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("You work on the generator watch, right?")}>Você trabalha no turno do gerador, certo?</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "generator watch" with: <span className="text-green-600 font-medium">pump watch</span> | <span className="text-green-600 font-medium">engine watch</span> | <span className="text-green-600 font-medium">night watch</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    We <span onClick={() => playAudio("deal with")} className="text-blue-600 font-bold cursor-pointer">deal with</span> <span onClick={() => playAudio("emergency situations")} className="text-blue-600 font-bold cursor-pointer">emergency situations</span> fast
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("We deal with emergency situations fast")}>Nós lidamos com situações de emergência rapidamente</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "emergency situations" with: <span className="text-green-600 font-medium">daily problems</span> | <span className="text-green-600 font-medium">routine checks</span> | <span className="text-green-600 font-medium">maintenance tasks</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    She <span onClick={() => playAudio("works")} className="text-blue-600 font-bold cursor-pointer">works</span> in the <span onClick={() => playAudio("control room")} className="text-blue-600 font-bold cursor-pointer">control room</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("She works in the control room")}>Ela trabalha na sala de controle</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "control room" with: <span className="text-green-600 font-medium">engine room</span> | <span className="text-green-600 font-medium">workshop</span> | <span className="text-green-600 font-medium">office</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    They <span onClick={() => playAudio("work")} className="text-blue-600 font-bold cursor-pointer">work</span> together during <span onClick={() => playAudio("emergency drills")} className="text-blue-600 font-bold cursor-pointer">emergency drills</span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("They work together during emergency drills")}>Eles trabalham juntos durante os treinos de emergência</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "emergency drills" with: <span className="text-green-600 font-medium">the night shift</span> | <span className="text-green-600 font-medium">maintenance periods</span> | <span className="text-green-600 font-medium">watch changes</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <span onClick={() => playAudio("Every other day")} className="text-blue-600 font-bold cursor-pointer">Every other day</span>, I <span onClick={() => playAudio("check")} className="text-blue-600 font-bold cursor-pointer">check</span> the <span onClick={() => playAudio("oil level")} className="text-blue-600 font-bold cursor-pointer">oil level</span> on the main engine
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("Every other day, I check the oil level on the main engine")}>Dia sim, dia não, eu verifico o nível de óleo no motor principal</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "oil level" with: <span className="text-green-600 font-medium">coolant level</span> | <span className="text-green-600 font-medium">fuel level</span> | <span className="text-green-600 font-medium">water level</span></p>
-                </div>
-
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    You need to <span onClick={() => playAudio("deal with")} className="text-blue-600 font-bold cursor-pointer">deal with</span> the <span onClick={() => playAudio("vibration")} className="text-blue-600 font-bold cursor-pointer">vibration</span> problem before the <span onClick={() => playAudio("next watch")} className="text-blue-600 font-bold cursor-pointer">next watch</span> starts
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1" onClick={() => playAudio("You need to deal with the vibration problem before the next watch starts")}>Você precisa lidar com o problema de vibração antes do próximo turno começar</p>
-                  <p className="text-xs text-gray-400 mt-1">✏️ Replace "vibration" with: <span className="text-green-600 font-medium">overheating</span> | <span className="text-green-600 font-medium">noise</span> | <span className="text-green-600 font-medium">pressure drop</span></p>
-                </div>
+                {grammarSubstitution.map((ex) => {
+                  const currentEx = getExerciseWithIndex(ex.key);
+                  if (!currentEx) return null;
+                  return (
+                    <SubstitutionOptions
+                      key={ex.key}
+                      exercise={currentEx}
+                      onOptionClick={handleOptionClick}
+                    />
+                  );
+                })}
               </div>
             )}
           </div>
@@ -431,7 +745,7 @@ export default function LessonOffshoreOQM() {
             <h2 className="text-3xl font-bold">🔹 WRAP UP</h2>
             <p className="mt-2 text-blue-100 italic">Remember the main verbs for your job as an OQM</p>
           </div>
-          
+
           {/* AM/PM LESSON */}
           <div className="bg-yellow-50 border-b-2 border-yellow-200 p-6">
             <h3 className="text-2xl font-bold text-yellow-800 mb-4">⏰ AM and PM - Understanding Time on the Vessel</h3>
@@ -443,9 +757,9 @@ export default function LessonOffshoreOQM() {
                   <p className="text-gray-500">Before noon</p>
                 </div>
                 <div className="mt-4 space-y-2">
-                  <p>🌅 <span onClick={() => playAudio("12 AM")} className="text-blue-600 font-bold cursor-pointer">12:00 AM</span> = Midnight (meia-noite)</p>
-                  <p>🌄 <span onClick={() => playAudio("6 AM")} className="text-blue-600 font-bold cursor-pointer">6:00 AM</span> = Morning (manhã)</p>
-                  <p>☀️ <span onClick={() => playAudio("12 PM")} className="text-blue-600 font-bold cursor-pointer">12:00 PM</span> = Noon (meio-dia)</p>
+                  <p>🌅 <SpeakText text="12 AM" className="text-blue-600 font-bold">12:00 AM</SpeakText> = Midnight (meia-noite)</p>
+                  <p>🌄 <SpeakText text="6 AM" className="text-blue-600 font-bold">6:00 AM</SpeakText> = Morning (manhã)</p>
+                  <p>☀️ <SpeakText text="12 PM" className="text-blue-600 font-bold">12:00 PM</SpeakText> = Noon (meio-dia)</p>
                 </div>
                 <p className="text-xs text-gray-400 mt-3">📌 Use AM from <strong>midnight to noon</strong> (00:00 to 11:59)</p>
               </div>
@@ -456,25 +770,25 @@ export default function LessonOffshoreOQM() {
                   <p className="text-gray-500">After noon</p>
                 </div>
                 <div className="mt-4 space-y-2">
-                  <p>🌤️ <span onClick={() => playAudio("1 PM")} className="text-blue-600 font-bold cursor-pointer">1:00 PM</span> = Afternoon (tarde)</p>
-                  <p>🌙 <span onClick={() => playAudio("6 PM")} className="text-blue-600 font-bold cursor-pointer">6:00 PM</span> = Evening (noite)</p>
-                  <p>🌃 <span onClick={() => playAudio("11 PM")} className="text-blue-600 font-bold cursor-pointer">11:00 PM</span> = Night (noite)</p>
+                  <p>🌤️ <SpeakText text="1 PM" className="text-blue-600 font-bold">1:00 PM</SpeakText> = Afternoon (tarde)</p>
+                  <p>🌙 <SpeakText text="6 PM" className="text-blue-600 font-bold">6:00 PM</SpeakText> = Evening (noite)</p>
+                  <p>🌃 <SpeakText text="11 PM" className="text-blue-600 font-bold">11:00 PM</SpeakText> = Night (noite)</p>
                 </div>
                 <p className="text-xs text-gray-400 mt-3">📌 Use PM from <strong>noon to midnight</strong> (12:00 to 23:59)</p>
               </div>
             </div>
             <div className="mt-4 bg-blue-100 rounded-lg p-3 text-center">
-              <p className="text-gray-700">💡 <span className="font-bold">Offshore Example:</span> "I work from <span onClick={() => playAudio("8 PM")} className="text-blue-600 font-bold cursor-pointer">8:00 PM</span> to <span onClick={() => playAudio("8 AM")} className="text-blue-600 font-bold cursor-pointer">8:00 AM</span>" = I work the night shift (12 hours)</p>
+              <p className="text-gray-700">💡 <span className="font-bold">Offshore Example:</span> "I work from <SpeakText text="8 PM" className="text-blue-600 font-bold">8:00 PM</SpeakText> to <SpeakText text="8 AM" className="text-blue-600 font-bold">8:00 AM</SpeakText>" = I work the night shift (12 hours)</p>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row">
             <div className="bg-blue-900 text-white flex-1 p-6 text-xl space-y-4">
               <p>✅ <span className="font-bold">TO WORK</span> (to do a job)</p>
-              <p className="text-sm" onClick={() => playAudio("I work on the night watch")}>I work on the night watch</p>
-              <p className="text-sm" onClick={() => playAudio("You work with the generator")}>You work with the generator</p>
-              <p className="text-sm" onClick={() => playAudio("We work for safety")}>We work for safety</p>
-              <p className="text-sm" onClick={() => playAudio("They work in the engine room")}>They work in the engine room</p>
+              <p className="text-sm"><SpeakSentence text="I work on the night watch" className="text-blue-100">I work on the night watch</SpeakSentence></p>
+              <p className="text-sm"><SpeakSentence text="You work with the generator" className="text-blue-100">You work with the generator</SpeakSentence></p>
+              <p className="text-sm"><SpeakSentence text="We work for safety" className="text-blue-100">We work for safety</SpeakSentence></p>
+              <p className="text-sm"><SpeakSentence text="They work in the engine room" className="text-blue-100">They work in the engine room</SpeakSentence></p>
             </div>
             <div className="bg-white flex-1 p-6 text-center border-x-2 border-blue-200">
               <div className="w-36 h-36 mx-auto bg-gray-200 rounded-full flex items-center justify-center">
@@ -490,10 +804,10 @@ export default function LessonOffshoreOQM() {
             </div>
             <div className="bg-blue-900 text-white flex-1 p-6 text-xl space-y-4">
               <p>✅ <span className="font-bold">TO DEAL WITH</span> (to handle)</p>
-              <p className="text-sm" onClick={() => playAudio("I deal with alarms")}>I deal with alarms</p>
-              <p className="text-sm" onClick={() => playAudio("He deals with leaks")}>He deals with leaks</p>
-              <p className="text-sm" onClick={() => playAudio("She deals with fuel")}>She deals with fuel</p>
-              <p className="text-sm" onClick={() => playAudio("They deal with emergencies")}>They deal with emergencies</p>
+              <p className="text-sm"><SpeakSentence text="I deal with alarms" className="text-blue-100">I deal with alarms</SpeakSentence></p>
+              <p className="text-sm"><SpeakSentence text="He deals with leaks" className="text-blue-100">He deals with leaks</SpeakSentence></p>
+              <p className="text-sm"><SpeakSentence text="She deals with fuel" className="text-blue-100">She deals with fuel</SpeakSentence></p>
+              <p className="text-sm"><SpeakSentence text="They deal with emergencies" className="text-blue-100">They deal with emergencies</SpeakSentence></p>
             </div>
           </div>
           <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-4 text-center">
@@ -524,7 +838,7 @@ export default function LessonOffshoreOQM() {
             transform: translateY(0);
           }
         }
-        
+
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out;
         }

@@ -181,7 +181,7 @@ const connectedSpeech = [
 
 // TUNE IN YOUR EARS - Video Data
 const tuneInYourEarsVideo = {
-  youtubeId: "fJaf6LHSGYQ",
+  youtubeId: "AXA9W5Rmdps",
   title: "How to Improve Your English Speaking Skills",
   description: "Watch this video to learn powerful tips about improving your English pronunciation and fluency. Pay attention to the secret tips!",
   keyVocabulary: [

@@ -360,6 +360,7 @@ export default function LessonOffshoreElectricianInterview() {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isMainImageModalOpen, setIsMainImageModalOpen] = useState(false);
   const [isEquipmentImageModalOpen, setIsEquipmentImageModalOpen] = useState(false);
+  const [isEquipmentImage2ModalOpen, setIsEquipmentImage2ModalOpen] = useState(false);
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills(prev => ({ ...prev, [section]: !prev[section] }));
@@ -393,6 +394,7 @@ export default function LessonOffshoreElectricianInterview() {
   const mainImage = "https://github.com/Sullivan-code/english-audios/blob/main/el%C3%A9trica1.png?raw=true";
   const secondaryImage = "https://github.com/Sullivan-code/english-audios/blob/main/EL%C3%89TRICA2.png?raw=true";
   const equipmentImage = "https://github.com/Sullivan-code/english-audios/blob/main/ChatGPT%20Image%2016%20de%20set.%20de%202026%2C%2010_09_22.png?raw=true";
+  const equipmentImage2 = "https://github.com/Sullivan-code/english-audios/blob/main/ChatGPT%20Image%2016%20de%20set.%20de%202026%2C%2010_19_37.png?raw=true";
 
   // ============================================================
   // VERBS – ELECTRICAL / OFFSHORE
@@ -942,11 +944,21 @@ export default function LessonOffshoreElectricianInterview() {
               🎧 Click on each word to hear its correct pronunciation
             </SpeakSentence>
 
-            {/* Equipment image */}
+            {/* Equipment image 1 */}
             <div className="mb-6 cursor-pointer" onClick={() => setIsEquipmentImageModalOpen(true)}>
               <img
                 src={equipmentImage}
                 alt="Offshore electrical equipment"
+                className="w-full h-auto object-contain rounded-2xl shadow-md hover:shadow-xl transition-shadow"
+              />
+              <p className="text-center text-sm text-gray-500 mt-2">👆 Clique na imagem para ampliar</p>
+            </div>
+
+            {/* Equipment image 2 (NEW) */}
+            <div className="mb-6 cursor-pointer" onClick={() => setIsEquipmentImage2ModalOpen(true)}>
+              <img
+                src={equipmentImage2}
+                alt="Offshore electrical tools and equipment"
                 className="w-full h-auto object-contain rounded-2xl shadow-md hover:shadow-xl transition-shadow"
               />
               <p className="text-center text-sm text-gray-500 mt-2">👆 Clique na imagem para ampliar</p>
@@ -1340,7 +1352,7 @@ export default function LessonOffshoreElectricianInterview() {
         </div>
       )}
 
-      {/* ===== MODAL IMAGEM EQUIPAMENTOS ===== */}
+      {/* ===== MODAL IMAGEM EQUIPAMENTOS 1 ===== */}
       {isEquipmentImageModalOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
@@ -1354,6 +1366,28 @@ export default function LessonOffshoreElectricianInterview() {
             />
             <button
               onClick={() => setIsEquipmentImageModalOpen(false)}
+              className="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 transition-colors"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===== MODAL IMAGEM EQUIPAMENTOS 2 (NOVA) ===== */}
+      {isEquipmentImage2ModalOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          onClick={() => setIsEquipmentImage2ModalOpen(false)}
+        >
+          <div className="relative max-w-5xl max-h-full p-4">
+            <img
+              src={equipmentImage2}
+              alt="Electrical tools and equipment – ampliada"
+              className="max-w-full max-h-screen object-contain rounded-lg shadow-2xl"
+            />
+            <button
+              onClick={() => setIsEquipmentImage2ModalOpen(false)}
               className="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 transition-colors"
             >
               &times;

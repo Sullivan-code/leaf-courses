@@ -71,7 +71,7 @@ export default function LessonHSE() {
         {/* Título centralizado com imagem abaixo */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
-            Lesson 4 - Health, Safety & Environment (HSE) 🛡️🌍
+            Lesson 7 - Health, Safety & Environment (HSE) 🛡️🌍
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
             Learn essential vocabulary and phrases for workplace safety, health protocols, and environmental protection. 🦺♻️

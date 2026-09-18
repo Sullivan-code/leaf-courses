@@ -53,7 +53,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 3,
-      titulo: "Módulo 3",
+      titulo: "ROV — Remotely Operated Vehicle",
       aulas: [
         { id: "lesson13", titulo: "Lesson 13", numero: "13", tipo: "aula" },
         { id: "lesson14", titulo: "Lesson 14", numero: "14", tipo: "aula" },
@@ -66,7 +66,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 4,
-      titulo: "Módulo 4",
+      titulo: "Dynamic Positioning System",
       aulas: [
         { id: "lesson19", titulo: "Lesson 19", numero: "19", tipo: "aula" },
         { id: "lesson20", titulo: "Lesson 20", numero: "20", tipo: "aula" },
@@ -79,7 +79,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 5,
-      titulo: "Módulo 5",
+      titulo: "Dynamic Positioning System",
       aulas: [
         { id: "lesson25", titulo: "Lesson 25", numero: "25", tipo: "aula" },
         { id: "lesson26", titulo: "Lesson 26", numero: "26", tipo: "aula" },
@@ -92,7 +92,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 6,
-      titulo: "Módulo 6",
+      titulo: "Elétrica — Electrical Systems",
       aulas: [
         { id: "lesson31", titulo: "Lesson 31", numero: "31", tipo: "aula" },
         { id: "lesson32", titulo: "Lesson 32", numero: "32", tipo: "aula" },
@@ -105,7 +105,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 7,
-      titulo: "Módulo 7",
+      titulo: "Job Safety — Segurança do Trabalho",
       aulas: [
         { id: "lesson37", titulo: "Lesson 37", numero: "37", tipo: "aula" },
         { id: "lesson38", titulo: "Lesson 38", numero: "38", tipo: "aula" },
@@ -118,7 +118,7 @@ export default async function VerTodasLicoes() {
     },
     {
       id: 8,
-      titulo: "Módulo 8",
+      titulo: "Maintenance and Bureaucratic Stuff",
       aulas: [
         { id: "lesson43", titulo: "Lesson 43", numero: "43", tipo: "aula" },
         { id: "lesson44", titulo: "Lesson 44", numero: "44", tipo: "aula" },
@@ -140,19 +140,6 @@ export default async function VerTodasLicoes() {
         { id: "lesson53", titulo: "Lesson 53", numero: "53", tipo: "aula" },
         { id: "lesson54", titulo: "Lesson 54", numero: "54", tipo: "aula" },
         { id: "review9", titulo: "Review 9", numero: "9", tipo: "revisao" }
-      ]
-    },
-    {
-      id: 10,
-      titulo: "Módulo 10",
-      aulas: [
-        { id: "lesson55", titulo: "Lesson 55", numero: "55", tipo: "aula" },
-        { id: "lesson56", titulo: "Lesson 56", numero: "56", tipo: "aula" },
-        { id: "lesson57", titulo: "Lesson 57", numero: "57", tipo: "aula" },
-        { id: "lesson58", titulo: "Lesson 58", numero: "58", tipo: "aula" },
-        { id: "lesson59", titulo: "Lesson 59", numero: "59", tipo: "aula" },
-        { id: "lesson60", titulo: "Lesson 60", numero: "60", tipo: "aula" },
-        { id: "review10", titulo: "Review 10", numero: "10", tipo: "revisao" }
       ]
     }
   ];
@@ -181,6 +168,20 @@ export default async function VerTodasLicoes() {
       return 'bg-gradient-to-r from-red-600 to-red-400';
     } else if (moduloId === 2) {
       return 'bg-gradient-to-r from-yellow-600 to-yellow-400';
+    } else if (moduloId === 3) {
+      return 'bg-gradient-to-r from-cyan-600 to-cyan-400';
+    } else if (moduloId === 4) {
+      return 'bg-gradient-to-r from-blue-700 to-blue-500';
+    } else if (moduloId === 5) {
+      return 'bg-gradient-to-r from-blue-700 to-blue-500';
+    } else if (moduloId === 6) {
+      return 'bg-gradient-to-r from-indigo-600 to-indigo-400';
+    } else if (moduloId === 7) {
+      return 'bg-gradient-to-r from-emerald-600 to-emerald-400';
+    } else if (moduloId === 8) {
+      return 'bg-gradient-to-r from-slate-700 to-slate-500';
+    } else if (moduloId === 9) {
+      return 'bg-gradient-to-r from-orange-500 to-orange-300';
     }
     return 'bg-gradient-to-r from-orange-500 to-orange-300';
   };
@@ -277,7 +278,7 @@ export default async function VerTodasLicoes() {
             <div className="bg-orange-500 h-4 rounded-full w-1/3"></div>
           </div>
           <p className="text-sm text-gray-500">
-            Continue estudando para completar todos os 10 módulos!
+            Continue estudando para completar todos os 9 módulos!
           </p>
         </div>
       </div>

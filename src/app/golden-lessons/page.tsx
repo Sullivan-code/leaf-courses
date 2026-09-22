@@ -1083,7 +1083,14 @@ function PlaceholderLesson({ title }: { title: string }) {
 // ============================================================
 // LESSONS DATA (adicionar manualmente novas lições aqui)
 // ============================================================
-type LessonId = "gym" | "switzerland" | "south-africa" | "cars";
+type LessonId =
+  | "gym"
+  | "switzerland"
+  | "south-africa"
+  | "cars"
+  | "lifting-plan"
+  | "electrician"
+  | "song";
 
 interface LessonMeta {
   id: LessonId;
@@ -1093,7 +1100,7 @@ interface LessonMeta {
   image: string;
   level: string;
   badge: string;
-  route?: string; // 👈 NOVO: se tiver route, o botão redireciona em vez de abrir modal
+  route?: string; // 👈 se tiver route, o botão redireciona em vez de abrir modal
 }
 
 const LESSONS: LessonMeta[] = [
@@ -1119,7 +1126,43 @@ const LESSONS: LessonMeta[] = [
       "https://github.com/Sullivan-code/english-audios/blob/main/CAR%20LESSON.png?raw=true",
     level: "A2 → B1",
     badge: "🚗 Automotive",
-    route: "/golden-lessons/goldenlesson-car", // 👈 redireciona para essa rota
+    route: "/golden-lessons/goldenlesson-car",
+  },
+  {
+    id: "lifting-plan",
+    title: "Lifting Plan (Offshore)",
+    subtitle: "Plano de Içamento — Offshore",
+    description:
+      "Master offshore lifting operations: lifting plans, SWL, banksman, rigger, taglines, exclusion zones, and SIMOPS coordination.",
+    image:
+      "https://github.com/Sullivan-code/english-audios/blob/main/engenhariaprodu%C3%A7%C3%A3o3.png?raw=true",
+    level: "B1 → B2",
+    badge: "🏗️ Offshore",
+    route: "/golden-lessons/goldenlesson-lifting-plan",
+  },
+  {
+    id: "electrician",
+    title: "Electrician",
+    subtitle: "Eletricista",
+    description:
+      "Learn English for electricians: tools, safety procedures (NR-10), wiring, circuits, and real-world electrical work vocabulary.",
+    image:
+      "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    level: "A2 → B1",
+    badge: "⚡ Electrical",
+    route: "/golden-lessons/goldenlesson-electrician",
+  },
+  {
+    id: "song",
+    title: "I Don't Want to Talk About It",
+    subtitle: "Rod Stewart & Amy Belle",
+    description:
+      "Learn English through music. Song analysis, vocabulary, pronunciation, and emotional expression — Royal Albert Hall, London, 2004.",
+    image:
+      "https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    level: "B1 → B2",
+    badge: "🎵 Music",
+    route: "/golden-lessons/goldenlesson-song",
   },
   {
     id: "switzerland",
@@ -1142,6 +1185,7 @@ const LESSONS: LessonMeta[] = [
       "https://images.pexels.com/photos/1054655/pexels-photo-1054655.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     level: "A2 → B1",
     badge: "🇿🇦 Culture",
+    route: "/golden-lessons/goldenlesson-southafrica",
   },
 ];
 
@@ -1202,7 +1246,7 @@ export default function Home() {
     if (typeof window !== "undefined") window.speechSynthesis.getVoices();
   }, []);
 
-  // 👇 NOVO: decide se abre o modal ou navega para a rota da lição
+  // 👇 decide se abre o modal ou navega para a rota da lição
   const handleLessonClick = (lesson: LessonMeta) => {
     if (lesson.route) {
       router.push(lesson.route);

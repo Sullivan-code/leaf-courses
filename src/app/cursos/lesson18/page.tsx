@@ -45,7 +45,7 @@ const listenItems = [
   { 
     key: "f", 
     label: "", 
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", 
+    image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l18-iworkintheeveningstoo.png", 
     correctAnswer: "I usually work in the evenings, too.",
     audio: "/audios/lesson18-f.mp3"
   },
@@ -105,7 +105,7 @@ const substitutionPracticeI = [
   },
 ];
 
-// Exercícios Change Into Negative (EXPANDIDO com ain't, she, he, nomes)
+// Exercícios Change Into Negative (APENAS don't, doesn't, am not, isn't, aren't)
 const negativeExercises = [
   { id: "neg1", sentence: "They have ten magazines and 20 books.", correctAnswer: "They don't have ten magazines and 20 books." },
   { id: "neg2", sentence: "You need to read your e-mails at night.", correctAnswer: "You don't need to read your e-mails at night." },
@@ -119,15 +119,15 @@ const negativeExercises = [
   { id: "neg9", sentence: "Maria studies English every night.", correctAnswer: "Maria doesn't study English every night." },
   { id: "neg10", sentence: "John has a meeting at 3 PM today.", correctAnswer: "John doesn't have a meeting at 3 PM today." },
   { id: "neg11", sentence: "Sarah and I are going to the party.", correctAnswer: "Sarah and I aren't going to the party." },
-  // EXERCÍCIOS COM AIN'T
-  { id: "neg12", sentence: "I am ready for the test.", correctAnswer: "I ain't ready for the test." },
-  { id: "neg13", sentence: "She is coming to the party.", correctAnswer: "She ain't coming to the party." },
-  { id: "neg14", sentence: "They are working on the project.", correctAnswer: "They ain't working on the project." },
-  { id: "neg15", sentence: "He is telling the truth.", correctAnswer: "He ain't telling the truth." },
-  { id: "neg16", sentence: "We are going to the beach tomorrow.", correctAnswer: "We ain't going to the beach tomorrow." },
-  { id: "neg17", sentence: "I am feeling well today.", correctAnswer: "I ain't feeling well today." },
-  { id: "neg18", sentence: "She is your best friend.", correctAnswer: "She ain't your best friend." },
-  { id: "neg19", sentence: "They are playing soccer now.", correctAnswer: "They ain't playing soccer now." },
+  // EXERCÍCIOS COM VERBO TO BE (am not, isn't, aren't)
+  { id: "neg12", sentence: "I am ready for the test.", correctAnswer: "I am not ready for the test." },
+  { id: "neg13", sentence: "She is coming to the party.", correctAnswer: "She isn't coming to the party." },
+  { id: "neg14", sentence: "They are working on the project.", correctAnswer: "They aren't working on the project." },
+  { id: "neg15", sentence: "He is telling the truth.", correctAnswer: "He isn't telling the truth." },
+  { id: "neg16", sentence: "We are going to the beach tomorrow.", correctAnswer: "We aren't going to the beach tomorrow." },
+  { id: "neg17", sentence: "I am feeling well today.", correctAnswer: "I am not feeling well today." },
+  { id: "neg18", sentence: "She is your best friend.", correctAnswer: "She isn't your best friend." },
+  { id: "neg19", sentence: "They are playing soccer now.", correctAnswer: "They aren't playing soccer now." },
 ];
 
 // Exercícios de Substitution Practice II (inglês)
@@ -231,11 +231,11 @@ const affirmativeExercises = [
   { id: "aff8", sentence: "He doesn't work on Saturdays.", correctAnswer: "He works on Saturdays." },
   { id: "aff9", sentence: "Peter doesn't have a car.", correctAnswer: "Peter has a car." },
   { id: "aff10", sentence: "Anna doesn't speak French.", correctAnswer: "Anna speaks French." },
-  // EXERCÍCIOS COM AIN'T
-  { id: "aff11", sentence: "I ain't ready for the meeting.", correctAnswer: "I am ready for the meeting." },
-  { id: "aff12", sentence: "She ain't coming to the party.", correctAnswer: "She is coming to the party." },
-  { id: "aff13", sentence: "They ain't working today.", correctAnswer: "They are working today." },
-  { id: "aff14", sentence: "He ain't telling the truth.", correctAnswer: "He is telling the truth." },
+  // EXERCÍCIOS COM VERBO TO BE
+  { id: "aff11", sentence: "I am not ready for the meeting.", correctAnswer: "I am ready for the meeting." },
+  { id: "aff12", sentence: "She isn't coming to the party.", correctAnswer: "She is coming to the party." },
+  { id: "aff13", sentence: "They aren't working today.", correctAnswer: "They are working today." },
+  { id: "aff14", sentence: "He isn't telling the truth.", correctAnswer: "He is telling the truth." },
 ];
 
 // Exercícios Change Into Interrogative (EXPANDIDO)
@@ -486,11 +486,39 @@ const AnswerResult = ({ isCorrect, correctAnswer }: AnswerResultProps) => {
   );
 };
 
-// Sistema de avaliação de respostas
+// ============================================================
+// SISTEMA DE AVALIAÇÃO DE RESPOSTAS
+// Aceita versões contraídas e não contraídas do verbo to be
+// e de don't/doesn't (do not / does not)
+// ============================================================
 const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
-  const normalize = (text: string) => 
-    text.toLowerCase().trim().replace(/[.,?!]/g, '');
-  
+  const normalize = (text: string) =>
+    text
+      .toLowerCase()
+      .trim()
+      .replace(/[.,?!]/g, "")
+      // Normaliza contrações do verbo to be para a forma expandida
+      .replace(/\bain't\b/g, "am not") // fallback de segurança (não usado nos exercícios)
+      .replace(/\bi'm\b/g, "i am")
+      .replace(/\byou're\b/g, "you are")
+      .replace(/\bhe's\b/g, "he is")
+      .replace(/\bshe's\b/g, "she is")
+      .replace(/\bit's\b/g, "it is")
+      .replace(/\bwe're\b/g, "we are")
+      .replace(/\bthey're\b/g, "they are")
+      .replace(/\bisn't\b/g, "is not")
+      .replace(/\baren't\b/g, "are not")
+      .replace(/\bwasn't\b/g, "was not")
+      .replace(/\bweren't\b/g, "were not")
+      // Normaliza don't / doesn't / do not / does not
+      .replace(/\bdon't\b/g, "do not")
+      .replace(/\bdoesn't\b/g, "does not")
+      .replace(/\bdon't\b/g, "do not")
+      .replace(/\bcan't\b/g, "cannot")
+      .replace(/\bwon't\b/g, "will not")
+      // Normaliza espaços múltiplos
+      .replace(/\s+/g, " ");
+
   return normalize(userAnswer) === normalize(correctAnswer);
 };
 
@@ -1163,7 +1191,43 @@ export default function Lesson18() {
             <div className="p-8">
               <div className="mb-8 bg-green-100 border-2 border-green-300 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-green-800 mb-6">🔹 CHANGE INTO NEGATIVE</h3>
-                <p className="text-green-700 mb-4 italic">Practice transforming affirmative sentences into negative forms, including with "ain't", "she", "he", and specific names.</p>
+
+                {/* ===== IMAGENS DE APOIO - CHANGE INTO NEGATIVE ===== */}
+                <div className="mb-8 flex flex-col items-center gap-6">
+                  <a
+                    href="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l18-1.png"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full max-w-4xl cursor-pointer transition-transform hover:scale-[1.02]"
+                    title="Clique para ampliar a imagem 1"
+                  >
+                    <Image
+                      src="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l18-1.png"
+                      alt="Change into Negative - Explicação 1"
+                      width={1200}
+                      height={800}
+                      className="w-full h-auto rounded-2xl shadow-xl border-2 border-green-300"
+                    />
+                  </a>
+                  <a
+                    href="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l18-2.png"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full max-w-4xl cursor-pointer transition-transform hover:scale-[1.02]"
+                    title="Clique para ampliar a imagem 2"
+                  >
+                    <Image
+                      src="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l18-2.png"
+                      alt="Change into Negative - Explicação 2"
+                      width={1200}
+                      height={800}
+                      className="w-full h-auto rounded-2xl shadow-xl border-2 border-green-300"
+                    />
+                  </a>
+                </div>
+                {/* ===== FIM DAS IMAGENS ===== */}
+
+                <p className="text-green-700 mb-4 italic">Practice transforming affirmative sentences into negative forms using don't, doesn't, am not, isn't, aren't (contracted and non-contracted forms are accepted).</p>
                 
                 <div className="space-y-4">
                   {negativeExercises.map((exercise) => (
@@ -1212,10 +1276,12 @@ export default function Lesson18() {
                 <div className="mt-6 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                   <h4 className="font-bold text-yellow-800 mb-2">📝 Grammar Notes:</h4>
                   <ul className="text-sm text-yellow-700 space-y-1 list-disc pl-5">
-                    <li>Use "don't" for I, you, we, they</li>
-                    <li>Use "doesn't" for he, she, it</li>
-                    <li>"Ain't" is informal for "am not", "is not", "are not"</li>
-                    <li>Example: I ain't ready = I am not ready</li>
+                    <li>Use "don't" (do not) for I, you, we, they</li>
+                    <li>Use "doesn't" (does not) for he, she, it</li>
+                    <li>Use "am not" / "'m not" for I (verb to be)</li>
+                    <li>Use "isn't" / "is not" / "'s not" for he, she, it (verb to be)</li>
+                    <li>Use "aren't" / "are not" / "'re not" for you, we, they (verb to be)</li>
+                    <li>Contracted and non-contracted forms are both accepted.</li>
                   </ul>
                 </div>
               </div>

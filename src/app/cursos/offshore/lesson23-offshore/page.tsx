@@ -1319,14 +1319,14 @@ export default function Lesson23() {
         {/* NAVIGATION */}
         <div className="flex justify-center gap-4 mt-8">
           <button
-            onClick={() => router.push("/cursos/lesson22")}
+            onClick={() => router.push("/cursos/offshore/lesson22-offshore")}
             className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
             type="button"
           >
             &larr; Previous Lesson (22)
           </button>
           <button
-            onClick={() => router.push("/cursos/lesson24")}
+            onClick={() => router.push("/cursos/offshore/lesson24-offshore")}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
             type="button"
           >

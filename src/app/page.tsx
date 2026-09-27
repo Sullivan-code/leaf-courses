@@ -92,7 +92,7 @@ export default function Home() {
           {/* Vídeo sobreposto */}
           <div className="relative w-full max-w-sm aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/80 bg-black/50">
             <iframe
-              src="https://player.mediadelivery.net/embed/748540/04725aa2-c483-45df-96e1-6fafbdc0814e"
+              src="https://player.mediadelivery.net/embed/763800/e7784736-0b07-4f29-848e-5ff616d88093"
               title="Vídeo de apresentação"
               className="absolute inset-0 w-full h-full"
               frameBorder="0"

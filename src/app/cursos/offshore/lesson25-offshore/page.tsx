@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Volume2, Eye, EyeOff, BookOpen, HelpCircle, Award, CheckCircle, XCircle, Languages } from "lucide-react";
+import { Volume2, Eye, EyeOff, BookOpen, HelpCircle, Award, CheckCircle, XCircle, Languages, RefreshCw, Shuffle } from "lucide-react";
 
 // ============================================
 // TIPOS
@@ -18,6 +18,11 @@ interface Question {
   correct: number;
   explanation: string;
   explanationPt: string;
+}
+
+interface ShuffledQuestion extends Question {
+  originalId: number;
+  correct: number;
 }
 
 // ============================================
@@ -78,9 +83,21 @@ const SpeakSentence = ({ text, children, className = "" }: {
 );
 
 // ============================================
+// FUNÇÕES DE EMBARALHAMENTO
+// ============================================
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ============================================
 // BANCO DE QUESTÕES – BASEADO NO PDF DP COURSE
 // ============================================
-const QUESTIONS: Question[] = [
+const RAW_QUESTIONS: Question[] = [
   {
     id: 1,
     question: "What is Dynamic Positioning (DP), according to the formal definition in the course material?",
@@ -1290,32 +1307,63 @@ export default function LessonDPQuiz() {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState<SectionKey>('pre');
   const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [verifiedQuestions, setVerifiedQuestions] = useState<Record<number, boolean>>({});
+  const [allSubmitted, setAllSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [expandedFeedback, setExpandedFeedback] = useState<Record<number, boolean>>({});
   const [showTranslation, setShowTranslation] = useState<Record<number, boolean>>({});
   const [showQuestionTranslation, setShowQuestionTranslation] = useState<Record<number, boolean>>({});
   const [showAllTranslations, setShowAllTranslations] = useState(false);
+  const [shuffleSeed, setShuffleSeed] = useState(0);
 
   useEffect(() => {
     if (typeof window !== 'undefined') window.speechSynthesis.getVoices();
   }, []);
 
+  // Embaralha perguntas e alternativas de forma estável até o reset
+  const shuffledQuestions: ShuffledQuestion[] = useMemo(() => {
+    const shuffled = shuffleArray(RAW_QUESTIONS);
+    return shuffled.map(q => {
+      const indices = shuffleArray([...Array(q.options.length).keys()]);
+      const newOptions = indices.map(i => q.options[i]);
+      const newOptionsPt = indices.map(i => q.optionsPt[i]);
+      const newCorrect = indices.indexOf(q.correct);
+      return {
+        ...q,
+        originalId: q.id,
+        options: newOptions,
+        optionsPt: newOptionsPt,
+        correct: newCorrect,
+      };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shuffleSeed]);
+
   const handleAnswer = (qId: number, optIndex: number) => {
-    if (submitted) return;
+    // Bloqueia se a questão já foi verificada ou se o quiz todo já foi enviado
+    if (verifiedQuestions[qId] || allSubmitted) return;
     setAnswers(prev => ({ ...prev, [qId]: optIndex }));
+  };
+
+  const verifyQuestion = (qId: number) => {
+    if (answers[qId] === undefined) return;
+    setVerifiedQuestions(prev => ({ ...prev, [qId]: true }));
+    setExpandedFeedback(prev => ({ ...prev, [qId]: true }));
   };
 
   const submitQuiz = () => {
     let correct = 0;
-    QUESTIONS.forEach(q => {
-      if (answers[q.id] === q.correct) correct++;
+    shuffledQuestions.forEach(q => {
+      if (answers[q.originalId] === q.correct) correct++;
     });
     setScore(correct);
-    setSubmitted(true);
+    setAllSubmitted(true);
     const all: Record<number, boolean> = {};
-    QUESTIONS.forEach(q => { all[q.id] = true; });
+    shuffledQuestions.forEach(q => { all[q.originalId] = true; });
     setExpandedFeedback(all);
+    const allVerified: Record<number, boolean> = {};
+    shuffledQuestions.forEach(q => { allVerified[q.originalId] = true; });
+    setVerifiedQuestions(allVerified);
     setTimeout(() => {
       const el = document.getElementById('score-box');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1324,13 +1372,25 @@ export default function LessonDPQuiz() {
 
   const resetQuiz = () => {
     setAnswers({});
-    setSubmitted(false);
+    setVerifiedQuestions({});
+    setAllSubmitted(false);
     setScore(0);
     setExpandedFeedback({});
     setShowTranslation({});
     setShowQuestionTranslation({});
     setShowAllTranslations(false);
+    // NOVO EMBARALHAMENTO
+    setShuffleSeed(s => s + 1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const reshuffleOnly = () => {
+    setAnswers({});
+    setVerifiedQuestions({});
+    setAllSubmitted(false);
+    setScore(0);
+    setExpandedFeedback({});
+    setShuffleSeed(s => s + 1);
   };
 
   const toggleFeedback = (qId: number) => {
@@ -1350,17 +1410,18 @@ export default function LessonDPQuiz() {
     setShowAllTranslations(next);
     const allOpts: Record<number, boolean> = {};
     const allQ: Record<number, boolean> = {};
-    QUESTIONS.forEach(q => {
-      allOpts[q.id] = next;
-      allQ[q.id] = next;
+    shuffledQuestions.forEach(q => {
+      allOpts[q.originalId] = next;
+      allQ[q.originalId] = next;
     });
     setShowTranslation(allOpts);
     setShowQuestionTranslation(allQ);
   };
 
   const progress = Object.keys(answers).length;
-  const total = QUESTIONS.length;
+  const total = shuffledQuestions.length;
   const progressPct = (progress / total) * 100;
+  const verifiedCount = Object.keys(verifiedQuestions).length;
 
   const sections: { key: SectionKey; label: string; icon: React.ReactNode }[] = [
     { key: 'pre', label: 'Pre-Class', icon: <BookOpen size={14} /> },
@@ -1418,7 +1479,7 @@ export default function LessonDPQuiz() {
                 <p className="text-blue-100 text-sm leading-relaxed mb-3">
                   DP is <strong>not a piece of equipment</strong>. It is a <em>vessel capability</em>{" "}
                   achieved through the integration of several systems. The formal definition: a system
-                  that automatically controls a vessel's position and heading{" "}
+                  that automatically controls a vessel&apos;s position and heading{" "}
                   <strong>exclusively by means of active thrust</strong>.
                 </p>
                 <div className="bg-blue-900/60 border-l-4 border-amber-400 p-3 rounded-r-lg">
@@ -1522,9 +1583,10 @@ export default function LessonDPQuiz() {
 
             <div className="bg-amber-400/10 border-2 border-amber-400/40 rounded-2xl p-6 text-center">
               <p className="text-amber-100 text-sm">
-                <strong>⚠️ Quiz warning:</strong> Correct alternatives were written with a{" "}
-                <em>medium</em> length — not the longest, not the shortest. Do not fall into the trap of
-                choosing the longest option thinking it is the right one. Read each alternative carefully.
+                <strong>⚠️ Quiz instructions:</strong> Questions and options are <strong>shuffled</strong>{" "}
+                every time. Verify each question individually with the <em>&quot;Verify&quot;</em> button,
+                or check everything at the end. Correct answers were written with a <em>medium</em> length
+                — don&apos;t trust the longest option.
               </p>
             </div>
 
@@ -1550,19 +1612,27 @@ export default function LessonDPQuiz() {
                 📝 Dynamic Positioning — Quiz
               </h1>
               <p className="text-blue-200 max-w-3xl mx-auto">
-                Answer the <strong>{total} questions</strong> below. Each question has only one correct
-                alternative. Click <strong>&quot;Check Quiz&quot;</strong> when you finish to see your score.
+                Questions and options are <strong>shuffled</strong>. Select an option and click{" "}
+                <strong>&quot;Verify&quot;</strong> on each question to check it individually — or use{" "}
+                <strong>&quot;Check All&quot;</strong> at the bottom to check everything at once.
               </p>
             </div>
 
             {/* Global Controls */}
-            <div className="max-w-3xl mx-auto mb-6 flex flex-wrap justify-center gap-3">
+            <div className="max-w-4xl mx-auto mb-6 flex flex-wrap justify-center gap-3">
               <button
                 onClick={toggleAllTranslations}
                 className="flex items-center gap-2 bg-blue-800/80 hover:bg-blue-700 text-blue-100 text-xs font-semibold px-4 py-2 rounded-full border border-blue-700 transition-all"
               >
                 <Languages size={14} />
                 {showAllTranslations ? "Hide all translations" : "Show all translations"}
+              </button>
+              <button
+                onClick={reshuffleOnly}
+                className="flex items-center gap-2 bg-purple-800/80 hover:bg-purple-700 text-purple-100 text-xs font-semibold px-4 py-2 rounded-full border border-purple-700 transition-all"
+              >
+                <Shuffle size={14} />
+                Reshuffle Questions
               </button>
             </div>
 
@@ -1574,22 +1644,26 @@ export default function LessonDPQuiz() {
                   style={{ width: `${progressPct}%` }}
                 />
               </div>
-              <p className="text-right text-xs text-blue-300 mt-1">{progress} / {total} answered</p>
+              <div className="flex justify-between text-xs text-blue-300 mt-1">
+                <span>Selected: {progress} / {total}</span>
+                <span>Verified: {verifiedCount} / {total}</span>
+              </div>
             </div>
 
             {/* Questions */}
             <div className="space-y-6">
-              {QUESTIONS.map((q) => {
-                const selected = answers[q.id];
-                const isCorrect = submitted && selected === q.correct;
-                const isWrong = submitted && selected !== undefined && selected !== q.correct;
-                const showFb = submitted && expandedFeedback[q.id];
-                const showOptTrans = showTranslation[q.id];
-                const showQTrans = showQuestionTranslation[q.id];
+              {shuffledQuestions.map((q, idx) => {
+                const selected = answers[q.originalId];
+                const isVerified = !!verifiedQuestions[q.originalId];
+                const isCorrect = isVerified && selected === q.correct;
+                const isWrong = isVerified && selected !== undefined && selected !== q.correct;
+                const showFb = isVerified && expandedFeedback[q.originalId];
+                const showOptTrans = showTranslation[q.originalId];
+                const showQTrans = showQuestionTranslation[q.originalId];
 
                 return (
                   <div
-                    key={q.id}
+                    key={q.originalId}
                     className={`bg-blue-950/60 border-2 rounded-2xl p-5 transition-all ${
                       isCorrect ? 'border-emerald-500/60 shadow-lg shadow-emerald-500/10' :
                       isWrong ? 'border-red-500/60 shadow-lg shadow-red-500/10' :
@@ -1598,14 +1672,14 @@ export default function LessonDPQuiz() {
                   >
                     <div className="flex items-start gap-3 mb-2">
                       <span className="bg-amber-400 text-slate-900 text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0">
-                        {q.id}
+                        {idx + 1}
                       </span>
                       <div className="flex-1">
                         <SpeakSentence text={q.question} className="text-slate-100 font-semibold text-base leading-relaxed">
                           {q.question}
                         </SpeakSentence>
                         <button
-                          onClick={() => toggleQuestionTranslation(q.id)}
+                          onClick={() => toggleQuestionTranslation(q.originalId)}
                           className="mt-1 text-[11px] text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
                         >
                           <Languages size={11} />
@@ -1622,25 +1696,25 @@ export default function LessonDPQuiz() {
                     <div className="space-y-2 mt-3">
                       {q.options.map((opt, i) => {
                         const isSelected = selected === i;
-                        const isCorrectOpt = submitted && i === q.correct;
-                        const isWrongOpt = submitted && isSelected && i !== q.correct;
+                        const isCorrectOpt = isVerified && i === q.correct;
+                        const isWrongOpt = isVerified && isSelected && i !== q.correct;
 
                         return (
                           <label
                             key={i}
-                            className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                            className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${
                               isCorrectOpt ? 'bg-emerald-950/60 border-emerald-500/60' :
                               isWrongOpt ? 'bg-red-950/60 border-red-500/60' :
                               isSelected ? 'bg-blue-900/80 border-amber-400/60' :
                               'bg-blue-900/30 border-blue-800 hover:bg-blue-900/60 hover:border-blue-700'
-                            } ${submitted ? 'cursor-default' : ''}`}
+                            } ${isVerified ? 'cursor-default' : 'cursor-pointer'}`}
                           >
                             <input
                               type="radio"
-                              name={`q${q.id}`}
+                              name={`q-${q.originalId}`}
                               checked={isSelected || false}
-                              onChange={() => handleAnswer(q.id, i)}
-                              disabled={submitted}
+                              onChange={() => handleAnswer(q.originalId, i)}
+                              disabled={isVerified}
                               className="mt-0.5 accent-amber-400 w-4 h-4 flex-shrink-0 cursor-pointer"
                             />
                             <div className="flex-1">
@@ -1665,15 +1739,39 @@ export default function LessonDPQuiz() {
                       })}
                     </div>
 
-                    {!submitted && (
-                      <button
-                        onClick={() => toggleOptionTranslation(q.id)}
-                        className="mt-3 text-[11px] text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
-                      >
-                        <Languages size={11} />
-                        {showOptTrans ? "Hide option translations" : "Show option translations"}
-                      </button>
-                    )}
+                    {/* Buttons per question */}
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {!isVerified ? (
+                        <button
+                          onClick={() => verifyQuestion(q.originalId)}
+                          disabled={selected === undefined}
+                          className={`text-xs font-bold px-4 py-1.5 rounded-full transition-all ${
+                            selected === undefined
+                              ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                              : 'bg-amber-400 hover:bg-amber-300 text-slate-900 shadow shadow-amber-400/30'
+                          }`}
+                        >
+                          ✓ Verify
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => toggleFeedback(q.originalId)}
+                          className="text-xs font-semibold px-4 py-1.5 rounded-full bg-blue-800 hover:bg-blue-700 text-blue-100 border border-blue-700"
+                        >
+                          {expandedFeedback[q.originalId] ? "Hide explanation" : "Show explanation"}
+                        </button>
+                      )}
+
+                      {!isVerified && (
+                        <button
+                          onClick={() => toggleOptionTranslation(q.originalId)}
+                          className="text-xs font-semibold px-3 py-1.5 rounded-full bg-blue-900/70 hover:bg-blue-800 text-blue-200 border border-blue-700/60 flex items-center gap-1"
+                        >
+                          <Languages size={11} />
+                          {showOptTrans ? "Hide PT" : "PT"}
+                        </button>
+                      )}
+                    </div>
 
                     {showFb && (
                       <div className={`mt-3 p-3 rounded-xl text-sm border-l-4 ${
@@ -1694,15 +1792,6 @@ export default function LessonDPQuiz() {
                         </p>
                       </div>
                     )}
-
-                    {submitted && !expandedFeedback[q.id] && (
-                      <button
-                        onClick={() => toggleFeedback(q.id)}
-                        className="mt-3 text-xs text-amber-300 hover:text-amber-200 underline"
-                      >
-                        Show explanation
-                      </button>
-                    )}
                   </div>
                 );
               })}
@@ -1710,32 +1799,44 @@ export default function LessonDPQuiz() {
 
             {/* Actions */}
             <div className="flex flex-wrap justify-center gap-4 mt-10">
-              {!submitted ? (
-                <button
-                  onClick={submitQuiz}
-                  disabled={progress < total}
-                  className={`font-bold px-8 py-3 rounded-full transition-all shadow-lg ${
-                    progress < total
-                      ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
-                      : 'bg-amber-400 hover:bg-amber-300 text-slate-900 shadow-amber-400/30'
-                  }`}
-                >
-                  {progress < total
-                    ? `Answer all (${progress}/${total})`
-                    : '✅ Check Quiz'}
-                </button>
+              {!allSubmitted ? (
+                <>
+                  <button
+                    onClick={submitQuiz}
+                    className="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-8 py-3 rounded-full transition-all shadow-lg shadow-amber-400/30"
+                  >
+                    ✅ Check All ({verifiedCount}/{total} verified)
+                  </button>
+                  <button
+                    onClick={reshuffleOnly}
+                    className="bg-purple-700 hover:bg-purple-600 text-white font-bold px-6 py-3 rounded-full transition-all shadow-lg flex items-center gap-2"
+                  >
+                    <Shuffle size={16} />
+                    Reshuffle
+                  </button>
+                </>
               ) : (
-                <button
-                  onClick={resetQuiz}
-                  className="bg-blue-700 hover:bg-blue-600 text-white font-bold px-8 py-3 rounded-full transition-all shadow-lg"
-                >
-                  🔄 Retake Quiz
-                </button>
+                <>
+                  <button
+                    onClick={resetQuiz}
+                    className="bg-blue-700 hover:bg-blue-600 text-white font-bold px-8 py-3 rounded-full transition-all shadow-lg flex items-center gap-2"
+                  >
+                    <RefreshCw size={16} />
+                    Retake Quiz (Reshuffled)
+                  </button>
+                  <button
+                    onClick={reshuffleOnly}
+                    className="bg-purple-700 hover:bg-purple-600 text-white font-bold px-8 py-3 rounded-full transition-all shadow-lg flex items-center gap-2"
+                  >
+                    <Shuffle size={16} />
+                    Just Reshuffle
+                  </button>
+                </>
               )}
             </div>
 
             {/* Score */}
-            {submitted && (
+            {allSubmitted && (
               <div id="score-box" className="max-w-2xl mx-auto mt-10 bg-gradient-to-br from-blue-950 to-slate-900 border-2 border-amber-400 rounded-3xl p-8 text-center shadow-2xl">
                 <p className="text-6xl font-extrabold text-amber-400 mb-2">
                   {Math.round((score / total) * 100)}%
@@ -1790,27 +1891,33 @@ export default function LessonDPQuiz() {
                   </div>
                   <div className="bg-blue-900/50 border-l-4 border-blue-400 p-4 rounded-r-lg">
                     <p className="text-blue-100 text-sm">
-                      <strong>2. Precise definitions:</strong> DP controls only Surge, Sway and Yaw.
+                      <strong>2. Shuffle:</strong> Questions and options are reshuffled every time. This
+                      prevents memorizing positions and forces you to actually learn the content.
+                    </p>
+                  </div>
+                  <div className="bg-blue-900/50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                    <p className="text-blue-100 text-sm">
+                      <strong>3. Precise definitions:</strong> DP controls only Surge, Sway and Yaw.
                       Heave, Roll and Pitch are <em>measured</em> for compensation, but not controlled.
                     </p>
                   </div>
                   <div className="bg-blue-900/50 border-l-4 border-blue-400 p-4 rounded-r-lg">
                     <p className="text-blue-100 text-sm">
-                      <strong>3. Numbers and specifications:</strong> Gyro startup = 6 h; Kalman
+                      <strong>4. Numbers and specifications:</strong> Gyro startup = 6 h; Kalman
                       settling = 30 min; Taut Wire = ±2% up to 500 m; Artemis = 9.2 GHz; CyScan = 250
                       m; Fanbeam = 200–250 m practical.
                     </p>
                   </div>
                   <div className="bg-blue-900/50 border-l-4 border-blue-400 p-4 rounded-r-lg">
                     <p className="text-blue-100 text-sm">
-                      <strong>4. Class 1 vs 2 vs 3:</strong> Class 1 = no redundancy; Class 2 =
+                      <strong>5. Class 1 vs 2 vs 3:</strong> Class 1 = no redundancy; Class 2 =
                       tolerates single active fault; Class 3 = tolerates single fault + fire/flooding
                       in one compartment.
                     </p>
                   </div>
                   <div className="bg-blue-900/50 border-l-4 border-blue-400 p-4 rounded-r-lg">
                     <p className="text-blue-100 text-sm">
-                      <strong>5. ASOG:</strong> Green = normal; Blue = advisory; Yellow = degraded
+                      <strong>6. ASOG:</strong> Green = normal; Blue = advisory; Yellow = degraded
                       (prepare to suspend); Red = emergency (abort immediately).
                     </p>
                   </div>
@@ -1881,12 +1988,13 @@ export default function LessonDPQuiz() {
                 ✅ Answer Key — All Answers
               </h1>
               <p className="text-blue-200 max-w-2xl mx-auto">
-                Check the official answer key with the explanation for each answer.
+                Check the official answer key with the explanation for each answer. Note: this list
+                shows the ORIGINAL order of questions (not the shuffled order).
               </p>
             </div>
 
             <div className="space-y-4">
-              {QUESTIONS.map((q) => (
+              {RAW_QUESTIONS.map((q) => (
                 <div key={q.id} className="bg-blue-950/60 border border-emerald-700/50 rounded-2xl p-5">
                   <div className="flex items-start gap-3 mb-3">
                     <span className="bg-emerald-500 text-slate-900 text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0">

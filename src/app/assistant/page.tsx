@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from '@/hooks/useChat';
 import { useVoice } from '@/hooks/useVoice';
 import { useAudio } from '@/hooks/useAudio';
@@ -17,6 +17,9 @@ export default function AssistantPage() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+  // 🔧 Ref para cancelar requisições de TTS antigas (evita sobreposição)
+  const ttsAbortRef = useRef<AbortController | null>(null);
+
   // Hooks do chat
   const {
     messages,
@@ -26,6 +29,31 @@ export default function AssistantPage() {
     clearHistory,
     loadConversation,
   } = useChat();
+
+  // Hook de áudio
+  const {
+    isPlaying,
+    volume,
+    playAudio,
+    pauseAudio,
+    stopAudio,
+    setAudioVolume,
+  } = useAudio({
+    autoPlay: true,
+    onEnd: () => {
+      console.log('Audio finished playing');
+    },
+  });
+
+  // 🔧 Função central: para qualquer áudio e cancela TTS em andamento
+  const killCurrentAudio = () => {
+    if (ttsAbortRef.current) {
+      ttsAbortRef.current.abort();
+      ttsAbortRef.current = null;
+    }
+    stopAudio();
+    setAudioUrl(null);
+  };
 
   // Hook de voz
   const {
@@ -48,21 +76,6 @@ export default function AssistantPage() {
     },
   });
 
-  // Hook de áudio
-  const {
-    isPlaying,
-    volume,
-    playAudio,
-    pauseAudio,
-    stopAudio,
-    setAudioVolume,
-  } = useAudio({
-    autoPlay: true,
-    onEnd: () => {
-      console.log('Audio finished playing');
-    },
-  });
-
   // Carrega conversas do usuário
   useEffect(() => {
     if (user) {
@@ -82,10 +95,20 @@ export default function AssistantPage() {
     }
   };
 
-  // Função para gerar áudio da resposta
+  // 🔧 Gera áudio: cancela TTS anterior + para o áudio atual antes de tocar o novo
   const generateAudioResponse = async (text: string) => {
     if (!text) return;
-    
+
+    // Cancela requisição de TTS em andamento (se houver)
+    if (ttsAbortRef.current) {
+      ttsAbortRef.current.abort();
+    }
+    ttsAbortRef.current = new AbortController();
+
+    // Para qualquer áudio que esteja tocando AGORA
+    stopAudio();
+    setAudioUrl(null);
+
     try {
       const response = await fetch('/api/tts', {
         method: 'POST',
@@ -93,6 +116,7 @@ export default function AssistantPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ text }),
+        signal: ttsAbortRef.current.signal,
       });
 
       if (response.ok) {
@@ -102,7 +126,11 @@ export default function AssistantPage() {
           playAudio(data.audioUrl);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.name === 'AbortError') {
+        console.log('🛑 TTS cancelado (nova resposta chegou)');
+        return;
+      }
       console.error('Error generating audio:', error);
     }
   };
@@ -110,9 +138,12 @@ export default function AssistantPage() {
   // Envia mensagem de texto
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
-    
+
     console.log('📨 Enviando mensagem:', text);
-    
+
+    // 🔧 Para qualquer áudio tocando antes de enviar nova mensagem
+    killCurrentAudio();
+
     try {
       const result = await sendMessage(text);
       if (result?.content) {
@@ -123,19 +154,23 @@ export default function AssistantPage() {
     }
   };
 
+  // 🔧 Inicia gravação: para o áudio atual primeiro (evita eco)
+  const handleVoiceStart = () => {
+    killCurrentAudio();
+    startRecording();
+  };
+
   // Nova conversa
   const handleNewConversation = () => {
+    killCurrentAudio();
     clearHistory();
-    setAudioUrl(null);
-    stopAudio();
     loadConversations();
   };
 
   // Selecionar conversa
   const handleSelectConversation = async (id: string) => {
+    killCurrentAudio();
     await loadConversation(id);
-    setAudioUrl(null);
-    stopAudio();
   };
 
   // Deletar conversa
@@ -144,9 +179,9 @@ export default function AssistantPage() {
       const response = await fetch(`/api/history?conversationId=${id}`, {
         method: 'DELETE',
       });
-      
+
       if (response.ok) {
-        setConversations(prev => prev.filter((c: any) => c.id !== id));
+        setConversations((prev) => prev.filter((c: any) => c.id !== id));
         if (currentConversationId === id) {
           clearHistory();
         }
@@ -206,8 +241,18 @@ export default function AssistantPage() {
             onClick={toggleSidebar}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
           </button>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -244,10 +289,10 @@ export default function AssistantPage() {
           <div className="container mx-auto max-w-4xl">
             <MessageInput
               onSend={handleSendMessage}
-              onVoiceStart={startRecording}
+              onVoiceStart={handleVoiceStart}
               isVoiceRecording={isRecording}
               isLoading={isChatLoading || isProcessing}
-              placeholder="Digite sua mensagem em inglês..."
+              placeholder="Type your message in English..."
             />
           </div>
         </div>
@@ -258,7 +303,7 @@ export default function AssistantPage() {
           isRecording={isRecording}
           isProcessing={isProcessing}
           recordingDuration={recordingDuration}
-          onStartRecording={startRecording}
+          onStartRecording={handleVoiceStart}
           onStopRecording={stopRecording}
           onCancelRecording={cancelRecording}
           formatDuration={formatDuration}

@@ -7,12 +7,9 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const formData = await req.formData();
@@ -25,7 +22,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log(`🎤 Áudio recebido: ${audioFile.name}, ${audioFile.size} bytes, ${audioFile.type}`);
+    console.log(
+      `🎤 Áudio recebido: ${audioFile.name}, ${audioFile.size} bytes, ${audioFile.type}`
+    );
 
     const arrayBuffer = await audioFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -33,7 +32,8 @@ export async function POST(req: NextRequest) {
     const transcription = await openai.audio.transcriptions.create({
       file: new File([buffer], audioFile.name, { type: audioFile.type }),
       model: 'whisper-1',
-      language: 'pt',
+      language: 'en',                                    // 🔧 FORÇA INGLÊS
+      prompt: 'Conversation in English between a student and a tutor.', // 🔧 Dica de contexto
       response_format: 'json',
     });
 

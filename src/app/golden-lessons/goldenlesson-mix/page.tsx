@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Volume2, Info, ChevronDown, ChevronRight, Languages } from "lucide-react";
+import { Volume2, Info, ChevronDown, ChevronRight, Languages, Pencil, Check, X } from "lucide-react";
 
 // ============================================================
 // SPEECH SYSTEM (American Female Voice)
@@ -170,23 +170,141 @@ function Idiom({ en, pt, example, examplePt }: { en: string; pt: string; example
 }
 
 // ============================================================
-// QUESTION LIST
+// QUESTION LIST — with pencil editor
 // ============================================================
 function Questions({ items }: { items: { en: string; pt: string }[] }) {
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [draft, setDraft] = useState("");
+
+  const openEditor = (i: number) => {
+    setOpenIndex(i);
+    setDraft(answers[i] || "");
+  };
+
+  const saveAnswer = () => {
+    if (openIndex !== null) {
+      setAnswers((prev) => ({ ...prev, [openIndex]: draft }));
+    }
+    setOpenIndex(null);
+  };
+
+  const closeEditor = () => {
+    setOpenIndex(null);
+    setDraft("");
+  };
+
   return (
-    <ol className="list-decimal pl-6 space-y-3 text-slate-800">
-      {items.map((q, i) => (
-        <li key={i}>
-          <button
-            onClick={() => speakEnglish(q.en)}
-            className="text-left hover:bg-blue-100 rounded px-1 -mx-1 transition-colors"
+    <>
+      <ol className="list-decimal pl-6 space-y-4 text-slate-800">
+        {items.map((q, i) => (
+          <li key={i}>
+            <div className="flex items-start gap-2">
+              <button
+                onClick={() => speakEnglish(q.en)}
+                className="text-left hover:bg-blue-100 rounded px-1 -mx-1 transition-colors flex-1"
+              >
+                <span className="font-medium">{q.en}</span>
+              </button>
+              <button
+                onClick={() => openEditor(i)}
+                className="flex-shrink-0 p-1.5 rounded-lg hover:bg-amber-100 text-amber-600 hover:text-amber-800 transition-colors border border-amber-200"
+                title="Escrever resposta"
+                aria-label="Escrever resposta"
+              >
+                <Pencil size={15} />
+              </button>
+            </div>
+            <p className="text-sm text-gray-500 mt-0.5 italic">{q.pt}</p>
+            {answers[i] && answers[i].trim() !== "" && (
+              <div className="mt-2 bg-emerald-50 border-l-3 border-emerald-400 rounded-r-lg p-2 flex items-start gap-2">
+                <Check size={14} className="text-emerald-600 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-emerald-800 whitespace-pre-line">{answers[i]}</p>
+              </div>
+            )}
+          </li>
+        ))}
+      </ol>
+
+      {/* Editor Modal */}
+      {openIndex !== null && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4"
+          onClick={closeEditor}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
           >
-            <span className="font-medium">{q.en}</span>
-          </button>
-          <p className="text-sm text-gray-500 mt-0.5 italic">{q.pt}</p>
-        </li>
-      ))}
-    </ol>
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-4 px-6 flex items-center justify-between">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                <Pencil size={18} />
+                Escreva sua resposta
+              </h3>
+              <button
+                onClick={closeEditor}
+                className="p-1 rounded-full hover:bg-white/20 transition-colors"
+                aria-label="Fechar"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6">
+              {/* Question preview */}
+              <div className="mb-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
+                <p className="text-xs uppercase tracking-wider text-blue-600 font-bold mb-1">
+                  📌 Pergunta
+                </p>
+                <p className="font-semibold text-slate-800 text-base">
+                  {items[openIndex].en}
+                </p>
+                <p className="text-sm text-gray-500 mt-1 italic">
+                  {items[openIndex].pt}
+                </p>
+                <button
+                  onClick={() => speakEnglish(items[openIndex].en)}
+                  className="mt-2 text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 font-medium"
+                >
+                  <Volume2 size={12} /> Ouvir a pergunta
+                </button>
+              </div>
+
+              {/* Answer textarea */}
+              <label className="block text-xs uppercase tracking-wider text-gray-500 font-bold mb-2">
+                ✍️ Sua resposta em inglês
+              </label>
+              <textarea
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                placeholder="Type your answer here... / Escreva sua resposta aqui..."
+                className="w-full h-44 p-4 border border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none text-slate-800 text-base leading-relaxed"
+                autoFocus
+              />
+
+              {/* Footer */}
+              <div className="flex justify-end gap-3 mt-5">
+                <button
+                  onClick={closeEditor}
+                  className="px-5 py-2 text-gray-600 hover:text-gray-800 font-medium rounded-full transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={saveAnswer}
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold transition-all shadow-md flex items-center gap-2"
+                >
+                  <Check size={16} />
+                  Salvar resposta
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -217,7 +335,8 @@ export default function LifeStoriesLesson() {
           <p className="text-blue-100 max-w-3xl mx-auto text-base md:text-lg">
             In this lesson, you are the expert. I will ask you questions — you tell me your story.
             Click on any underlined word or phrase to <strong>hear the pronunciation</strong> and{" "}
-            <strong>see the translation</strong>.
+            <strong>see the translation</strong>. Use the ✏️ <strong>pencil</strong> next to each
+            question to write your answer.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-3 text-xs">
             <span className="bg-blue-900/70 border border-blue-700 px-3 py-1 rounded-full">
@@ -227,7 +346,7 @@ export default function LifeStoriesLesson() {
               🇧🇷 Tradução em PT
             </span>
             <span className="bg-blue-900/70 border border-blue-700 px-3 py-1 rounded-full">
-              💬 Você é o especialista
+              ✏️ Escreva suas respostas
             </span>
           </div>
         </div>
@@ -726,7 +845,7 @@ export default function LifeStoriesLesson() {
           subtitle="Trabalho — Painéis solares & escolhas de carreira"
         >
           <p className="text-slate-700 mb-4 italic">
-            Work is a big part of life. Solar panels are the future — renewable energy. Let&apos;s talk about your work and what you'd do if you worked abroad.
+            Work is a big part of life. Solar panels are the future — renewable energy. Let&apos;s talk about your work and what you&apos;d do if you worked abroad.
           </p>
 
           <h3 className="text-lg font-bold text-blue-800 mb-3">💡 Idioms & Expressions</h3>

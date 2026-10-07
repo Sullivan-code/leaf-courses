@@ -1324,7 +1324,9 @@ export default function LessonDPQuiz() {
   const shuffledQuestions: ShuffledQuestion[] = useMemo(() => {
     const shuffled = shuffleArray(RAW_QUESTIONS);
     return shuffled.map(q => {
-      const indices = shuffleArray([...Array(q.options.length).keys()]);
+      // ✅ CORREÇÃO: substituído [...Array(n).keys()] por Array.from({length}, (_, i) => i)
+      // para compatibilidade com target es5 sem downlevelIteration
+      const indices = shuffleArray(Array.from({ length: q.options.length }, (_, i) => i));
       const newOptions = indices.map(i => q.options[i]);
       const newOptionsPt = indices.map(i => q.optionsPt[i]);
       const newCorrect = indices.indexOf(q.correct);

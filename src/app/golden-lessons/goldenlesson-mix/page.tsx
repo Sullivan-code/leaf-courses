@@ -2,7 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Volume2, Info, ChevronDown, ChevronRight, Languages, Pencil, Check, X } from "lucide-react";
+import {
+  Volume2,
+  Info,
+  ChevronDown,
+  ChevronRight,
+  Languages,
+  Pencil,
+  Check,
+  X,
+} from "lucide-react";
 
 // ============================================================
 // SPEECH SYSTEM (American Female Voice)
@@ -23,7 +32,9 @@ const speakEnglish = (text: string, rate = 0.9) => {
         v.name.toLowerCase().includes("siri") ||
         v.name.toLowerCase().includes("female"))
   );
-  const american = voices.filter((v) => v.lang === "en-US" || v.lang.startsWith("en-US"));
+  const american = voices.filter(
+    (v) => v.lang === "en-US" || v.lang.startsWith("en-US")
+  );
   if (preferred.length > 0) utterance.voice = preferred[0];
   else if (american.length > 0) utterance.voice = american[0];
   window.speechSynthesis.speak(utterance);
@@ -46,7 +57,9 @@ function T({ en, pt }: { en: string; pt: string }) {
       >
         {en}
       </button>
-      {show && <span className="text-amber-600 text-xs font-normal ml-1">= {pt}</span>}
+      {show && (
+        <span className="text-amber-600 text-xs font-normal ml-1">= {pt}</span>
+      )}
     </span>
   );
 }
@@ -77,7 +90,13 @@ function Translation({ children }: { children: React.ReactNode }) {
 // ============================================================
 // EXPLANATION BOX
 // ============================================================
-function Explanation({ title, children }: { title: string; children: React.ReactNode }) {
+function Explanation({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <div className="mt-4">
@@ -125,13 +144,16 @@ function Section({
           </span>
           <div>
             <h2 className="text-xl md:text-2xl font-bold">{title}</h2>
-            {subtitle && <p className="text-blue-100 text-sm mt-0.5 italic">{subtitle}</p>}
+            {subtitle && (
+              <p className="text-blue-100 text-sm mt-0.5 italic">{subtitle}</p>
+            )}
           </div>
         </div>
       </div>
       <div className="p-6 md:p-8">
         {image && (
           <div className="mb-6">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={image}
               alt={imageAlt || title}
@@ -148,7 +170,17 @@ function Section({
 // ============================================================
 // IDIOM CARD
 // ============================================================
-function Idiom({ en, pt, example, examplePt }: { en: string; pt: string; example: string; examplePt: string }) {
+function Idiom({
+  en,
+  pt,
+  example,
+  examplePt,
+}: {
+  en: string;
+  pt: string;
+  example: string;
+  examplePt: string;
+}) {
   return (
     <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 mb-3">
       <div className="flex flex-wrap items-baseline gap-2 mb-2">
@@ -162,9 +194,11 @@ function Idiom({ en, pt, example, examplePt }: { en: string; pt: string; example
         <span className="text-gray-500 text-sm">= {pt}</span>
       </div>
       <p className="text-slate-700 text-sm italic">
-        &ldquo;<T en={example} pt={examplePt} />&rdquo;
+        &ldquo;
+        <T en={example} pt={examplePt} />
+        &rdquo;
       </p>
-      <p className="text-slate-500 text-xs mt-1">→ {examplePt}</p>
+      <p className="text-slate-500 text-xs mt-1">&rarr; {examplePt}</p>
     </div>
   );
 }
@@ -217,9 +251,14 @@ function Questions({ items }: { items: { en: string; pt: string }[] }) {
             </div>
             <p className="text-sm text-gray-500 mt-0.5 italic">{q.pt}</p>
             {answers[i] && answers[i].trim() !== "" && (
-              <div className="mt-2 bg-emerald-50 border-l-3 border-emerald-400 rounded-r-lg p-2 flex items-start gap-2">
-                <Check size={14} className="text-emerald-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-emerald-800 whitespace-pre-line">{answers[i]}</p>
+              <div className="mt-2 bg-emerald-50 border-l-4 border-emerald-400 rounded-r-lg p-2 flex items-start gap-2">
+                <Check
+                  size={14}
+                  className="text-emerald-600 flex-shrink-0 mt-0.5"
+                />
+                <p className="text-sm text-emerald-800 whitespace-pre-line">
+                  {answers[i]}
+                </p>
               </div>
             )}
           </li>
@@ -333,10 +372,11 @@ export default function LifeStoriesLesson() {
             Histórias de vida — Falando sobre a sua vida
           </p>
           <p className="text-blue-100 max-w-3xl mx-auto text-base md:text-lg">
-            In this lesson, you are the expert. I will ask you questions — you tell me your story.
-            Click on any underlined word or phrase to <strong>hear the pronunciation</strong> and{" "}
-            <strong>see the translation</strong>. Use the ✏️ <strong>pencil</strong> next to each
-            question to write your answer.
+            In this lesson, you are the expert. I will ask you questions — you
+            tell me your story. Click on any underlined word or phrase to{" "}
+            <strong>hear the pronunciation</strong> and{" "}
+            <strong>see the translation</strong>. Use the ✏️{" "}
+            <strong>pencil</strong> next to each question to write your answer.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-3 text-xs">
             <span className="bg-blue-900/70 border border-blue-700 px-3 py-1 rounded-full">
@@ -362,10 +402,13 @@ export default function LifeStoriesLesson() {
           imageAlt="Cars"
         >
           <p className="text-slate-700 mb-4 italic">
-            Let&apos;s talk about cars — the ones you&apos;ve driven, the ones you dream about, and the ones you wouldn&apos;t trade for anything.
+            Let&apos;s talk about cars — the ones you&apos;ve driven, the ones
+            you dream about, and the ones you wouldn&apos;t trade for anything.
           </p>
 
-          <h3 className="text-lg font-bold text-blue-800 mb-3">💡 Idioms & Expressions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mb-3">
+            💡 Idioms &amp; Expressions
+          </h3>
 
           <Idiom
             en="It's a beast."
@@ -404,17 +447,43 @@ export default function LifeStoriesLesson() {
             examplePt="Meu primeiro carro era velho, mas eu não trocaria por nada."
           />
 
-          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">❓ Questions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">
+            ❓ Questions
+          </h3>
           <Questions
             items={[
-              { en: "What's the best car you've ever driven?", pt: "Qual foi o melhor carro que você já dirigiu?" },
-              { en: "What's the most overrated car you've ever driven?", pt: "Qual foi o carro mais superestimado que você já dirigiu?" },
-              { en: "Would you rather own a classic car or a brand-new luxury car?", pt: "Você preferiria ter um carro clássico ou um carro de luxo zero?" },
-              { en: "What's a car you would love to drive before you die?", pt: "Qual carro você adoraria dirigir antes de morrer?" },
-              { en: "Do you think cars were better 30 years ago? Why?", pt: "Você acha que os carros eram melhores há 30 anos? Por quê?" },
-              { en: "Would you ever buy an electric car?", pt: "Você compraria um carro elétrico?" },
-              { en: "What car do you think is the most beautiful?", pt: "Qual carro você acha mais bonito?" },
-              { en: "Tell me the story of your first car.", pt: "Me conte a história do seu primeiro carro." },
+              {
+                en: "What's the best car you've ever driven?",
+                pt: "Qual foi o melhor carro que você já dirigiu?",
+              },
+              {
+                en: "What's the most overrated car you've ever driven?",
+                pt: "Qual foi o carro mais superestimado que você já dirigiu?",
+              },
+              {
+                en: "Would you rather own a classic car or a brand-new luxury car?",
+                pt: "Você preferiria ter um carro clássico ou um carro de luxo zero?",
+              },
+              {
+                en: "What's a car you would love to drive before you die?",
+                pt: "Qual carro você adoraria dirigir antes de morrer?",
+              },
+              {
+                en: "Do you think cars were better 30 years ago? Why?",
+                pt: "Você acha que os carros eram melhores há 30 anos? Por quê?",
+              },
+              {
+                en: "Would you ever buy an electric car?",
+                pt: "Você compraria um carro elétrico?",
+              },
+              {
+                en: "What car do you think is the most beautiful?",
+                pt: "Qual carro você acha mais bonito?",
+              },
+              {
+                en: "Tell me the story of your first car.",
+                pt: "Me conte a história do seu primeiro carro.",
+              },
             ]}
           />
 
@@ -440,11 +509,13 @@ export default function LifeStoriesLesson() {
 
           <Explanation title="Como usar essas expressões no trabalho">
             <p>
-              Essas expressões são extremamente comuns em conversas casuais — em um bar, no
-              trabalho, com amigos. Se você está dirigindo com um colega ou falando de um carro
-              novo na empresa, usar <em>&quot;it&apos;s a beast&quot;</em> ou{" "}
-              <em>&quot;it&apos;s a smooth ride&quot;</em> soa muito mais natural do que dizer
-              &quot;this car has good performance&quot;. Nativos usam essas frases o tempo todo.
+              Essas expressões são extremamente comuns em conversas casuais — em
+              um bar, no trabalho, com amigos. Se você está dirigindo com um
+              colega ou falando de um carro novo na empresa, usar{" "}
+              <em>&quot;it&apos;s a beast&quot;</em> ou{" "}
+              <em>&quot;it&apos;s a smooth ride&quot;</em> soa muito mais
+              natural do que dizer &quot;this car has good performance&quot;.
+              Nativos usam essas frases o tempo todo.
             </p>
           </Explanation>
         </Section>
@@ -458,10 +529,13 @@ export default function LifeStoriesLesson() {
           subtitle="Comida — Provando coisas novas"
         >
           <p className="text-slate-700 mb-4 italic">
-            Have you ever tried something unusual? Crocodile, rabbit, snake meat, lamb? Let&apos;s talk about it.
+            Have you ever tried something unusual? Crocodile, rabbit, snake
+            meat, lamb? Let&apos;s talk about it.
           </p>
 
-          <h3 className="text-lg font-bold text-blue-800 mb-3">💡 Idioms & Expressions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mb-3">
+            💡 Idioms &amp; Expressions
+          </h3>
 
           <Idiom
             en="It tastes like chicken."
@@ -500,17 +574,43 @@ export default function LifeStoriesLesson() {
             examplePt="Depois de um dia longo, aquele cozido caiu como uma luva."
           />
 
-          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">❓ Questions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">
+            ❓ Questions
+          </h3>
           <Questions
             items={[
-              { en: "Have you ever eaten crocodile, rabbit, or snake? What did you think?", pt: "Você já comeu crocodilo, coelho ou cobra? O que achou?" },
-              { en: "What's the strangest food you've ever tried?", pt: "Qual foi a comida mais estranha que você já provou?" },
-              { en: "Do you like lamb? Where did you eat it for the first time?", pt: "Você gosta de carneiro? Onde você comeu pela primeira vez?" },
-              { en: "What's a food from another country you'd love to try?", pt: "Qual comida de outro país você adoraria provar?" },
-              { en: "What's your favorite dish from your family's culture?", pt: "Qual é o seu prato favorito da cultura da sua família?" },
-              { en: "Do you cook? What's your specialty?", pt: "Você cozinha? Qual é a sua especialidade?" },
-              { en: "What's a dish that reminds you of your childhood?", pt: "Qual prato te lembra da sua infância?" },
-              { en: "Would you rather eat at a fancy restaurant or a small local place?", pt: "Você preferiria comer num restaurante chique ou num lugar local simples?" },
+              {
+                en: "Have you ever eaten crocodile, rabbit, or snake? What did you think?",
+                pt: "Você já comeu crocodilo, coelho ou cobra? O que achou?",
+              },
+              {
+                en: "What's the strangest food you've ever tried?",
+                pt: "Qual foi a comida mais estranha que você já provou?",
+              },
+              {
+                en: "Do you like lamb? Where did you eat it for the first time?",
+                pt: "Você gosta de carneiro? Onde você comeu pela primeira vez?",
+              },
+              {
+                en: "What's a food from another country you'd love to try?",
+                pt: "Qual comida de outro país você adoraria provar?",
+              },
+              {
+                en: "What's your favorite dish from your family's culture?",
+                pt: "Qual é o seu prato favorito da cultura da sua família?",
+              },
+              {
+                en: "Do you cook? What's your specialty?",
+                pt: "Você cozinha? Qual é a sua especialidade?",
+              },
+              {
+                en: "What's a dish that reminds you of your childhood?",
+                pt: "Qual prato te lembra da sua infância?",
+              },
+              {
+                en: "Would you rather eat at a fancy restaurant or a small local place?",
+                pt: "Você preferiria comer num restaurante chique ou num lugar local simples?",
+              },
             ]}
           />
 
@@ -536,10 +636,11 @@ export default function LifeStoriesLesson() {
 
           <Explanation title="Por que essas expressões são poderosas">
             <p>
-              Falar de comida abre portas em qualquer conversa. <em>&quot;It tastes like chicken&quot;</em>{" "}
-              é uma piada clássica em inglês — usada quando se prova algo exótico. Já{" "}
-              <em>&quot;that hit the spot&quot;</em> é uma expressão que nativos usam sempre depois
-              de uma refeição satisfatória.
+              Falar de comida abre portas em qualquer conversa.{" "}
+              <em>&quot;It tastes like chicken&quot;</em> é uma piada clássica
+              em inglês — usada quando se prova algo exótico. Já{" "}
+              <em>&quot;that hit the spot&quot;</em> é uma expressão que nativos
+              usam sempre depois de uma refeição satisfatória.
             </p>
           </Explanation>
         </Section>
@@ -555,10 +656,13 @@ export default function LifeStoriesLesson() {
           imageAlt="Beer around the world"
         >
           <p className="text-slate-700 mb-4 italic">
-            Beer is culture. Germany, Belgium, Czech Republic, Australia, England, Brazil, Argentina — every country has its own.
+            Beer is culture. Germany, Belgium, Czech Republic, Australia,
+            England, Brazil, Argentina — every country has its own.
           </p>
 
-          <h3 className="text-lg font-bold text-blue-800 mb-3">💡 Idioms & Expressions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mb-3">
+            💡 Idioms &amp; Expressions
+          </h3>
 
           <Idiom
             en="I'm more into..."
@@ -597,17 +701,43 @@ export default function LifeStoriesLesson() {
             examplePt="Num dia quente, essa cerveja desce fácil."
           />
 
-          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">❓ Questions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">
+            ❓ Questions
+          </h3>
           <Questions
             items={[
-              { en: "What's the best beer you've ever had? Where was it?", pt: "Qual foi a melhor cerveja que você já tomou? Onde foi?" },
-              { en: "Do you prefer a cold beer on a hot day, or a beer with a good meal?", pt: "Você prefere uma cerveja gelada num dia quente, ou uma cerveja acompanhando uma boa refeição?" },
-              { en: "Have you ever tried a beer you absolutely hated?", pt: "Você já provou uma cerveja que odiou?" },
-              { en: "What makes a beer memorable for you — the taste, the place, or the people?", pt: "O que faz uma cerveja ser memorável — o sabor, o lugar ou as pessoas?" },
-              { en: "Do you think beer is part of a country's culture?", pt: "Você acha que a cerveja faz parte da cultura de um país?" },
-              { en: "Which country do you think has the best beer culture?", pt: "Qual país você acha que tem a melhor cultura de cerveja?" },
-              { en: "Do you have a favorite bar or pub?", pt: "Você tem um bar ou pub favorito?" },
-              { en: "What's the best story you have that involves beer?", pt: "Qual é a melhor história que você tem envolvendo cerveja?" },
+              {
+                en: "What's the best beer you've ever had? Where was it?",
+                pt: "Qual foi a melhor cerveja que você já tomou? Onde foi?",
+              },
+              {
+                en: "Do you prefer a cold beer on a hot day, or a beer with a good meal?",
+                pt: "Você prefere uma cerveja gelada num dia quente, ou uma cerveja acompanhando uma boa refeição?",
+              },
+              {
+                en: "Have you ever tried a beer you absolutely hated?",
+                pt: "Você já provou uma cerveja que odiou?",
+              },
+              {
+                en: "What makes a beer memorable for you — the taste, the place, or the people?",
+                pt: "O que faz uma cerveja ser memorável — o sabor, o lugar ou as pessoas?",
+              },
+              {
+                en: "Do you think beer is part of a country's culture?",
+                pt: "Você acha que a cerveja faz parte da cultura de um país?",
+              },
+              {
+                en: "Which country do you think has the best beer culture?",
+                pt: "Qual país você acha que tem a melhor cultura de cerveja?",
+              },
+              {
+                en: "Do you have a favorite bar or pub?",
+                pt: "Você tem um bar ou pub favorito?",
+              },
+              {
+                en: "What's the best story you have that involves beer?",
+                pt: "Qual é a melhor história que você tem envolvendo cerveja?",
+              },
             ]}
           />
 
@@ -633,10 +763,12 @@ export default function LifeStoriesLesson() {
 
           <Explanation title="Por que cerveja é um ótimo tópico">
             <p>
-              Cerveja permite falar de <em>culturas, viagens e memórias</em> ao mesmo tempo. Você
-              pode contar sobre uma cerveja que tomou na Alemanha, um pub na Inglaterra, ou uma
-              gelada no Brasil. <em>&quot;Let&apos;s grab a cold one&quot;</em> é uma das
-              expressões mais usadas por nativos quando convidam alguém pra beber.
+              Cerveja permite falar de <em>culturas, viagens e memórias</em> ao
+              mesmo tempo. Você pode contar sobre uma cerveja que tomou na
+              Alemanha, um pub na Inglaterra, ou uma gelada no Brasil.{" "}
+              <em>&quot;Let&apos;s grab a cold one&quot;</em> é uma das
+              expressões mais usadas por nativos quando convidam alguém pra
+              beber.
             </p>
           </Explanation>
         </Section>
@@ -652,10 +784,13 @@ export default function LifeStoriesLesson() {
           imageAlt="Travel the world"
         >
           <p className="text-slate-700 mb-4 italic">
-            Italy, Australia, Argentina, Chile, Paraguay, Spain, France… Every trip has a story. Let&apos;s tell yours.
+            Italy, Australia, Argentina, Chile, Paraguay, Spain, France… Every
+            trip has a story. Let&apos;s tell yours.
           </p>
 
-          <h3 className="text-lg font-bold text-blue-800 mb-3">💡 Idioms & Expressions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mb-3">
+            💡 Idioms &amp; Expressions
+          </h3>
 
           <Idiom
             en="Off the beaten path."
@@ -694,17 +829,43 @@ export default function LifeStoriesLesson() {
             examplePt="Quando cheguei na Austrália, o choque cultural foi real."
           />
 
-          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">❓ Questions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">
+            ❓ Questions
+          </h3>
           <Questions
             items={[
-              { en: "What's the most beautiful place you've ever visited? Why?", pt: "Qual foi o lugar mais bonito que você já visitou? Por quê?" },
-              { en: "What surprised you the most when you traveled abroad?", pt: "O que mais te surpreendeu quando você viajou para fora do Brasil?" },
-              { en: "If you could go back to one country, which one would you choose and why?", pt: "Se você pudesse voltar para um país, qual escolheria e por quê?" },
-              { en: "What was the funniest thing that happened during one of your trips?", pt: "Qual foi a coisa mais engraçada que aconteceu em uma das suas viagens?" },
-              { en: "How is traveling in South America different from traveling in Europe?", pt: "Como viajar na América do Sul é diferente de viajar na Europa?" },
-              { en: "What country would you love to visit that you haven't yet?", pt: "Qual país você adoraria visitar e ainda não foi?" },
-              { en: "Do you prefer traveling alone, with family, or with friends?", pt: "Você prefere viajar sozinho, com a família ou com amigos?" },
-              { en: "What do you always take with you when you travel?", pt: "O que você sempre leva quando viaja?" },
+              {
+                en: "What's the most beautiful place you've ever visited? Why?",
+                pt: "Qual foi o lugar mais bonito que você já visitou? Por quê?",
+              },
+              {
+                en: "What surprised you the most when you traveled abroad?",
+                pt: "O que mais te surpreendeu quando você viajou para fora do Brasil?",
+              },
+              {
+                en: "If you could go back to one country, which one would you choose and why?",
+                pt: "Se você pudesse voltar para um país, qual escolheria e por quê?",
+              },
+              {
+                en: "What was the funniest thing that happened during one of your trips?",
+                pt: "Qual foi a coisa mais engraçada que aconteceu em uma das suas viagens?",
+              },
+              {
+                en: "How is traveling in South America different from traveling in Europe?",
+                pt: "Como viajar na América do Sul é diferente de viajar na Europa?",
+              },
+              {
+                en: "What country would you love to visit that you haven't yet?",
+                pt: "Qual país você adoraria visitar e ainda não foi?",
+              },
+              {
+                en: "Do you prefer traveling alone, with family, or with friends?",
+                pt: "Você prefere viajar sozinho, com a família ou com amigos?",
+              },
+              {
+                en: "What do you always take with you when you travel?",
+                pt: "O que você sempre leva quando viaja?",
+              },
             ]}
           />
 
@@ -730,10 +891,11 @@ export default function LifeStoriesLesson() {
 
           <Explanation title="Dica de conversação">
             <p>
-              Quando falar de viagens, sempre conte <strong>uma história específica</strong> com
-              detalhes: onde estava, com quem, o que aconteceu, como você se sentiu. Isso treina
-              o <em>past simple</em> e o <em>present perfect</em> naturalmente — sem precisar
-              pensar em gramática.
+              Quando falar de viagens, sempre conte{" "}
+              <strong>uma história específica</strong> com detalhes: onde estava,
+              com quem, o que aconteceu, como você se sentiu. Isso treina o{" "}
+              <em>past simple</em> e o <em>present perfect</em> naturalmente —
+              sem precisar pensar em gramática.
             </p>
           </Explanation>
         </Section>
@@ -749,10 +911,13 @@ export default function LifeStoriesLesson() {
           imageAlt="Bolivia — family roots"
         >
           <p className="text-slate-700 mb-4 italic">
-            Our family history shapes who we are. Where does your family come from? What traditions did they bring?
+            Our family history shapes who we are. Where does your family come
+            from? What traditions did they bring?
           </p>
 
-          <h3 className="text-lg font-bold text-blue-800 mb-3">💡 Idioms & Expressions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mb-3">
+            💡 Idioms &amp; Expressions
+          </h3>
 
           <Idiom
             en="Where I come from..."
@@ -791,17 +956,43 @@ export default function LifeStoriesLesson() {
             examplePt="As pessoas dizem que puxei ao meu pai — mesma personalidade."
           />
 
-          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">❓ Questions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">
+            ❓ Questions
+          </h3>
           <Questions
             items={[
-              { en: "What do you know about your father's life in Bolivia?", pt: "O que você sabe sobre a vida do seu pai na Bolívia?" },
-              { en: "What did he tell you about Bolivia when you were growing up?", pt: "O que ele te contava sobre a Bolívia quando você era criança?" },
-              { en: "What traditions did he bring to your family?", pt: "Que tradições ele trouxe para a sua família?" },
-              { en: "Did growing up with a Bolivian father influence your identity?", pt: "Crescer com um pai boliviano influenciou a sua identidade?" },
-              { en: "Have you ever visited the place where your father was born?", pt: "Você já visitou o lugar onde seu pai nasceu?" },
-              { en: "What would you like to know about your father's childhood?", pt: "O que você gostaria de saber sobre a infância do seu pai?" },
-              { en: "What's a family story that you love to tell?", pt: "Qual história de família você ama contar?" },
-              { en: "What values did your family teach you that you still carry today?", pt: "Que valores a sua família te ensinou que você ainda carrega hoje?" },
+              {
+                en: "What do you know about your father's life in Bolivia?",
+                pt: "O que você sabe sobre a vida do seu pai na Bolívia?",
+              },
+              {
+                en: "What did he tell you about Bolivia when you were growing up?",
+                pt: "O que ele te contava sobre a Bolívia quando você era criança?",
+              },
+              {
+                en: "What traditions did he bring to your family?",
+                pt: "Que tradições ele trouxe para a sua família?",
+              },
+              {
+                en: "Did growing up with a Bolivian father influence your identity?",
+                pt: "Crescer com um pai boliviano influenciou a sua identidade?",
+              },
+              {
+                en: "Have you ever visited the place where your father was born?",
+                pt: "Você já visitou o lugar onde seu pai nasceu?",
+              },
+              {
+                en: "What would you like to know about your father's childhood?",
+                pt: "O que você gostaria de saber sobre a infância do seu pai?",
+              },
+              {
+                en: "What's a family story that you love to tell?",
+                pt: "Qual história de família você ama contar?",
+              },
+              {
+                en: "What values did your family teach you that you still carry today?",
+                pt: "Que valores a sua família te ensinou que você ainda carrega hoje?",
+              },
             ]}
           />
 
@@ -828,10 +1019,11 @@ export default function LifeStoriesLesson() {
           <Explanation title="Falar sobre raízes em inglês">
             <p>
               Expressões como <em>&quot;it runs in the family&quot;</em> e{" "}
-              <em>&quot;I take after my father&quot;</em> são muito usadas quando se fala de
-              família. Contar histórias de família em inglês é um exercício poderoso porque força
-              o uso de <em>past tense</em>, <em>present perfect</em> e vocabulário emocional ao
-              mesmo tempo.
+              <em>&quot;I take after my father&quot;</em> são muito usadas
+              quando se fala de família. Contar histórias de família em inglês
+              é um exercício poderoso porque força o uso de{" "}
+              <em>past tense</em>, <em>present perfect</em> e vocabulário
+              emocional ao mesmo tempo.
             </p>
           </Explanation>
         </Section>
@@ -845,10 +1037,14 @@ export default function LifeStoriesLesson() {
           subtitle="Trabalho — Painéis solares & escolhas de carreira"
         >
           <p className="text-slate-700 mb-4 italic">
-            Work is a big part of life. Solar panels are the future — renewable energy. Let&apos;s talk about your work and what you&apos;d do if you worked abroad.
+            Work is a big part of life. Solar panels are the future — renewable
+            energy. Let&apos;s talk about your work and what you&apos;d do if
+            you worked abroad.
           </p>
 
-          <h3 className="text-lg font-bold text-blue-800 mb-3">💡 Idioms & Expressions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mb-3">
+            💡 Idioms &amp; Expressions
+          </h3>
 
           <Idiom
             en="I make a living doing..."
@@ -887,17 +1083,43 @@ export default function LifeStoriesLesson() {
             examplePt="As pessoas não percebem que dá um bom dinheiro em instalação solar."
           />
 
-          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">❓ Questions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">
+            ❓ Questions
+          </h3>
           <Questions
             items={[
-              { en: "What do you like most about working with solar panels?", pt: "O que você mais gosta em trabalhar com painéis solares?" },
-              { en: "Why do you think solar energy is important for the future?", pt: "Por que você acha que a energia solar é importante para o futuro?" },
-              { en: "If you worked abroad, what country would you choose?", pt: "Se você trabalhasse fora do país, que país escolheria?" },
-              { en: "If you could choose any profession today, what would it be?", pt: "Se você pudesse escolher qualquer profissão hoje, qual seria?" },
-              { en: "What job do you think makes the most money in the world right now?", pt: "Qual profissão você acha que dá mais dinheiro no mundo hoje?" },
-              { en: "Would you rather work for a company or be your own boss?", pt: "Você preferiria trabalhar para uma empresa ou ser seu próprio patrão?" },
-              { en: "What was your first job? What did you learn from it?", pt: "Qual foi o seu primeiro trabalho? O que aprendeu com ele?" },
-              { en: "If you could go back in time, would you change your career?", pt: "Se você pudesse voltar no tempo, mudaria sua carreira?" },
+              {
+                en: "What do you like most about working with solar panels?",
+                pt: "O que você mais gosta em trabalhar com painéis solares?",
+              },
+              {
+                en: "Why do you think solar energy is important for the future?",
+                pt: "Por que você acha que a energia solar é importante para o futuro?",
+              },
+              {
+                en: "If you worked abroad, what country would you choose?",
+                pt: "Se você trabalhasse fora do país, que país escolheria?",
+              },
+              {
+                en: "If you could choose any profession today, what would it be?",
+                pt: "Se você pudesse escolher qualquer profissão hoje, qual seria?",
+              },
+              {
+                en: "What job do you think makes the most money in the world right now?",
+                pt: "Qual profissão você acha que dá mais dinheiro no mundo hoje?",
+              },
+              {
+                en: "Would you rather work for a company or be your own boss?",
+                pt: "Você preferiria trabalhar para uma empresa ou ser seu próprio patrão?",
+              },
+              {
+                en: "What was your first job? What did you learn from it?",
+                pt: "Qual foi o seu primeiro trabalho? O que aprendeu com ele?",
+              },
+              {
+                en: "If you could go back in time, would you change your career?",
+                pt: "Se você pudesse voltar no tempo, mudaria sua carreira?",
+              },
             ]}
           />
 
@@ -923,11 +1145,12 @@ export default function LifeStoriesLesson() {
 
           <Explanation title="Falar sobre trabalho em inglês">
             <p>
-              Falar de trabalho é essencial em qualquer conversa de adulto. Expressões como{" "}
-              <em>&quot;hands-on&quot;</em> e <em>&quot;there&apos;s good money in it&quot;</em>{" "}
-              são comuns em entrevistas e conversas informais. Já{" "}
-              <em>&quot;take a leap of faith&quot;</em> é usada quando alguém toma uma decisão
-              arriscada, como mudar de país ou de carreira.
+              Falar de trabalho é essencial em qualquer conversa de adulto.
+              Expressões como <em>&quot;hands-on&quot;</em> e{" "}
+              <em>&quot;there&apos;s good money in it&quot;</em> são comuns em
+              entrevistas e conversas informais. Já{" "}
+              <em>&quot;take a leap of faith&quot;</em> é usada quando alguém
+              toma uma decisão arriscada, como mudar de país ou de carreira.
             </p>
           </Explanation>
         </Section>
@@ -941,15 +1164,19 @@ export default function LifeStoriesLesson() {
           subtitle="Você preferiria...? — Escolhas divertidas"
         >
           <p className="text-slate-700 mb-4 italic">
-            <em>&quot;Would you rather...?&quot;</em> is a fantastic way to practice English. You choose one option, then you explain why.
+            <em>&quot;Would you rather...?&quot;</em> is a fantastic way to
+            practice English. You choose one option, then you explain why.
           </p>
 
-          <h3 className="text-lg font-bold text-blue-800 mb-3">🗳️ Choose one and explain your choice</h3>
+          <h3 className="text-lg font-bold text-blue-800 mb-3">
+            🗳️ Choose one and explain your choice
+          </h3>
 
           <div className="space-y-3">
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
               <p className="font-semibold text-slate-800">
-                🚗 Would you rather drive a classic Porsche or a brand-new Ferrari?
+                🚗 Would you rather drive a classic Porsche or a brand-new
+                Ferrari?
               </p>
               <p className="text-sm text-gray-500 italic">
                 Você preferiria dirigir um Porsche clássico ou uma Ferrari zero?
@@ -957,7 +1184,8 @@ export default function LifeStoriesLesson() {
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
               <p className="font-semibold text-slate-800">
-                ✈️ Would you rather spend a month in Australia or travel around Europe?
+                ✈️ Would you rather spend a month in Australia or travel around
+                Europe?
               </p>
               <p className="text-sm text-gray-500 italic">
                 Você preferiria passar um mês na Austrália ou viajar pela Europa?
@@ -965,38 +1193,49 @@ export default function LifeStoriesLesson() {
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
               <p className="font-semibold text-slate-800">
-                🍺 Would you rather drink one amazing beer or try ten different beers?
+                🍺 Would you rather drink one amazing beer or try ten different
+                beers?
               </p>
               <p className="text-sm text-gray-500 italic">
-                Você preferiria tomar uma cerveja incrível ou provar dez cervejas diferentes?
+                Você preferiria tomar uma cerveja incrível ou provar dez
+                cervejas diferentes?
               </p>
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
               <p className="font-semibold text-slate-800">
-                ⏳ Would you rather be 30 again with everything you know today, or stay your current age with perfect health?
+                ⏳ Would you rather be 30 again with everything you know today,
+                or stay your current age with perfect health?
               </p>
               <p className="text-sm text-gray-500 italic">
-                Você preferiria voltar aos 30 com tudo o que sabe hoje, ou ficar na sua idade atual com saúde perfeita?
+                Você preferiria voltar aos 30 com tudo o que sabe hoje, ou ficar
+                na sua idade atual com saúde perfeita?
               </p>
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
               <p className="font-semibold text-slate-800">
-                💰 Would you rather have R$10 million or travel anywhere in the world for free for the rest of your life?
+                💰 Would you rather have R$10 million or travel anywhere in the
+                world for free for the rest of your life?
               </p>
               <p className="text-sm text-gray-500 italic">
-                Você preferiria ter R$10 milhões ou viajar de graça pelo mundo pelo resto da vida?
+                Você preferiria ter R$10 milhões ou viajar de graça pelo mundo
+                pelo resto da vida?
               </p>
             </div>
           </div>
 
-          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">❓ Follow-up questions</h3>
+          <h3 className="text-lg font-bold text-blue-800 mt-6 mb-3">
+            ❓ Follow-up questions
+          </h3>
           <Questions
             items={[
               { en: "Why?", pt: "Por quê?" },
               { en: "What makes you say that?", pt: "O que te faz dizer isso?" },
               { en: "What would you do?", pt: "O que você faria?" },
               { en: "Tell me more.", pt: "Me conte mais." },
-              { en: "Have you ever experienced something like that?", pt: "Você já viveu algo parecido?" },
+              {
+                en: "Have you ever experienced something like that?",
+                pt: "Você já viveu algo parecido?",
+              },
             ]}
           />
 
@@ -1017,12 +1256,14 @@ export default function LifeStoriesLesson() {
 - Você já viveu algo parecido?`}
           </Translation>
 
-          <Explanation title="Por que &quot;Would you rather&quot; funciona tão bem">
+          <Explanation title='Por que "Would you rather" funciona tão bem'>
             <p>
-              Essa estrutura força o aluno a <strong>tomar uma decisão + justificar</strong>. É a
-              melhor forma de praticar inglês de forma natural, porque o aluno precisa usar{" "}
-              <em>condicional</em>, <em>comparações</em> e <em>opiniões pessoais</em> de uma vez.
-              Além disso, sempre gera conversa — porque você pode discordar e continuar discutindo.
+              Essa estrutura força o aluno a{" "}
+              <strong>tomar uma decisão + justificar</strong>. É a melhor forma
+              de praticar inglês de forma natural, porque o aluno precisa usar{" "}
+              <em>condicional</em>, <em>comparações</em> e{" "}
+              <em>opiniões pessoais</em> de uma vez. Além disso, sempre gera
+              conversa — porque você pode discordar e continuar discutindo.
             </p>
           </Explanation>
         </Section>
@@ -1030,21 +1271,20 @@ export default function LifeStoriesLesson() {
         {/* ================================================================ */}
         {/* SECTION 8 — TELL ME A STORY                                      */}
         {/* ================================================================ */}
-        <Section
-          num={8}
-          title="Tell Me a Story"
-          subtitle="Me conte uma história"
-        >
+        <Section num={8} title="Tell Me a Story" subtitle="Me conte uma história">
           <p className="text-slate-700 mb-4 italic">
-            To close every lesson, I&apos;ll ask you one question. The answer might become one of our best classes.
+            To close every lesson, I&apos;ll ask you one question. The answer
+            might become one of our best classes.
           </p>
 
           <div className="bg-gradient-to-r from-amber-100 to-amber-50 border-2 border-amber-300 rounded-2xl p-6 mb-4">
             <p className="text-xl md:text-2xl font-bold text-amber-800 mb-2">
-              🎤 &ldquo;Tell me one story from your life that you&apos;ve never told me before.&rdquo;
+              🎤 &ldquo;Tell me one story from your life that you&apos;ve never
+              told me before.&rdquo;
             </p>
             <p className="text-sm text-amber-700 italic">
-              &ldquo;Me conte uma história da sua vida que você nunca me contou antes.&rdquo;
+              &ldquo;Me conte uma história da sua vida que você nunca me contou
+              antes.&rdquo;
             </p>
           </div>
 
@@ -1052,9 +1292,15 @@ export default function LifeStoriesLesson() {
             While you tell your story, try to use:
           </p>
           <ul className="list-disc pl-6 text-slate-700 space-y-1">
-            <li>Past simple (<em>I went, I saw, I met</em>)</li>
-            <li>Present perfect (<em>I&apos;ve been, I&apos;ve never…</em>)</li>
-            <li>Descriptive adjectives (<em>amazing, weird, funny, unforgettable</em>)</li>
+            <li>
+              Past simple (<em>I went, I saw, I met</em>)
+            </li>
+            <li>
+              Present perfect (<em>I&apos;ve been, I&apos;ve never…</em>)
+            </li>
+            <li>
+              Descriptive adjectives (<em>amazing, weird, funny, unforgettable</em>)
+            </li>
             <li>Idioms you learned today</li>
           </ul>
 
@@ -1072,9 +1318,10 @@ Durante a história, tente usar:
           <Explanation title="Por que isso funciona">
             <p>
               Quando o aluno conta uma história pessoal, ele pratica inglês{" "}
-              <strong>por um motivo real</strong> — não por obrigação. Isso aumenta o engajamento
-              e faz com que o cérebro memorize o idioma junto com a emoção da história. É a forma
-              mais rápida de alcançar fluência natural.
+              <strong>por um motivo real</strong> — não por obrigação. Isso
+              aumenta o engajamento e faz com que o cérebro memorize o idioma
+              junto com a emoção da história. É a forma mais rápida de alcançar
+              fluência natural.
             </p>
           </Explanation>
         </Section>

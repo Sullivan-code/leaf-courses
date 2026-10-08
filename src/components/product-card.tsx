@@ -1,20 +1,31 @@
 "use client";
 
 import Stripe from "stripe";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   product: Stripe.Product;
 }
 
+// Links de pagamento da Stripe
+const STRIPE_NORMAL_LINK = "https://buy.stripe.com/8x2eVeadW6Qq86RcCBcQU01";
+const STRIPE_OFFSHORE_LINK = "https://buy.stripe.com/3cI4gA5XGgr0aeZ7ihcQU03";
+
 export const ProductCard = ({ product }: Props) => {
   const price = product.default_price as Stripe.Price;
 
   const handleBuyClick = () => {
-    window.location.href =
-      "https://buy.stripe.com/8x2eVeadW6Qq86RcCBcQU01";
+    // Verifica se o nome do produto contém "Offshore" ou "Off Shore"
+    const isOffshore = 
+      product.name.toLowerCase().includes("offshore") || 
+      product.name.toLowerCase().includes("off shore");
+      
+    // Define o link correto baseado no nome do produto
+    const link = isOffshore ? STRIPE_OFFSHORE_LINK : STRIPE_NORMAL_LINK;
+    
+    window.location.href = link;
   };
 
   return (

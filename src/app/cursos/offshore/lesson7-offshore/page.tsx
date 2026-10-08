@@ -4,6 +4,17 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Volume2, Eye, EyeOff } from "lucide-react";
 
+// ============================================================
+// 🖼️ IMAGEM ÚNICA DA LIÇÃO (GitHub Raw)
+// ------------------------------------------------------------
+// Essa MESMA imagem será usada como:
+//   → fundo da página
+//   → imagem principal do topo
+//   → imagem da gramática
+//   → as 3 imagens laterais da seção "Make it yours!"
+// ============================================================
+const LESSON_IMAGE = "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%208%20de%20out.%20de%202026%2C%2009_15_46.png";
+
 type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar';
 
 interface NoteModalState {
@@ -81,7 +92,48 @@ const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
   );
 };
 
-// Note Modal Component
+// ============================================
+// LIGHTBOX – ABRIR IMAGEM AMPLIADA
+// ============================================
+function ImageLightbox({
+  src,
+  alt,
+  isOpen,
+  onClose,
+}: {
+  src: string;
+  alt: string;
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  if (!isOpen) return null;
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+      onClick={onClose}
+      style={{ animation: 'fadeIn 0.3s ease-out' }}
+    >
+      <div className="relative max-w-5xl max-h-full p-4">
+        <img
+          src={src}
+          alt={alt}
+          className="max-w-full max-h-screen object-contain rounded-lg shadow-2xl"
+        />
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 transition-colors"
+          aria-label="Fechar imagem"
+        >
+          &times;
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// NOTE MODAL
+// ============================================
 function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
   isOpen: boolean;
   onClose: () => void;
@@ -135,7 +187,7 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
 }
 
 // ============================================
-// SUBSTITUTION EXERCISE COMPONENT WITH EYE + TRANSLATION TOGGLE
+// SUBSTITUTION EXERCISE COMPONENT
 // ============================================
 type OptionType = string | { label: string; replacement: string; pt?: string };
 
@@ -249,7 +301,7 @@ function SubstitutionOptions({
 }
 
 // ============================================
-// COMPONENTE PARA EXIBIR FRASE COM PALAVRAS DESTACADAS EM VERDE
+// FRASE COM PALAVRAS DESTACADAS EM VERDE
 // ============================================
 function HighlightedPhrase({ text, greenWords, translation }: { text: string; greenWords: string[]; translation: string }) {
   const words = text.split(/(\s+)/);
@@ -295,7 +347,6 @@ export default function Lesson7HSE() {
   const [substitutionState, setSubstitutionState] = useState<Record<string, number>>({});
 
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [isMainImageModalOpen, setIsMainImageModalOpen] = useState(false);
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills(prev => ({ ...prev, [section]: !prev[section] }));
@@ -324,12 +375,6 @@ export default function Lesson7HSE() {
       window.speechSynthesis.getVoices();
     }
   }, []);
-
-  const mainImage = "https://images.pexels.com/photos/2760249/pexels-photo-2760249.jpeg?auto=compress&cs=tinysrgb&w=800";
-  const grammarImage = "https://images.pexels.com/photos/3862132/pexels-photo-3862132.jpeg?auto=compress&cs=tinysrgb&w=800";
-  const readingImage = "https://images.pexels.com/photos/2760249/pexels-photo-2760249.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop";
-  const placesImage = "https://images.pexels.com/photos/3862132/pexels-photo-3862132.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop";
-  const digitalImage = "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop";
 
   // ---------- VERBS ----------
   const verbsSubstitution: SubstitutionExercise[] = [
@@ -711,7 +756,7 @@ export default function Lesson7HSE() {
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
       style={{
-        backgroundImage: `url("https://images.pexels.com/photos/2760249/pexels-photo-2760249.jpeg?auto=compress&cs=tinysrgb&w=1920&q=80")`,
+        backgroundImage: `url("${LESSON_IMAGE}")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -727,11 +772,12 @@ export default function Lesson7HSE() {
           </SpeakSentence>
           <div className="w-64 h-64 mx-auto">
             <img
-              src={mainImage}
-              alt="Safety helmet and equipment"
-              onClick={() => setIsMainImageModalOpen(true)}
-              className="w-full h-full object-cover rounded-2xl shadow-md cursor-pointer"
+              src={LESSON_IMAGE}
+              alt="Lesson 7 – HSE"
+              onClick={() => setIsImageModalOpen(true)}
+              className="w-full h-full object-cover rounded-2xl shadow-md cursor-pointer hover:shadow-2xl transition-shadow"
             />
+            <p className="text-center text-sm text-gray-500 mt-2">👆 Clique na imagem para ampliar</p>
           </div>
         </div>
 
@@ -910,7 +956,7 @@ export default function Lesson7HSE() {
 
             <div className="mb-6 cursor-pointer" onClick={() => setIsImageModalOpen(true)}>
               <img
-                src={grammarImage}
+                src={LESSON_IMAGE}
                 alt="Grammar illustration – Past Tense"
                 className="w-full h-auto object-contain rounded-2xl shadow-md hover:shadow-xl transition-shadow"
               />
@@ -991,20 +1037,29 @@ export default function Lesson7HSE() {
                 </div>
                 <div className="lg:w-1/3 flex flex-col gap-4">
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
-                    <div className="relative h-40 w-full">
-                      <img src={readingImage} alt="Safety equipment" className="rounded-xl object-cover w-full h-full" />
+                    <div
+                      className="relative h-40 w-full cursor-pointer"
+                      onClick={() => setIsImageModalOpen(true)}
+                    >
+                      <img src={LESSON_IMAGE} alt="Safety equipment" className="rounded-xl object-cover w-full h-full hover:opacity-90 transition-opacity" />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">Safety equipment and protection 🦺</p>
                   </div>
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
-                    <div className="relative h-40 w-full">
-                      <img src={placesImage} alt="Engineer with safety helmet" className="rounded-xl object-cover w-full h-full" />
+                    <div
+                      className="relative h-40 w-full cursor-pointer"
+                      onClick={() => setIsImageModalOpen(true)}
+                    >
+                      <img src={LESSON_IMAGE} alt="Engineer with safety helmet" className="rounded-xl object-cover w-full h-full hover:opacity-90 transition-opacity" />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">Safety first in every workplace 👷</p>
                   </div>
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
-                    <div className="relative h-40 w-full">
-                      <img src={digitalImage} alt="Workplace safety" className="rounded-xl object-cover w-full h-full" />
+                    <div
+                      className="relative h-40 w-full cursor-pointer"
+                      onClick={() => setIsImageModalOpen(true)}
+                    >
+                      <img src={LESSON_IMAGE} alt="Workplace safety" className="rounded-xl object-cover w-full h-full hover:opacity-90 transition-opacity" />
                     </div>
                     <p className="text-center mt-2 text-gray-700 italic">HSE in action 🛡️</p>
                   </div>
@@ -1079,49 +1134,13 @@ export default function Lesson7HSE() {
         </div>
       </div>
 
-      {/* ===== MODAL PARA AMPLIAR A IMAGEM DA GRAMMAR ===== */}
-      {isImageModalOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
-          onClick={() => setIsImageModalOpen(false)}
-        >
-          <div className="relative max-w-5xl max-h-full p-4">
-            <img
-              src={grammarImage}
-              alt="Grammar illustration – ampliada"
-              className="max-w-full max-h-screen object-contain rounded-lg shadow-2xl"
-            />
-            <button
-              onClick={() => setIsImageModalOpen(false)}
-              className="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 transition-colors"
-            >
-              &times;
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ===== MODAL PARA AMPLIAR A IMAGEM PRINCIPAL DA LIÇÃO ===== */}
-      {isMainImageModalOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
-          onClick={() => setIsMainImageModalOpen(false)}
-        >
-          <div className="relative max-w-5xl max-h-full p-4">
-            <img
-              src={mainImage}
-              alt="HSE – ampliada"
-              className="max-w-full max-h-screen object-contain rounded-lg shadow-2xl"
-            />
-            <button
-              onClick={() => setIsMainImageModalOpen(false)}
-              className="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 transition-colors"
-            >
-              &times;
-            </button>
-          </div>
-        </div>
-      )}
+      {/* ===== LIGHTBOX ÚNICO – ABRE A IMAGEM DA LIÇÃO ===== */}
+      <ImageLightbox
+        src={LESSON_IMAGE}
+        alt="Lesson 7 – HSE (ampliada)"
+        isOpen={isImageModalOpen}
+        onClose={() => setIsImageModalOpen(false)}
+      />
 
       <NoteModal
         isOpen={noteModal.isOpen}

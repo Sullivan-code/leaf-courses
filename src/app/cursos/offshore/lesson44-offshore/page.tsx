@@ -131,58 +131,58 @@ const lessonText = [
 ];
 
 // ============================================================
-// PERGUNTAS DE COMPREENSÃO
+// PERGUNTAS DE COMPREENSÃO (Respostas corrigidas e variadas)
 // ============================================================
 const questions = [
   {
     question: "1. What happened to the crane?",
     options: [
-      "A) It caught fire",
-      "B) It lost hydraulic pressure and stopped working",
-      "C) It fell into the sea",
-      "D) It was hit by a container",
+      "A) It lost hydraulic pressure and stopped working.", // Correct
+      "B) It caught fire and the operators had to evacuate the area.",
+      "C) It was hit by a falling container from the vessel.",
+      "D) It fell into the sea during a storm.",
     ],
-    answer: 1,
+    answer: 0, // Index 0 = Option A
   },
   {
     question: "2. Why did the operator stop the operation immediately?",
     options: [
-      "A) Because it was lunch time",
-      "B) Because the crane was carrying a heavy container and continuing could create a safety risk",
-      "C) Because the supervisor told him to",
-      "D) Because the vessel was leaving",
+      "A) Because the crane was making an unusual noise.",
+      "B) Because continuing to operate could create a serious safety risk.", // Correct
+      "C) Because it was the end of the working day.",
+      "D) Because the vessel was already behind schedule.",
     ],
-    answer: 1,
+    answer: 1, // Index 1 = Option B
   },
   {
     question: "3. What did the maintenance team discover after a detailed inspection?",
     options: [
-      "A) The crane was new",
-      "B) The component had been showing signs of wear for several weeks",
-      "C) The problem was caused by the weather",
-      "D) The crane was fine",
+      "A) The problem was caused by the bad weather.",
+      "B) The crane was completely new and had no issues.",
+      "C) The component had been showing signs of wear for several weeks.", // Correct
+      "D) The electrical system was fine, but the cables were broken.",
     ],
-    answer: 1,
+    answer: 2, // Index 2 = Option C
   },
   {
     question: "4. Why had the previous inspection been delayed?",
     options: [
-      "A) Because of a holiday",
-      "B) Because the crane had been operating under a heavy workload",
-      "C) Because the team was on strike",
-      "D) Because of budget cuts",
+      "A) Because the maintenance team was on strike.",
+      "B) Because the crane had been operating under a heavy workload.", // Correct
+      "C) Because there were no spare parts available.",
+      "D) Because the budget for maintenance was cut.",
     ],
-    answer: 1,
+    answer: 1, // Index 1 = Option B
   },
   {
     question: "5. What was the main lesson from the incident?",
     options: [
-      "A) Production is more important than safety",
-      "B) Safety cannot be sacrificed to save time",
-      "C) Maintenance is not necessary",
-      "D) Cranes are dangerous",
+      "A) Production is the most important thing in a port.",
+      "B) Cranes are dangerous and should be avoided.",
+      "C) Maintenance is not necessary if the equipment is new.",
+      "D) Safety cannot be sacrificed to save time.", // Correct
     ],
-    answer: 1,
+    answer: 3, // Index 3 = Option D
   },
 ];
 

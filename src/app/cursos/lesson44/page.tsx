@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Save, Check, XCircle, Speaker, Headphones } from "lucide-react";
+import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Save, Check, XCircle, Speaker, Headphones, Eye, EyeOff, ZoomIn } from "lucide-react";
 
 // ============================================
 // LESSON 44 – EATING OUT
@@ -23,111 +23,102 @@ const fluencyItems = [
   { key: "j", english: "Wendy loves this dessert.", expected: "That's her favorite dessert." },
 ];
 
-// Substitution Practice I (ALL IN ENGLISH NOW)
-const substitutionPracticeI = [
+// ============================================
+// SUBSTITUTION MODULE TYPES (from Lesson 61 style)
+// ============================================
+type OptionType = string | { label: string; replacement: string; pt?: string };
+
+interface SubstitutionExercise {
+  key: string;
+  original: string;
+  options: OptionType[];
+}
+
+// Substitution Practice I (button module)
+const substitutionPracticeI: SubstitutionExercise[] = [
   {
-    id: "sub1-1",
+    key: "sub1-1",
     original: "The children like to make popcorn.",
-    variations: ["desserts", "cakes"],
-    correctAnswers: [
-      "The children like to make desserts.",
-      "The children like to make cakes."
+    options: [
+      { label: "desserts", replacement: "The children like to make desserts.", pt: "As crianças gostam de fazer sobremesas." },
+      { label: "cakes", replacement: "The children like to make cakes.", pt: "As crianças gostam de fazer bolos." },
     ],
-    hint: "popcorn → desserts / cakes"
   },
   {
-    id: "sub1-2",
+    key: "sub1-2",
     original: "My grandmother makes a very good cake.",
-    variations: ["pizza", "sandwich"],
-    correctAnswers: [
-      "My grandmother makes a very good pizza.",
-      "My grandmother makes a very good sandwich."
+    options: [
+      { label: "pizza", replacement: "My grandmother makes a very good pizza.", pt: "Minha avó faz uma pizza muito boa." },
+      { label: "sandwich", replacement: "My grandmother makes a very good sandwich.", pt: "Minha avó faz um sanduíche muito bom." },
     ],
-    hint: "cake → pizza / sandwich"
   },
   {
-    id: "sub1-3",
+    key: "sub1-3",
     original: "It's cold. Do you want some soup?",
-    variations: ["coffee", "tea"],
-    correctAnswers: [
-      "It's cold. Do you want some coffee?",
-      "It's cold. Do you want some tea?"
+    options: [
+      { label: "coffee", replacement: "It's cold. Do you want some coffee?", pt: "Está frio. Você quer um pouco de café?" },
+      { label: "tea", replacement: "It's cold. Do you want some tea?", pt: "Está frio. Você quer um pouco de chá?" },
     ],
-    hint: "soup → coffee / tea"
   },
   {
-    id: "sub1-4",
+    key: "sub1-4",
     original: "It's hot. I want to buy some ice cream.",
-    variations: ["soda", "juice"],
-    correctAnswers: [
-      "It's hot. I want to buy some soda.",
-      "It's hot. I want to buy some juice."
+    options: [
+      { label: "soda", replacement: "It's hot. I want to buy some soda.", pt: "Está quente. Eu quero comprar um pouco de refrigerante." },
+      { label: "juice", replacement: "It's hot. I want to buy some juice.", pt: "Está quente. Eu quero comprar um pouco de suco." },
     ],
-    hint: "ice cream → soda / juice"
   },
   {
-    id: "sub1-5",
+    key: "sub1-5",
     original: "Do you give gifts to your wife?",
-    variations: ["your husband", "your children"],
-    correctAnswers: [
-      "Do you give gifts to your husband?",
-      "Do you give gifts to your children?"
+    options: [
+      { label: "your husband", replacement: "Do you give gifts to your husband?", pt: "Você dá presentes para o seu marido?" },
+      { label: "your children", replacement: "Do you give gifts to your children?", pt: "Você dá presentes para os seus filhos?" },
     ],
-    hint: "wife → husband / children"
   },
 ];
 
-// Substitution Practice II (ALL IN ENGLISH NOW)
-const substitutionPracticeII = [
+// Substitution Practice II (button module)
+const substitutionPracticeII: SubstitutionExercise[] = [
   {
-    id: "sub2-1",
+    key: "sub2-1",
     original: "What is your favorite dish?",
-    variations: ["his", "their"],
-    correctAnswers: [
-      "What is his favorite dish?",
-      "What is their favorite dish?"
+    options: [
+      { label: "his", replacement: "What is his favorite dish?", pt: "Qual é o prato favorito dele?" },
+      { label: "their", replacement: "What is their favorite dish?", pt: "Qual é o prato favorito deles?" },
     ],
-    hint: "your → his / their"
   },
   {
-    id: "sub2-2",
+    key: "sub2-2",
     original: "This is the best restaurant in the city.",
-    variations: ["cafeteria", "school"],
-    correctAnswers: [
-      "This is the best cafeteria in the city.",
-      "This is the best school in the city."
+    options: [
+      { label: "coffee shop", replacement: "This is the best coffee shop in the city.", pt: "Esta é a melhor cafeteria da cidade." },
+      { label: "school", replacement: "This is the best school in the city.", pt: "Esta é a melhor escola da cidade." },
     ],
-    hint: "restaurant → cafeteria / school"
   },
   {
-    id: "sub2-3",
+    key: "sub2-3",
     original: "Who is your best friend?",
-    variations: ["Where is he?", "How old is he?"],
-    correctAnswers: [
-      "Where is he?",
-      "How old is he?"
+    options: [
+      { label: "Where is he?", replacement: "Where is he?", pt: "Onde ele está?" },
+      { label: "How old is he?", replacement: "How old is he?", pt: "Quantos anos ele tem?" },
     ],
-    hint: "Who is → Where is / How old is"
   },
   {
-    id: "sub2-4",
+    key: "sub2-4",
     original: "I really like this dish.",
-    variations: ["hamburger", "ice cream"],
-    correctAnswers: [
-      "I really like this hamburger.",
-      "I really like this ice cream."
+    options: [
+      { label: "hamburger", replacement: "I really like this hamburger.", pt: "Eu realmente gosto deste hambúrguer." },
+      { label: "ice cream", replacement: "I really like this ice cream.", pt: "Eu realmente gosto deste sorvete." },
     ],
-    hint: "dish → hamburger / ice cream"
   },
   {
-    id: "sub2-5",
+    key: "sub2-5",
     original: "How many slices of pizza do you want?",
-    variations: ["pie", "cheese"],
-    correctAnswers: [
-      "How many slices of pie do you want?",
-      "How many slices of cheese do you want?"
+    options: [
+      { label: "pie", replacement: "How many slices of pie do you want?", pt: "Quantas fatias de torta você quer?" },
+      { label: "cheese", replacement: "How many slices of cheese do you want?", pt: "Quantas fatias de queijo você quer?" },
     ],
-    hint: "pizza → pie / cheese"
   },
 ];
 
@@ -161,6 +152,48 @@ const interrogativeExercises = [
   { id: "int6", sentence: "He knows how to make cakes.", correctAnswer: "Does he know how to make cakes?" },
 ];
 
+// ============================================
+// CHANGE INTO THE PAST EXERCISES (B1 LEVEL, EATING OUT)
+// ============================================
+const pastExercises = [
+  {
+    id: "past1",
+    sentence: "My mother makes a delicious chocolate cake for my birthday.",
+    pt: "Minha mãe faz um delicioso bolo de chocolate para o meu aniversário.",
+    correctAnswer: "My mother made a delicious chocolate cake for my birthday."
+  },
+  {
+    id: "past2",
+    sentence: "We give a nice tip to the waiter.",
+    pt: "Nós damos uma boa gorjeta ao garçom.",
+    correctAnswer: "We gave a nice tip to the waiter."
+  },
+  {
+    id: "past3",
+    sentence: "The chef makes a special sauce for the steak.",
+    pt: "O chef faz um molho especial para o bife.",
+    correctAnswer: "The chef made a special sauce for the steak."
+  },
+  {
+    id: "past4",
+    sentence: "I give my friend some Italian recipes.",
+    pt: "Eu dou ao meu amigo algumas receitas italianas.",
+    correctAnswer: "I gave my friend some Italian recipes."
+  },
+  {
+    id: "past5",
+    sentence: "They make homemade pizza on Friday nights.",
+    pt: "Eles fazem pizza caseira nas noites de sexta-feira.",
+    correctAnswer: "They made homemade pizza on Friday nights."
+  },
+  {
+    id: "past6",
+    sentence: "She gives her children some cookies after dinner.",
+    pt: "Ela dá alguns biscoitos aos filhos dela depois do jantar.",
+    correctAnswer: "She gave her children some cookies after dinner."
+  },
+];
+
 // Speaking Practice Questions
 const speakingQuestions = [
   "What is your favorite dish?",
@@ -177,31 +210,11 @@ const speakingQuestions = [
 
 // Tune In Your Ears - Video Questions
 const videoQuestions = [
-  {
-    id: "video1",
-    question: "How do you think you can put English in your routine?",
-    isPersonal: true,
-  },
-  {
-    id: "video2",
-    question: "Why is it good to study English every single day?",
-    isPersonal: false,
-  },
-  {
-    id: "video3",
-    question: "What's the most challenging thing in your opinion in English?",
-    isPersonal: true,
-  },
-  {
-    id: "video4",
-    question: "How do you try to think in English?",
-    isPersonal: true,
-  },
-  {
-    id: "video5",
-    question: "How do you make speaking happen automatically?",
-    isPersonal: true,
-  },
+  { id: "video1", question: "How do you think you can put English in your routine?", isPersonal: true },
+  { id: "video2", question: "Why is it good to study English every single day?", isPersonal: false },
+  { id: "video3", question: "What's the most challenging thing in your opinion in English?", isPersonal: true },
+  { id: "video4", question: "How do you try to think in English?", isPersonal: true },
+  { id: "video5", question: "How do you make speaking happen automatically?", isPersonal: true },
 ];
 
 // Vocabulary from video
@@ -225,6 +238,9 @@ const videoVocabulary = [
   { english: "To notice", portuguese: "Perceber, notar" },
 ];
 
+// Possessive pronouns image URL
+const possessiveImageUrl = "https://github.com/Sullivan-code/english-audios/blob/main/Infogr%C3%A1fico%20neon%20de%20pronomes%20possessivos%20no%20restaurante.png?raw=true";
+
 // ============================================
 // TEXT-TO-SPEECH FUNCTION - FEMININE VOICE
 // ============================================
@@ -235,7 +251,6 @@ const speakWithFemaleVoice = (text: string, rate: number = 0.9, pitch: number = 
     return;
   }
 
-  // Cancel any ongoing speech
   window.speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(text);
@@ -244,51 +259,179 @@ const speakWithFemaleVoice = (text: string, rate: number = 0.9, pitch: number = 
   utterance.pitch = pitch;
   utterance.volume = 1;
 
-  // Try to find a female voice
   const voices = window.speechSynthesis.getVoices();
-  
-  // List of female voice names (common across browsers)
+
   const femaleVoicePatterns = [
-    'Samantha',    // MacOS
-    'Google UK English Female', // Chrome
-    'Microsoft Zira', // Windows
-    'Microsoft Hazel', // Windows
-    'Victoria',    // Some systems
-    'Karen',       // Some systems
-    'Female',      // Generic
-    'Amy'          // Some systems
+    'Samantha',
+    'Google UK English Female',
+    'Microsoft Zira',
+    'Microsoft Hazel',
+    'Victoria',
+    'Karen',
+    'Female',
+    'Amy'
   ];
 
-  let selectedVoice = voices.find(voice => 
-    femaleVoicePatterns.some(pattern => 
+  let selectedVoice = voices.find(voice =>
+    femaleVoicePatterns.some(pattern =>
       voice.name.toLowerCase().includes(pattern.toLowerCase())
     )
   );
 
-  // If no female voice found, try to find any English voice
   if (!selectedVoice) {
-    selectedVoice = voices.find(voice => 
+    selectedVoice = voices.find(voice =>
       voice.lang.includes('en') && voice.lang.includes('US')
     );
   }
 
-  // If still no voice found, use the first available
   if (!selectedVoice && voices.length > 0) {
     selectedVoice = voices[0];
   }
 
   if (selectedVoice) {
     utterance.voice = selectedVoice;
-    console.log(`Using voice: ${selectedVoice.name} (${selectedVoice.lang})`);
   }
 
-  // Event to check if it's working
   utterance.onerror = (event) => {
     console.error('Speech error:', event);
   };
 
   window.speechSynthesis.speak(utterance);
 };
+
+// ============================================
+// SUBSTITUTION MODULE COMPONENT (Lesson 61 style)
+// ============================================
+function SubstitutionModule({
+  exercise,
+  currentIndex,
+  onOptionClick,
+  accentColor = "blue",
+}: {
+  exercise: SubstitutionExercise;
+  currentIndex: number;
+  onOptionClick: (key: string, index: number) => void;
+  accentColor?: "blue" | "teal";
+}) {
+  const [showEnglish, setShowEnglish] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const isObjectOption = (opt: OptionType): opt is { label: string; replacement: string; pt?: string } => {
+    return typeof opt === 'object' && opt !== null && 'label' in opt && 'replacement' in opt;
+  };
+
+  const currentOption = exercise.options[currentIndex];
+  let currentSentence: string;
+  let currentPt: string | undefined;
+  if (isObjectOption(currentOption)) {
+    currentSentence = currentOption.replacement;
+    currentPt = currentOption.pt;
+  } else {
+    currentSentence = String(currentOption);
+  }
+
+  const toggleVisibility = () => {
+    setShowEnglish(prev => !prev);
+  };
+
+  const getOptionLabel = (opt: OptionType): string => {
+    if (isObjectOption(opt)) return opt.label;
+    return String(opt);
+  };
+
+  const getOptionReplacement = (opt: OptionType): string => {
+    if (isObjectOption(opt)) return opt.replacement;
+    return String(opt);
+  };
+
+  const handleSpeak = (text: string) => {
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+    setIsSpeaking(true);
+    speakWithFemaleVoice(text, 0.9);
+    const check = setInterval(() => {
+      if (!window.speechSynthesis.speaking) {
+        setIsSpeaking(false);
+        clearInterval(check);
+      }
+    }, 100);
+  };
+
+  const accentText = accentColor === "blue" ? "text-blue-600" : "text-teal-600";
+  const accentBorder = accentColor === "blue" ? "border-blue-200" : "border-teal-200";
+  const accentBg = accentColor === "blue" ? "bg-blue-50" : "bg-teal-50";
+  const accentBgStrong = accentColor === "blue" ? "bg-blue-500" : "bg-teal-500";
+  const accentBgSoft = accentColor === "blue" ? "bg-blue-100" : "bg-teal-100";
+
+  return (
+    <div className={`bg-white p-4 rounded-lg border ${accentBorder}`}>
+      <div className="flex items-start justify-between mb-2">
+        <p className={`${accentText} font-medium block`}>{exercise.original}</p>
+        <button
+          onClick={toggleVisibility}
+          className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-700 ml-2 flex-shrink-0"
+          title={showEnglish ? "Hide English answer" : "Show English answer"}
+        >
+          {showEnglish ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
+
+      {showEnglish && (
+        <div className={`mb-3 p-3 ${accentBg} rounded-md`}>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-start gap-2">
+              <span className={`${accentText} font-medium flex-shrink-0`}>🇺🇸</span>
+              <button
+                onClick={() => handleSpeak(currentSentence)}
+                className={`${accentText} font-medium text-left hover:underline cursor-pointer flex-1`}
+                title="Click to hear"
+              >
+                {currentSentence}
+              </button>
+              <button
+                onClick={() => handleSpeak(currentSentence)}
+                className={`${isSpeaking ? 'text-red-500 animate-pulse' : 'text-blue-500'} flex-shrink-0`}
+              >
+                <Volume2 size={16} />
+              </button>
+            </div>
+            {currentPt && (
+              <>
+                <div className={`border-t ${accentBorder} my-1`}></div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-600 text-sm flex-shrink-0">🇧🇷</span>
+                  <p className="text-sm text-gray-600">{currentPt}</p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        {exercise.options.map((option, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              onOptionClick(exercise.key, index);
+              speakWithFemaleVoice(getOptionReplacement(option), 0.9);
+            }}
+            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+              currentIndex === index
+                ? `${accentBgStrong} text-white`
+                : `${accentBgSoft} text-gray-700 hover:bg-gray-300`
+            }`}
+          >
+            {getOptionLabel(option)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ============================================
 // COMPONENTS
@@ -343,7 +486,6 @@ const SpeakButton = ({ text, label = "🔊", compact = false, className = "" }: 
     setIsSpeaking(true);
     speakWithFemaleVoice(text);
 
-    // Reset speaking state after speech ends
     const checkSpeaking = setInterval(() => {
       if (!window.speechSynthesis.speaking) {
         setIsSpeaking(false);
@@ -352,7 +494,6 @@ const SpeakButton = ({ text, label = "🔊", compact = false, className = "" }: 
     }, 100);
   };
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       window.speechSynthesis.cancel();
@@ -388,47 +529,52 @@ const SpeakButton = ({ text, label = "🔊", compact = false, className = "" }: 
 
 export default function Lesson44() {
   const router = useRouter();
-  
-  // States for Fluency Practice
+
+  // State for the image modal (Transform the Sentences infographic)
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+
+  // States for Fluency Practice (Transform the Sentences)
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [showAnswers, setShowAnswers] = useState<Record<string, boolean>>({});
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
-  
-  // States for Substitution Practice I
-  const [substitutionIAnswers, setSubstitutionIAnswers] = useState<Record<string, string>>({});
-  const [showSubstitutionIResults, setShowSubstitutionIResults] = useState<Record<string, boolean>>({});
-  const [substitutionIAnswerResults, setSubstitutionIAnswerResults] = useState<Record<string, boolean>>({});
-  
-  // States for Substitution Practice II
-  const [substitutionIIAnswers, setSubstitutionIIAnswers] = useState<Record<string, string>>({});
-  const [showSubstitutionIIResults, setShowSubstitutionIIResults] = useState<Record<string, boolean>>({});
-  const [substitutionIIAnswerResults, setSubstitutionIIAnswerResults] = useState<Record<string, boolean>>({});
-  
+
+  // States for Substitution Practice I (button module)
+  const [substitutionICurrent, setSubstitutionICurrent] = useState<Record<string, number>>({});
+
+  // States for Substitution Practice II (button module)
+  const [substitutionIICurrent, setSubstitutionIICurrent] = useState<Record<string, number>>({});
+
   // States for Negative Exercises
   const [negativeAnswers, setNegativeAnswers] = useState<Record<string, string>>({});
   const [showNegativeResults, setShowNegativeResults] = useState<Record<string, boolean>>({});
   const [negativeAnswerResults, setNegativeAnswerResults] = useState<Record<string, boolean>>({});
-  
+
   // States for Affirmative Exercises
   const [affirmativeAnswers, setAffirmativeAnswers] = useState<Record<string, string>>({});
   const [showAffirmativeResults, setShowAffirmativeResults] = useState<Record<string, boolean>>({});
   const [affirmativeAnswerResults, setAffirmativeAnswerResults] = useState<Record<string, boolean>>({});
-  
+
   // States for Interrogative Exercises
   const [interrogativeAnswers, setInterrogativeAnswers] = useState<Record<string, string>>({});
   const [showInterrogativeResults, setShowInterrogativeResults] = useState<Record<string, boolean>>({});
   const [interrogativeAnswerResults, setInterrogativeAnswerResults] = useState<Record<string, boolean>>({});
-  
+
+  // States for PAST Exercises
+  const [pastAnswers, setPastAnswers] = useState<Record<string, string>>({});
+  const [showPastResults, setShowPastResults] = useState<Record<string, boolean>>({});
+  const [pastAnswerResults, setPastAnswerResults] = useState<Record<string, boolean>>({});
+
   // States for Speaking Questions
   const [questionAnswers, setQuestionAnswers] = useState<Record<string, string>>({});
-  
+
   // States for Tune In Your Ears
   const [videoAnswers, setVideoAnswers] = useState<Record<string, string>>({});
-  
+
   // States for section collapse/expand
   const [sections, setSections] = useState({
     fluency: true,
+    past: true,
     substitutionI: true,
     substitutionII: true,
     negative: true,
@@ -438,12 +584,9 @@ export default function Lesson44() {
     tuneIn: true
   });
 
-  // State for saved answers
   const [savedAnswers, setSavedAnswers] = useState<Record<string, any>>({});
 
-  // Load voices on component mount
   useEffect(() => {
-    // Preload voices
     if (window.speechSynthesis) {
       window.speechSynthesis.getVoices();
       window.speechSynthesis.onvoiceschanged = () => {
@@ -451,6 +594,21 @@ export default function Lesson44() {
       };
     }
   }, []);
+
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setImageModalOpen(false);
+    };
+    if (imageModalOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [imageModalOpen]);
 
   // ============================================
   // PERSISTENCE SYSTEM - LOAD
@@ -460,37 +618,36 @@ export default function Lesson44() {
     if (savedData) {
       try {
         const data = JSON.parse(savedData);
-        
+
         setNotes(data.notes || {});
         setShowAnswers(data.showAnswers || {});
         setAnswerResults(data.answerResults || {});
         setShowAnswerResults(data.showAnswerResults || {});
-        
-        if (data.substitutionIAnswers) setSubstitutionIAnswers(data.substitutionIAnswers);
-        if (data.showSubstitutionIResults) setShowSubstitutionIResults(data.showSubstitutionIResults);
-        if (data.substitutionIAnswerResults) setSubstitutionIAnswerResults(data.substitutionIAnswerResults);
-        
-        if (data.substitutionIIAnswers) setSubstitutionIIAnswers(data.substitutionIIAnswers);
-        if (data.showSubstitutionIIResults) setShowSubstitutionIIResults(data.showSubstitutionIIResults);
-        if (data.substitutionIIAnswerResults) setSubstitutionIIAnswerResults(data.substitutionIIAnswerResults);
-        
+
+        if (data.substitutionICurrent) setSubstitutionICurrent(data.substitutionICurrent);
+        if (data.substitutionIICurrent) setSubstitutionIICurrent(data.substitutionIICurrent);
+
         if (data.negativeAnswers) setNegativeAnswers(data.negativeAnswers);
         if (data.showNegativeResults) setShowNegativeResults(data.showNegativeResults);
         if (data.negativeAnswerResults) setNegativeAnswerResults(data.negativeAnswerResults);
-        
+
         if (data.affirmativeAnswers) setAffirmativeAnswers(data.affirmativeAnswers);
         if (data.showAffirmativeResults) setShowAffirmativeResults(data.showAffirmativeResults);
         if (data.affirmativeAnswerResults) setAffirmativeAnswerResults(data.affirmativeAnswerResults);
-        
+
         if (data.interrogativeAnswers) setInterrogativeAnswers(data.interrogativeAnswers);
         if (data.showInterrogativeResults) setShowInterrogativeResults(data.showInterrogativeResults);
         if (data.interrogativeAnswerResults) setInterrogativeAnswerResults(data.interrogativeAnswerResults);
-        
+
+        if (data.pastAnswers) setPastAnswers(data.pastAnswers);
+        if (data.showPastResults) setShowPastResults(data.showPastResults);
+        if (data.pastAnswerResults) setPastAnswerResults(data.pastAnswerResults);
+
         if (data.questionAnswers) setQuestionAnswers(data.questionAnswers);
         if (data.videoAnswers) setVideoAnswers(data.videoAnswers);
         if (data.sections) setSections(data.sections);
         if (data.savedAnswers) setSavedAnswers(data.savedAnswers);
-        
+
         console.log("Data loaded from localStorage for Lesson 44");
       } catch (error) {
         console.error("Error loading saved answers:", error);
@@ -507,12 +664,8 @@ export default function Lesson44() {
       showAnswers,
       answerResults,
       showAnswerResults,
-      substitutionIAnswers,
-      showSubstitutionIResults,
-      substitutionIAnswerResults,
-      substitutionIIAnswers,
-      showSubstitutionIIResults,
-      substitutionIIAnswerResults,
+      substitutionICurrent,
+      substitutionIICurrent,
       negativeAnswers,
       showNegativeResults,
       negativeAnswerResults,
@@ -522,25 +675,29 @@ export default function Lesson44() {
       interrogativeAnswers,
       showInterrogativeResults,
       interrogativeAnswerResults,
+      pastAnswers,
+      showPastResults,
+      pastAnswerResults,
       questionAnswers,
       videoAnswers,
       sections,
       savedAnswers: {
         fluency: notes,
-        substitutionPracticeI: substitutionIAnswers,
-        substitutionPracticeII: substitutionIIAnswers,
+        substitutionPracticeI: substitutionICurrent,
+        substitutionPracticeII: substitutionIICurrent,
         negativeExercises: negativeAnswers,
         affirmativeExercises: affirmativeAnswers,
         interrogativeExercises: interrogativeAnswers,
+        pastExercises: pastAnswers,
         speakingQuestions: questionAnswers,
         tuneInYourEars: videoAnswers,
         timestamp: new Date().toISOString()
       },
       lastUpdated: new Date().toISOString(),
       lessonName: "Lesson 44 – Eating Out",
-      version: "1.0"
+      version: "2.0"
     };
-    
+
     try {
       localStorage.setItem("lesson44Answers", JSON.stringify(data));
       setSavedAnswers(data.savedAnswers);
@@ -557,12 +714,8 @@ export default function Lesson44() {
       setShowAnswers({});
       setAnswerResults({});
       setShowAnswerResults({});
-      setSubstitutionIAnswers({});
-      setShowSubstitutionIResults({});
-      setSubstitutionIAnswerResults({});
-      setSubstitutionIIAnswers({});
-      setShowSubstitutionIIResults({});
-      setSubstitutionIIAnswerResults({});
+      setSubstitutionICurrent({});
+      setSubstitutionIICurrent({});
       setNegativeAnswers({});
       setShowNegativeResults({});
       setNegativeAnswerResults({});
@@ -572,6 +725,9 @@ export default function Lesson44() {
       setInterrogativeAnswers({});
       setShowInterrogativeResults({});
       setInterrogativeAnswerResults({});
+      setPastAnswers({});
+      setShowPastResults({});
+      setPastAnswerResults({});
       setQuestionAnswers({});
       setVideoAnswers({});
       localStorage.removeItem("lesson44Answers");
@@ -585,11 +741,12 @@ export default function Lesson44() {
       try {
         const data = JSON.parse(saved);
         if (data.notes) setNotes(data.notes);
-        if (data.substitutionIAnswers) setSubstitutionIAnswers(data.substitutionIAnswers);
-        if (data.substitutionIIAnswers) setSubstitutionIIAnswers(data.substitutionIIAnswers);
+        if (data.substitutionICurrent) setSubstitutionICurrent(data.substitutionICurrent);
+        if (data.substitutionIICurrent) setSubstitutionIICurrent(data.substitutionIICurrent);
         if (data.negativeAnswers) setNegativeAnswers(data.negativeAnswers);
         if (data.affirmativeAnswers) setAffirmativeAnswers(data.affirmativeAnswers);
         if (data.interrogativeAnswers) setInterrogativeAnswers(data.interrogativeAnswers);
+        if (data.pastAnswers) setPastAnswers(data.pastAnswers);
         if (data.questionAnswers) setQuestionAnswers(data.questionAnswers);
         if (data.videoAnswers) setVideoAnswers(data.videoAnswers);
         if (data.savedAnswers) setSavedAnswers(data.savedAnswers);
@@ -617,40 +774,12 @@ export default function Lesson44() {
     setShowAnswers(prev => ({ ...prev, [key]: true }));
   };
 
-  const handleSubstitutionIChange = (key: string, value: string) => {
-    setSubstitutionIAnswers(prev => ({ ...prev, [key]: value }));
+  const handleSubstitutionIOptionClick = (key: string, index: number) => {
+    setSubstitutionICurrent(prev => ({ ...prev, [key]: index }));
   };
 
-  const handleSubstitutionICheck = (id: string, correctAnswers: string[]) => {
-    let allCorrect = true;
-    const variations = substitutionPracticeI.find(ex => ex.id === id)?.variations || [];
-    variations.forEach((_, index) => {
-      const userAnswer = substitutionIAnswers[`${id}-${index}`]?.trim();
-      const correctAnswer = correctAnswers[index];
-      const isCorrect = checkAnswer(userAnswer || "", correctAnswer);
-      if (!isCorrect) allCorrect = false;
-      setSubstitutionIAnswerResults(prev => ({ ...prev, [`${id}-${index}`]: isCorrect }));
-    });
-    setShowSubstitutionIResults(prev => ({ ...prev, [id]: true }));
-    if (allCorrect) alert('✅ All answers are correct!');
-  };
-
-  const handleSubstitutionIIChange = (key: string, value: string) => {
-    setSubstitutionIIAnswers(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handleSubstitutionIICheck = (id: string, correctAnswers: string[]) => {
-    let allCorrect = true;
-    const variations = substitutionPracticeII.find(ex => ex.id === id)?.variations || [];
-    variations.forEach((_, index) => {
-      const userAnswer = substitutionIIAnswers[`${id}-${index}`]?.trim();
-      const correctAnswer = correctAnswers[index];
-      const isCorrect = checkAnswer(userAnswer || "", correctAnswer);
-      if (!isCorrect) allCorrect = false;
-      setSubstitutionIIAnswerResults(prev => ({ ...prev, [`${id}-${index}`]: isCorrect }));
-    });
-    setShowSubstitutionIIResults(prev => ({ ...prev, [id]: true }));
-    if (allCorrect) alert('✅ All answers are correct!');
+  const handleSubstitutionIIOptionClick = (key: string, index: number) => {
+    setSubstitutionIICurrent(prev => ({ ...prev, [key]: index }));
   };
 
   const handleNegativeChange = (key: string, value: string) => {
@@ -692,6 +821,19 @@ export default function Lesson44() {
     setShowInterrogativeResults(prev => ({ ...prev, [id]: true }));
   };
 
+  const handlePastChange = (key: string, value: string) => {
+    setPastAnswers(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handlePastCheck = (id: string) => {
+    const exercise = pastExercises.find(ex => ex.id === id);
+    if (!exercise) return;
+    const userAnswer = pastAnswers[id]?.trim();
+    const isCorrect = checkAnswer(userAnswer || "", exercise.correctAnswer);
+    setPastAnswerResults(prev => ({ ...prev, [id]: isCorrect }));
+    setShowPastResults(prev => ({ ...prev, [id]: true }));
+  };
+
   const handleQuestionChange = (index: number, value: string) => {
     setQuestionAnswers(prev => ({ ...prev, [`q${index}`]: value }));
   };
@@ -704,18 +846,25 @@ export default function Lesson44() {
     setSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  // Answer checking helper
   const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
-    const normalize = (text: string) => 
+    const normalize = (text: string) =>
       text.toLowerCase().trim().replace(/[.,?!]/g, '');
-    
     return normalize(userAnswer) === normalize(correctAnswer);
   };
 
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/lesson-bg.jpg')` }}>
+    <div
+      className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
+      style={{
+        backgroundImage: `url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
       <div className="max-w-7xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
-        
+
         {/* HEADER */}
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">📘 LESSON 44 – EATING OUT</h1>
@@ -737,12 +886,12 @@ export default function Lesson44() {
         </div>
 
         {/* ============================================ */}
-        {/* FLUENCY PRACTICE - ANSWER THIS ACTIVITY */}
+        {/* TRANSFORM THE SENTENCES */}
         {/* ============================================ */}
         <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-orange-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔊 ANSWER THIS ACTIVITY</h2>
+              <h2 className="text-2xl font-bold">✍️ TRANSFORM THE SENTENCES</h2>
               <button onClick={() => toggleSection('fluency')} className="ml-4 p-2 rounded-full hover:bg-orange-600 transition">
                 {sections.fluency ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
@@ -752,41 +901,26 @@ export default function Lesson44() {
           {sections.fluency && (
             <div className="p-8">
               <div className="mb-6 bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-orange-800 mb-4 text-center">
-                  ✍️ Transform the sentences using "That's my/your/his/her/our/their favorite..."
-                </h3>
-                
-                {/* EXAMPLES SECTION */}
-                <div className="mb-8 p-4 bg-white rounded-xl border-2 border-orange-200">
-                  <h4 className="text-lg font-bold text-orange-700 mb-3">📌 Examples:</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-4 p-3 bg-orange-50 rounded-lg">
-                      <span className="font-medium text-orange-800">1.</span>
-                      <span className="text-gray-700">They love that restaurant.</span>
-                      <span className="text-orange-500 font-bold">→</span>
-                      <span className="text-green-700 font-medium">That's their favorite restaurant.</span>
-                      <SpeakButton text="That's their favorite restaurant." compact />
-                    </div>
-                    <div className="flex items-center gap-4 p-3 bg-orange-50 rounded-lg">
-                      <span className="font-medium text-orange-800">2.</span>
-                      <span className="text-gray-700">We really like this book.</span>
-                      <span className="text-orange-500 font-bold">→</span>
-                      <span className="text-green-700 font-medium">That's our favorite book.</span>
-                      <SpeakButton text="That's our favorite book." compact />
-                    </div>
-                    <div className="flex items-center gap-4 p-3 bg-orange-50 rounded-lg">
-                      <span className="font-medium text-orange-800">3.</span>
-                      <span className="text-gray-700">She loves this dessert.</span>
-                      <span className="text-orange-500 font-bold">→</span>
-                      <span className="text-green-700 font-medium">That's her favorite dessert.</span>
-                      <SpeakButton text="That's her favorite dessert." compact />
-                    </div>
-                  </div>
-                  <p className="text-sm text-orange-600 mt-3 text-center">
-                    💡 Now it's your turn! Transform each sentence below following the same pattern.
-                  </p>
+                {/* CLICKABLE IMAGE: Possessive Pronouns Infographic */}
+                <div className="mb-8 flex justify-center">
+                  <button
+                    onClick={() => setImageModalOpen(true)}
+                    className="group relative w-full max-w-4xl focus:outline-none"
+                    aria-label="Open infographic in fullscreen"
+                    title="Click to enlarge the infographic"
+                  >
+                    <img
+                      src={possessiveImageUrl}
+                      alt="Infográfico de pronomes possessivos no restaurante"
+                      className="w-full h-auto rounded-xl shadow-md transition-transform duration-300 group-hover:scale-[1.02] group-hover:shadow-xl cursor-zoom-in"
+                    />
+                    <span className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ZoomIn size={14} />
+                      Click to zoom
+                    </span>
+                  </button>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {fluencyItems.map((item) => (
                     <div key={item.key} className="flex flex-col bg-white p-5 rounded-xl shadow-md border border-orange-200">
@@ -796,7 +930,7 @@ export default function Lesson44() {
                       </div>
                       <p className="text-orange-700 font-medium mb-2">📝 {item.english}</p>
                       <textarea
-                        placeholder={`Type your answer here... (e.g., ${item.expected})`}
+                        placeholder="Type your answer here..."
                         value={notes[item.key] || ""}
                         onChange={(e) => handleChange(item.key, e.target.value)}
                         className="w-full h-[80px] resize-none p-3 border border-orange-300 rounded-md text-sm focus:ring-2 focus:ring-orange-500"
@@ -822,7 +956,101 @@ export default function Lesson44() {
         </div>
 
         {/* ============================================ */}
-        {/* DRILLING PRACTICE - SUBSTITUTION I (ALL IN ENGLISH) */}
+        {/* CHANGE INTO THE PAST */}
+        {/* ============================================ */}
+        <div className="bg-amber-50 border-2 border-amber-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-amber-600 text-white py-4 px-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">⏪ CHANGE INTO THE PAST</h2>
+              <button onClick={() => toggleSection('past')} className="ml-4 p-2 rounded-full hover:bg-amber-700 transition">
+                {sections.past ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+              </button>
+            </div>
+          </div>
+
+          {sections.past && (
+            <div className="p-8">
+              <div className="bg-amber-100 border-2 border-amber-300 rounded-xl p-6">
+
+                <div className="mb-6 p-5 bg-white rounded-xl border-2 border-amber-200">
+                  <h3 className="text-lg font-bold text-amber-800 mb-3">
+                    📚 Review: The past forms of "to make" and "to give"
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                      <p className="font-bold text-amber-800 mb-2 flex items-center gap-2">
+                        <SpeakButton text="to make" compact label="🔊" />
+                        <span>to make → <span className="text-red-600">made</span></span>
+                      </p>
+                      <ul className="text-sm text-gray-700 space-y-1 ml-4 list-disc">
+                        <li>I <b>made</b> a cake.</li>
+                        <li>You <b>made</b> dinner.</li>
+                        <li>He / She <b>made</b> pizza.</li>
+                        <li>We / They <b>made</b> cookies.</li>
+                        <li className="text-red-700">Negative: I <b>didn't make</b> a cake.</li>
+                        <li className="text-purple-700">Question: <b>Did</b> you <b>make</b> a cake?</li>
+                      </ul>
+                    </div>
+                    <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                      <p className="font-bold text-amber-800 mb-2 flex items-center gap-2">
+                        <SpeakButton text="to give" compact label="🔊" />
+                        <span>to give → <span className="text-red-600">gave</span></span>
+                      </p>
+                      <ul className="text-sm text-gray-700 space-y-1 ml-4 list-disc">
+                        <li>I <b>gave</b> a tip.</li>
+                        <li>You <b>gave</b> a gift.</li>
+                        <li>He / She <b>gave</b> a present.</li>
+                        <li>We / They <b>gave</b> a souvenir.</li>
+                        <li className="text-red-700">Negative: I <b>didn't give</b> a tip.</li>
+                        <li className="text-purple-700">Question: <b>Did</b> you <b>give</b> a tip?</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <p className="text-sm text-amber-700 mt-4 text-center italic">
+                    💡 Now rewrite the sentences below in the <b>simple past</b>. Pay attention to the verb forms of "to make" and "to give".
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {pastExercises.map((exercise) => (
+                    <div key={exercise.id} className="bg-white p-4 rounded-lg border border-amber-200">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="font-medium text-amber-800">{exercise.sentence}</p>
+                            <SpeakButton text={exercise.sentence} compact />
+                          </div>
+                          {/* Portuguese translation below the English sentence */}
+                          <p className="text-sm text-gray-600 italic mb-2">🇧🇷 {exercise.pt}</p>
+                          <input
+                            type="text"
+                            value={pastAnswers[exercise.id] || ""}
+                            onChange={(e) => handlePastChange(exercise.id, e.target.value)}
+                            className="w-full p-2 border border-amber-300 rounded-md"
+                            placeholder="Write the sentence in the past..."
+                          />
+                          {pastAnswers[exercise.id]?.trim() && (
+                            <div className="mt-1">
+                              <SpeakButton text={pastAnswers[exercise.id]} label="🎤 Listen Answer" compact />
+                            </div>
+                          )}
+                          {showPastResults[exercise.id] && <div className="mt-2"><AnswerResult isCorrect={pastAnswerResults[exercise.id]} correctAnswer={exercise.correctAnswer} /></div>}
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <button onClick={() => handlePastCheck(exercise.id)} className="bg-amber-600 text-white py-2 px-4 rounded-md hover:bg-amber-700 transition">Check</button>
+                          <button onClick={() => { handlePastChange(exercise.id, ""); setShowPastResults(prev => ({ ...prev, [exercise.id]: false })); }} className="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition">Clear</button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ============================================ */}
+        {/* DRILLING PRACTICE - SUBSTITUTION I */}
         {/* ============================================ */}
         <div className="bg-blue-50 border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-blue-500 text-white py-4 px-8 flex items-center justify-between">
@@ -837,42 +1065,19 @@ export default function Lesson44() {
           {sections.substitutionI && (
             <div className="p-8">
               <div className="bg-blue-100 border-2 border-blue-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-blue-800 mb-2">Substitute the underlined words:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <h3 className="text-xl font-bold text-blue-800 mb-2">Click on the options to substitute the words:</h3>
+                <p className="text-sm text-blue-600 mb-4">
+                  👁️ Use the eye icon to hide/show the English answer. 🔊 Click to hear the pronunciation.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   {substitutionPracticeI.map((exercise) => (
-                    <div key={exercise.id} className="bg-white p-4 rounded-lg border border-blue-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="font-medium text-blue-700">{exercise.original}</p>
-                        <SpeakButton text={exercise.original} compact />
-                      </div>
-                      <div className="space-y-3">
-                        {exercise.variations.map((variation: string, index: number) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <span className="text-sm text-blue-600 w-28">{variation}:</span>
-                            <input 
-                              type="text" 
-                              value={substitutionIAnswers[`${exercise.id}-${index}`] || ""} 
-                              onChange={(e) => handleSubstitutionIChange(`${exercise.id}-${index}`, e.target.value)} 
-                              className="flex-1 p-2 border border-blue-300 rounded-md text-sm" 
-                              placeholder="Type the complete sentence" 
-                            />
-                            {substitutionIAnswers[`${exercise.id}-${index}`]?.trim() && (
-                              <SpeakButton text={substitutionIAnswers[`${exercise.id}-${index}`]} compact label="🔊" />
-                            )}
-                            {showSubstitutionIResults[exercise.id] && substitutionIAnswerResults[`${exercise.id}-${index}`] !== undefined && (
-                              <span className={`text-sm font-medium ${substitutionIAnswerResults[`${exercise.id}-${index}`] ? 'text-green-600' : 'text-red-600'}`}>
-                                {substitutionIAnswerResults[`${exercise.id}-${index}`] ? '✓' : '✗'}
-                              </span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex gap-2 mt-3 flex-wrap">
-                        <button onClick={() => handleSubstitutionICheck(exercise.id, exercise.correctAnswers)} className="bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600 transition text-sm">Check All</button>
-                        <button onClick={() => { exercise.variations.forEach((_, i) => handleSubstitutionIChange(`${exercise.id}-${i}`, "")); setShowSubstitutionIResults(prev => ({ ...prev, [exercise.id]: false })); }} className="bg-gray-200 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-300 transition text-sm">Clear All</button>
-                      </div>
-                      {showSubstitutionIResults[exercise.id] && <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-md"><p className="text-xs text-green-700">💡 Hint: {exercise.hint}</p></div>}
-                    </div>
+                    <SubstitutionModule
+                      key={exercise.key}
+                      exercise={exercise}
+                      currentIndex={substitutionICurrent[exercise.key] || 0}
+                      onOptionClick={handleSubstitutionIOptionClick}
+                      accentColor="blue"
+                    />
                   ))}
                 </div>
               </div>
@@ -881,7 +1086,7 @@ export default function Lesson44() {
         </div>
 
         {/* ============================================ */}
-        {/* DRILLING PRACTICE - SUBSTITUTION II (ALL IN ENGLISH) */}
+        {/* DRILLING PRACTICE - SUBSTITUTION II */}
         {/* ============================================ */}
         <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-teal-500 text-white py-4 px-8 flex items-center justify-between">
@@ -896,42 +1101,19 @@ export default function Lesson44() {
           {sections.substitutionII && (
             <div className="p-8">
               <div className="bg-teal-100 border-2 border-teal-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-teal-800 mb-2">Substitute the underlined words:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <h3 className="text-xl font-bold text-teal-800 mb-2">Click on the options to substitute the words:</h3>
+                <p className="text-sm text-teal-600 mb-4">
+                  👁️ Use the eye icon to hide/show the English answer. 🔊 Click to hear the pronunciation.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   {substitutionPracticeII.map((exercise) => (
-                    <div key={exercise.id} className="bg-white p-4 rounded-lg border border-teal-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="font-medium text-teal-700">{exercise.original}</p>
-                        <SpeakButton text={exercise.original} compact />
-                      </div>
-                      <div className="space-y-3">
-                        {exercise.variations.map((variation: string, index: number) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <span className="text-sm text-teal-600 w-32">{variation}:</span>
-                            <input 
-                              type="text" 
-                              value={substitutionIIAnswers[`${exercise.id}-${index}`] || ""} 
-                              onChange={(e) => handleSubstitutionIIChange(`${exercise.id}-${index}`, e.target.value)} 
-                              className="flex-1 p-2 border border-teal-300 rounded-md text-sm" 
-                              placeholder="Type the complete sentence" 
-                            />
-                            {substitutionIIAnswers[`${exercise.id}-${index}`]?.trim() && (
-                              <SpeakButton text={substitutionIIAnswers[`${exercise.id}-${index}`]} compact label="🔊" />
-                            )}
-                            {showSubstitutionIIResults[exercise.id] && substitutionIIAnswerResults[`${exercise.id}-${index}`] !== undefined && (
-                              <span className={`text-sm font-medium ${substitutionIIAnswerResults[`${exercise.id}-${index}`] ? 'text-green-600' : 'text-red-600'}`}>
-                                {substitutionIIAnswerResults[`${exercise.id}-${index}`] ? '✓' : '✗'}
-                              </span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex gap-2 mt-3 flex-wrap">
-                        <button onClick={() => handleSubstitutionIICheck(exercise.id, exercise.correctAnswers)} className="bg-teal-500 text-white py-1 px-3 rounded-md hover:bg-teal-600 transition text-sm">Check All</button>
-                        <button onClick={() => { exercise.variations.forEach((_, i) => handleSubstitutionIIChange(`${exercise.id}-${i}`, "")); setShowSubstitutionIIResults(prev => ({ ...prev, [exercise.id]: false })); }} className="bg-gray-200 text-gray-700 py-1 px-3 rounded-md hover:bg-gray-300 transition text-sm">Clear All</button>
-                      </div>
-                      {showSubstitutionIIResults[exercise.id] && <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-md"><p className="text-xs text-green-700">💡 Hint: {exercise.hint}</p></div>}
-                    </div>
+                    <SubstitutionModule
+                      key={exercise.key}
+                      exercise={exercise}
+                      currentIndex={substitutionIICurrent[exercise.key] || 0}
+                      onOptionClick={handleSubstitutionIIOptionClick}
+                      accentColor="teal"
+                    />
                   ))}
                 </div>
               </div>
@@ -964,12 +1146,12 @@ export default function Lesson44() {
                             <p className="font-medium text-red-700">{exercise.sentence}</p>
                             <SpeakButton text={exercise.sentence} compact />
                           </div>
-                          <input 
-                            type="text" 
-                            value={negativeAnswers[exercise.id] || ""} 
-                            onChange={(e) => handleNegativeChange(exercise.id, e.target.value)} 
-                            className="w-full p-2 border border-red-300 rounded-md" 
-                            placeholder="Write the negative form" 
+                          <input
+                            type="text"
+                            value={negativeAnswers[exercise.id] || ""}
+                            onChange={(e) => handleNegativeChange(exercise.id, e.target.value)}
+                            className="w-full p-2 border border-red-300 rounded-md"
+                            placeholder="Write the negative form"
                           />
                           {negativeAnswers[exercise.id]?.trim() && (
                             <div className="mt-1">
@@ -1016,12 +1198,12 @@ export default function Lesson44() {
                             <p className="font-medium text-green-700">{exercise.sentence}</p>
                             <SpeakButton text={exercise.sentence} compact />
                           </div>
-                          <input 
-                            type="text" 
-                            value={affirmativeAnswers[exercise.id] || ""} 
-                            onChange={(e) => handleAffirmativeChange(exercise.id, e.target.value)} 
-                            className="w-full p-2 border border-green-300 rounded-md" 
-                            placeholder="Write the affirmative form" 
+                          <input
+                            type="text"
+                            value={affirmativeAnswers[exercise.id] || ""}
+                            onChange={(e) => handleAffirmativeChange(exercise.id, e.target.value)}
+                            className="w-full p-2 border border-green-300 rounded-md"
+                            placeholder="Write the affirmative form"
                           />
                           {affirmativeAnswers[exercise.id]?.trim() && (
                             <div className="mt-1">
@@ -1068,12 +1250,12 @@ export default function Lesson44() {
                             <p className="font-medium text-purple-700">{exercise.sentence}</p>
                             <SpeakButton text={exercise.sentence} compact />
                           </div>
-                          <input 
-                            type="text" 
-                            value={interrogativeAnswers[exercise.id] || ""} 
-                            onChange={(e) => handleInterrogativeChange(exercise.id, e.target.value)} 
-                            className="w-full p-2 border border-purple-300 rounded-md" 
-                            placeholder="Write the question form" 
+                          <input
+                            type="text"
+                            value={interrogativeAnswers[exercise.id] || ""}
+                            onChange={(e) => handleInterrogativeChange(exercise.id, e.target.value)}
+                            className="w-full p-2 border border-purple-300 rounded-md"
+                            placeholder="Write the question form"
                           />
                           {interrogativeAnswers[exercise.id]?.trim() && (
                             <div className="mt-1">
@@ -1118,11 +1300,11 @@ export default function Lesson44() {
                         <p className="font-medium text-yellow-700">{question}</p>
                         <SpeakButton text={question} label="🔊 Listen Question" compact />
                       </div>
-                      <textarea 
-                        value={questionAnswers[`q${index}`] || ""} 
-                        onChange={(e) => handleQuestionChange(index, e.target.value)} 
-                        className="w-full h-24 p-3 border border-yellow-300 rounded-md resize-none" 
-                        placeholder="Write your answer here..." 
+                      <textarea
+                        value={questionAnswers[`q${index}`] || ""}
+                        onChange={(e) => handleQuestionChange(index, e.target.value)}
+                        className="w-full h-24 p-3 border border-yellow-300 rounded-md resize-none"
+                        placeholder="Write your answer here..."
                       />
                       <div className="flex gap-3 mt-3 flex-wrap">
                         {questionAnswers[`q${index}`] && (
@@ -1161,7 +1343,6 @@ export default function Lesson44() {
                 </div>
               </div>
 
-              {/* Vocabulary Section */}
               <div className="bg-white/70 backdrop-blur-md border border-indigo-200 rounded-2xl p-6 shadow-md">
                 <h3 className="text-xl font-bold text-indigo-800 mb-4">📖 Key Vocabulary from Video</h3>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -1176,7 +1357,6 @@ export default function Lesson44() {
                 </div>
               </div>
 
-              {/* Questions Section */}
               <div className="space-y-6">
                 {videoQuestions.map((question) => (
                   <div key={question.id} className="bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-indigo-200 shadow-sm hover:shadow-md transition">
@@ -1187,11 +1367,11 @@ export default function Lesson44() {
                       </h4>
                       <SpeakButton text={question.question} label="🔊 Listen" compact />
                     </div>
-                    <textarea 
-                      value={videoAnswers[question.id] || ""} 
-                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)} 
-                      placeholder="Write your answer..." 
-                      className="w-full h-24 p-3 border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none resize-none" 
+                    <textarea
+                      value={videoAnswers[question.id] || ""}
+                      onChange={(e) => handleVideoAnswerChange(question.id, e.target.value)}
+                      placeholder="Write your answer..."
+                      className="w-full h-24 p-3 border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none resize-none"
                     />
                     <div className="flex gap-3 mt-3 flex-wrap">
                       {videoAnswers[question.id]?.trim() && (
@@ -1223,6 +1403,39 @@ export default function Lesson44() {
           <button onClick={() => router.push("/cursos/lesson45")} className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">Next Lesson &rarr;</button>
         </div>
       </div>
+
+      {/* ============================================ */}
+      {/* IMAGE MODAL — Possessive Pronouns Infographic */}
+      {/* ============================================ */}
+      {imageModalOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+          style={{ animation: 'fadeIn 0.2s ease-out' }}
+          onClick={() => setImageModalOpen(false)}
+        >
+          <button
+            onClick={() => setImageModalOpen(false)}
+            className="absolute top-4 right-4 text-white bg-black/50 hover:bg-black/80 rounded-full p-3 transition z-10"
+            aria-label="Close image"
+            title="Close (Esc)"
+          >
+            <X size={24} />
+          </button>
+          <img
+            src={possessiveImageUrl}
+            alt="Infográfico de pronomes possessivos no restaurante"
+            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }

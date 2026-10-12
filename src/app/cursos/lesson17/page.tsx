@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Volume2 } from "lucide-react";
+import { Volume2, Eye, EyeOff } from "lucide-react";
 
 type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar';
 
@@ -22,40 +22,32 @@ interface SpeakTextProps {
   className?: string;
 }
 
+const speakEnglish = (text: string, rate = 0.9) => {
+  if (!text || typeof window === 'undefined') return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = rate;
+  utterance.pitch = 1.0;
+  const voices = window.speechSynthesis.getVoices();
+  const americanFemaleVoices = voices.filter(voice =>
+    (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+    (voice.name.toLowerCase().includes('samantha') ||
+     voice.name.toLowerCase().includes('google us english') ||
+     voice.name.toLowerCase().includes('siri') ||
+     voice.name.toLowerCase().includes('female') ||
+     voice.name === 'Google US English' ||
+     voice.name === 'Samantha')
+  );
+  const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+  if (americanFemaleVoices.length > 0) utterance.voice = americanFemaleVoices[0];
+  else if (americanVoices.length > 0) utterance.voice = americanVoices[0];
+  window.speechSynthesis.speak(utterance);
+};
+
 // Component for individual word pronunciation
 const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
-  const speak = () => {
-    if (!text || typeof window === 'undefined') return;
-    
-    window.speechSynthesis.cancel();
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    
-    const voices = window.speechSynthesis.getVoices();
-    
-    const americanFemaleVoices = voices.filter(voice => 
-      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
-      (voice.name.toLowerCase().includes('samantha') || 
-       voice.name.toLowerCase().includes('google us english') ||
-       voice.name.toLowerCase().includes('siri') ||
-       voice.name.toLowerCase().includes('female') ||
-       voice.name === 'Google US English' ||
-       voice.name === 'Samantha')
-    );
-    
-    const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
-    
-    if (americanFemaleVoices.length > 0) {
-      utterance.voice = americanFemaleVoices[0];
-    } else if (americanVoices.length > 0) {
-      utterance.voice = americanVoices[0];
-    }
-    
-    window.speechSynthesis.speak(utterance);
-  };
+  const speak = () => speakEnglish(text, 0.9);
 
   return (
     <button
@@ -75,32 +67,7 @@ const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
     <button
       onClick={() => {
         const speechText = children && typeof children === 'string' ? children : text;
-        if (speechText && typeof window !== 'undefined') {
-          window.speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(speechText);
-          utterance.lang = 'en-US';
-          utterance.rate = 0.85;
-          utterance.pitch = 1.0;
-          
-          const voices = window.speechSynthesis.getVoices();
-          
-          const americanFemaleVoices = voices.filter(voice => 
-            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
-            (voice.name.toLowerCase().includes('samantha') || 
-             voice.name.toLowerCase().includes('google us english') ||
-             voice.name === 'Google US English')
-          );
-          
-          const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
-          
-          if (americanFemaleVoices.length > 0) {
-            utterance.voice = americanFemaleVoices[0];
-          } else if (americanVoices.length > 0) {
-            utterance.voice = americanVoices[0];
-          }
-          
-          window.speechSynthesis.speak(utterance);
-        }
+        speakEnglish(speechText, 0.85);
       }}
       className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors text-left w-full ${className}`}
     >
@@ -109,6 +76,103 @@ const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
     </button>
   );
 };
+
+// ============================================
+// SUBSTITUTION EXERCISE COMPONENT
+// ============================================
+type OptionType = string | { label: string; replacement: string; pt?: string };
+
+interface SubstitutionExercise {
+  key: string;
+  original: string;
+  options: OptionType[];
+  currentIndex: number;
+}
+
+function SubstitutionOptions({
+  exercise,
+  onOptionClick,
+}: {
+  exercise: SubstitutionExercise;
+  onOptionClick: (key: string, index: number) => void;
+}) {
+  const [showEnglish, setShowEnglish] = useState(true);
+
+  const isObjectOption = (opt: OptionType): opt is { label: string; replacement: string; pt?: string } => {
+    return typeof opt === 'object' && opt !== null && 'label' in opt && 'replacement' in opt;
+  };
+
+  const currentOption = exercise.options[exercise.currentIndex];
+  let currentSentence: string;
+  let currentPt: string | undefined;
+  if (isObjectOption(currentOption)) {
+    currentSentence = currentOption.replacement;
+    currentPt = currentOption.pt;
+  } else {
+    currentSentence = String(currentOption);
+  }
+
+  const toggleVisibility = () => setShowEnglish(prev => !prev);
+
+  const getOptionLabel = (opt: OptionType): string => isObjectOption(opt) ? opt.label : String(opt);
+  const getOptionReplacement = (opt: OptionType): string => isObjectOption(opt) ? opt.replacement : String(opt);
+
+  return (
+    <div className="bg-white p-4 rounded-lg border border-purple-200">
+      <div className="flex items-start justify-between mb-2">
+        <p className="text-blue-600 font-medium block">{exercise.original}</p>
+        <button
+          onClick={toggleVisibility}
+          className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-700 ml-2 flex-shrink-0"
+          title={showEnglish ? "Ocultar resposta em inglês" : "Mostrar resposta em inglês"}
+        >
+          {showEnglish ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
+
+      {showEnglish && (
+        <div className="mb-3 p-3 bg-blue-50 rounded-md">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-start gap-2">
+              <span className="text-blue-700 font-medium flex-shrink-0">🇺🇸</span>
+              <SpeakSentence text={currentSentence} className="text-blue-700 font-medium">
+                {currentSentence}
+              </SpeakSentence>
+            </div>
+            {currentPt && (
+              <>
+                <div className="border-t border-blue-200 my-1"></div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-600 text-sm flex-shrink-0">🇧🇷</span>
+                  <p className="text-sm text-gray-600">{currentPt}</p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        {exercise.options.map((option, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              onOptionClick(exercise.key, index);
+              speakEnglish(getOptionReplacement(option), 0.9);
+            }}
+            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+              exercise.currentIndex === index
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {getOptionLabel(option)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // Note Modal Component
 function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
@@ -134,20 +198,16 @@ function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
           <h3 className="text-xl font-bold">📝 Anotações - {sectionTitle}</h3>
           <p className="text-sm text-blue-100 mt-1">Escreva suas observações, dúvidas ou traduções</p>
         </div>
-        
+
         <div className="p-6">
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Escreva aqui suas anotações...
-- Traduções importantes
-- Dúvidas para o professor
-- Exemplos pessoais
-- Dicas de memorização"
+            placeholder="Escreva aqui suas anotações..."
             className="w-full h-64 p-4 border border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none"
           />
         </div>
-        
+
         <div className="flex justify-end gap-3 p-6 pt-0">
           <button
             onClick={onClose}
@@ -187,7 +247,6 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
 function CheckItOutHorizontal() {
   return (
     <div className="w-full mx-auto border-2 border-gray-800 rounded-lg overflow-hidden shadow-lg">
-      {/* HEADER */}
       <div className="flex items-center justify-between px-6 py-3 bg-white border-b-2 border-gray-800">
         <h2 className="text-xl font-bold tracking-widest text-gray-900">
           CHECK IT OUT!
@@ -199,9 +258,7 @@ function CheckItOutHorizontal() {
         </div>
       </div>
 
-      {/* CONTENT */}
       <div className="grid grid-cols-1 md:grid-cols-2 text-sm">
-        {/* COLUMN 1 - Places */}
         <div className="bg-green-700 text-white p-6 space-y-3">
           <h3 className="font-bold text-yellow-300 mb-2">PLACES IN THE CITY</h3>
           <SpeakSentence text="at the bank" className="block cursor-pointer hover:opacity-70">
@@ -227,7 +284,6 @@ function CheckItOutHorizontal() {
           </SpeakSentence>
         </div>
 
-        {/* COLUMN 2 - Daily Routine */}
         <div className="bg-red-700 text-white p-6 space-y-3">
           <h3 className="font-bold text-yellow-300 mb-2">DAILY ROUTINE</h3>
           <SpeakSentence text="wake up early" className="block cursor-pointer hover:opacity-70">
@@ -265,14 +321,15 @@ export default function Lesson17PersonalInfoRoutine() {
     usefulPhrases: false,
     grammar: false,
   });
-  
+
   const [noteModal, setNoteModal] = useState<NoteModalState>({
     isOpen: false,
     sectionTitle: '',
     noteContent: '',
   });
-  
+
   const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
+  const [substitutionState, setSubstitutionState] = useState<Record<string, number>>({});
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills({
@@ -296,7 +353,12 @@ export default function Lesson17PersonalInfoRoutine() {
     }));
   };
 
-  // Initialize voices
+  const handleOptionClick = (key: string, index: number) => {
+    setSubstitutionState(prev => ({ ...prev, [key]: index }));
+  };
+
+  const getCurrentIndex = (key: string) => substitutionState[key] || 0;
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.speechSynthesis.getVoices();
@@ -357,7 +419,6 @@ export default function Lesson17PersonalInfoRoutine() {
     { english: "It opens at 8.", portuguese: "Ele (o estabelecimento) abre às 8." }
   ];
 
-  // Real Life Practice Sentences - EXPANDED
   const realLifeSentences = [
     { english: "I work at the hospital.", portuguese: "Eu trabalho no hospital." },
     { english: "She works at the bank.", portuguese: "Ela trabalha no banco." },
@@ -381,6 +442,344 @@ export default function Lesson17PersonalInfoRoutine() {
     { english: "I work remotely from home.", portuguese: "Eu trabalho remotamente de casa." }
   ];
 
+  // ========== VERBS SUBSTITUTION ==========
+  const verbsSubstitution: SubstitutionExercise[] = [
+    {
+      key: "verb-1",
+      original: "trabalhar / Eu trabalho. / Você trabalha. / Eles trabalham.",
+      options: [
+        { label: "trabalhar", replacement: "to work.", pt: "trabalhar" },
+        { label: "Eu trabalho", replacement: "I work.", pt: "Eu trabalho." },
+        { label: "Você trabalha", replacement: "You work.", pt: "Você trabalha." },
+        { label: "Eles trabalham", replacement: "They work.", pt: "Eles trabalham." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-2",
+      original: "Eles não trabalham aqui. / Nós / Eu.",
+      options: [
+        { label: "Eles", replacement: "They don't work here.", pt: "Eles não trabalham aqui." },
+        { label: "Nós", replacement: "We don't work here.", pt: "Nós não trabalhamos aqui." },
+        { label: "Eu", replacement: "I don't work here.", pt: "Eu não trabalho aqui." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-3",
+      original: "Você quer trabalhar aqui? / prefere / gosta.",
+      options: [
+        { label: "quer", replacement: "Do you want to work here?", pt: "Você quer trabalhar aqui?" },
+        { label: "prefere", replacement: "Do you prefer to work here?", pt: "Você prefere trabalhar aqui?" },
+        { label: "gosta", replacement: "Do you like to work here?", pt: "Você gosta de trabalhar aqui?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-4",
+      original: "dormir / Eu durmo. / Nós dormimos. / Elas dormem.",
+      options: [
+        { label: "dormir", replacement: "to sleep.", pt: "dormir" },
+        { label: "Eu durmo", replacement: "I sleep.", pt: "Eu durmo." },
+        { label: "Nós dormimos", replacement: "We sleep.", pt: "Nós dormimos." },
+        { label: "Elas dormem", replacement: "They sleep.", pt: "Elas dormem." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-5",
+      original: "Nós não dormimos à tarde. / Eles / Eu.",
+      options: [
+        { label: "Nós", replacement: "We don't sleep in the afternoon.", pt: "Nós não dormimos à tarde." },
+        { label: "Eles", replacement: "They don't sleep in the afternoon.", pt: "Eles não dormem à tarde." },
+        { label: "Eu", replacement: "I don't sleep in the afternoon.", pt: "Eu não durmo à tarde." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-6",
+      original: "Você gosta de dormir à tarde? / precisa / quer.",
+      options: [
+        { label: "gosta", replacement: "Do you like to sleep in the afternoon?", pt: "Você gosta de dormir à tarde?" },
+        { label: "precisa", replacement: "Do you need to sleep in the afternoon?", pt: "Você precisa dormir à tarde?" },
+        { label: "quer", replacement: "Do you want to sleep in the afternoon?", pt: "Você quer dormir à tarde?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-7",
+      original: "Do you work every day? / Vocês trabalham todos os dias? / Eles / Você.",
+      options: [
+        { label: "Do you", replacement: "Do you work every day?", pt: "Você trabalha todos os dias?" },
+        { label: "Do they", replacement: "Do they work every day?", pt: "Eles trabalham todos os dias?" },
+        { label: "Do we", replacement: "Do we work every day?", pt: "Nós trabalhamos todos os dias?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-8",
+      original: "Você quer trabalhar em casa? / Vocês / Elas.",
+      options: [
+        { label: "Você", replacement: "Do you want to work from home?", pt: "Você quer trabalhar em casa?" },
+        { label: "Vocês", replacement: "Do you all want to work from home?", pt: "Vocês querem trabalhar em casa?" },
+        { label: "Elas", replacement: "Do they want to work from home?", pt: "Elas querem trabalhar em casa?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-9",
+      original: "Onde você trabalha? / estuda / dorme.",
+      options: [
+        { label: "trabalha", replacement: "Where do you work?", pt: "Onde você trabalha?" },
+        { label: "estuda", replacement: "Where do you study?", pt: "Onde você estuda?" },
+        { label: "dorme", replacement: "Where do you sleep?", pt: "Onde você dorme?" },
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ========== VOCABULARY SUBSTITUTION ==========
+  const vocabSubstitution: SubstitutionExercise[] = [
+    {
+      key: "vocab-1",
+      original: "I sleep early every day. / Eu durmo cedo todos os dias. / Eles / Eu.",
+      options: [
+        { label: "I", replacement: "I sleep early every day.", pt: "Eu durmo cedo todos os dias." },
+        { label: "They", replacement: "They sleep early every day.", pt: "Eles dormem cedo todos os dias." },
+        { label: "We", replacement: "We sleep early every day.", pt: "Nós dormimos cedo todos os dias." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-2",
+      original: "Eu preciso ir ao shopping hoje. / hospital / banco.",
+      options: [
+        { label: "shopping", replacement: "I need to go to the mall today.", pt: "Eu preciso ir ao shopping hoje." },
+        { label: "hospital", replacement: "I need to go to the hospital today.", pt: "Eu preciso ir ao hospital hoje." },
+        { label: "banco", replacement: "I need to go to the bank today.", pt: "Eu preciso ir ao banco hoje." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-3",
+      original: "Você tem que ir à farmácia agora? / empresa / ao mercado.",
+      options: [
+        { label: "farmácia", replacement: "Do you have to go to the drugstore now?", pt: "Você tem que ir à farmácia agora?" },
+        { label: "empresa", replacement: "Do you have to go to the company now?", pt: "Você tem que ir à empresa agora?" },
+        { label: "mercado", replacement: "Do you have to go to the market now?", pt: "Você tem que ir ao mercado agora?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-4",
+      original: "Eles precisam ir ao posto de gasolina agora. / mercado / restaurante.",
+      options: [
+        { label: "posto", replacement: "They need to go to the gas station now.", pt: "Eles precisam ir ao posto de gasolina agora." },
+        { label: "mercado", replacement: "They need to go to the market now.", pt: "Eles precisam ir ao mercado agora." },
+        { label: "restaurante", replacement: "They need to go to the restaurant now.", pt: "Eles precisam ir ao restaurante agora." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-5",
+      original: "I usually go to the bank alone. / escritório / café.",
+      options: [
+        { label: "bank", replacement: "I usually go to the bank alone.", pt: "Eu geralmente vou ao banco sozinho." },
+        { label: "office", replacement: "I usually go to the office alone.", pt: "Eu geralmente vou ao escritório sozinho." },
+        { label: "coffee shop", replacement: "I usually go to the coffee shop alone.", pt: "Eu geralmente vou ao café sozinho." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-6",
+      original: "Nós geralmente falamos inglês em casa. / alemão / português.",
+      options: [
+        { label: "inglês", replacement: "We usually speak English at home.", pt: "Nós geralmente falamos inglês em casa." },
+        { label: "alemão", replacement: "We usually speak German at home.", pt: "Nós geralmente falamos alemão em casa." },
+        { label: "português", replacement: "We usually speak Portuguese at home.", pt: "Nós geralmente falamos português em casa." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-7",
+      original: "Você geralmente dorme à tarde? / trabalha / estuda.",
+      options: [
+        { label: "dorme", replacement: "Do you usually sleep in the afternoon?", pt: "Você geralmente dorme à tarde?" },
+        { label: "trabalha", replacement: "Do you usually work in the afternoon?", pt: "Você geralmente trabalha à tarde?" },
+        { label: "estuda", replacement: "Do you usually study in the afternoon?", pt: "Você geralmente estuda à tarde?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-8",
+      original: "I go to church in the morning. / à escola / ao trabalho.",
+      options: [
+        { label: "church", replacement: "I go to church in the morning.", pt: "Eu vou à igreja de manhã." },
+        { label: "school", replacement: "I go to school in the morning.", pt: "Eu vou à escola de manhã." },
+        { label: "work", replacement: "I go to work in the morning.", pt: "Eu vou ao trabalho de manhã." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-9",
+      original: "Você vai à igreja com sua família? / seus filhos / sua mãe.",
+      options: [
+        { label: "família", replacement: "Do you go to church with your family?", pt: "Você vai à igreja com sua família?" },
+        { label: "filhos", replacement: "Do you go to church with your children?", pt: "Você vai à igreja com seus filhos?" },
+        { label: "mãe", replacement: "Do you go to church with your mother?", pt: "Você vai à igreja com sua mãe?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-10",
+      original: "Eles vão para a escola de manhã? / igreja / trabalho.",
+      options: [
+        { label: "escola", replacement: "Do they go to school in the morning?", pt: "Eles vão para a escola de manhã?" },
+        { label: "igreja", replacement: "Do they go to church in the morning?", pt: "Eles vão à igreja de manhã?" },
+        { label: "trabalho", replacement: "Do they go to work in the morning?", pt: "Eles vão ao trabalho de manhã?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-11",
+      original: "I work, but I don't study. / Nós / Eles.",
+      options: [
+        { label: "I", replacement: "I work, but I don't study.", pt: "Eu trabalho, mas eu não estudo." },
+        { label: "We", replacement: "We work, but we don't study.", pt: "Nós trabalhamos, mas não estudamos." },
+        { label: "They", replacement: "They work, but they don't study.", pt: "Eles trabalham, mas não estudam." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-12",
+      original: "Eu gosto de panquecas, mas não gosto de mel. / manteiga / chocolate.",
+      options: [
+        { label: "mel", replacement: "I like pancakes, but I don't like honey.", pt: "Eu gosto de panquecas, mas não gosto de mel." },
+        { label: "manteiga", replacement: "I like pancakes, but I don't like butter.", pt: "Eu gosto de panquecas, mas não gosto de manteiga." },
+        { label: "chocolate", replacement: "I like pancakes, but I don't like chocolate.", pt: "Eu gosto de panquecas, mas não gosto de chocolate." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-13",
+      original: "Você tem um carro novo? / uma casa nova / um emprego novo.",
+      options: [
+        { label: "carro", replacement: "Do you have a new car?", pt: "Você tem um carro novo?" },
+        { label: "casa", replacement: "Do you have a new house?", pt: "Você tem uma casa nova?" },
+        { label: "emprego", replacement: "Do you have a new job?", pt: "Você tem um emprego novo?" },
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ========== USEFUL PHRASES SUBSTITUTION ==========
+  const phrasesSubstitution: SubstitutionExercise[] = [
+    {
+      key: "phrase-1",
+      original: "When do you go to the movies? / Quando você vai ao cinema? / escritório / empresa.",
+      options: [
+        { label: "movies", replacement: "When do you go to the movies?", pt: "Quando você vai ao cinema?" },
+        { label: "office", replacement: "When do you go to the office?", pt: "Quando você vai ao escritório?" },
+        { label: "company", replacement: "When do you go to the company?", pt: "Quando você vai à empresa?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-2",
+      original: "Quando você lê seus e-mails? / mensagens / livros.",
+      options: [
+        { label: "e-mails", replacement: "When do you read your e-mails?", pt: "Quando você lê seus e-mails?" },
+        { label: "mensagens", replacement: "When do you read your messages?", pt: "Quando você lê suas mensagens?" },
+        { label: "livros", replacement: "When do you read your books?", pt: "Quando você lê seus livros?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-3",
+      original: "Quando você quer ir para a Itália? / Alemanha / Canadá.",
+      options: [
+        { label: "Itália", replacement: "When do you want to go to Italy?", pt: "Quando você quer ir para a Itália?" },
+        { label: "Alemanha", replacement: "When do you want to go to Germany?", pt: "Quando você quer ir para a Alemanha?" },
+        { label: "Canadá", replacement: "When do you want to go to Canada?", pt: "Quando você quer ir para o Canadá?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-4",
+      original: "Quando você tem que ir ao hospital? / banco / farmácia.",
+      options: [
+        { label: "hospital", replacement: "When do you have to go to the hospital?", pt: "Quando você tem que ir ao hospital?" },
+        { label: "banco", replacement: "When do you have to go to the bank?", pt: "Quando você tem que ir ao banco?" },
+        { label: "farmácia", replacement: "When do you have to go to the drugstore?", pt: "Quando você tem que ir à farmácia?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-5",
+      original: "Eu tenho que ir à farmácia de manhã. / à tarde / à noite.",
+      options: [
+        { label: "de manhã", replacement: "I have to go to the drugstore in the morning.", pt: "Eu tenho que ir à farmácia de manhã." },
+        { label: "à tarde", replacement: "I have to go to the drugstore in the afternoon.", pt: "Eu tenho que ir à farmácia à tarde." },
+        { label: "à noite", replacement: "I have to go to the drugstore at night.", pt: "Eu tenho que ir à farmácia à noite." },
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ========== GRAMMAR SUBSTITUTION ==========
+  const grammarSubstitution: SubstitutionExercise[] = [
+    {
+      key: "grammar-1",
+      original: "I work at the hospital. / Eu trabalho no hospital. / escritório / mercado.",
+      options: [
+        { label: "hospital", replacement: "I work at the hospital.", pt: "Eu trabalho no hospital." },
+        { label: "escritório", replacement: "I work at the office.", pt: "Eu trabalho no escritório." },
+        { label: "mercado", replacement: "I work at the market.", pt: "Eu trabalho no mercado." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-2",
+      original: "Você trabalha no banco? / posto de gasolina / cinema.",
+      options: [
+        { label: "banco", replacement: "Do you work at the bank?", pt: "Você trabalha no banco?" },
+        { label: "posto", replacement: "Do you work at the gas station?", pt: "Você trabalha no posto de gasolina?" },
+        { label: "cinema", replacement: "Do you work at the movie theater?", pt: "Você trabalha no cinema?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-3",
+      original: "Eles trabalham no restaurante? / cafeteria / shopping.",
+      options: [
+        { label: "restaurante", replacement: "Do they work at the restaurant?", pt: "Eles trabalham no restaurante?" },
+        { label: "cafeteria", replacement: "Do they work at the coffee shop?", pt: "Eles trabalham na cafeteria?" },
+        { label: "shopping", replacement: "Do they work at the mall?", pt: "Eles trabalham no shopping?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-4",
+      original: "Você trabalha no hospital também? / no posto de gasolina / shopping.",
+      options: [
+        { label: "no hospital", replacement: "Do you also work at the hospital?", pt: "Você trabalha no hospital também?" },
+        { label: "no posto", replacement: "Do you also work at the gas station?", pt: "Você trabalha no posto de gasolina também?" },
+        { label: "no shopping", replacement: "Do you also work at the mall?", pt: "Você trabalha no shopping também?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-5",
+      original: "Elas não trabalham na escola. / na igreja / em casa.",
+      options: [
+        { label: "escola", replacement: "They don't work at the school.", pt: "Elas não trabalham na escola." },
+        { label: "igreja", replacement: "They don't work at the church.", pt: "Elas não trabalham na igreja." },
+        { label: "casa", replacement: "They don't work at home.", pt: "Elas não trabalham em casa." },
+      ],
+      currentIndex: 0,
+    },
+  ];
+
   return (
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
@@ -393,7 +792,7 @@ export default function Lesson17PersonalInfoRoutine() {
       }}
     >
       <div className="max-w-5xl mx-auto bg-[#f0f8ff] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
-        
+
         {/* Centered title with image below */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
@@ -419,14 +818,14 @@ export default function Lesson17PersonalInfoRoutine() {
               <h2 className="text-2xl font-bold">🔹 VERBS</h2>
               <PencilIcon onClick={() => openNoteModal('Verbs')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('verbs')}
               className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
+
           <div className="p-8">
             <SpeakSentence text="Click on the verbs to hear the pronunciation and practice their forms" className="text-md text-gray-600 mb-4 italic">
               🎧 Click on the verbs to hear the pronunciation and practice their forms
@@ -440,69 +839,16 @@ export default function Lesson17PersonalInfoRoutine() {
                 </li>
               ))}
             </ul>
-            
+
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    1. <SpeakText text="She works" className="text-blue-600 font-bold">She works</SpeakText> / <SpeakText text="He works" className="text-blue-600 font-bold">He works</SpeakText> / <SpeakText text="They work" className="text-blue-600 font-bold">They work</SpeakText> / <SpeakText text="We work" className="text-blue-600 font-bold">We work</SpeakText> / <SpeakText text="I work" className="text-blue-600 font-bold">I work</SpeakText> / <SpeakText text="You work" className="text-blue-600 font-bold">You work</SpeakText>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela trabalha / Ele trabalha / Eles trabalham / Nós trabalhamos / Eu trabalho / Você trabalha</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    2. <SpeakText text="She sleeps" className="text-blue-600 font-bold">She sleeps</SpeakText> / <SpeakText text="He sleeps" className="text-blue-600 font-bold">He sleeps</SpeakText> / <SpeakText text="They sleep" className="text-blue-600 font-bold">They sleep</SpeakText> / <SpeakText text="We sleep" className="text-blue-600 font-bold">We sleep</SpeakText> / <SpeakText text="I sleep" className="text-blue-600 font-bold">I sleep</SpeakText> / <SpeakText text="You sleep" className="text-blue-600 font-bold">You sleep</SpeakText>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela dorme / Ele dorme / Eles dormem / Nós dormimos / Eu durmo / Você dorme</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    3. <SpeakText text="Does she work at the office" className="text-blue-600 font-bold">Does she work at the office</SpeakText>? / <SpeakText text="Does he work at the bank" className="text-blue-600 font-bold">Does he work at the bank</SpeakText>? / <SpeakText text="Do you work from home" className="text-blue-600 font-bold">Do you work from home</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela trabalha no escritório? / Ele trabalha no banco? / Você trabalha em casa?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    4. <SpeakText text="Does she sleep early" className="text-blue-600 font-bold">Does she sleep early</SpeakText>? / <SpeakText text="Does he sleep late" className="text-blue-600 font-bold">Does he sleep late</SpeakText>? / <SpeakText text="Do you sleep well" className="text-blue-600 font-bold">Do you sleep well</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela dorme cedo? / Ele dorme tarde? / Você dorme bem?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    5. <SpeakText text="Where does he work" className="text-blue-600 font-bold">Where does he work</SpeakText>? / <SpeakText text="Where does she work" className="text-blue-600 font-bold">Where does she work</SpeakText>? / <SpeakText text="Where do you work" className="text-blue-600 font-bold">Where do you work</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Onde ele trabalha? / Onde ela trabalha? / Onde você trabalha?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    6. <SpeakText text="I work every day" className="text-blue-600 font-bold">I work every day</SpeakText>. / <SpeakText text="She works from Monday to Friday" className="text-blue-600 font-bold">She works from Monday to Friday</SpeakText>. / <SpeakText text="They work only in the morning" className="text-blue-600 font-bold">They work only in the morning</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu trabalho todos os dias / Ela trabalha de segunda a sexta / Eles trabalham apenas pela manhã</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    7. <SpeakText text="We sleep eight hours a night" className="text-blue-600 font-bold">We sleep eight hours a night</SpeakText>. / <SpeakText text="She sleeps six hours" className="text-blue-600 font-bold">She sleeps six hours</SpeakText>. / <SpeakText text="He sleeps a little" className="text-blue-600 font-bold">He sleeps a little</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Nós dormimos oito horas por noite / Ela dorme seis horas / Ele dorme pouco</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    8. <SpeakText text="Do you work on weekends" className="text-blue-600 font-bold">Do you work on weekends</SpeakText>? / <SpeakText text="Do they work on holidays" className="text-blue-600 font-bold">Do they work on holidays</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Você trabalha aos finais de semana? / Eles trabalham em feriados?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    9. <SpeakText text="I don't work on Sundays" className="text-blue-600 font-bold">I don't work on Sundays</SpeakText>. / <SpeakText text="She doesn't sleep during the day" className="text-blue-600 font-bold">She doesn't sleep during the day</SpeakText>. / <SpeakText text="They don't work at night" className="text-blue-600 font-bold">They don't work at night</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu não trabalho aos domingos / Ela não dorme durante o dia / Eles não trabalham à noite</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    10. <SpeakText text="Does she work as a doctor" className="text-blue-600 font-bold">Does she work as a doctor</SpeakText>? / <SpeakText text="Does he work as a teacher" className="text-blue-600 font-bold">Does he work as a teacher</SpeakText>? / <SpeakText text="Do you work as an engineer" className="text-blue-600 font-bold">Do you work as an engineer</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela trabalha como médica? / Ele trabalha como professor? / Você trabalha como engenheiro?</p>
-                </div>
+                {verbsSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -515,14 +861,14 @@ export default function Lesson17PersonalInfoRoutine() {
               <h2 className="text-2xl font-bold">🔹 NEW WORDS</h2>
               <PencilIcon onClick={() => openNoteModal('New Words')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('vocabulary')}
               className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.vocabulary ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
+
           <div className="p-8">
             <SpeakSentence text="Click on each word to hear its correct pronunciation" className="text-md text-gray-600 mb-4 italic">
               🎧 Click on each word to hear its correct pronunciation
@@ -537,7 +883,7 @@ export default function Lesson17PersonalInfoRoutine() {
                 </div>
               ))}
             </div>
-            
+
             <div className="bg-blue-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
               <p>
                 <SpeakSentence text="I work at a company." className="text-blue-600 font-bold">
@@ -565,57 +911,16 @@ export default function Lesson17PersonalInfoRoutine() {
                 </SpeakSentence> = Eu normalmente acordo cedo.
               </p>
             </div>
-            
+
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Where do you work" className="text-blue-600 font-bold">Where do you work</SpeakText>? / <SpeakText text="Where does she work" className="text-blue-600 font-bold">Where does she work</SpeakText>? / <SpeakText text="Where does he work" className="text-blue-600 font-bold">Where does he work</SpeakText>? / <SpeakText text="Where do they work" className="text-blue-600 font-bold">Where do they work</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Onde você trabalha? / Onde ela trabalha? / Onde ele trabalha? / Onde eles trabalham?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Does she usually wake up early" className="text-blue-600 font-bold">Does she usually wake up early</SpeakText>? / <SpeakText text="Does he usually wake up early" className="text-blue-600 font-bold">Does he usually wake up early</SpeakText>? / <SpeakText text="Do you usually wake up early" className="text-blue-600 font-bold">Do you usually wake up early</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela normalmente acorda cedo? / Ele normalmente acorda cedo? / Você normalmente acorda cedo?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="I work at the hospital" className="text-blue-600 font-bold">I work at the hospital</SpeakText>. / <SpeakText text="I work at the bank" className="text-blue-600 font-bold">at the bank</SpeakText>. / <SpeakText text="I work at the company" className="text-blue-600 font-bold">at the company</SpeakText>. / <SpeakText text="I work at the office" className="text-blue-600 font-bold">at the office</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu trabalho no hospital / no banco / na empresa / no escritório</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="She goes to church on Sundays" className="text-blue-600 font-bold">She goes to church on Sundays</SpeakText>. / <SpeakText text="She goes to the bank" className="text-blue-600 font-bold">to the bank</SpeakText>. / <SpeakText text="She goes to the grocery store" className="text-blue-600 font-bold">to the grocery store</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela vai à igreja aos domingos / ao banco / ao supermercado</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="He needs to go to the drugstore" className="text-blue-600 font-bold">He needs to go to the drugstore</SpeakText>. / <SpeakText text="to the gas station" className="text-blue-600 font-bold">to the gas station</SpeakText>. / <SpeakText text="to the hospital" className="text-blue-600 font-bold">to the hospital</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ele precisa ir à farmácia / ao posto de gasolina / ao hospital</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="I have a new job" className="text-blue-600 font-bold">I have a new job</SpeakText>. / <SpeakText text="I have a good job" className="text-blue-600 font-bold">a good job</SpeakText>. / <SpeakText text="I have a part-time job" className="text-blue-600 font-bold">a part-time job</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu tenho um novo emprego / um bom emprego / um emprego em tempo parcial</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="She wakes up early" className="text-blue-600 font-bold">She wakes up early</SpeakText>. / <SpeakText text="She gets up early" className="text-blue-600 font-bold">She gets up early</SpeakText>. / <SpeakText text="She goes to bed late" className="text-blue-600 font-bold">She goes to bed late</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela acorda cedo / levanta cedo / vai dormir tarde</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="He arrives late to work" className="text-blue-600 font-bold">He arrives late to work</SpeakText>. / <SpeakText text="to school" className="text-blue-600 font-bold">to school</SpeakText>. / <SpeakText text="to class" className="text-blue-600 font-bold">to class</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ele chega tarde ao trabalho / à escola / à aula</p>
-                </div>
+                {vocabSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -628,14 +933,14 @@ export default function Lesson17PersonalInfoRoutine() {
               <h2 className="text-2xl font-bold">🔹 Speak Like a Native</h2>
               <PencilIcon onClick={() => openNoteModal('Useful Phrases')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('usefulPhrases')}
               className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.usefulPhrases ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
+
           <div className="p-8">
             <SpeakSentence text="Practice common phrases to talk about daily routines" className="text-md text-gray-600 mb-4 italic">
               💬 Practice common phrases to talk about daily routines
@@ -650,63 +955,16 @@ export default function Lesson17PersonalInfoRoutine() {
                 </div>
               ))}
             </div>
-            
+
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Do you get up early every day" className="text-blue-600 font-bold">Do you get up early every day</SpeakText>? / <SpeakText text="Does she get up early every day" className="text-blue-600 font-bold">Does she</SpeakText>? / <SpeakText text="Does he get up early every day" className="text-blue-600 font-bold">Does he</SpeakText>? / <SpeakText text="Do they get up early every day" className="text-blue-600 font-bold">Do they</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Você acorda cedo todo dia? / Ela acorda cedo todo dia? / Ele acorda cedo todo dia? / Eles acordam cedo todo dia?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Does she go to bed late" className="text-blue-600 font-bold">Does she go to bed late</SpeakText>? / <SpeakText text="Does he go to bed late" className="text-blue-600 font-bold">Does he</SpeakText>? / <SpeakText text="Do they go to bed late" className="text-blue-600 font-bold">Do they</SpeakText>? / <SpeakText text="Do you go to bed late" className="text-blue-600 font-bold">Do you</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela vai dormir tarde? / Ele vai dormir tarde? / Eles vão dormir tarde? / Você vai dormir tarde?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    When <SpeakText text="do you take a shower" className="text-blue-600 font-bold">do you take a shower</SpeakText>? / <SpeakText text="does she take a shower" className="text-blue-600 font-bold">does she</SpeakText>? / <SpeakText text="does he take a shower" className="text-blue-600 font-bold">does he</SpeakText>? / <SpeakText text="do they take a shower" className="text-blue-600 font-bold">do they</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Quando você toma banho? / ela toma banho? / ele toma banho? / eles tomam banho?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    I need to <SpeakText text="go to work" className="text-blue-600 font-bold">go to work</SpeakText> / <SpeakText text="go to school" className="text-blue-600 font-bold">go to school</SpeakText> / <SpeakText text="go to the bank" className="text-blue-600 font-bold">go to the bank</SpeakText> / <SpeakText text="go to the grocery store" className="text-blue-600 font-bold">go to the grocery store</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eu preciso ir trabalhar / à escola / ao banco / ao supermercado</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    She <SpeakText text="wakes up at 6 AM" className="text-blue-600 font-bold">wakes up at 6 AM</SpeakText> / <SpeakText text="at 7 AM" className="text-blue-600 font-bold">at 7 AM</SpeakText> / <SpeakText text="at 8 AM" className="text-blue-600 font-bold">at 8 AM</SpeakText> / <SpeakText text="at noon" className="text-blue-600 font-bold">at noon</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela acorda às 6 da manhã / às 7 da manhã / às 8 da manhã / ao meio-dia</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    They <SpeakText text="go to bed at midnight" className="text-blue-600 font-bold">go to bed at midnight</SpeakText> / <SpeakText text="at 10 PM" className="text-blue-600 font-bold">at 10 PM</SpeakText> / <SpeakText text="at 11 PM" className="text-blue-600 font-bold">at 11 PM</SpeakText> / <SpeakText text="early" className="text-blue-600 font-bold">early</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eles vão dormir à meia-noite / às 22h / às 23h / cedo</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    He <SpeakText text="takes a shower in the morning" className="text-blue-600 font-bold">takes a shower in the morning</SpeakText> / <SpeakText text="at night" className="text-blue-600 font-bold">at night</SpeakText> / <SpeakText text="in the afternoon" className="text-blue-600 font-bold">in the afternoon</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ele toma banho de manhã / à noite / à tarde</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    We <SpeakText text="wake up late on weekends" className="text-blue-600 font-bold">wake up late on weekends</SpeakText> / <SpeakText text="on Saturdays" className="text-blue-600 font-bold">on Saturdays</SpeakText> / <SpeakText text="on Sundays" className="text-blue-600 font-bold">on Sundays</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Nós acordamos tarde nos finais de semana / aos sábados / aos domingos</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Do you need to take a shower now" className="text-blue-600 font-bold">Do you need to take a shower now</SpeakText>? / <SpeakText text="later" className="text-blue-600 font-bold">later</SpeakText>? / <SpeakText text="tomorrow" className="text-blue-600 font-bold">tomorrow</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Você precisa tomar banho agora? / mais tarde? / amanhã?</p>
-                </div>
+                {phrasesSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -719,14 +977,14 @@ export default function Lesson17PersonalInfoRoutine() {
               <h2 className="text-2xl font-bold">🔹 GRAMMAR</h2>
               <PencilIcon onClick={() => openNoteModal('Grammar')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('grammar')}
               className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
+
           <div className="p-8">
             <SpeakSentence text="Structures for asking questions and making negative statements with do/does" className="text-md text-gray-600 mb-4 italic">
               📚 Structures for asking questions and making negative statements with do/does
@@ -741,75 +999,16 @@ export default function Lesson17PersonalInfoRoutine() {
                 </div>
               ))}
             </div>
-            
+
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Where does she work" className="text-blue-600 font-bold">Where does she work</SpeakText>? / <SpeakText text="Where does he work" className="text-blue-600 font-bold">Where does he work</SpeakText>? / <SpeakText text="Where do they work" className="text-blue-600 font-bold">Where do they work</SpeakText>? / <SpeakText text="Where do you work" className="text-blue-600 font-bold">Where do you work</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Onde ela trabalha? / Onde ele trabalha? / Onde eles trabalham? / Onde você trabalha?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Does he work at the hospital" className="text-blue-600 font-bold">Does he work at the hospital</SpeakText>? / <SpeakText text="at the bank" className="text-blue-600 font-bold">at the bank</SpeakText>? / <SpeakText text="at the company" className="text-blue-600 font-bold">at the company</SpeakText>? / <SpeakText text="at the office" className="text-blue-600 font-bold">at the office</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ele trabalha no hospital? / no banco? / na empresa? / no escritório?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Do they work at the bank" className="text-blue-600 font-bold">Do they work at the bank</SpeakText>? / <SpeakText text="at the office" className="text-blue-600 font-bold">at the office</SpeakText>? / <SpeakText text="at the grocery store" className="text-blue-600 font-bold">at the grocery store</SpeakText>? / <SpeakText text="at the hospital" className="text-blue-600 font-bold">at the hospital</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eles trabalham no banco? / no escritório? / no supermercado? / no hospital?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Does she work at an office or at home" className="text-blue-600 font-bold">Does she work at an office or at home</SpeakText>? / <SpeakText text="remotely" className="text-blue-600 font-bold">remotely</SpeakText>? / <SpeakText text="at a hospital" className="text-blue-600 font-bold">at a hospital</SpeakText>? / <SpeakText text="at a school" className="text-blue-600 font-bold">at a school</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ela trabalha em um escritório ou em casa? / remotamente? / em um hospital? / em uma escola?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="When does he go to the movies" className="text-blue-600 font-bold">When does he go to the movies</SpeakText>? / <SpeakText text="to the gym" className="text-blue-600 font-bold">to the gym</SpeakText>? / <SpeakText text="to the park" className="text-blue-600 font-bold">to the park</SpeakText>? / <SpeakText text="to the restaurant" className="text-blue-600 font-bold">to the restaurant</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Quando ele vai ao cinema? / à academia? / ao parque? / ao restaurante?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="When does she see her emails" className="text-blue-600 font-bold">When does she see her emails</SpeakText>? / <SpeakText text="her messages" className="text-blue-600 font-bold">her messages</SpeakText>? / <SpeakText text="her friends" className="text-blue-600 font-bold">her friends</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Quando ela vê seus emails? / suas mensagens? / seus amigos?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="When does he want to go to Italy" className="text-blue-600 font-bold">When does he want to go to Italy</SpeakText>? / <SpeakText text="to Spain" className="text-blue-600 font-bold">to Spain</SpeakText>? / <SpeakText text="to the USA" className="text-blue-600 font-bold">to the USA</SpeakText>? / <SpeakText text="to Japan" className="text-blue-600 font-bold">to Japan</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Quando ele quer ir para a Itália? / para a Espanha? / para os EUA? / para o Japão?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="When does she have to go to the hospital" className="text-blue-600 font-bold">When does she have to go to the hospital</SpeakText>? / <SpeakText text="to the doctor" className="text-blue-600 font-bold">to the doctor</SpeakText>? / <SpeakText text="to the dentist" className="text-blue-600 font-bold">to the dentist</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Quando ela tem que ir ao hospital? / ao médico? / ao dentista?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Does he work at the bank or at the gas station" className="text-blue-600 font-bold">Does he work at the bank or at the gas station</SpeakText>? / <SpeakText text="at the company or at the school" className="text-blue-600 font-bold">at the company or at the school</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Ele trabalha no banco ou no posto de gasolina? / na empresa ou na escola?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="Do they work at a restaurant" className="text-blue-600 font-bold">Do they work at a restaurant</SpeakText>? / <SpeakText text="at a hotel" className="text-blue-600 font-bold">at a hotel</SpeakText>? / <SpeakText text="at a school" className="text-blue-600 font-bold">at a school</SpeakText>? / <SpeakText text="at a store" className="text-blue-600 font-bold">at a store</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eles trabalham em um restaurante? / em um hotel? / em uma escola? / em uma loja?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    <SpeakText text="They don't work at the school or at the church" className="text-blue-600 font-bold">They don't work at the school or at the church</SpeakText>. / <SpeakText text="neither at the bank nor at the hospital" className="text-blue-600 font-bold">neither at the bank nor at the hospital</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 Eles não trabalham na escola ou na igreja / nem no banco nem no hospital</p>
-                </div>
+                {grammarSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -826,11 +1025,10 @@ export default function Lesson17PersonalInfoRoutine() {
               Practice talking about work and daily routines
             </div>
           </div>
-          
+
           <div className="p-8">
             <div className="bg-blue-50 rounded-[20px] p-6">
               <div className="flex flex-col lg:flex-row gap-8">
-                {/* Sentences - 2/3 width on large */}
                 <div className="lg:w-2/3 space-y-4">
                   {realLifeSentences.map((sentence, index) => (
                     <div key={index} className="group">
@@ -844,7 +1042,6 @@ export default function Lesson17PersonalInfoRoutine() {
                   ))}
                 </div>
 
-                {/* Image container - 1/3 width on large */}
                 <div className="lg:w-1/3 flex flex-col gap-4">
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
                     <div className="relative h-40 w-full">
@@ -858,7 +1055,7 @@ export default function Lesson17PersonalInfoRoutine() {
                       Places in the city and routines
                     </p>
                   </div>
-                  
+
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
                     <div className="relative h-40 w-full">
                       <img
@@ -901,7 +1098,7 @@ export default function Lesson17PersonalInfoRoutine() {
               Places in the city & Daily Routine
             </p>
           </div>
-          
+
           <div className="p-6">
             <CheckItOutHorizontal />
           </div>
@@ -915,7 +1112,7 @@ export default function Lesson17PersonalInfoRoutine() {
               📝 Answer the questions using complete sentences
             </SpeakSentence>
           </div>
-          
+
           <div className="p-8">
             <div className="space-y-6">
               <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
@@ -924,21 +1121,21 @@ export default function Lesson17PersonalInfoRoutine() {
                   (Exemplo: I work at a company. / I study at a university.)
                 </SpeakSentence>
               </div>
-              
+
               <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
                 <p className="text-lg font-medium text-gray-800">2. What time do you wake up?</p>
                 <SpeakSentence text="I wake up at 7 AM." className="mt-2 text-gray-600 block">
                   (Exemplo: I wake up at 7 AM every day. / I usually wake up early.)
                 </SpeakSentence>
               </div>
-              
+
               <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
                 <p className="text-lg font-medium text-gray-800">3. Where do you usually go during the week?</p>
                 <SpeakSentence text="During the week, I go to work." className="mt-2 text-gray-600 block">
                   (Exemplo: During the week, I go to work, to the grocery store, and to the gym.)
                 </SpeakSentence>
               </div>
-              
+
               <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
                 <p className="text-lg font-medium text-gray-800">4. Do you wake up early or late?</p>
                 <SpeakSentence text="I wake up early." className="mt-2 text-gray-600 block">
@@ -957,7 +1154,7 @@ export default function Lesson17PersonalInfoRoutine() {
               🗣️ Talk about your daily routine:
             </SpeakSentence>
           </div>
-          
+
           <div className="p-8">
             <div className="bg-green-50 p-6 rounded-2xl space-y-4">
               <div className="flex items-start">
@@ -969,7 +1166,7 @@ export default function Lesson17PersonalInfoRoutine() {
                   </SpeakSentence>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <div className="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">2</div>
                 <div>
@@ -979,7 +1176,7 @@ export default function Lesson17PersonalInfoRoutine() {
                   </SpeakSentence>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <div className="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">3</div>
                 <div>
@@ -990,7 +1187,7 @@ export default function Lesson17PersonalInfoRoutine() {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-6 p-4 bg-blue-50 rounded-xl">
               <p className="text-gray-700 italic">💡 Tip: Use the Simple Present Tense to describe your regular routine!</p>
               <SpeakSentence text="I work at a bank. I wake up at 6:30 AM. During the week, I go to the office, to the gym, and sometimes to the grocery store." className="mt-2 text-gray-600 block">
@@ -1014,7 +1211,7 @@ export default function Lesson17PersonalInfoRoutine() {
           >
             Next Lesson (18) &rarr;
           </button>
-        </div>  
+        </div>
       </div>
 
       {/* Note Modal */}

@@ -1521,7 +1521,7 @@ export default function Lesson12LanguagesAndCountries() {
               &larr; Previous Lesson
             </button>
             <button
-              onClick={() => router.push("/cursos/lesson13")}
+              onClick={() => router.push("/cursos/review2")}
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
             >
               Next Lesson &rarr;

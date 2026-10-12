@@ -331,8 +331,6 @@ export default function Lesson47() {
     }
   }, []);
 
-  const mainImage = "https://i.ibb.co/tTpRLxNr/l5-main.jpg";
-
   // ---------- VERBS ----------
   const verbsSubstitution: SubstitutionExercise[] = [
     {
@@ -454,6 +452,66 @@ export default function Lesson47() {
       ],
       currentIndex: 0,
     },
+    {
+      key: "verb-13",
+      original: "I called my mother this morning. / my father / my sister",
+      options: [
+        { label: "my mother", replacement: "I called my mother this morning.", pt: "Eu liguei para minha mãe hoje de manhã." },
+        { label: "my father", replacement: "I called my father this morning.", pt: "Eu liguei para meu pai hoje de manhã." },
+        { label: "my sister", replacement: "I called my sister this morning.", pt: "Eu liguei para minha irmã hoje de manhã." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-14",
+      original: "She waited for the bus for twenty minutes. / for an hour / for a long time",
+      options: [
+        { label: "twenty minutes", replacement: "She waited for the bus for twenty minutes.", pt: "Ela esperou o ônibus por vinte minutos." },
+        { label: "an hour", replacement: "She waited for the bus for an hour.", pt: "Ela esperou o ônibus por uma hora." },
+        { label: "a long time", replacement: "She waited for the bus for a long time.", pt: "Ela esperou o ônibus por muito tempo." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-15",
+      original: "Did you call the restaurant yesterday? / the manager / the waiter",
+      options: [
+        { label: "the restaurant", replacement: "Did you call the restaurant yesterday?", pt: "Você ligou para o restaurante ontem?" },
+        { label: "the manager", replacement: "Did you call the manager yesterday?", pt: "Você ligou para o gerente ontem?" },
+        { label: "the waiter", replacement: "Did you call the waiter yesterday?", pt: "Você ligou para o garçom ontem?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-16",
+      original: "I will call you tomorrow. / next week / tonight",
+      options: [
+        { label: "tomorrow", replacement: "I will call you tomorrow.", pt: "Eu vou te ligar amanhã." },
+        { label: "next week", replacement: "I will call you next week.", pt: "Eu vou te ligar na próxima semana." },
+        { label: "tonight", replacement: "I will call you tonight.", pt: "Eu vou te ligar hoje à noite." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-17",
+      original: "We will wait for you at the entrance. / at the station / at the airport",
+      options: [
+        { label: "the entrance", replacement: "We will wait for you at the entrance.", pt: "Nós vamos te esperar na entrada." },
+        { label: "the station", replacement: "We will wait for you at the station.", pt: "Nós vamos te esperar na estação." },
+        { label: "the airport", replacement: "We will wait for you at the airport.", pt: "Nós vamos te esperar no aeroporto." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-18",
+      original: "Will you call me when you arrive? / when you get there / when you leave",
+      options: [
+        { label: "arrive", replacement: "Will you call me when you arrive?", pt: "Você vai me ligar quando chegar?" },
+        { label: "get there", replacement: "Will you call me when you get there?", pt: "Você vai me ligar quando chegar lá?" },
+        { label: "leave", replacement: "Will you call me when you leave?", pt: "Você vai me ligar quando sair?" },
+      ],
+      currentIndex: 0,
+    },
   ];
 
   // ---------- NEW WORDS ----------
@@ -568,6 +626,36 @@ export default function Lesson47() {
       ],
       currentIndex: 0,
     },
+    {
+      key: "vocab-12",
+      original: "I will buy some beverages for the party. / snacks / a milkshake",
+      options: [
+        { label: "beverages", replacement: "I will buy some beverages for the party.", pt: "Eu vou comprar algumas bebidas para a festa." },
+        { label: "snacks", replacement: "I will buy some snacks for the party.", pt: "Eu vou comprar alguns lanches para a festa." },
+        { label: "a milkshake", replacement: "I will buy a milkshake for the party.", pt: "Eu vou comprar um milkshake para a festa." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-13",
+      original: "We will have a barbecue next weekend. / a snack / dessert",
+      options: [
+        { label: "a barbecue", replacement: "We will have a barbecue next weekend.", pt: "Nós vamos fazer um churrasco no próximo fim de semana." },
+        { label: "a snack", replacement: "We will have a snack next weekend.", pt: "Nós vamos fazer um lanche no próximo fim de semana." },
+        { label: "dessert", replacement: "We will have dessert next weekend.", pt: "Nós vamos comer sobremesa no próximo fim de semana." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-14",
+      original: "She was a vegetarian for many years. / He was / They were",
+      options: [
+        { label: "She was", replacement: "She was a vegetarian for many years.", pt: "Ela foi vegetariana por muitos anos." },
+        { label: "He was", replacement: "He was a vegetarian for many years.", pt: "Ele foi vegetariano por muitos anos." },
+        { label: "They were", replacement: "They were vegetarians for many years.", pt: "Eles foram vegetarianos por muitos anos." },
+      ],
+      currentIndex: 0,
+    },
   ];
 
   // ---------- SPEAK LIKE A NATIVE ----------
@@ -669,6 +757,46 @@ export default function Lesson47() {
         { label: "I'm not", replacement: "I'm not in a hurry right now.", pt: "Eu não estou com pressa agora." },
         { label: "She isn't", replacement: "She isn't in a hurry right now.", pt: "Ela não está com pressa agora." },
         { label: "They aren't", replacement: "They aren't in a hurry right now.", pt: "Eles não estão com pressa agora." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-11",
+      original: "I was in a hurry yesterday morning. / She was / They were",
+      options: [
+        { label: "I was", replacement: "I was in a hurry yesterday morning.", pt: "Eu estava com pressa ontem de manhã." },
+        { label: "She was", replacement: "She was in a hurry yesterday morning.", pt: "Ela estava com pressa ontem de manhã." },
+        { label: "They were", replacement: "They were in a hurry yesterday morning.", pt: "Eles estavam com pressa ontem de manhã." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-12",
+      original: "We will be on time tomorrow. / They will / She will",
+      options: [
+        { label: "We will", replacement: "We will be on time tomorrow.", pt: "Nós estaremos no horário amanhã." },
+        { label: "They will", replacement: "They will be on time tomorrow.", pt: "Eles estarão no horário amanhã." },
+        { label: "She will", replacement: "She will be on time tomorrow.", pt: "Ela estará no horário amanhã." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-13",
+      original: "I will not be late again. / She will not / They will not",
+      options: [
+        { label: "I will not", replacement: "I will not be late again.", pt: "Eu não vou me atrasar de novo." },
+        { label: "She will not", replacement: "She will not be late again.", pt: "Ela não vai se atrasar de novo." },
+        { label: "They will not", replacement: "They will not be late again.", pt: "Eles não vão se atrasar de novo." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-14",
+      original: "He was never late when he worked here. / She was / We were",
+      options: [
+        { label: "He was", replacement: "He was never late when he worked here.", pt: "Ele nunca se atrasava quando trabalhava aqui." },
+        { label: "She was", replacement: "She was never late when she worked here.", pt: "Ela nunca se atrasava quando trabalhava aqui." },
+        { label: "We were", replacement: "We were never late when we worked here.", pt: "Nós nunca nos atrasávamos quando trabalhávamos aqui." },
       ],
       currentIndex: 0,
     },
@@ -776,9 +904,49 @@ export default function Lesson47() {
       ],
       currentIndex: 0,
     },
+    {
+      key: "grammar-11",
+      original: "Somebody called you yesterday. / called me / called the manager",
+      options: [
+        { label: "you", replacement: "Somebody called you yesterday.", pt: "Alguém te ligou ontem." },
+        { label: "me", replacement: "Somebody called me yesterday.", pt: "Alguém me ligou ontem." },
+        { label: "the manager", replacement: "Somebody called the manager yesterday.", pt: "Alguém ligou para o gerente ontem." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-12",
+      original: "Did anybody wait for you at the station? / at the airport / at the office",
+      options: [
+        { label: "at the station", replacement: "Did anybody wait for you at the station?", pt: "Alguém te esperou na estação?" },
+        { label: "at the airport", replacement: "Did anybody wait for you at the airport?", pt: "Alguém te esperou no aeroporto?" },
+        { label: "at the office", replacement: "Did anybody wait for you at the office?", pt: "Alguém te esperou no escritório?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-13",
+      original: "Somebody will call you tomorrow. / will help you / will meet you",
+      options: [
+        { label: "call", replacement: "Somebody will call you tomorrow.", pt: "Alguém vai te ligar amanhã." },
+        { label: "help", replacement: "Somebody will help you tomorrow.", pt: "Alguém vai te ajudar amanhã." },
+        { label: "meet", replacement: "Somebody will meet you tomorrow.", pt: "Alguém vai te encontrar amanhã." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-14",
+      original: "Will anybody wait for me at the restaurant? / at the hotel / at the entrance",
+      options: [
+        { label: "restaurant", replacement: "Will anybody wait for me at the restaurant?", pt: "Alguém vai me esperar no restaurante?" },
+        { label: "hotel", replacement: "Will anybody wait for me at the hotel?", pt: "Alguém vai me esperar no hotel?" },
+        { label: "entrance", replacement: "Will anybody wait for me at the entrance?", pt: "Alguém vai me esperar na entrada?" },
+      ],
+      currentIndex: 0,
+    },
   ];
 
-  // ---------- REAL LIFE ----------
+  // ---------- REAL LIFE (MAKE IT YOURS) ----------
   const realLifeSubstitution: SubstitutionExercise[] = [
     {
       key: "real-1",
@@ -980,6 +1148,46 @@ export default function Lesson47() {
       ],
       currentIndex: 0,
     },
+    {
+      key: "real-21",
+      original: "I called the restaurant, but nobody answered. / the manager / the chef",
+      options: [
+        { label: "the restaurant", replacement: "I called the restaurant, but nobody answered.", pt: "Eu liguei para o restaurante, mas ninguém atendeu." },
+        { label: "the manager", replacement: "I called the manager, but nobody answered.", pt: "Eu liguei para o gerente, mas ninguém atendeu." },
+        { label: "the chef", replacement: "I called the chef, but nobody answered.", pt: "Eu liguei para o chefe de cozinha, mas ninguém atendeu." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "real-22",
+      original: "We waited for the waiter for a long time. / the manager / the chef",
+      options: [
+        { label: "the waiter", replacement: "We waited for the waiter for a long time.", pt: "Nós esperamos pelo garçom por muito tempo." },
+        { label: "the manager", replacement: "We waited for the manager for a long time.", pt: "Nós esperamos pelo gerente por muito tempo." },
+        { label: "the chef", replacement: "We waited for the chef for a long time.", pt: "Nós esperamos pelo chefe de cozinha por muito tempo." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "real-23",
+      original: "I will wait for you at the entrance after dinner. / after lunch / after the meeting",
+      options: [
+        { label: "after dinner", replacement: "I will wait for you at the entrance after dinner.", pt: "Eu vou te esperar na entrada depois do jantar." },
+        { label: "after lunch", replacement: "I will wait for you at the entrance after lunch.", pt: "Eu vou te esperar na entrada depois do almoço." },
+        { label: "after the meeting", replacement: "I will wait for you at the entrance after the meeting.", pt: "Eu vou te esperar na entrada depois da reunião." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "real-24",
+      original: "She will call the manager tomorrow morning. / the chef / the waiter",
+      options: [
+        { label: "the manager", replacement: "She will call the manager tomorrow morning.", pt: "Ela vai ligar para o gerente amanhã de manhã." },
+        { label: "the chef", replacement: "She will call the chef tomorrow morning.", pt: "Ela vai ligar para o chefe de cozinha amanhã de manhã." },
+        { label: "the waiter", replacement: "She will call the waiter tomorrow morning.", pt: "Ela vai ligar para o garçom amanhã de manhã." },
+      ],
+      currentIndex: 0,
+    },
   ];
 
   const allExercises = [
@@ -1014,27 +1222,28 @@ export default function Lesson47() {
     }
   ];
 
+  // Make It Yours — slightly longer B1/B2 sentences
   const realLifeData = [
-    { en: "I need to call my mother now.", pt: "Eu preciso ligar para minha mãe agora.", parts: [{ text: "I ", h: false }, { text: "need", h: true }, { text: " to ", h: false }, { text: "call", h: true }, { text: " my ", h: false }, { text: "mother", h: true }, { text: " now.", h: false }] },
-    { en: "She always calls me on my birthday.", pt: "Ela sempre me liga no meu aniversário.", parts: [{ text: "She ", h: false }, { text: "always", h: true }, { text: " ", h: false }, { text: "calls", h: true }, { text: " me on my ", h: false }, { text: "birthday", h: true }, { text: ".", h: false }] },
-    { en: "Call your father. He is worried.", pt: "Ligue para seu pai. Ele está preocupado.", parts: [{ text: "Call", h: true }, { text: " your ", h: false }, { text: "father", h: true }, { text: ". He is ", h: false }, { text: "worried", h: true }, { text: ".", h: false }] },
-    { en: "I have to wait for my brother here.", pt: "Eu tenho que esperar pelo meu irmão aqui.", parts: [{ text: "I have to ", h: false }, { text: "wait", h: true }, { text: " for my ", h: false }, { text: "brother", h: true }, { text: " here.", h: false }] },
-    { en: "I'm late, so don't wait for me.", pt: "Eu estou atrasado, então não espere por mim.", parts: [{ text: "I'm ", h: false }, { text: "late", h: true }, { text: ", so ", h: false }, { text: "don't", h: true }, { text: " ", h: false }, { text: "wait", h: true }, { text: " for me.", h: false }] },
-    { en: "Dinner is almost ready.", pt: "O jantar está quase pronto.", parts: [{ text: "Dinner", h: true }, { text: " is ", h: false }, { text: "almost", h: true }, { text: " ", h: false }, { text: "ready", h: true }, { text: ".", h: false }] },
-    { en: "I often read books in English.", pt: "Eu frequentemente leio livros em inglês.", parts: [{ text: "I ", h: false }, { text: "often", h: true }, { text: " ", h: false }, { text: "read", h: true }, { text: " books in ", h: false }, { text: "English", h: true }, { text: ".", h: false }] },
-    { en: "He is never in a hurry.", pt: "Ele nunca está com pressa.", parts: [{ text: "He is ", h: false }, { text: "never", h: true }, { text: " in a ", h: false }, { text: "hurry", h: true }, { text: ".", h: false }] },
-    { en: "How often do you see your cousins?", pt: "Com que frequência você vê seus primos?", parts: [{ text: "How ", h: false }, { text: "often", h: true }, { text: " do you ", h: false }, { text: "see", h: true }, { text: " your ", h: false }, { text: "cousins", h: true }, { text: "?", h: false }] },
-    { en: "Somebody wants to speak with you.", pt: "Alguém quer falar com você.", parts: [{ text: "Somebody", h: true }, { text: " wants to ", h: false }, { text: "speak", h: true }, { text: " with you.", h: false }] },
-    { en: "She doesn't want to see anybody.", pt: "Ela não quer ver ninguém.", parts: [{ text: "She ", h: false }, { text: "doesn't", h: true }, { text: " want to ", h: false }, { text: "see", h: true }, { text: " ", h: false }, { text: "anybody", h: true }, { text: ".", h: false }] },
-    { en: "Do you know anybody in Germany?", pt: "Você conhece alguém na Alemanha?", parts: [{ text: "Do you ", h: false }, { text: "know", h: true }, { text: " ", h: false }, { text: "anybody", h: true }, { text: " in ", h: false }, { text: "Germany", h: true }, { text: "?", h: false }] },
-    { en: "Did you call your mother yesterday?", pt: "Você ligou para sua mãe ontem?", parts: [{ text: "Did you ", h: false }, { text: "call", h: true }, { text: " your ", h: false }, { text: "mother", h: true }, { text: " ", h: false }, { text: "yesterday", h: true }, { text: "?", h: false }] },
-    { en: "She didn't call me last week.", pt: "Ela não me ligou na semana passada.", parts: [{ text: "She ", h: false }, { text: "didn't", h: true }, { text: " ", h: false }, { text: "call", h: true }, { text: " me ", h: false }, { text: "last week", h: true }, { text: ".", h: false }] },
-    { en: "I will call you as soon as I arrive.", pt: "Eu vou te ligar assim que eu chegar.", parts: [{ text: "I ", h: false }, { text: "will", h: true }, { text: " ", h: false }, { text: "call", h: true }, { text: " you as soon as I ", h: false }, { text: "arrive", h: true }, { text: ".", h: false }] },
-    { en: "Will you wait for me at the station?", pt: "Você vai me esperar na estação?", parts: [{ text: "Will you ", h: false }, { text: "wait", h: true }, { text: " for me at the ", h: false }, { text: "station", h: true }, { text: "?", h: false }] },
-    { en: "I have been waiting for you for an hour.", pt: "Eu estou esperando por você há uma hora.", parts: [{ text: "I have been ", h: false }, { text: "waiting", h: true }, { text: " for you for ", h: false }, { text: "an hour", h: true }, { text: ".", h: false }] },
-    { en: "She has been calling you all morning.", pt: "Ela está te ligando a manhã toda.", parts: [{ text: "She has been ", h: false }, { text: "calling", h: true }, { text: " you ", h: false }, { text: "all morning", h: true }, { text: ".", h: false }] },
-    { en: "They have been waiting for the bus since 8am.", pt: "Eles estão esperando o ônibus desde as 8h.", parts: [{ text: "They have been ", h: false }, { text: "waiting", h: true }, { text: " for the bus ", h: false }, { text: "since 8am", h: true }, { text: ".", h: false }] },
-    { en: "Did you have a barbecue last weekend?", pt: "Você fez um churrasco no fim de semana passado?", parts: [{ text: "Did you have a ", h: false }, { text: "barbecue", h: true }, { text: " ", h: false }, { text: "last weekend", h: true }, { text: "?", h: false }] },
+    { en: "I need to call my mother now because she wants to talk about dinner.", pt: "Eu preciso ligar para minha mãe agora porque ela quer falar sobre o jantar.", parts: [{ text: "I ", h: false }, { text: "need", h: true }, { text: " to ", h: false }, { text: "call", h: true }, { text: " my ", h: false }, { text: "mother", h: true }, { text: " now because she wants to talk about dinner.", h: false }] },
+    { en: "She always calls me on my birthday to wish me a happy year.", pt: "Ela sempre me liga no meu aniversário para me desejar um feliz ano.", parts: [{ text: "She ", h: false }, { text: "always", h: true }, { text: " ", h: false }, { text: "calls", h: true }, { text: " me on my ", h: false }, { text: "birthday", h: true }, { text: " to wish me a happy year.", h: false }] },
+    { en: "Call your father right now. He is worried about your trip.", pt: "Ligue para seu pai agora mesmo. Ele está preocupado com a sua viagem.", parts: [{ text: "Call", h: true }, { text: " your ", h: false }, { text: "father", h: true }, { text: " right now. He is ", h: false }, { text: "worried", h: true }, { text: " about your trip.", h: false }] },
+    { en: "I have to wait for my brother here because he has my car keys.", pt: "Eu tenho que esperar pelo meu irmão aqui porque ele está com as chaves do meu carro.", parts: [{ text: "I have to ", h: false }, { text: "wait", h: true }, { text: " for my ", h: false }, { text: "brother", h: true }, { text: " here because he has my car keys.", h: false }] },
+    { en: "I'm late, so don't wait for me. I will meet you at the restaurant.", pt: "Eu estou atrasado, então não espere por mim. Eu vou te encontrar no restaurante.", parts: [{ text: "I'm ", h: false }, { text: "late", h: true }, { text: ", so ", h: false }, { text: "don't", h: true }, { text: " ", h: false }, { text: "wait", h: true }, { text: " for me. I will meet you at the restaurant.", h: false }] },
+    { en: "Dinner is almost ready, so please call everyone to the table.", pt: "O jantar está quase pronto, então por favor chame todo mundo para a mesa.", parts: [{ text: "Dinner", h: true }, { text: " is ", h: false }, { text: "almost", h: true }, { text: " ", h: false }, { text: "ready", h: true }, { text: ", so please call everyone to the table.", h: false }] },
+    { en: "I often read books in English, but I prefer to watch movies.", pt: "Eu frequentemente leio livros em inglês, mas eu prefiro assistir filmes.", parts: [{ text: "I ", h: false }, { text: "often", h: true }, { text: " ", h: false }, { text: "read", h: true }, { text: " books in ", h: false }, { text: "English", h: true }, { text: ", but I prefer to watch movies.", h: false }] },
+    { en: "He is never in a hurry because he always leaves home early.", pt: "Ele nunca está com pressa porque ele sempre sai de casa cedo.", parts: [{ text: "He is ", h: false }, { text: "never", h: true }, { text: " in a ", h: false }, { text: "hurry", h: true }, { text: " because he always leaves home early.", h: false }] },
+    { en: "How often do you see your cousins, and where do you usually meet?", pt: "Com que frequência você vê seus primos, e onde vocês geralmente se encontram?", parts: [{ text: "How ", h: false }, { text: "often", h: true }, { text: " do you ", h: false }, { text: "see", h: true }, { text: " your ", h: false }, { text: "cousins", h: true }, { text: ", and where do you usually meet?", h: false }] },
+    { en: "Somebody wants to speak with you about a new job offer.", pt: "Alguém quer falar com você sobre uma nova oferta de emprego.", parts: [{ text: "Somebody", h: true }, { text: " wants to ", h: false }, { text: "speak", h: true }, { text: " with you about a new job offer.", h: false }] },
+    { en: "She doesn't want to see anybody today because she is very tired.", pt: "Ela não quer ver ninguém hoje porque ela está muito cansada.", parts: [{ text: "She ", h: false }, { text: "doesn't", h: true }, { text: " want to ", h: false }, { text: "see", h: true }, { text: " ", h: false }, { text: "anybody", h: true }, { text: " today because she is very tired.", h: false }] },
+    { en: "Do you know anybody in Germany who can help me learn German?", pt: "Você conhece alguém na Alemanha que possa me ajudar a aprender alemão?", parts: [{ text: "Do you ", h: false }, { text: "know", h: true }, { text: " ", h: false }, { text: "anybody", h: true }, { text: " in ", h: false }, { text: "Germany", h: true }, { text: " who can help me learn German?", h: false }] },
+    { en: "Did you call your mother yesterday, or did you forget again?", pt: "Você ligou para sua mãe ontem, ou você esqueceu de novo?", parts: [{ text: "Did you ", h: false }, { text: "call", h: true }, { text: " your ", h: false }, { text: "mother", h: true }, { text: " ", h: false }, { text: "yesterday", h: true }, { text: ", or did you forget again?", h: false }] },
+    { en: "She didn't call me last week, so I will call her tomorrow.", pt: "Ela não me ligou na semana passada, então eu vou ligar para ela amanhã.", parts: [{ text: "She ", h: false }, { text: "didn't", h: true }, { text: " ", h: false }, { text: "call", h: true }, { text: " me ", h: false }, { text: "last week", h: true }, { text: ", so I will call her tomorrow.", h: false }] },
+    { en: "I will call you as soon as I arrive, and we can talk about it.", pt: "Eu vou te ligar assim que eu chegar, e nós podemos falar sobre isso.", parts: [{ text: "I ", h: false }, { text: "will", h: true }, { text: " ", h: false }, { text: "call", h: true }, { text: " you as soon as I ", h: false }, { text: "arrive", h: true }, { text: ", and we can talk about it.", h: false }] },
+    { en: "Will you wait for me at the station, or should I take a taxi?", pt: "Você vai me esperar na estação, ou eu deveria pegar um táxi?", parts: [{ text: "Will you ", h: false }, { text: "wait", h: true }, { text: " for me at the ", h: false }, { text: "station", h: true }, { text: ", or should I take a taxi?", h: false }] },
+    { en: "I have been waiting for you for an hour, and I'm very hungry.", pt: "Eu estou esperando por você há uma hora, e eu estou com muita fome.", parts: [{ text: "I have been ", h: false }, { text: "waiting", h: true }, { text: " for you for ", h: false }, { text: "an hour", h: true }, { text: ", and I'm very hungry.", h: false }] },
+    { en: "She has been calling you all morning, but you never answered.", pt: "Ela está te ligando a manhã toda, mas você nunca atendeu.", parts: [{ text: "She has been ", h: false }, { text: "calling", h: true }, { text: " you ", h: false }, { text: "all morning", h: true }, { text: ", but you never answered.", h: false }] },
+    { en: "They have been waiting for the bus since 8am, so they will be late.", pt: "Eles estão esperando o ônibus desde as 8h, então eles vão se atrasar.", parts: [{ text: "They have been ", h: false }, { text: "waiting", h: true }, { text: " for the bus ", h: false }, { text: "since 8am", h: true }, { text: ", so they will be late.", h: false }] },
+    { en: "Did you have a barbecue last weekend, or did you stay home?", pt: "Você fez um churrasco no fim de semana passado, ou você ficou em casa?", parts: [{ text: "Did you have a ", h: false }, { text: "barbecue", h: true }, { text: " ", h: false }, { text: "last weekend", h: true }, { text: ", or did you stay home?", h: false }] },
   ];
 
   const newWordsData = [

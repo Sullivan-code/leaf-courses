@@ -807,150 +807,200 @@ export default function Lesson43EatingOut() {
   // Dados da seção Make it yours com palavras-chave destacadas em azul
   const makeItYoursData = [
     {
-      en: "Do you know how to make chocolate popcorn?",
-      pt: "Você sabe fazer pipoca de chocolate?",
+      en: "Last weekend, we went to that new Brazilian restaurant downtown, and I tried farofa for the first time.",
+      pt: "No último fim de semana, nós fomos àquele novo restaurante brasileiro no centro, e eu experimentei farofa pela primeira vez.",
       parts: [
-        { text: "Do you ", highlight: false },
-        { text: "know", highlight: true },
-        { text: " how to ", highlight: false },
-        { text: "make", highlight: true },
-        { text: " chocolate ", highlight: false },
-        { text: "popcorn", highlight: true },
-        { text: "?", highlight: false },
+        { text: "Last weekend, we ", highlight: false },
+        { text: "went", highlight: true },
+        { text: " to that new Brazilian ", highlight: false },
+        { text: "restaurant", highlight: true },
+        { text: " downtown, and I ", highlight: false },
+        { text: "tried", highlight: true },
+        { text: " ", highlight: false },
+        { text: "farofa", highlight: true },
+        { text: " for the first time.", highlight: false },
       ]
     },
     {
-      en: "I want to make your favorite dish tonight.",
-      pt: "Eu quero fazer seu prato favorito hoje à noite.",
+      en: "The waiter recommended a spicy sauce, but I decided to order the garlic sauce instead because I don't usually like hot food.",
+      pt: "O garçom recomendou um molho picante, mas eu decidi pedir o molho de alho em vez disso porque eu normalmente não gosto de comida apimentada.",
       parts: [
-        { text: "I ", highlight: false },
-        { text: "want", highlight: true },
+        { text: "The waiter ", highlight: false },
+        { text: "recommended", highlight: true },
+        { text: " a spicy ", highlight: false },
+        { text: "sauce", highlight: true },
+        { text: ", but I ", highlight: false },
+        { text: "decided", highlight: true },
         { text: " to ", highlight: false },
-        { text: "make", highlight: true },
-        { text: " your favorite ", highlight: false },
-        { text: "dish", highlight: true },
-        { text: " tonight.", highlight: false },
-      ]
-    },
-    {
-      en: "We want to give you this book.",
-      pt: "Nós queremos te dar este livro.",
-      parts: [
-        { text: "We ", highlight: false },
-        { text: "want", highlight: true },
-        { text: " to ", highlight: false },
-        { text: "give", highlight: true },
-        { text: " you this ", highlight: false },
-        { text: "book", highlight: true },
+        { text: "order", highlight: true },
+        { text: " the ", highlight: false },
+        { text: "garlic sauce", highlight: true },
+        { text: " instead because I don't usually like ", highlight: false },
+        { text: "hot food", highlight: true },
         { text: ".", highlight: false },
       ]
     },
     {
-      en: "I want to give a gift to my mother.",
-      pt: "Eu quero dar um presente para minha mãe.",
+      en: "My mother used to make a simple vinagrete with tomatoes and onions, and she always served it with grilled chicken.",
+      pt: "Minha mãe costumava fazer um vinagrete simples com tomate e cebola, e ela sempre servia com frango grelhado.",
       parts: [
-        { text: "I ", highlight: false },
-        { text: "want", highlight: true },
-        { text: " to ", highlight: false },
-        { text: "give", highlight: true },
-        { text: " a ", highlight: false },
-        { text: "gift", highlight: true },
-        { text: " to my mother.", highlight: false },
+        { text: "My mother ", highlight: false },
+        { text: "used to make", highlight: true },
+        { text: " a simple ", highlight: false },
+        { text: "vinagrete", highlight: true },
+        { text: " with tomatoes and onions, and she always ", highlight: false },
+        { text: "served", highlight: true },
+        { text: " it with ", highlight: false },
+        { text: "grilled chicken", highlight: true },
+        { text: ".", highlight: false },
       ]
     },
     {
-      en: "Do you usually give tips to the waiters?",
-      pt: "Você costuma dar gorjeta para os garçons?",
+      en: "I had never tasted such a delicious seasoning before I went to that steakhouse with my friends.",
+      pt: "Eu nunca tinha provado um tempero tão delicioso antes de ir àquela churrascaria com meus amigos.",
       parts: [
-        { text: "Do you usually ", highlight: false },
-        { text: "give", highlight: true },
+        { text: "I ", highlight: false },
+        { text: "had never tasted", highlight: true },
+        { text: " such a delicious ", highlight: false },
+        { text: "seasoning", highlight: true },
+        { text: " before I ", highlight: false },
+        { text: "went", highlight: true },
+        { text: " to that ", highlight: false },
+        { text: "steakhouse", highlight: true },
+        { text: " with my friends.", highlight: false },
+      ]
+    },
+    {
+      en: "If you go to Brazil, you should try farofa with barbecue because it adds a crunchy texture to the meal.",
+      pt: "Se você for ao Brasil, você deveria experimentar farofa com churrasco porque ela adiciona uma textura crocante à refeição.",
+      parts: [
+        { text: "If you ", highlight: false },
+        { text: "go", highlight: true },
+        { text: " to Brazil, you ", highlight: false },
+        { text: "should try", highlight: true },
         { text: " ", highlight: false },
-        { text: "tips", highlight: true },
-        { text: " to the ", highlight: false },
-        { text: "waiters", highlight: true },
-        { text: "?", highlight: false },
+        { text: "farofa", highlight: true },
+        { text: " with ", highlight: false },
+        { text: "barbecue", highlight: true },
+        { text: " because it adds a ", highlight: false },
+        { text: "crunchy texture", highlight: true },
+        { text: " to the meal.", highlight: false },
       ]
     },
     {
-      en: "I love that place! Their food is very good!",
-      pt: "Eu amo aquele lugar! A comida deles é muito boa!",
+      en: "Next time I cook dinner, I'm going to prepare a homemade tomato sauce with fresh basil and oregano.",
+      pt: "Na próxima vez que eu cozinhar o jantar, eu vou preparar um molho de tomate caseiro com manjericão fresco e orégano.",
       parts: [
-        { text: "I ", highlight: false },
-        { text: "love", highlight: true },
-        { text: " that place! Their ", highlight: false },
-        { text: "food", highlight: true },
-        { text: " is very ", highlight: false },
-        { text: "good", highlight: true },
-        { text: "!", highlight: false },
-      ]
-    },
-    {
-      en: "I want some tomato sauce, please.",
-      pt: "Eu quero um pouco de molho de tomate, por favor.",
-      parts: [
-        { text: "I ", highlight: false },
-        { text: "want", highlight: true },
-        { text: " some ", highlight: false },
+        { text: "Next time I ", highlight: false },
+        { text: "cook", highlight: true },
+        { text: " dinner, I'm ", highlight: false },
+        { text: "going to prepare", highlight: true },
+        { text: " a ", highlight: false },
+        { text: "homemade", highlight: true },
+        { text: " ", highlight: false },
         { text: "tomato sauce", highlight: true },
-        { text: ", please.", highlight: false },
+        { text: " with fresh basil and oregano.", highlight: false },
       ]
     },
     {
-      en: "Do you want some coffee?",
-      pt: "Você quer um pouco de café?",
+      en: "We were planning to eat out, but we ended up staying home and making our own sauce with garlic and olive oil.",
+      pt: "Nós estávamos planejando comer fora, mas acabamos ficando em casa e fazendo nosso próprio molho com alho e azeite.",
       parts: [
-        { text: "Do you ", highlight: false },
-        { text: "want", highlight: true },
-        { text: " some ", highlight: false },
-        { text: "coffee", highlight: true },
-        { text: "?", highlight: false },
+        { text: "We ", highlight: false },
+        { text: "were planning", highlight: true },
+        { text: " to ", highlight: false },
+        { text: "eat out", highlight: true },
+        { text: ", but we ", highlight: false },
+        { text: "ended up", highlight: true },
+        { text: " staying home and ", highlight: false },
+        { text: "making", highlight: true },
+        { text: " our own ", highlight: false },
+        { text: "sauce", highlight: true },
+        { text: " with garlic and olive oil.", highlight: false },
       ]
     },
     {
-      en: "We don't have any food. Let's go to the grocery store.",
-      pt: "Nós não temos nenhuma comida. Vamos ao supermercado.",
+      en: "By the time the main dish arrived, I had already finished the small bowl of vinagrete that came as an appetizer.",
+      pt: "Quando o prato principal chegou, eu já tinha terminado a pequena tigela de vinagrete que veio como entrada.",
       parts: [
-        { text: "We don't have ", highlight: false },
-        { text: "any", highlight: true },
+        { text: "By the time the main ", highlight: false },
+        { text: "dish", highlight: true },
         { text: " ", highlight: false },
-        { text: "food", highlight: true },
-        { text: ". Let's go to the grocery store.", highlight: false },
+        { text: "arrived", highlight: true },
+        { text: ", I ", highlight: false },
+        { text: "had already finished", highlight: true },
+        { text: " the small bowl of ", highlight: false },
+        { text: "vinagrete", highlight: true },
+        { text: " that came as an ", highlight: false },
+        { text: "appetizer", highlight: true },
+        { text: ".", highlight: false },
       ]
     },
     {
-      en: "Do you have any salad?",
-      pt: "Você tem alguma salada?",
-      parts: [
-        { text: "Do you have ", highlight: false },
-        { text: "any", highlight: true },
-        { text: " ", highlight: false },
-        { text: "salad", highlight: true },
-        { text: "?", highlight: false },
-      ]
-    },
-    {
-      en: "I want to give a tip to the waiter.",
-      pt: "Eu quero dar uma gorjeta ao garçom.",
+      en: "I will definitely order the fish with lemon sauce next time, even though the waiter said the pepper sauce was the most popular.",
+      pt: "Eu definitivamente vou pedir o peixe com molho de limão na próxima vez, mesmo que o garçom tenha dito que o molho de pimenta era o mais popular.",
       parts: [
         { text: "I ", highlight: false },
-        { text: "want", highlight: true },
-        { text: " to ", highlight: false },
-        { text: "give", highlight: true },
-        { text: " a ", highlight: false },
-        { text: "tip", highlight: true },
-        { text: " to the waiter.", highlight: false },
+        { text: "will definitely order", highlight: true },
+        { text: " the fish with ", highlight: false },
+        { text: "lemon sauce", highlight: true },
+        { text: " next time, even though the waiter said the ", highlight: false },
+        { text: "pepper sauce", highlight: true },
+        { text: " was the most popular.", highlight: false },
       ]
     },
     {
-      en: "This is the best restaurant in the city.",
-      pt: "Este é o melhor restaurante da cidade.",
+      en: "While we were waiting for the bill, the chef came to our table and explained how he made the special seasoning for the steak.",
+      pt: "Enquanto estávamos esperando a conta, o chef veio à nossa mesa e explicou como ele fez o tempero especial para o bife.",
       parts: [
-        { text: "This is the ", highlight: false },
-        { text: "best", highlight: true },
+        { text: "While we ", highlight: false },
+        { text: "were waiting", highlight: true },
+        { text: " for the ", highlight: false },
+        { text: "bill", highlight: true },
+        { text: ", the ", highlight: false },
+        { text: "chef", highlight: true },
         { text: " ", highlight: false },
-        { text: "restaurant", highlight: true },
-        { text: " in the ", highlight: false },
-        { text: "city", highlight: true },
+        { text: "came", highlight: true },
+        { text: " to our table and ", highlight: false },
+        { text: "explained", highlight: true },
+        { text: " how he made the special ", highlight: false },
+        { text: "seasoning", highlight: true },
+        { text: " for the ", highlight: false },
+        { text: "steak", highlight: true },
+        { text: ".", highlight: false },
+      ]
+    },
+    {
+      en: "If I had known that the hot sauce was so strong, I would have asked for a milder one.",
+      pt: "Se eu soubesse que o molho de pimenta era tão forte, eu teria pedido um mais suave.",
+      parts: [
+        { text: "If I ", highlight: false },
+        { text: "had known", highlight: true },
+        { text: " that the ", highlight: false },
+        { text: "hot sauce", highlight: true },
+        { text: " was so strong, I ", highlight: false },
+        { text: "would have asked", highlight: true },
+        { text: " for a ", highlight: false },
+        { text: "milder", highlight: true },
+        { text: " one.", highlight: false },
+      ]
+    },
+    {
+      en: "In the future, I want to learn how to make farofa properly, so I can serve it whenever I invite my friends over for a Brazilian-style dinner.",
+      pt: "No futuro, eu quero aprender a fazer farofa corretamente, para que eu possa servi-la sempre que eu convidar meus amigos para um jantar no estilo brasileiro.",
+      parts: [
+        { text: "In the future, I ", highlight: false },
+        { text: "want to learn", highlight: true },
+        { text: " how to ", highlight: false },
+        { text: "make", highlight: true },
+        { text: " ", highlight: false },
+        { text: "farofa", highlight: true },
+        { text: " properly, so I can ", highlight: false },
+        { text: "serve", highlight: true },
+        { text: " it whenever I ", highlight: false },
+        { text: "invite", highlight: true },
+        { text: " my friends over for a ", highlight: false },
+        { text: "Brazilian-style dinner", highlight: true },
         { text: ".", highlight: false },
       ]
     },
@@ -1237,7 +1287,7 @@ export default function Lesson43EatingOut() {
               <div>
                 <h2 className="text-2xl font-bold">🔹 MAKE IT YOURS!</h2>
                 <p className="mt-2 text-blue-100 italic text-sm">
-                  Substitua as palavras em <span className="text-blue-300 font-bold">azul</span> por outras palavras que você já aprendeu para criar novas frases e praticar sua pronúncia.
+                  Replace the words in <span className="text-blue-300 font-bold">blue</span> with other words you have already learned to create new sentences in the past, present, and future. Pay attention to the verb tenses, and try to make your sentences longer and more natural.
                 </p>
               </div>
               <PencilIcon onClick={() => openNoteModal('Make it yours!')} />
@@ -1342,12 +1392,40 @@ export default function Lesson43EatingOut() {
             </div>
 
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-xl">
-              <h3 className="font-bold text-lg mb-4 text-yellow-300">GOODBYES</h3>
+              <h3 className="font-bold text-lg mb-4 text-yellow-300">SAUCES &amp; SEASONINGS</h3>
+              <p className="text-blue-200 text-sm italic mb-2">
+                Molhos e temperos brasileiros — como falar sobre eles em inglês
+              </p>
               <div className="space-y-4">
                 {[
-                  { en: "Bye! See you.", pt: "Tchau! Até mais." },
-                  { en: "See you later.", pt: "Até mais tarde." },
-                  { en: "Good night!", pt: "Boa noite!" },
+                  {
+                    en: "If you want to make a real Brazilian barbecue, you should serve some farofa with the grilled meat.",
+                    pt: "Se você quer fazer um churrasco brasileiro de verdade, você deveria servir um pouco de farofa com a carne grelhada."
+                  },
+                  {
+                    en: "Farofa is made with toasted cassava flour, and some people like to add bacon, onions, or eggs to give it more flavor.",
+                    pt: "A farofa é feita com farinha de mandioca torrada, e algumas pessoas gostam de adicionar bacon, cebola ou ovos para dar mais sabor."
+                  },
+                  {
+                    en: "Vinagrete is a fresh sauce that we usually make with tomatoes, onions, and peppers, and it goes really well with grilled chicken.",
+                    pt: "O vinagrete é um molho fresco que normalmente fazemos com tomate, cebola e pimentão, e combina muito bem com frango grelhado."
+                  },
+                  {
+                    en: "My grandmother always makes her own garlic sauce because she doesn't like to buy any ready-made sauces at the supermarket.",
+                    pt: "Minha avó sempre faz o próprio molho de alho porque ela não gosta de comprar nenhum molho pronto no supermercado."
+                  },
+                  {
+                    en: "Do you want some hot sauce? This one is quite strong, but it gives the dish a wonderful taste.",
+                    pt: "Você quer um pouco de molho de pimenta? Esse aqui é bem forte, mas dá um sabor maravilhoso ao prato."
+                  },
+                  {
+                    en: "Some people don't use any seasoning at all, but I think a little salt, black pepper, and oregano make all the difference.",
+                    pt: "Algumas pessoas não usam nenhum tempero, mas eu acho que um pouco de sal, pimenta-do-reino e orégano fazem toda a diferença."
+                  },
+                  {
+                    en: "In my opinion, the best sauce for fish is a simple mix of olive oil, lemon, and fresh herbs.",
+                    pt: "Na minha opinião, o melhor molho para peixe é uma mistura simples de azeite, limão e ervas frescas."
+                  },
                 ].map((item, idx) => (
                   <div key={idx}>
                     <div className="flex items-center mb-1">

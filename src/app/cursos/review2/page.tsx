@@ -257,17 +257,22 @@ export default function ReviewLessonLanguagesCountries() {
             <h1 className="text-5xl font-bold text-gray-800 mb-4">
               🌍 REVIEW 2 – Languages & Countries
             </h1>
-            <p className="text-2xl text-gray-600 mb-6">
+            <p className="text-2xl text-gray-600 mb-8">
               Practice and reinforce what you've learned about languages, countries, and daily routines!
             </p>
-            <div className="w-48 h-48 mx-auto relative">
-              <Image
-                src="https://i.ibb.co/jPzWQkM9/review2-img.jpg"
-                alt="Languages and Countries Review"
-                fill
-                className="rounded-2xl object-cover shadow-lg"
-                unoptimized
-              />
+            
+            {/* IMAGEM MAIOR - SUBSTITUÍDA */}
+            <div className="w-full max-w-3xl mx-auto">
+              <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-2xl border-4 border-indigo-300">
+                <Image
+                  src="https://github.com/Sullivan-code/english-audios/blob/main/Aprenda%20idiomas%2C%20explore%20o%20mundo.png?raw=true"
+                  alt="Aprenda idiomas, explore o mundo - Languages and Countries Review"
+                  fill
+                  className="object-cover"
+                  unoptimized
+                  priority
+                />
+              </div>
             </div>
           </div>
         </div>

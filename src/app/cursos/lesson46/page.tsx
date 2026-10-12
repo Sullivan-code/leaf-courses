@@ -162,6 +162,72 @@ const interrogativeExercises = [
   { key: "int-6", sentence: "They need a fork and a knife.", answer: "Do they need a fork and a knife?" }
 ];
 
+// ==========================================
+// CHANGE INTO THE PAST EXERCISES (NEW SECTION)
+// ==========================================
+const pastExercises = [
+  {
+    key: "past-1",
+    sentence: "The Italian restaurant opens at noon every day.",
+    pt: "O restaurante italiano abre ao meio-dia todos os dias.",
+    correctAnswer: "The Italian restaurant opened at noon yesterday."
+  },
+  {
+    key: "past-2",
+    sentence: "The coffee shop closes at 11 p.m. on weekends.",
+    pt: "A cafeteria fecha às 23h nos finais de semana.",
+    correctAnswer: "The coffee shop closed at 11 p.m. last weekend."
+  },
+  {
+    key: "past-3",
+    sentence: "We open a bottle of wine when we celebrate.",
+    pt: "Nós abrimos uma garrafa de vinho quando comemoramos.",
+    correctAnswer: "We opened a bottle of wine when we celebrated."
+  },
+  {
+    key: "past-4",
+    sentence: "The waiter closes the restaurant after the last customer leaves.",
+    pt: "O garçom fecha o restaurante depois que o último cliente sai.",
+    correctAnswer: "The waiter closed the restaurant after the last customer left."
+  },
+  {
+    key: "past-5",
+    sentence: "They don't open the snack bar on Sundays.",
+    pt: "Eles não abrem a lanchonete aos domingos.",
+    correctAnswer: "They didn't open the snack bar on Sunday."
+  },
+  {
+    key: "past-6",
+    sentence: "Does the ice cream parlor close early in winter?",
+    pt: "A sorveteria fecha cedo no inverno?",
+    correctAnswer: "Did the ice cream parlor close early last winter?"
+  },
+  {
+    key: "past-7",
+    sentence: "My parents open their restaurant at 7 a.m.",
+    pt: "Meus pais abrem o restaurante deles às 7 da manhã.",
+    correctAnswer: "My parents opened their restaurant at 7 a.m."
+  },
+  {
+    key: "past-8",
+    sentence: "She closes the cafeteria at midnight.",
+    pt: "Ela fecha a cafeteria à meia-noite.",
+    correctAnswer: "She closed the cafeteria at midnight."
+  },
+  {
+    key: "past-9",
+    sentence: "The manager doesn't open the store on holidays.",
+    pt: "O gerente não abre a loja nos feriados.",
+    correctAnswer: "The manager didn't open the store on the holiday."
+  },
+  {
+    key: "past-10",
+    sentence: "Do you open the bakery before sunrise?",
+    pt: "Você abre a padaria antes do nascer do sol?",
+    correctAnswer: "Did you open the bakery before sunrise?"
+  }
+];
+
 // Pronunciation Words
 const pronunciationWords = [
   { word: "water", phonetic: "/ˈwɔː.tər/", example: "I want a glass of water, please." },
@@ -409,6 +475,7 @@ export default function Lesson46ExpressYourself() {
   // Section expand/collapse state
   const [expandedSections, setExpandedSections] = useState({
     dialogue: true,
+    past: true,
     substitution1: true,
     negative: true,
     substitution2: true,
@@ -426,6 +493,11 @@ export default function Lesson46ExpressYourself() {
   const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
   const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
   
+  // PAST exercises state
+  const [pastAnswers, setPastAnswers] = useState<Record<string, string>>({});
+  const [showPastResults, setShowPastResults] = useState<Record<string, boolean>>({});
+  const [pastAnswerResults, setPastAnswerResults] = useState<Record<string, boolean>>({});
+  
   // Video answers state
   const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
   const [showVideoResults, setShowVideoResults] = useState<Record<string, boolean>>({});
@@ -442,6 +514,9 @@ export default function Lesson46ExpressYourself() {
         setWrittenAnswers(data.writtenAnswers || {});
         setAnswerResults(data.answerResults || {});
         setShowAnswerResults(data.showAnswerResults || {});
+        if (data.pastAnswers) setPastAnswers(data.pastAnswers);
+        if (data.showPastResults) setShowPastResults(data.showPastResults);
+        if (data.pastAnswerResults) setPastAnswerResults(data.pastAnswerResults);
         setVideoAnswers(data.videoAnswers || {});
         setShowVideoResults(data.showVideoResults || {});
         setVideoResults(data.videoResults || {});
@@ -454,9 +529,10 @@ export default function Lesson46ExpressYourself() {
   const saveAllAnswers = () => {
     const data = { 
       subs1Exercises, subs2Exercises, writtenAnswers, answerResults, showAnswerResults,
+      pastAnswers, showPastResults, pastAnswerResults,
       videoAnswers, showVideoResults, videoResults,
       expandedSections, lastUpdated: new Date().toISOString(), 
-      lessonName: "Lesson 46 - Express Yourself", version: "1.0" 
+      lessonName: "Lesson 46 - Express Yourself", version: "1.1" 
     };
     try {
       localStorage.setItem("lesson46Answers", JSON.stringify(data));
@@ -471,6 +547,9 @@ export default function Lesson46ExpressYourself() {
       setWrittenAnswers({});
       setAnswerResults({}); 
       setShowAnswerResults({});
+      setPastAnswers({});
+      setShowPastResults({});
+      setPastAnswerResults({});
       setVideoAnswers({});
       setShowVideoResults({});
       setVideoResults({});
@@ -493,6 +572,25 @@ export default function Lesson46ExpressYourself() {
     const isCorrect = checkAnswer(user, correct);
     setAnswerResults(prev => ({ ...prev, [key]: isCorrect }));
     setShowAnswerResults(prev => ({ ...prev, [key]: true }));
+  };
+
+  // ============================================
+  // PAST exercise handlers
+  // ============================================
+  const handlePastAnswerChange = (key: string, value: string) => {
+    setPastAnswers(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handlePastCheck = (key: string, correct: string) => {
+    const userAnswer = pastAnswers[key] || "";
+    const isCorrect = checkAnswer(userAnswer, correct);
+    setPastAnswerResults(prev => ({ ...prev, [key]: isCorrect }));
+    setShowPastResults(prev => ({ ...prev, [key]: true }));
+  };
+
+  const clearPastAnswer = (key: string) => {
+    setPastAnswers(prev => ({ ...prev, [key]: "" }));
+    setShowPastResults(prev => ({ ...prev, [key]: false }));
   };
   
   // Video handlers
@@ -574,6 +672,90 @@ export default function Lesson46ExpressYourself() {
               })}
             </div>
           </div>
+        </div>
+
+        {/* ============================================ */}
+        {/* CHANGE INTO THE PAST (NEW SECTION) */}
+        {/* ============================================ */}
+        <div className="bg-amber-50 border-2 border-amber-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white py-4 px-8 flex justify-between items-center">
+            <h2 className="text-2xl font-bold">⏪ CHANGE INTO THE PAST (opened / closed)</h2>
+            <button onClick={() => toggleSection('past')} className="p-2 rounded-full hover:bg-amber-700 transition">
+              {expandedSections.past ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+            </button>
+          </div>
+          
+          {expandedSections.past && (
+            <div className="p-8">
+              {/* Grammar box */}
+              <div className="mb-6 p-5 bg-white rounded-xl border-2 border-amber-200">
+                <h3 className="text-lg font-bold text-amber-800 mb-3">
+                  📚 Review: The past forms of "to open" and "to close"
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                    <p className="font-bold text-amber-800 mb-2">to open → <span className="text-red-600">opened</span></p>
+                    <ul className="text-sm text-gray-700 space-y-1 ml-4 list-disc">
+                      <li>I <b>opened</b> the restaurant.</li>
+                      <li>She <b>opened</b> a bottle of wine.</li>
+                      <li className="text-red-700">Negative: They <b>didn't open</b> the store.</li>
+                      <li className="text-purple-700">Question: <b>Did</b> the coffee shop <b>open</b> early?</li>
+                    </ul>
+                  </div>
+                  <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+                    <p className="font-bold text-amber-800 mb-2">to close → <span className="text-red-600">closed</span></p>
+                    <ul className="text-sm text-gray-700 space-y-1 ml-4 list-disc">
+                      <li>The waiter <b>closed</b> the restaurant.</li>
+                      <li>I <b>closed</b> the cafeteria at midnight.</li>
+                      <li className="text-red-700">Negative: She <b>didn't close</b> the shop.</li>
+                      <li className="text-purple-700">Question: <b>Did</b> the parlor <b>close</b> early?</li>
+                    </ul>
+                  </div>
+                </div>
+                <p className="text-sm text-amber-700 mt-4 text-center italic">
+                  💡 Rewrite each sentence below in the <b>simple past</b>. Pay attention to the verb forms of "to open" and "to close".
+                </p>
+              </div>
+
+              {/* Exercises */}
+              <div className="space-y-4">
+                {pastExercises.map((ex) => (
+                  <div key={ex.key} className="bg-white p-4 rounded-lg border border-amber-200 shadow-sm">
+                    <div className="mb-2">
+                      <p className="font-medium text-amber-800">{ex.sentence}</p>
+                      <p className="text-sm text-gray-600 italic">🇧🇷 {ex.pt}</p>
+                    </div>
+                    <input
+                      type="text"
+                      value={pastAnswers[ex.key] || ""}
+                      onChange={(e) => handlePastAnswerChange(ex.key, e.target.value)}
+                      className="w-full p-2 border border-amber-300 rounded-md focus:ring-2 focus:ring-amber-400 focus:outline-none"
+                      placeholder="Write the sentence in the past..."
+                    />
+                    <div className="flex gap-2 mt-3 flex-wrap">
+                      <button
+                        onClick={() => handlePastCheck(ex.key, ex.correctAnswer)}
+                        className="bg-amber-600 text-white py-2 px-4 rounded-md hover:bg-amber-700 transition"
+                      >
+                        Check Answer
+                      </button>
+                      <button
+                        onClick={() => clearPastAnswer(ex.key)}
+                        className="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    {showPastResults[ex.key] && (
+                      <div className="mt-3">
+                        <AnswerResult isCorrect={pastAnswerResults[ex.key]} correctAnswer={ex.correctAnswer} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* DRILLING PRACTICE - SUBSTITUTION PRACTICE I */}

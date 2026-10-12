@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Volume2 } from "lucide-react";
+import { Volume2, Eye, EyeOff } from "lucide-react";
 
 type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar';
 
@@ -26,34 +26,34 @@ interface SpeakTextProps {
 const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
   const speak = () => {
     if (!text || typeof window === 'undefined') return;
-    
+
     window.speechSynthesis.cancel();
-    
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
     utterance.rate = 0.9;
     utterance.pitch = 1.0;
-    
+
     const voices = window.speechSynthesis.getVoices();
-    
-    const americanFemaleVoices = voices.filter(voice => 
-      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
-      (voice.name.toLowerCase().includes('samantha') || 
+
+    const americanFemaleVoices = voices.filter(voice =>
+      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+      (voice.name.toLowerCase().includes('samantha') ||
        voice.name.toLowerCase().includes('google us english') ||
        voice.name.toLowerCase().includes('siri') ||
        voice.name.toLowerCase().includes('female') ||
        voice.name === 'Google US English' ||
        voice.name === 'Samantha')
     );
-    
+
     const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
-    
+
     if (americanFemaleVoices.length > 0) {
       utterance.voice = americanFemaleVoices[0];
     } else if (americanVoices.length > 0) {
       utterance.voice = americanVoices[0];
     }
-    
+
     window.speechSynthesis.speak(utterance);
   };
 
@@ -81,24 +81,24 @@ const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
           utterance.lang = 'en-US';
           utterance.rate = 0.85;
           utterance.pitch = 1.0;
-          
+
           const voices = window.speechSynthesis.getVoices();
-          
-          const americanFemaleVoices = voices.filter(voice => 
-            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) && 
-            (voice.name.toLowerCase().includes('samantha') || 
+
+          const americanFemaleVoices = voices.filter(voice =>
+            (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+            (voice.name.toLowerCase().includes('samantha') ||
              voice.name.toLowerCase().includes('google us english') ||
              voice.name === 'Google US English')
           );
-          
+
           const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
-          
+
           if (americanFemaleVoices.length > 0) {
             utterance.voice = americanFemaleVoices[0];
           } else if (americanVoices.length > 0) {
             utterance.voice = americanVoices[0];
           }
-          
+
           window.speechSynthesis.speak(utterance);
         }
       }}
@@ -109,6 +109,120 @@ const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
     </button>
   );
 };
+
+// ============================================
+// SUBSTITUTION EXERCISE COMPONENT
+// ============================================
+type OptionType = string | { label: string; replacement: string; pt?: string };
+
+interface SubstitutionExercise {
+  key: string;
+  original: string;
+  options: OptionType[];
+  currentIndex: number;
+}
+
+function SubstitutionOptions({
+  exercise,
+  onOptionClick,
+}: {
+  exercise: SubstitutionExercise;
+  onOptionClick: (key: string, index: number) => void;
+}) {
+  const [showEnglish, setShowEnglish] = useState(true);
+
+  const isObjectOption = (opt: OptionType): opt is { label: string; replacement: string; pt?: string } => {
+    return typeof opt === 'object' && opt !== null && 'label' in opt && 'replacement' in opt;
+  };
+
+  const currentOption = exercise.options[exercise.currentIndex];
+  let currentSentence: string;
+  let currentPt: string | undefined;
+  if (isObjectOption(currentOption)) {
+    currentSentence = currentOption.replacement;
+    currentPt = currentOption.pt;
+  } else {
+    currentSentence = String(currentOption);
+  }
+
+  const toggleVisibility = () => setShowEnglish(prev => !prev);
+
+  const getOptionLabel = (opt: OptionType): string => isObjectOption(opt) ? opt.label : String(opt);
+  const getOptionReplacement = (opt: OptionType): string => isObjectOption(opt) ? opt.replacement : String(opt);
+
+  return (
+    <div className="bg-white p-4 rounded-lg border border-purple-200">
+      <div className="flex items-start justify-between mb-2">
+        <p className="text-blue-600 font-medium block">{exercise.original}</p>
+        <button
+          onClick={toggleVisibility}
+          className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-700 ml-2 flex-shrink-0"
+          title={showEnglish ? "Ocultar resposta em inglês" : "Mostrar resposta em inglês"}
+        >
+          {showEnglish ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
+
+      {showEnglish && (
+        <div className="mb-3 p-3 bg-blue-50 rounded-md">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-start gap-2">
+              <span className="text-blue-700 font-medium flex-shrink-0">🇺🇸</span>
+              <SpeakSentence text={currentSentence} className="text-blue-700 font-medium">
+                {currentSentence}
+              </SpeakSentence>
+            </div>
+            {currentPt && (
+              <>
+                <div className="border-t border-blue-200 my-1"></div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-600 text-sm flex-shrink-0">🇧🇷</span>
+                  <p className="text-sm text-gray-600">{currentPt}</p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        {exercise.options.map((option, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              onOptionClick(exercise.key, index);
+              if (typeof window !== 'undefined') {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(getOptionReplacement(option));
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+                const voices = window.speechSynthesis.getVoices();
+                const americanFemaleVoices = voices.filter(voice =>
+                  (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+                  (voice.name.toLowerCase().includes('samantha') ||
+                   voice.name.toLowerCase().includes('google us english') ||
+                   voice.name === 'Google US English')
+                );
+                const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+                if (americanFemaleVoices.length > 0) utterance.voice = americanFemaleVoices[0];
+                else if (americanVoices.length > 0) utterance.voice = americanVoices[0];
+                window.speechSynthesis.speak(utterance);
+              }
+            }}
+            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+              exercise.currentIndex === index
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {getOptionLabel(option)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // Note Modal Component
 function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
@@ -134,20 +248,16 @@ function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
           <h3 className="text-xl font-bold">📝 Anotações - {sectionTitle}</h3>
           <p className="text-sm text-blue-100 mt-1">Escreva suas observações, dúvidas ou traduções</p>
         </div>
-        
+
         <div className="p-6">
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Escreva aqui suas anotações...
-- Traduções importantes
-- Dúvidas para o professor
-- Exemplos pessoais
-- Dicas de memorização"
+            placeholder="Escreva aqui suas anotações..."
             className="w-full h-64 p-4 border border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none"
           />
         </div>
-        
+
         <div className="flex justify-end gap-3 p-6 pt-0">
           <button
             onClick={onClose}
@@ -191,14 +301,15 @@ export default function Lesson15PersonalInfoRoutine() {
     usefulPhrases: false,
     grammar: false,
   });
-  
+
   const [noteModal, setNoteModal] = useState<NoteModalState>({
     isOpen: false,
     sectionTitle: '',
     noteContent: '',
   });
-  
+
   const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
+  const [substitutionState, setSubstitutionState] = useState<Record<string, number>>({});
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills({
@@ -221,6 +332,12 @@ export default function Lesson15PersonalInfoRoutine() {
       [noteModal.sectionTitle]: note,
     }));
   };
+
+  const handleOptionClick = (key: string, index: number) => {
+    setSubstitutionState(prev => ({ ...prev, [key]: index }));
+  };
+
+  const getCurrentIndex = (key: string) => substitutionState[key] || 0;
 
   // Initialize voices
   useEffect(() => {
@@ -274,31 +391,647 @@ export default function Lesson15PersonalInfoRoutine() {
     { english: "I need to send this message to my friend.", portuguese: "Eu preciso enviar essa mensagem para meu amigo." }
   ];
 
-  // Real Life Practice Sentences - EXPANDED with more pronoun variations
+  // ========== MAKE IT YOURS – with blue highlighted words ==========
   const realLifeSentences = [
-    { english: "I read the news in the morning.", portuguese: "Eu leio as notícias de manhã." },
-    { english: "We read the news in the morning.", portuguese: "Nós lemos as notícias de manhã." },
-    { english: "They read the news in the morning.", portuguese: "Eles leem as notícias de manhã." },
-    { english: "Do you like to read magazines?", portuguese: "Você gosta de ler revistas?" },
-    { english: "Do you like to read books?", portuguese: "Você gosta de ler livros?" },
-    { english: "Do you like to read stories?", portuguese: "Você gosta de ler histórias?" },
-    { english: "Do you read magazines online?", portuguese: "Você lê revistas online?" },
-    { english: "Do you read books online?", portuguese: "Você lê livros online?" },
-    { english: "Do you read news online?", portuguese: "Você lê notícias online?" },
-    { english: "Where do you read your e-mails?", portuguese: "Onde você lê seus e-mails?" },
-    { english: "I read my e-mails at work.", portuguese: "Eu leio meus e-mails no trabalho." },
-    { english: "I read my e-mails at home.", portuguese: "Eu leio meus e-mails em casa." },
-    { english: "I read my e-mails at school.", portuguese: "Eu leio meus e-mails na escola." },
-    { english: "Do you read your messages on your cell phone?", portuguese: "Você lê suas mensagens no seu telefone celular?" },
-    { english: "We have a small car.", portuguese: "Nós temos um carro pequeno." },
-    { english: "Do you have a new e-mail address?", portuguese: "Você tem um novo endereço de e-mail?" },
-    { english: "We like to go to the movies.", portuguese: "Nós gostamos de ir ao cinema." },
-    { english: "Do they prefer to go to the mall in the afternoon?", portuguese: "Eles preferem ir ao shopping à tarde?" },
-    { english: "Do we have to send this message today?", portuguese: "Nós temos que enviar essa mensagem hoje?" },
-    { english: "You have to send this book to this address.", portuguese: "Você tem que enviar este livro para este endereço." },
-    { english: "He reads the newspaper every morning.", portuguese: "Ele lê o jornal toda manhã." },
-    { english: "She reads stories to her children.", portuguese: "Ela lê histórias para seus filhos." },
-    { english: "It reads the data from the computer.", portuguese: "Ele lê os dados do computador." }
+    {
+      english: "I read the news in the morning.",
+      portuguese: "Eu leio as notícias de manhã.",
+      parts: [
+        { text: "I ", h: false },
+        { text: "read", h: true },
+        { text: " the ", h: false },
+        { text: "news", h: true },
+        { text: " in the ", h: false },
+        { text: "morning", h: true },
+        { text: ".", h: false },
+      ]
+    },
+    {
+      english: "We read the news in the morning.",
+      portuguese: "Nós lemos as notícias de manhã.",
+      parts: [
+        { text: "We ", h: false },
+        { text: "read", h: true },
+        { text: " the ", h: false },
+        { text: "news", h: true },
+        { text: " in the ", h: false },
+        { text: "morning", h: true },
+        { text: ".", h: false },
+      ]
+    },
+    {
+      english: "They read the news in the morning.",
+      portuguese: "Eles leem as notícias de manhã.",
+      parts: [
+        { text: "They ", h: false },
+        { text: "read", h: true },
+        { text: " the ", h: false },
+        { text: "news", h: true },
+        { text: " in the ", h: false },
+        { text: "morning", h: true },
+        { text: ".", h: false },
+      ]
+    },
+    {
+      english: "Do you like to read magazines?",
+      portuguese: "Você gosta de ler revistas?",
+      parts: [
+        { text: "Do you ", h: false },
+        { text: "like", h: true },
+        { text: " to ", h: false },
+        { text: "read", h: true },
+        { text: " ", h: false },
+        { text: "magazines", h: true },
+        { text: "?", h: false },
+      ]
+    },
+    {
+      english: "Do you like to read books?",
+      portuguese: "Você gosta de ler livros?",
+      parts: [
+        { text: "Do you ", h: false },
+        { text: "like", h: true },
+        { text: " to ", h: false },
+        { text: "read", h: true },
+        { text: " ", h: false },
+        { text: "books", h: true },
+        { text: "?", h: false },
+      ]
+    },
+    {
+      english: "Do you like to read stories?",
+      portuguese: "Você gosta de ler histórias?",
+      parts: [
+        { text: "Do you ", h: false },
+        { text: "like", h: true },
+        { text: " to ", h: false },
+        { text: "read", h: true },
+        { text: " ", h: false },
+        { text: "stories", h: true },
+        { text: "?", h: false },
+      ]
+    },
+    {
+      english: "Do you read magazines online?",
+      portuguese: "Você lê revistas online?",
+      parts: [
+        { text: "Do you ", h: false },
+        { text: "read", h: true },
+        { text: " ", h: false },
+        { text: "magazines", h: true },
+        { text: " ", h: false },
+        { text: "online", h: true },
+        { text: "?", h: false },
+      ]
+    },
+    {
+      english: "Where do you read your e-mails?",
+      portuguese: "Onde você lê seus e-mails?",
+      parts: [
+        { text: "Where do you ", h: false },
+        { text: "read", h: true },
+        { text: " your ", h: false },
+        { text: "e-mails", h: true },
+        { text: "?", h: false },
+      ]
+    },
+    {
+      english: "I read my e-mails at work.",
+      portuguese: "Eu leio meus e-mails no trabalho.",
+      parts: [
+        { text: "I ", h: false },
+        { text: "read", h: true },
+        { text: " my ", h: false },
+        { text: "e-mails", h: true },
+        { text: " at ", h: false },
+        { text: "work", h: true },
+        { text: ".", h: false },
+      ]
+    },
+    {
+      english: "I read my e-mails at home.",
+      portuguese: "Eu leio meus e-mails em casa.",
+      parts: [
+        { text: "I ", h: false },
+        { text: "read", h: true },
+        { text: " my ", h: false },
+        { text: "e-mails", h: true },
+        { text: " at ", h: false },
+        { text: "home", h: true },
+        { text: ".", h: false },
+      ]
+    },
+    {
+      english: "Do you read your messages on your cell phone?",
+      portuguese: "Você lê suas mensagens no seu telefone celular?",
+      parts: [
+        { text: "Do you ", h: false },
+        { text: "read", h: true },
+        { text: " your ", h: false },
+        { text: "messages", h: true },
+        { text: " on your ", h: false },
+        { text: "cell phone", h: true },
+        { text: "?", h: false },
+      ]
+    },
+    {
+      english: "We have a small car.",
+      portuguese: "Nós temos um carro pequeno.",
+      parts: [
+        { text: "We ", h: false },
+        { text: "have", h: true },
+        { text: " a ", h: false },
+        { text: "small car", h: true },
+        { text: ".", h: false },
+      ]
+    },
+    {
+      english: "Do you have a new e-mail address?",
+      portuguese: "Você tem um novo endereço de e-mail?",
+      parts: [
+        { text: "Do you ", h: false },
+        { text: "have", h: true },
+        { text: " a ", h: false },
+        { text: "new e-mail address", h: true },
+        { text: "?", h: false },
+      ]
+    },
+    {
+      english: "We like to go to the movies.",
+      portuguese: "Nós gostamos de ir ao cinema.",
+      parts: [
+        { text: "We ", h: false },
+        { text: "like", h: true },
+        { text: " to go to the ", h: false },
+        { text: "movies", h: true },
+        { text: ".", h: false },
+      ]
+    },
+    {
+      english: "Do they prefer to go to the mall in the afternoon?",
+      portuguese: "Eles preferem ir ao shopping à tarde?",
+      parts: [
+        { text: "Do they ", h: false },
+        { text: "prefer", h: true },
+        { text: " to go to the ", h: false },
+        { text: "mall", h: true },
+        { text: " in the ", h: false },
+        { text: "afternoon", h: true },
+        { text: "?", h: false },
+      ]
+    },
+    {
+      english: "Do we have to send this message today?",
+      portuguese: "Nós temos que enviar essa mensagem hoje?",
+      parts: [
+        { text: "Do we ", h: false },
+        { text: "have to send", h: true },
+        { text: " this ", h: false },
+        { text: "message", h: true },
+        { text: " ", h: false },
+        { text: "today", h: true },
+        { text: "?", h: false },
+      ]
+    },
+    {
+      english: "You have to send this book to this address.",
+      portuguese: "Você tem que enviar este livro para este endereço.",
+      parts: [
+        { text: "You ", h: false },
+        { text: "have to send", h: true },
+        { text: " this ", h: false },
+        { text: "book", h: true },
+        { text: " to this ", h: false },
+        { text: "address", h: true },
+        { text: ".", h: false },
+      ]
+    },
+    {
+      english: "He reads the newspaper every morning.",
+      portuguese: "Ele lê o jornal toda manhã.",
+      parts: [
+        { text: "He ", h: false },
+        { text: "reads", h: true },
+        { text: " the ", h: false },
+        { text: "newspaper", h: true },
+        { text: " every ", h: false },
+        { text: "morning", h: true },
+        { text: ".", h: false },
+      ]
+    },
+    {
+      english: "She reads stories to her children.",
+      portuguese: "Ela lê histórias para seus filhos.",
+      parts: [
+        { text: "She ", h: false },
+        { text: "reads", h: true },
+        { text: " ", h: false },
+        { text: "stories", h: true },
+        { text: " to her ", h: false },
+        { text: "children", h: true },
+        { text: ".", h: false },
+      ]
+    },
+    {
+      english: "It reads the data from the computer.",
+      portuguese: "Ele lê os dados do computador.",
+      parts: [
+        { text: "It ", h: false },
+        { text: "reads", h: true },
+        { text: " the ", h: false },
+        { text: "data", h: true },
+        { text: " from the ", h: false },
+        { text: "computer", h: true },
+        { text: ".", h: false },
+      ]
+    },
+  ];
+
+  // ========== VERBS SUBSTITUTION ==========
+  const verbsSubstitution: SubstitutionExercise[] = [
+    {
+      key: "verb-1",
+      original: "I go. / Eu vou. / Você vai. / Eles vão.",
+      options: [
+        { label: "I go", replacement: "I go.", pt: "Eu vou." },
+        { label: "You go", replacement: "You go.", pt: "Você vai." },
+        { label: "They go", replacement: "They go.", pt: "Eles vão." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-2",
+      original: "Eu não leio à noite. / Elas / Nós.",
+      options: [
+        { label: "Eu não", replacement: "I don't read at night.", pt: "Eu não leio à noite." },
+        { label: "Elas não", replacement: "They don't read at night.", pt: "Elas não leem à noite." },
+        { label: "Nós não", replacement: "We don't read at night.", pt: "Nós não lemos à noite." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-3",
+      original: "Você lê à noite? / à tarde / de manhã.",
+      options: [
+        { label: "à noite", replacement: "Do you read at night?", pt: "Você lê à noite?" },
+        { label: "à tarde", replacement: "Do you read in the afternoon?", pt: "Você lê à tarde?" },
+        { label: "de manhã", replacement: "Do you read in the morning?", pt: "Você lê de manhã?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-4",
+      original: "I read to my children. / meu professor / meus amigos.",
+      options: [
+        { label: "my children", replacement: "I read to my children.", pt: "Eu leio para meus filhos." },
+        { label: "my teacher", replacement: "I read to my teacher.", pt: "Eu leio para meu professor." },
+        { label: "my friends", replacement: "I read to my friends.", pt: "Eu leio para meus amigos." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-5",
+      original: "Nós temos que ler em inglês. / espanhol / português.",
+      options: [
+        { label: "inglês", replacement: "We have to read in English.", pt: "Nós temos que ler em inglês." },
+        { label: "espanhol", replacement: "We have to read in Spanish.", pt: "Nós temos que ler em espanhol." },
+        { label: "português", replacement: "We have to read in Portuguese.", pt: "Nós temos que ler em português." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-6",
+      original: "Eu gosto muito de ler. / Nós / Você.",
+      options: [
+        { label: "Eu", replacement: "I really like to read.", pt: "Eu gosto muito de ler." },
+        { label: "Nós", replacement: "We really like to read.", pt: "Nós gostamos muito de ler." },
+        { label: "Você", replacement: "You really like to read.", pt: "Você gosta muito de ler." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-7",
+      original: "enviar / Eu envio. / Você envia. / Eles enviam.",
+      options: [
+        { label: "enviar", replacement: "to send.", pt: "enviar" },
+        { label: "Eu envio", replacement: "I send.", pt: "Eu envio." },
+        { label: "Você envia", replacement: "You send.", pt: "Você envia." },
+        { label: "Eles enviam", replacement: "They send.", pt: "Eles enviam." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-8",
+      original: "Eles não enviam. / Você / Eu.",
+      options: [
+        { label: "Eles", replacement: "They don't send.", pt: "Eles não enviam." },
+        { label: "Você", replacement: "You don't send.", pt: "Você não envia." },
+        { label: "Eu", replacement: "I don't send.", pt: "Eu não envio." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-9",
+      original: "Você envia? / Elas / Eu.",
+      options: [
+        { label: "Você", replacement: "Do you send?", pt: "Você envia?" },
+        { label: "Elas", replacement: "Do they send?", pt: "Elas enviam?" },
+        { label: "Eu", replacement: "Do I send?", pt: "Eu envio?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-10",
+      original: "O que você quer enviar? / ler / comer.",
+      options: [
+        { label: "enviar", replacement: "What do you want to send?", pt: "O que você quer enviar?" },
+        { label: "ler", replacement: "What do you want to read?", pt: "O que você quer ler?" },
+        { label: "comer", replacement: "What do you want to eat?", pt: "O que você quer comer?" },
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ========== VOCABULARY SUBSTITUTION ==========
+  const vocabSubstitution: SubstitutionExercise[] = [
+    {
+      key: "vocab-1",
+      original: "Eu leio notícias de manhã. / Nós lemos / Eles leem.",
+      options: [
+        { label: "Eu", replacement: "I read the news in the morning.", pt: "Eu leio as notícias de manhã." },
+        { label: "Nós", replacement: "We read the news in the morning.", pt: "Nós lemos as notícias de manhã." },
+        { label: "Eles", replacement: "They read the news in the morning.", pt: "Eles leem as notícias de manhã." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-2",
+      original: "Você gosta de ler revistas? / livros / histórias.",
+      options: [
+        { label: "revistas", replacement: "Do you like to read magazines?", pt: "Você gosta de ler revistas?" },
+        { label: "livros", replacement: "Do you like to read books?", pt: "Você gosta de ler livros?" },
+        { label: "histórias", replacement: "Do you like to read stories?", pt: "Você gosta de ler histórias?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-3",
+      original: "Do you read magazines online? / livros / notícias.",
+      options: [
+        { label: "magazines", replacement: "Do you read magazines online?", pt: "Você lê revistas online?" },
+        { label: "books", replacement: "Do you read books online?", pt: "Você lê livros online?" },
+        { label: "news", replacement: "Do you read the news online?", pt: "Você lê as notícias online?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-4",
+      original: "Você lê seus e-mails no trabalho? / em casa / na escola.",
+      options: [
+        { label: "no trabalho", replacement: "Do you read your e-mails at work?", pt: "Você lê seus e-mails no trabalho?" },
+        { label: "em casa", replacement: "Do you read your e-mails at home?", pt: "Você lê seus e-mails em casa?" },
+        { label: "na escola", replacement: "Do you read your e-mails at school?", pt: "Você lê seus e-mails na escola?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-5",
+      original: "Eu leio histórias para meus filhos. / colegas de classe / professores.",
+      options: [
+        { label: "meus filhos", replacement: "I read stories to my children.", pt: "Eu leio histórias para meus filhos." },
+        { label: "colegas de classe", replacement: "I read stories to my classmates.", pt: "Eu leio histórias para meus colegas de classe." },
+        { label: "professores", replacement: "I read stories to my teachers.", pt: "Eu leio histórias para meus professores." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-6",
+      original: "I send messages to my mother. / meu pai / meu amigo.",
+      options: [
+        { label: "my mother", replacement: "I send messages to my mother.", pt: "Eu envio mensagens para minha mãe." },
+        { label: "my father", replacement: "I send messages to my father.", pt: "Eu envio mensagens para meu pai." },
+        { label: "my friend", replacement: "I send messages to my friend.", pt: "Eu envio mensagens para meu amigo." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-7",
+      original: "Você precisa enviar um e-mail para seu chefe. / colega de trabalho / professor.",
+      options: [
+        { label: "chefe", replacement: "You need to send an e-mail to your boss.", pt: "Você precisa enviar um e-mail para seu chefe." },
+        { label: "colega", replacement: "You need to send an e-mail to your co-worker.", pt: "Você precisa enviar um e-mail para seu colega de trabalho." },
+        { label: "professor", replacement: "You need to send an e-mail to your teacher.", pt: "Você precisa enviar um e-mail para seu professor." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-8",
+      original: "Eu gosto de enviar mensagens para meus amigos. / colegas de trabalho / minha família.",
+      options: [
+        { label: "meus amigos", replacement: "I like to send messages to my friends.", pt: "Eu gosto de enviar mensagens para meus amigos." },
+        { label: "colegas de trabalho", replacement: "I like to send messages to my co-workers.", pt: "Eu gosto de enviar mensagens para meus colegas de trabalho." },
+        { label: "minha família", replacement: "I like to send messages to my family.", pt: "Eu gosto de enviar mensagens para minha família." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-9",
+      original: "I have a big house. / pequena / nova.",
+      options: [
+        { label: "big", replacement: "I have a big house.", pt: "Eu tenho uma casa grande." },
+        { label: "small", replacement: "I have a small house.", pt: "Eu tenho uma casa pequena." },
+        { label: "new", replacement: "I have a new house.", pt: "Eu tenho uma casa nova." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-10",
+      original: "Eu tenho uma senha nova. / pequena / grande.",
+      options: [
+        { label: "nova", replacement: "I have a new password.", pt: "Eu tenho uma senha nova." },
+        { label: "pequena", replacement: "I have a small password.", pt: "Eu tenho uma senha pequena." },
+        { label: "grande", replacement: "I have a big password.", pt: "Eu tenho uma senha grande." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-11",
+      original: "Eles têm um carro pequeno. / grande / novo.",
+      options: [
+        { label: "pequeno", replacement: "They have a small car.", pt: "Eles têm um carro pequeno." },
+        { label: "grande", replacement: "They have a big car.", pt: "Eles têm um carro grande." },
+        { label: "novo", replacement: "They have a new car.", pt: "Eles têm um carro novo." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-12",
+      original: "Qual é o seu número de telefone? / endereço / e-mail.",
+      options: [
+        { label: "telefone", replacement: "What's your phone number?", pt: "Qual é o seu número de telefone?" },
+        { label: "endereço", replacement: "What's your address?", pt: "Qual é o seu endereço?" },
+        { label: "e-mail", replacement: "What's your e-mail address?", pt: "Qual é o seu endereço de e-mail?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-13",
+      original: "I need to speak with the teacher. / as crianças / os americanos.",
+      options: [
+        { label: "the teacher", replacement: "I need to speak with the teacher.", pt: "Eu preciso falar com o professor." },
+        { label: "the children", replacement: "I need to speak with the children.", pt: "Eu preciso falar com as crianças." },
+        { label: "the Americans", replacement: "I need to speak with the Americans.", pt: "Eu preciso falar com os americanos." },
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ========== USEFUL PHRASES SUBSTITUTION ==========
+  const phrasesSubstitution: SubstitutionExercise[] = [
+    {
+      key: "phrase-1",
+      original: "Você lê e-mails todos os dias? / mensagens / notícias.",
+      options: [
+        { label: "e-mails", replacement: "Do you read e-mails every day?", pt: "Você lê e-mails todos os dias?" },
+        { label: "mensagens", replacement: "Do you read messages every day?", pt: "Você lê mensagens todos os dias?" },
+        { label: "notícias", replacement: "Do you read the news every day?", pt: "Você lê as notícias todos os dias?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-2",
+      original: "Eu leio livros no meu tablet. / histórias / revistas.",
+      options: [
+        { label: "livros", replacement: "I read books on my tablet.", pt: "Eu leio livros no meu tablet." },
+        { label: "histórias", replacement: "I read stories on my tablet.", pt: "Eu leio histórias no meu tablet." },
+        { label: "revistas", replacement: "I read magazines on my tablet.", pt: "Eu leio revistas no meu tablet." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-3",
+      original: "Eu leio meus e-mails no meu celular. / tablet / computador.",
+      options: [
+        { label: "celular", replacement: "I read my e-mails on my cell phone.", pt: "Eu leio meus e-mails no meu celular." },
+        { label: "tablet", replacement: "I read my e-mails on my tablet.", pt: "Eu leio meus e-mails no meu tablet." },
+        { label: "computador", replacement: "I read my e-mails on my computer.", pt: "Eu leio meus e-mails no meu computador." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-4",
+      original: "Você prefere ler seus e-mails no seu computador? / gosta / quer.",
+      options: [
+        { label: "prefere", replacement: "Do you prefer to read your e-mails on your computer?", pt: "Você prefere ler seus e-mails no seu computador?" },
+        { label: "gosta", replacement: "Do you like to read your e-mails on your computer?", pt: "Você gosta de ler seus e-mails no seu computador?" },
+        { label: "quer", replacement: "Do you want to read your e-mails on your computer?", pt: "Você quer ler seus e-mails no seu computador?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-5",
+      original: "Você vê seu amigo americano todos os dias? / britânico / brasileiro.",
+      options: [
+        { label: "americano", replacement: "Do you see your American friend every day?", pt: "Você vê seu amigo americano todos os dias?" },
+        { label: "britânico", replacement: "Do you see your British friend every day?", pt: "Você vê seu amigo britânico todos os dias?" },
+        { label: "brasileiro", replacement: "Do you see your Brazilian friend every day?", pt: "Você vê seu amigo brasileiro todos os dias?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-6",
+      original: "Eu como pão com manteiga todos os dias. / com queijo / com presunto.",
+      options: [
+        { label: "manteiga", replacement: "I eat bread and butter every day.", pt: "Eu como pão com manteiga todos os dias." },
+        { label: "queijo", replacement: "I eat bread and cheese every day.", pt: "Eu como pão com queijo todos os dias." },
+        { label: "presunto", replacement: "I eat bread and ham every day.", pt: "Eu como pão com presunto todos os dias." },
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ========== GRAMMAR SUBSTITUTION ==========
+  const grammarSubstitution: SubstitutionExercise[] = [
+    {
+      key: "grammar-1",
+      original: "I go to the movies with my children. / shopping / restaurante.",
+      options: [
+        { label: "movies", replacement: "I go to the movies with my children.", pt: "Eu vou ao cinema com meus filhos." },
+        { label: "shopping", replacement: "I go shopping with my children.", pt: "Eu vou ao shopping com meus filhos." },
+        { label: "restaurant", replacement: "I go to the restaurant with my children.", pt: "Eu vou ao restaurante com meus filhos." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-2",
+      original: "Você gosta de ir ao cinema? / cafeteria / restaurante.",
+      options: [
+        { label: "cinema", replacement: "Do you like to go to the movies?", pt: "Você gosta de ir ao cinema?" },
+        { label: "cafeteria", replacement: "Do you like to go to the coffee shop?", pt: "Você gosta de ir à cafeteria?" },
+        { label: "restaurante", replacement: "Do you like to go to the restaurant?", pt: "Você gosta de ir ao restaurante?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-3",
+      original: "Nós queremos ir ao shopping à tarde. / cinema / cafeteria.",
+      options: [
+        { label: "shopping", replacement: "We want to go shopping in the afternoon.", pt: "Nós queremos ir ao shopping à tarde." },
+        { label: "cinema", replacement: "We want to go to the movies in the afternoon.", pt: "Nós queremos ir ao cinema à tarde." },
+        { label: "cafeteria", replacement: "We want to go to the coffee shop in the afternoon.", pt: "Nós queremos ir à cafeteria à tarde." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-4",
+      original: "Você vai ao shopping com seu marido? / esposa / família.",
+      options: [
+        { label: "marido", replacement: "Do you go shopping with your husband?", pt: "Você vai ao shopping com seu marido?" },
+        { label: "esposa", replacement: "Do you go shopping with your wife?", pt: "Você vai ao shopping com sua esposa?" },
+        { label: "família", replacement: "Do you go shopping with your family?", pt: "Você vai ao shopping com sua família?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-5",
+      original: "Você vai ao restaurante sozinho? / cafeteria / cinema.",
+      options: [
+        { label: "restaurante", replacement: "Do you go to the restaurant alone?", pt: "Você vai ao restaurante sozinho?" },
+        { label: "cafeteria", replacement: "Do you go to the coffee shop alone?", pt: "Você vai à cafeteria sozinho?" },
+        { label: "cinema", replacement: "Do you go to the movies alone?", pt: "Você vai ao cinema sozinho?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-6",
+      original: "Eu vou ao shopping todos os dias. / cafeteria / restaurante.",
+      options: [
+        { label: "shopping", replacement: "I go shopping every day.", pt: "Eu vou ao shopping todos os dias." },
+        { label: "cafeteria", replacement: "I go to the coffee shop every day.", pt: "Eu vou à cafeteria todos os dias." },
+        { label: "restaurante", replacement: "I go to the restaurant every day.", pt: "Eu vou ao restaurante todos os dias." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-7",
+      original: "Eu vou para a escola sozinho. / trabalho / para a aula.",
+      options: [
+        { label: "escola", replacement: "I go to school alone.", pt: "Eu vou para a escola sozinho." },
+        { label: "trabalho", replacement: "I go to work alone.", pt: "Eu vou ao trabalho sozinho." },
+        { label: "aula", replacement: "I go to class alone.", pt: "Eu vou para a aula sozinho." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-8",
+      original: "Você quer ir ao cinema comigo? / cafeteria / restaurante.",
+      options: [
+        { label: "cinema", replacement: "Do you want to go to the movies with me?", pt: "Você quer ir ao cinema comigo?" },
+        { label: "cafeteria", replacement: "Do you want to go to the coffee shop with me?", pt: "Você quer ir à cafeteria comigo?" },
+        { label: "restaurante", replacement: "Do you want to go to the restaurant with me?", pt: "Você quer ir ao restaurante comigo?" },
+      ],
+      currentIndex: 0,
+    },
   ];
 
   return (
@@ -313,7 +1046,7 @@ export default function Lesson15PersonalInfoRoutine() {
       }}
     >
       <div className="max-w-5xl mx-auto bg-[#f0f8ff] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
-        
+
         {/* Centered title with image below */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
@@ -338,14 +1071,14 @@ export default function Lesson15PersonalInfoRoutine() {
               <h2 className="text-2xl font-bold">🔹 VERBS</h2>
               <PencilIcon onClick={() => openNoteModal('Verbs')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('verbs')}
               className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.verbs ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
+
           <div className="p-8">
             <SpeakSentence text="Click on the verbs to hear the pronunciation and practice their forms" className="text-md text-gray-600 mb-4 italic">
               🎧 Click on the verbs to hear the pronunciation and practice their forms
@@ -359,69 +1092,16 @@ export default function Lesson15PersonalInfoRoutine() {
                 </li>
               ))}
             </ul>
-            
+
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    1. <SpeakText text="I read" className="text-blue-600 font-bold">I read</SpeakText> / <SpeakText text="You read" className="text-blue-600 font-bold">You read</SpeakText> / <SpeakText text="He reads" className="text-blue-600 font-bold">He reads</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu leio / você lê / ele lê</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    2. <SpeakText text="I do not read" className="text-blue-600 font-bold">I don't read</SpeakText> / <SpeakText text="You do not read" className="text-blue-600 font-bold">You don't read</SpeakText> / <SpeakText text="We do not read" className="text-blue-600 font-bold">We don't read</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu não leio / você não lê / nós não lemos</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    3. <SpeakText text="You read at night" className="text-blue-600 font-bold">You read at night</SpeakText> / <SpeakText text="in the afternoon" className="text-blue-600 font-bold">in the afternoon</SpeakText> / <SpeakText text="in the morning" className="text-blue-600 font-bold">in the morning</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você lê à noite / à tarde / de manhã</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    4. <SpeakText text="I read to my children" className="text-blue-600 font-bold">I read to my children</SpeakText> / <SpeakText text="my teacher" className="text-blue-600 font-bold">my teacher</SpeakText> / <SpeakText text="my friends" className="text-blue-600 font-bold">my friends</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu leio para meus filhos / minha professora / meus amigos</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    5. We like to <SpeakText text="read in English" className="text-blue-600 font-bold">read in English</SpeakText> / <SpeakText text="Spanish" className="text-blue-600 font-bold">Spanish</SpeakText> / <SpeakText text="Portuguese" className="text-blue-600 font-bold">Portuguese</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 nós gostamos de ler em inglês / espanhol / português</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    6. <SpeakText text="I like it a lot" className="text-blue-600 font-bold">I like it a lot</SpeakText> / <SpeakText text="We like it" className="text-blue-600 font-bold">We like it</SpeakText> / <SpeakText text="You like it" className="text-blue-600 font-bold">You like it</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu gosto muito / nós gostamos / você gosta</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    7. <SpeakText text="Send" className="text-blue-600 font-bold">Send</SpeakText> / <SpeakText text="I send" className="text-blue-600 font-bold">I send</SpeakText> / <SpeakText text="You send" className="text-blue-600 font-bold">You send</SpeakText> / <SpeakText text="They send" className="text-blue-600 font-bold">They send</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 enviar / eu envio / você envia / eles enviam</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    8. <SpeakText text="They do not send" className="text-blue-600 font-bold">They don't send</SpeakText> / <SpeakText text="You do not send" className="text-blue-600 font-bold">You don't send</SpeakText> / <SpeakText text="I do not send" className="text-blue-600 font-bold">I don't send</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eles não enviam / você não envia / eu não envio</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    9. <SpeakText text="What do you send" className="text-blue-600 font-bold">What do you send</SpeakText>? / <SpeakText text="What do you read" className="text-blue-600 font-bold">read</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 o que você envia? / o que você lê?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    10. <SpeakText text="What do you want to send" className="text-blue-600 font-bold">What do you want to send</SpeakText> / <SpeakText text="What do you want to read" className="text-blue-600 font-bold">read</SpeakText> / <SpeakText text="What do you want to eat" className="text-blue-600 font-bold">eat</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 o que você quer enviar / ler / comer?</p>
-                </div>
+                {verbsSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -434,14 +1114,14 @@ export default function Lesson15PersonalInfoRoutine() {
               <h2 className="text-2xl font-bold">🔹 NEW WORDS</h2>
               <PencilIcon onClick={() => openNoteModal('New Words')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('vocabulary')}
               className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.vocabulary ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
+
           <div className="p-8">
             <SpeakSentence text="Click on each word to hear its correct pronunciation" className="text-md text-gray-600 mb-4 italic">
               🎧 Click on each word to hear its correct pronunciation
@@ -456,51 +1136,16 @@ export default function Lesson15PersonalInfoRoutine() {
                 </div>
               ))}
             </div>
-            
+
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    1. <SpeakText text="I read the news in the morning" className="text-blue-600 font-bold">I read the news in the morning</SpeakText>. / <SpeakText text="We read the news" className="text-blue-600 font-bold">We read the news</SpeakText>. / <SpeakText text="They read the news" className="text-blue-600 font-bold">They read the news</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu leio as notícias de manhã / nós lemos / eles leem</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    2. Do you like to <SpeakText text="read magazines" className="text-blue-600 font-bold">read magazines</SpeakText>? / <SpeakText text="read books" className="text-blue-600 font-bold">books</SpeakText>? / <SpeakText text="read stories" className="text-blue-600 font-bold">stories</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você gosta de ler revistas / livros / histórias?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    3. Do you <SpeakText text="read magazines online" className="text-blue-600 font-bold">read magazines online</SpeakText>? / <SpeakText text="read books online" className="text-blue-600 font-bold">books online</SpeakText>? / <SpeakText text="read news online" className="text-blue-600 font-bold">news online</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você lê revistas online / livros online / notícias online?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    4. Where do you <SpeakText text="read your e-mails" className="text-blue-600 font-bold">read your e-mails</SpeakText>? at work / at home / at school.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 onde você lê seus e-mails? no trabalho / em casa / na escola</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    5. <SpeakText text="He reads the newspaper every morning" className="text-blue-600 font-bold">He reads the newspaper every morning</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 ele lê o jornal toda manhã</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    6. <SpeakText text="She reads stories to her children" className="text-blue-600 font-bold">She reads stories to her children</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 ela lê histórias para seus filhos</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    7. <SpeakText text="It reads the data from the computer" className="text-blue-600 font-bold">It reads the data from the computer</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 ele lê os dados do computador</p>
-                </div>
+                {vocabSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -513,14 +1158,14 @@ export default function Lesson15PersonalInfoRoutine() {
               <h2 className="text-2xl font-bold">🔹 Speak Like a Native</h2>
               <PencilIcon onClick={() => openNoteModal('Useful Phrases')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('usefulPhrases')}
               className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.usefulPhrases ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
+
           <div className="p-8">
             <SpeakSentence text="Practice common phrases for daily communication" className="text-md text-gray-600 mb-4 italic">
               💬 Practice common phrases for daily communication
@@ -535,45 +1180,16 @@ export default function Lesson15PersonalInfoRoutine() {
                 </div>
               ))}
             </div>
-            
+
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    1. Do you <SpeakText text="read e-mails every day" className="text-blue-600 font-bold">read e-mails every day</SpeakText>? / <SpeakText text="read messages every day" className="text-blue-600 font-bold">messages</SpeakText> / <SpeakText text="read news every day" className="text-blue-600 font-bold">news</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você lê e-mails todos os dias / mensagens / notícias?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    2. I <SpeakText text="read books on my tablet" className="text-blue-600 font-bold">read books on my tablet</SpeakText> / <SpeakText text="read stories on my tablet" className="text-blue-600 font-bold">stories</SpeakText> / <SpeakText text="read magazines on my tablet" className="text-blue-600 font-bold">magazines</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu leio livros no meu tablet / histórias / revistas</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    3. I <SpeakText text="read my e-mails on my cell phone" className="text-blue-600 font-bold">read my e-mails on my cell phone</SpeakText> / <SpeakText text="on my tablet" className="text-blue-600 font-bold">on my tablet</SpeakText> / <SpeakText text="on my computer" className="text-blue-600 font-bold">on my computer</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu leio meus e-mails no celular / no tablet / no computador</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    4. Do you prefer to <SpeakText text="read your e-mails at home" className="text-blue-600 font-bold">read your e-mails at home</SpeakText> or <SpeakText text="read your e-mails at work" className="text-blue-600 font-bold">at work</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você prefere ler seus e-mails em casa ou no trabalho?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    5. Is your friend <SpeakText text="American" className="text-blue-600 font-bold">American</SpeakText> / <SpeakText text="British" className="text-blue-600 font-bold">British</SpeakText> / <SpeakText text="Brazilian" className="text-blue-600 font-bold">Brazilian</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 seu amigo é americano / britânico / brasileiro?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    6. I <SpeakText text="eat bread and butter every day" className="text-blue-600 font-bold">eat bread and butter every day</SpeakText> / <SpeakText text="and cheese" className="text-blue-600 font-bold">and cheese</SpeakText> / <SpeakText text="and ham" className="text-blue-600 font-bold">and ham</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu como pão com manteiga todos os dias / com queijo / com presunto</p>
-                </div>
+                {phrasesSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -586,14 +1202,14 @@ export default function Lesson15PersonalInfoRoutine() {
               <h2 className="text-2xl font-bold">🔹 GRAMMAR</h2>
               <PencilIcon onClick={() => openNoteModal('Grammar')} />
             </div>
-            <button 
+            <button
               onClick={() => toggleDrill('grammar')}
               className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 text-sm transition-all duration-300 hover:from-purple-600 hover:to-purple-800"
             >
               {openDrills.grammar ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
+
           <div className="p-8">
             <SpeakSentence text="Structures for asking about going to places and daily routines" className="text-md text-gray-600 mb-4 italic">
               📚 Structures for asking about going to places and daily routines
@@ -608,84 +1224,58 @@ export default function Lesson15PersonalInfoRoutine() {
                 </div>
               ))}
             </div>
-            
+
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    1. I <SpeakText text="go to the movies" className="text-blue-600 font-bold">go to the movies</SpeakText> with my children / <SpeakText text="go shopping" className="text-blue-600 font-bold">shopping</SpeakText> / <SpeakText text="go to the restaurant" className="text-blue-600 font-bold">restaurant</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu vou ao cinema com meus filhos / fazer compras / ao restaurante</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    2. Do you <SpeakText text="go to the movies" className="text-blue-600 font-bold">go to the movies</SpeakText>? / <SpeakText text="go to the coffee shop" className="text-blue-600 font-bold">coffee shop</SpeakText>? / <SpeakText text="go to the restaurant" className="text-blue-600 font-bold">restaurant</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você vai ao cinema / à cafeteria / ao restaurante?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    3. We <SpeakText text="go shopping in the afternoon" className="text-blue-600 font-bold">go shopping in the afternoon</SpeakText> / <SpeakText text="go to the movies in the afternoon" className="text-blue-600 font-bold">to the movies</SpeakText> / <SpeakText text="go to the coffee shop in the afternoon" className="text-blue-600 font-bold">to the coffee shop</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 nós vamos fazer compras à tarde / ao cinema / à cafeteria</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    4. Do you <SpeakText text="go shopping with your husband" className="text-blue-600 font-bold">go shopping with your husband</SpeakText> / <SpeakText text="go shopping with your wife" className="text-blue-600 font-bold">wife</SpeakText> / <SpeakText text="go shopping with your family" className="text-blue-600 font-bold">family</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você vai fazer compras com seu marido / sua esposa / sua família?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    5. Do you <SpeakText text="go to the restaurant alone" className="text-blue-600 font-bold">go to the restaurant alone</SpeakText>? / <SpeakText text="go to the coffee shop alone" className="text-blue-600 font-bold">coffee shop</SpeakText> / <SpeakText text="go to the movies alone" className="text-blue-600 font-bold">movies</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você vai ao restaurante sozinho / à cafeteria / ao cinema?</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    6. I <SpeakText text="go shopping every day" className="text-blue-600 font-bold">go shopping every day</SpeakText> / <SpeakText text="go to the coffee shop every day" className="text-blue-600 font-bold">to the coffee shop</SpeakText> / <SpeakText text="go to the restaurant every day" className="text-blue-600 font-bold">to the restaurant</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu vou fazer compras todos os dias / à cafeteria / ao restaurante</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    7. I <SpeakText text="go to school alone" className="text-blue-600 font-bold">go to school alone</SpeakText> / <SpeakText text="go to work alone" className="text-blue-600 font-bold">to work</SpeakText> / <SpeakText text="go to class alone" className="text-blue-600 font-bold">to class</SpeakText>.
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 eu vou para a escola sozinho / ao trabalho / para a aula</p>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200">
-                  <p className="text-lg font-medium text-gray-800">
-                    8. Do you want to <SpeakText text="go to the movies with me" className="text-blue-600 font-bold">go to the movies with me</SpeakText>? / <SpeakText text="go to the restaurant with me" className="text-blue-600 font-bold">restaurant</SpeakText> / <SpeakText text="go to the coffee shop with me" className="text-blue-600 font-bold">coffee shop</SpeakText>?
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">🇧🇷 você quer ir ao cinema comigo / ao restaurante / à cafeteria?</p>
-                </div>
+                {grammarSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 5 - Real Life Practice - EXPANDED */}
+        {/* Section 5 - Make It Yours */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
               <h2 className="text-2xl font-bold">🔹 Make It Yours</h2>
-              <PencilIcon onClick={() => openNoteModal('Real Life Practice')} />
+              <PencilIcon onClick={() => openNoteModal('Make It Yours')} />
             </div>
             <div className="text-sm text-blue-100">
               Practice reading and sending messages
             </div>
           </div>
-          
+
           <div className="p-8">
+            {/* Tip box – substitute only blue words */}
+            <div className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
+              <p className="text-sm text-gray-700">
+                <span className="font-bold">💡 Dica:</span> Substitua <span className="text-blue-600 font-bold">apenas as palavras em azul</span> por outras palavras para criar novas frases.
+                Por exemplo: <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">"I <span className="text-blue-600 font-bold">read</span> the <span className="text-blue-600 font-bold">news</span> in the <span className="text-blue-600 font-bold">morning</span>."</span> →
+                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">"I <span className="text-blue-600 font-bold">send</span> a <span className="text-blue-600 font-bold">message</span> in the <span className="text-blue-600 font-bold">afternoon</span>."</span>
+              </p>
+            </div>
+
             <div className="bg-blue-50 rounded-[20px] p-6">
               <div className="flex flex-col lg:flex-row gap-8">
-                {/* Sentences - 2/3 width on large */}
                 <div className="lg:w-2/3 space-y-4">
                   {realLifeSentences.map((sentence, index) => (
                     <div key={index} className="group">
                       <div className="flex items-start">
                         <SpeakSentence text={sentence.english} className="text-base font-medium">
-                          {index + 1}. {sentence.english}
+                          <span className="mr-1">{index + 1}.</span>
+                          {sentence.parts.map((part, pIdx) => (
+                            part.h ? (
+                              <span key={pIdx} className="text-blue-600 font-bold">{part.text}</span>
+                            ) : (
+                              <span key={pIdx}>{part.text}</span>
+                            )
+                          ))}
                         </SpeakSentence>
                       </div>
                       <p className="text-sm text-gray-600 mt-0.5 ml-6">{sentence.portuguese}</p>
@@ -693,7 +1283,6 @@ export default function Lesson15PersonalInfoRoutine() {
                   ))}
                 </div>
 
-                {/* Image container - 1/3 width on large */}
                 <div className="lg:w-1/3 flex flex-col gap-4">
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
                     <div className="relative h-40 w-full">
@@ -707,7 +1296,7 @@ export default function Lesson15PersonalInfoRoutine() {
                       Reading books, magazines and digital content
                     </p>
                   </div>
-                  
+
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
                     <div className="relative h-40 w-full">
                       <img
@@ -739,7 +1328,7 @@ export default function Lesson15PersonalInfoRoutine() {
           </div>
         </div>
 
-        {/* Section 6 - Check It Out (print style) - UPDATED with "on" explanation */}
+        {/* Section 6 - Wrap Up */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div>
@@ -751,7 +1340,6 @@ export default function Lesson15PersonalInfoRoutine() {
           </div>
 
           <div className="flex flex-col md:flex-row">
-            {/* Left column - Phrases, "on" explanation, Plural Rules */}
             <div className="bg-blue-900 text-white flex-1 p-6 space-y-4 text-lg">
               <div className="mb-4">
                 <h3 className="font-bold text-lg mb-4 text-yellow-300">COMMON PHRASES</h3>
@@ -799,7 +1387,6 @@ export default function Lesson15PersonalInfoRoutine() {
                 </div>
               </div>
 
-              {/* NEW: Explanation of "on" with devices, platforms, apps, social media */}
               <div className="mt-6 pt-6 border-t border-blue-700">
                 <h4 className="font-bold text-lg text-yellow-300 mb-3">📱 USING "ON" WITH DEVICES & APPS</h4>
                 <p className="text-blue-200 text-sm mb-2">
@@ -819,12 +1406,11 @@ export default function Lesson15PersonalInfoRoutine() {
                 </p>
               </div>
 
-              {/* Plural Formation Section */}
               <div className="mt-6 pt-6 border-t border-blue-700">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-bold text-lg text-yellow-300">PLURAL FORMATION RULES</h4>
                 </div>
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between items-center p-2 bg-blue-800 rounded-lg">
                     <span className="font-medium">address → addresses</span>
@@ -842,7 +1428,6 @@ export default function Lesson15PersonalInfoRoutine() {
               </div>
             </div>
 
-            {/* Right column - Email and Special Characters */}
             <div className="bg-blue-800 text-white flex-1 p-6 space-y-4 text-lg">
               <div className="space-y-6">
                 <div>
@@ -853,7 +1438,7 @@ export default function Lesson15PersonalInfoRoutine() {
                   </div>
                   <p className="text-blue-200 text-sm">Qual é o seu endereço de e-mail?</p>
                 </div>
-                
+
                 <div className="pt-4 border-t border-blue-700">
                   <div className="flex items-center mb-1">
                     <SpeakSentence text="It's elisasullivan@leaf.com" className="text-blue-200 hover:text-white font-bold">
@@ -867,7 +1452,6 @@ export default function Lesson15PersonalInfoRoutine() {
                   </div>
                 </div>
 
-                {/* Special Characters Section */}
                 <div className="mt-6 pt-6 border-t border-blue-700">
                   <h4 className="font-bold text-lg text-yellow-300 mb-3">SPECIAL CHARACTERS</h4>
                   <div className="space-y-3">
@@ -919,7 +1503,7 @@ export default function Lesson15PersonalInfoRoutine() {
           >
             Next Lesson (16) &rarr;
           </button>
-        </div>  
+        </div>
       </div>
 
       {/* Note Modal */}

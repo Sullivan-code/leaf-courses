@@ -103,41 +103,61 @@ const negativeExercises = [
   { key: "neg-6", sentence: "He is hungry, he wants a snack.", answer: "He isn't hungry, he doesn't want a snack." }
 ];
 
-// Substitution Practice II (Portuguese to English)
+// Substitution Practice II (Portuguese to English) — 3 options each (original + 2 substitutions)
 const substitutionPractice2 = [
   { 
     key: "subs2-1", 
     original: "A loja abre de manhã.",
-    options: ["O museu", "O parque"],
-    correctForms: ["The museum opens in the morning.", "The park opens in the morning."],
+    options: ["A loja", "O museu", "O parque"],
+    correctForms: [
+      "The store opens in the morning.",
+      "The museum opens in the morning.",
+      "The park opens in the morning."
+    ],
     currentIndex: 0
   },
   { 
     key: "subs2-2", 
     original: "Você tem que estudar alguma coisa esta manhã?",
-    options: ["esta tarde", "esta noite"],
-    correctForms: ["Do you have to study anything this afternoon?", "Do you have to study anything tonight?"],
+    options: ["esta manhã", "esta tarde", "esta noite"],
+    correctForms: [
+      "Do you have to study anything this morning?",
+      "Do you have to study anything this afternoon?",
+      "Do you have to study anything tonight?"
+    ],
     currentIndex: 0
   },
   { 
     key: "subs2-3", 
     original: "Nós adoramos aquela sorveteria.",
-    options: ["lanchonete", "cafeteria"],
-    correctForms: ["We love that snack bar.", "We love that cafeteria."],
+    options: ["sorveteria", "lanchonete", "cafeteria"],
+    correctForms: [
+      "We love that ice cream parlor.",
+      "We love that snack bar.",
+      "We love that cafeteria."
+    ],
     currentIndex: 0
   },
   { 
     key: "subs2-4", 
     original: "O sorvete está delicioso.",
-    options: ["A sobremesa", "Este prato"],
-    correctForms: ["The dessert is delicious.", "This dish is delicious."],
+    options: ["O sorvete", "A sobremesa", "Este prato"],
+    correctForms: [
+      "The ice cream is delicious.",
+      "The dessert is delicious.",
+      "This dish is delicious."
+    ],
     currentIndex: 0
   },
   { 
     key: "subs2-5", 
     original: "A lanchonete fecha às 11:00 da noite.",
-    options: ["às 11:30", "à meia-noite"],
-    correctForms: ["The snack bar closes at 11:30 PM.", "The snack bar closes at midnight."],
+    options: ["às 11:00 da noite", "às 11:30", "à meia-noite"],
+    correctForms: [
+      "The snack bar closes at 11:00 PM.",
+      "The snack bar closes at 11:30 PM.",
+      "The snack bar closes at midnight."
+    ],
     currentIndex: 0
   }
 ];
@@ -840,7 +860,7 @@ export default function Lesson46ExpressYourself() {
                       <div className="p-3 bg-blue-50 rounded-md mb-2">
                         <p className="text-blue-700 font-medium text-lg">{currentAnswer}</p>
                       </div>
-                      <div className="flex gap-2 mt-2">
+                      <div className="flex gap-2 mt-2 flex-wrap">
                         {ex.options.map((opt, idx) => (
                           <button key={idx} onClick={() => handleSubs2OptionClick(ex.key, idx)} 
                             className={`px-3 py-1 rounded-md text-sm transition ${ex.currentIndex === idx ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}>

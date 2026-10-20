@@ -476,6 +476,27 @@ const TUNE_IN_QUESTIONS = [
 ];
 
 // ============================================
+// KEY VOCABULARY DATA
+// ============================================
+const KEY_VOCABULARY = [
+  { word: "several", pt: "vários / várias" },
+  { word: "tidy", pt: "arrumado(a)" },
+  { word: "armchair", pt: "poltrona" },
+  { word: "coffee table", pt: "mesa de centro" },
+  { word: "dresser", pt: "cômoda" },
+  { word: "closet", pt: "guarda-roupa" },
+  { word: "carpet", pt: "tapete" },
+  { word: "broken", pt: "quebrado(a)" },
+  { word: "replace", pt: "substituir" },
+  { word: "cabinets", pt: "armários" },
+  { word: "refrigerator", pt: "geladeira" },
+  { word: "organized", pt: "organizado(a)" },
+  { word: "messy", pt: "bagunçado(a)" },
+  { word: "comfortable", pt: "confortável" },
+  { word: "relaxed", pt: "relaxado(a)" },
+];
+
+// ============================================
 // MAIN COMPONENT – LESSON 62
 // ============================================
 export default function Lesson62() {
@@ -853,9 +874,9 @@ export default function Lesson62() {
   const legoImage =
     "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%2027%20de%20set.%20de%202026%2C%2000_46_46.png";
 
-  // ============ ÁUDIO DO TUNE IN ============
+  // ============ ÁUDIO DO TUNE IN (ATUALIZADO) ============
   const tuneInAudio =
-    "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/Record%20(online-voice-recorder.com)%20(2).mp3";
+    "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/Record%20(online-voice-recorder.com)%20(6).mp3";
 
   return (
     <div
@@ -1483,7 +1504,7 @@ export default function Lesson62() {
                 🔊 Repetition Practice — My House
               </h3>
 
-              {/* ÁUDIO PRINCIPAL DO TUNE IN */}
+              {/* ÁUDIO PRINCIPAL DO TUNE IN (ATUALIZADO) */}
               <div className="bg-green-100 rounded-2xl p-6 mb-6 border-2 border-green-300 flex flex-col items-center gap-3">
                 <p className="text-sm text-green-800 font-semibold">
                   🎧 Listen to the full audio for this section:
@@ -1491,7 +1512,7 @@ export default function Lesson62() {
                 <AudioPlayer src={tuneInAudio} />
               </div>
 
-              {/* TEXTO EM INGLÊS */}
+              {/* TEXTO EM INGLÊS COM PALAVRAS DESTACADAS */}
               <div className="bg-green-50 rounded-2xl p-6 mb-6 border border-green-200">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="font-bold text-green-800 text-lg">
@@ -1507,41 +1528,41 @@ export default function Lesson62() {
 
                 <div className="space-y-4 text-gray-700 leading-relaxed">
                   <p>
-                    There are several rooms in my house, and each room has
-                    different furniture. My living room is usually very tidy.
+                    There are <span className="text-green-800 font-bold">several</span> rooms in my house, and each room has
+                    different furniture. My living room is usually very <span className="text-green-800 font-bold">tidy</span>.
                     There is a comfortable sofa in the middle of the room, and
-                    there is an armchair next to the window. There is also a
-                    coffee table in front of the sofa.
+                    there is an <span className="text-green-800 font-bold">armchair</span> next to the window. There is also a
+                    <span className="text-green-800 font-bold"> coffee table</span> in front of the sofa.
                   </p>
                   <p>
                     To the left of the sofa, there is a small desk with my
                     laptop on it. There are some books on the desk, and there
                     is a lamp next to the computer. Everything is usually
-                    organized, but sometimes my living room gets a little
-                    messy.
+                    <span className="text-green-800 font-bold"> organized</span>, but sometimes my living room gets a little
+                    <span className="text-green-800 font-bold"> messy</span>.
                   </p>
                   <p>
                     My bedroom is next to the living room. There is a large bed
-                    in the bedroom, and there is a dresser to the right of the
-                    bed. There is also a closet next to the dresser. My clothes
+                    in my bedroom, and there is a <span className="text-green-800 font-bold">dresser</span> to the right of the
+                    bed. There is also a <span className="text-green-800 font-bold">closet</span> next to the dresser. My clothes
                     are usually inside the closet, but sometimes there are
                     clothes on the floor!
                   </p>
                   <p>
-                    There is a small carpet under the bed, and there are two
-                    chairs near the window. One of the chairs is broken, so I
-                    need to replace it.
+                    There is a small <span className="text-green-800 font-bold">carpet</span> under the bed, and there are two
+                    chairs near the window. One of the chairs is <span className="text-green-800 font-bold">broken</span>, so I
+                    need to <span className="text-green-800 font-bold">replace</span> it.
                   </p>
                   <p>
-                    In the kitchen, there are several cabinets, a refrigerator,
+                    In the kitchen, there are several <span className="text-green-800 font-bold">cabinets</span>, a <span className="text-green-800 font-bold">refrigerator</span>,
                     and a large table. There is a beautiful coffee table in the
                     living room, but there isn't one in the kitchen. There are
                     also some chairs around the table.
                   </p>
                   <p>
                     I like keeping my house clean and organized. When
-                    everything is in the right place, I feel more comfortable
-                    and relaxed.
+                    everything is in the right place, I feel more <span className="text-green-800 font-bold">comfortable</span>
+                    and <span className="text-green-800 font-bold">relaxed</span>.
                   </p>
                 </div>
               </div>
@@ -1589,6 +1610,37 @@ export default function Lesson62() {
                     tudo está no lugar certo, eu me sinto mais confortável e
                     relaxado.
                   </p>
+                </div>
+              </div>
+
+              {/* NOVA SEÇÃO: KEY VOCABULARY FROM THE AUDIO */}
+              <div className="bg-teal-50 rounded-2xl p-6 mb-6 border border-teal-200">
+                <h4 className="font-bold text-teal-800 text-lg mb-4 flex items-center gap-2">
+                  📚 Key Vocabulary from the Audio
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {KEY_VOCABULARY.map((item) => (
+                    <div
+                      key={item.word}
+                      className="flex items-center justify-between bg-white p-3 rounded-lg border border-teal-200 shadow-sm"
+                    >
+                      <div>
+                        <span className="font-bold text-green-800 text-md">
+                          {item.word}
+                        </span>
+                        <span className="text-sm text-gray-500 block">
+                          {item.pt}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => speakEnglish(item.word, 0.85, "female")}
+                        className="p-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition"
+                        title={`Listen to "${item.word}"`}
+                      >
+                        <Volume2 size={16} />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
 

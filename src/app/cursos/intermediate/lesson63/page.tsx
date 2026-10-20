@@ -309,11 +309,13 @@ export default function Lesson63MyHouseRoutine() {
     }
   }, []);
 
-  const mainImage = "https://github.com/Sullivan-code/english-audios/blob/main/ChatGPT%20Image%207%20de%20set.%20de%202026%2C%2023_39_19%20(1).png?raw=true";
+  // ✅ IMAGEM PRINCIPAL (primeira que aparece) — NOVA URL
+  const mainImage = "https://github.com/Sullivan-code/english-audios/blob/main/L63-IMGG.png?raw=true";
   const readingImage = "https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   const placesImage = "https://images.pexels.com/photos/3182746/pexels-photo-3182746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   const digitalImage = "https://images.pexels.com/photos/572056/pexels-photo-572056.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
-  const grammarImage = "https://github.com/Sullivan-code/english-audios/blob/main/ChatGPT%20Image%207%20de%20set.%20de%202026%2C%2023_04_40.png?raw=true";
+  // ✅ IMAGEM DA GRAMMAR
+  const grammarImage = "https://github.com/Sullivan-code/leaf-courses/blob/main/l63-grammar?raw=true";
 
   // ---------- VERBS ----------
   const verbsSubstitution: SubstitutionExercise[] = [
@@ -932,28 +934,28 @@ export default function Lesson63MyHouseRoutine() {
           <div className="p-8">
             <div className="bg-green-50 rounded-[20px] p-6">
               <div className="flex flex-col lg:flex-row gap-8">
-                <div className="lg:w-2/3 space-y-4">
+                <div className="lg:w-2/3 space-y-5">
                   {[
-                    { en: "I live in an apartment in a gated community.", pt: "Eu moro em um apartamento em um condomínio fechado." },
-                    { en: "There is a tiny house to rent here.", pt: "Tem uma tiny house para alugar aqui." },
-                    { en: "This studio apartment is tiny, I need more space.", pt: "Esta quitinete é minúscula, eu preciso de mais espaço." },
-                    { en: "They don't like to live in a townhouse.", pt: "Eles não gostam de morar em uma casa geminada." },
-                    { en: "My brother has friends in the building.", pt: "Meu irmão tem amigos no prédio." },
-                    { en: "Is there a room to rent here?", pt: "Tem um cômodo para alugar aqui?" },
-                    { en: "Let's rent a two-story house.", pt: "Vamos alugar um sobrado." },
-                    { en: "I live on the first floor.", pt: "Eu moro no primeiro andar." },
-                    { en: "There isn't an elevator in this building.", pt: "Não tem elevador neste prédio." },
-                    { en: "There are plenty of good studio apartments to rent.", pt: "Tem muitas quitinetes boas para alugar." },
-                    { en: "This detached house has plenty of space.", pt: "Esta casa isolada tem bastante espaço." },
-                    { en: "She doesn't like houses with large rooms.", pt: "Ela não gosta de casas com cômodos grandes." },
+                    { en: "I live in a small apartment in a gated community, and I really like it there.", pt: "Eu moro em um apartamento pequeno em um condomínio fechado, e eu realmente gosto de morar lá." },
+                    { en: "There is a tiny house to rent here, but it's too small for my family.", pt: "Tem uma tiny house para alugar aqui, mas é pequena demais para a minha família." },
+                    { en: "This studio apartment is tiny, so I need a place with more space.", pt: "Esta quitinete é minúscula, então eu preciso de um lugar com mais espaço." },
+                    { en: "They don't like to live in a townhouse because they prefer more privacy.", pt: "Eles não gostam de morar em uma casa geminada porque preferem mais privacidade." },
+                    { en: "My brother has a lot of friends in the building, so he never feels lonely.", pt: "Meu irmão tem muitos amigos no prédio, então ele nunca se sente sozinho." },
+                    { en: "Is there a room to rent here? I'm looking for something cheap.", pt: "Tem um cômodo para alugar aqui? Estou procurando algo barato." },
+                    { en: "Let's rent a two-story house so everyone can have their own room.", pt: "Vamos alugar um sobrado para que todos possam ter o próprio quarto." },
+                    { en: "I live on the first floor, which is very convenient for my parents.", pt: "Eu moro no primeiro andar, o que é muito conveniente para os meus pais." },
+                    { en: "There isn't an elevator in this building, so we have to use the stairs.", pt: "Não tem elevador neste prédio, então temos que usar as escadas." },
+                    { en: "There are plenty of good studio apartments to rent if you look online.", pt: "Tem muitas quitinetes boas para alugar se você procurar online." },
+                    { en: "This detached house has plenty of space for a big family like ours.", pt: "Esta casa isolada tem bastante espaço para uma família grande como a nossa." },
+                    { en: "She doesn't like houses with large rooms because she prefers cozy places.", pt: "Ela não gosta de casas com cômodos grandes porque prefere lugares aconchegantes." },
                   ].map((s, idx) => (
                     <div key={idx} className="group">
                       <div className="flex items-start">
-                        <SpeakSentence text={s.en} className="text-base font-medium">
+                        <SpeakSentence text={s.en} className="text-lg font-medium leading-relaxed">
                           {idx+1}. {s.en}
                         </SpeakSentence>
                       </div>
-                      <p className="text-sm text-gray-600 mt-0.5 ml-6">{s.pt}</p>
+                      <p className="text-base text-gray-600 mt-1 ml-6">{s.pt}</p>
                     </div>
                   ))}
                 </div>

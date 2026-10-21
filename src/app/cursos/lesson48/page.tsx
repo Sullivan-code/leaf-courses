@@ -106,49 +106,43 @@ const SpeakableText = ({ text, className = "", children }: SpeakableTextProps) =
 const listenItemsOriginal = [
   { 
     key: "image-a", 
-    label: "",
-    image: "/images/hamburgers.jpg",
-    placeholder: "🍔🍔",
+    label: "A",
+    image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l48-img-a.png",
     description: "Dois hambúrgueres grandes",
     correctNumber: 3
   },
   { 
     key: "image-b", 
-    label: "",
-    image: "/images/friends-pizza.jpg",
-    placeholder: "👥🍕",
+    label: "B",
+    image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l48-img-b.png",
     description: "Amigos comendo pizza",
     correctNumber: 6
   },
   { 
     key: "image-c", 
-    label: "",
-    image: "/images/restaurant-talk.jpg",
-    placeholder: "🗣️🍷",
+    label: "C",
+    image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l48-img-c.png",
     description: "Conversa no bar",
     correctNumber: 4
   },
   { 
     key: "image-d", 
-    label: "",
-    image: "/images/pasta.jpg",
-    placeholder: "🍝",
+    label: "D",
+    image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l48-img-d.png",
     description: "Prato de macarrão",
     correctNumber: 2
   },
   { 
     key: "image-e", 
-    label: "",
-    image: "/images/salad.jpg",
-    placeholder: "🥗👩",
+    label: "E",
+    image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l48-img-e.png",
     description: "Mulher comendo salada",
     correctNumber: 1
-  },
+  }, 
   { 
     key: "image-f", 
-    label: "",
-    image: "/images/chef.jpg",
-    placeholder: "👨‍🍳",
+    label: "F",
+    image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l48-img-f.png",
     description: "Chef preparando comida",
     correctNumber: 5
   },
@@ -163,6 +157,48 @@ function shuffleArray<T>(array: T[]): T[] {
   }
   return shuffled;
 }
+
+// ============================================
+// PAST TENSE - to call / to wait (C1 LEVEL)
+// ============================================
+const pastTenseVerbs = [
+  { base: "to call", past: "called", translation: "chamar / ligar" },
+  { base: "to wait", past: "waited", translation: "esperar" }
+];
+
+const pastTenseExercises = [
+  { 
+    id: 1, 
+    present: "The CEO calls the board of directors to address the unprecedented market fluctuations.", 
+    answer: "The CEO called the board of directors to address the unprecedented market fluctuations." 
+  },
+  { 
+    id: 2, 
+    present: "We patiently wait for the committee's verdict regarding the proposed merger.", 
+    answer: "We patiently waited for the committee's verdict regarding the proposed merger." 
+  },
+  { 
+    id: 3, 
+    present: "The lead researcher calls upon experts from various fields to collaborate on the project.", 
+    answer: "The lead researcher called upon experts from various fields to collaborate on the project." 
+  },
+  { 
+    id: 4, 
+    present: "They wait for the inevitable consequences of their controversial decision.", 
+    answer: "They waited for the inevitable consequences of their controversial decision." 
+  }
+];
+
+// ============================================
+// SPEAK LIKE A NATIVE (B1 Level)
+// ============================================
+const nativeSentences = [
+  { id: 1, en: "I usually order a cold beverage when I go out with my friends.", pt: "Eu geralmente peço uma bebida gelada quando saio com meus amigos." },
+  { id: 2, en: "My uncle is a chef, so he always cooks amazing food at our barbecue.", pt: "Meu tio é chefe de cozinha, então ele sempre cozinha comida incrível no nosso churrasco." },
+  { id: 3, en: "I almost never go to that bar because it's too crowded.", pt: "Eu quase nunca vou àquele bar porque é muito cheio." },
+  { id: 4, en: "Are you a vegetarian or a vegan? Somebody told me you don't eat meat.", pt: "Você é vegetariano ou vegano? Alguém me disse que você não come carne." },
+  { id: 5, en: "How often do you eat out at a comfortable place?", pt: "Com que frequência você come fora em um lugar confortável?" },
+];
 
 // ============================================
 // SUBSTITUTION PRACTICE I
@@ -347,6 +383,8 @@ export default function Lesson48EatingOut() {
   // Section expand/collapse state
   const [expandedSections, setExpandedSections] = useState({
     listenAndNumber: true,
+    pastTense: true,
+    speakLikeNative: true,
     substitution1: true,
     negative: true,
     substitution2: true,
@@ -357,12 +395,12 @@ export default function Lesson48EatingOut() {
   });
 
   // Listen and Number state
-  const [listenItems, setListenItems] = useState(listenItemsOriginal); // Começa com a ordem original
+  const [listenItems, setListenItems] = useState(listenItemsOriginal);
   const [userNumbers, setUserNumbers] = useState<Record<string, string>>({});
   const [listenResults, setListenResults] = useState<Record<string, boolean>>({});
   const [showListenResults, setShowListenResults] = useState<Record<string, boolean>>({});
   const [allChecked, setAllChecked] = useState(false);
-  const [isClient, setIsClient] = useState(false); // Novo estado para controle de hidratação
+  const [isClient, setIsClient] = useState(false);
 
   // Audio player state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -388,7 +426,7 @@ export default function Lesson48EatingOut() {
 
   // Load saved data from localStorage
   useEffect(() => {
-    if (!isClient) return; // Só executa no cliente
+    if (!isClient) return;
     
     const savedAnswers = localStorage.getItem("lesson48Answers");
     if (savedAnswers) {
@@ -412,7 +450,7 @@ export default function Lesson48EatingOut() {
     const data = { 
       userNumbers, listenResults, subs1Answers, subs2Answers, writtenAnswers, answerResults, speakingAnswers,
       expandedSections, lastUpdated: new Date().toISOString(), 
-      lessonName: "Lesson 48 - Eating Out", version: "1.0" 
+      lessonName: "Lesson 48 - Eating Out", version: "1.2" 
     };
     try {
       localStorage.setItem("lesson48Answers", JSON.stringify(data));
@@ -616,11 +654,13 @@ export default function Lesson48EatingOut() {
                 {listenItems.map((item) => (
                   <div key={item.key} className="bg-white rounded-xl border-2 border-blue-200 overflow-hidden shadow-sm">
                     <div className="h-48 bg-gray-100 flex items-center justify-center relative">
-                      <div className="text-center p-4">
-                        <span className="text-6xl" role="img" aria-label={item.description}>
-                          {item.placeholder}
-                        </span>
-                        <p className="text-sm text-gray-500 mt-2">{item.label}</p>
+                      <img 
+                        src={item.image} 
+                        alt={item.description} 
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-2 left-2 bg-blue-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">
+                        {item.label}
                       </div>
                     </div>
                     <div className="p-4">
@@ -667,6 +707,85 @@ export default function Lesson48EatingOut() {
                   <p className="text-gray-600">1 → Salada (e) | 2 → Macarrão (d) | 3 → Hambúrgueres (a) | 4 → Conversa no bar (c) | 5 → Chef (f) | 6 → Pizza com amigos (b)</p>
                 </div>
               )}
+            </div>
+          )}
+        </div>
+
+        {/* ============================================ */}
+        {/* PAST TENSE PRACTICE */}
+        {/* ============================================ */}
+        <div className="bg-indigo-50 border-2 border-indigo-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-indigo-600 text-white py-4 px-8 flex justify-between items-center">
+            <h2 className="text-2xl font-bold">⏪ PAST TENSE PRACTICE</h2>
+            <button onClick={() => toggleSection('pastTense')} className="p-2 rounded-full hover:bg-indigo-700">
+              {expandedSections.pastTense ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+            </button>
+          </div>
+          {expandedSections.pastTense && (
+            <div className="p-8">
+              <p className="text-gray-600 mb-4">Aprenda e pratique o passado simples destes dois verbos. Clique para ouvir:</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                {pastTenseVerbs.map((verb, idx) => (
+                  <div key={idx} className="bg-white p-4 rounded-lg shadow-sm border border-indigo-100 flex flex-col items-center">
+                    <div className="flex items-center gap-2 mb-2">
+                      <SpeakableText text={verb.base} className="text-lg font-bold text-indigo-700" />
+                      <span className="text-gray-400">➔</span>
+                      <SpeakableText text={verb.past} className="text-lg font-bold text-green-600" />
+                    </div>
+                    <p className="text-sm text-gray-500">{verb.translation}</p>
+                  </div>
+                ))}
+              </div>
+
+              <p className="text-gray-600 mb-4 font-medium">Change the sentences to the past tense (C1 Level):</p>
+              <div className="bg-indigo-100 rounded-xl p-6 space-y-4">
+                {pastTenseExercises.map(ex => (
+                  <div key={ex.id} className="bg-white p-4 rounded-lg">
+                    <p className="mb-2 font-medium text-gray-700">{ex.present}</p>
+                    <div className="flex gap-2 mb-2">
+                      <input 
+                        type="text" 
+                        value={writtenAnswers[`past-${ex.id}`] || ""} 
+                        onChange={(e) => handleWrittenAnswerChange(`past-${ex.id}`, e.target.value)} 
+                        className="flex-1 px-3 py-2 border border-indigo-300 rounded-md focus:ring-2 focus:ring-indigo-500" 
+                        placeholder="Write the past tense form..." 
+                      />
+                      <button 
+                        onClick={() => handleCheckAnswer(`past-${ex.id}`, writtenAnswers[`past-${ex.id}`] || "", ex.answer)} 
+                        className="bg-indigo-600 text-white px-3 py-2 rounded-md hover:bg-indigo-700 transition"
+                      >
+                        Check
+                      </button>
+                    </div>
+                    {showAnswerResults[`past-${ex.id}`] && <AnswerResult isCorrect={answerResults[`past-${ex.id}`]} correctAnswer={ex.answer} />}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ============================================ */}
+        {/* SPEAK LIKE A NATIVE */}
+        {/* ============================================ */}
+        <div className="bg-emerald-50 border-2 border-emerald-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-emerald-600 text-white py-4 px-8 flex justify-between items-center">
+            <h2 className="text-2xl font-bold">🔹 SPEAK LIKE A NATIVE</h2>
+            <button onClick={() => toggleSection('speakLikeNative')} className="p-2 rounded-full hover:bg-emerald-700">
+              {expandedSections.speakLikeNative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+            </button>
+          </div>
+          {expandedSections.speakLikeNative && (
+            <div className="p-8">
+              <p className="text-gray-600 mb-6">Clique nas frases para ouvir a pronúncia nativa. Tente repetir em voz alta!</p>
+              <div className="space-y-4">
+                {nativeSentences.map(sentence => (
+                  <div key={sentence.id} className="bg-white p-4 rounded-lg border border-emerald-200 shadow-sm">
+                    <SpeakableText text={sentence.en} className="text-lg font-bold text-emerald-800 block mb-1" />
+                    <p className="text-sm text-gray-500">{sentence.pt}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

@@ -12,15 +12,15 @@ import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, X, Save, Check
 // Fluency Practice sentences
 const fluencyItems = [
   { key: "a", english: "We love that cake.", expected: "That's our favorite cake." },
-  { key: "b", english: "I really like this book.", expected: "That's my favorite book." },
+  { key: "b", english: "I really like this book.", expected: "This is my favorite book." },
   { key: "c", english: "I love that TV series.", expected: "That's my favorite TV series." },
-  { key: "d", english: "You love this pizza place.", expected: "That's your favorite pizza place." },
+  { key: "d", english: "You love this pizza place.", expected: "This is your favorite pizza place." },
   { key: "e", english: "Suzanne really likes that movie.", expected: "That's her favorite movie." },
   { key: "f", english: "Lynda and George really like that museum.", expected: "That's their favorite museum." },
-  { key: "g", english: "My father loves this hamburger.", expected: "That's his favorite hamburger." },
+  { key: "g", english: "My father loves this hamburger.", expected: "This is his favorite hamburger." },
   { key: "h", english: "Jeremy and I love that store.", expected: "That's our favorite store." },
   { key: "i", english: "Connor and Josh love that dish.", expected: "That's their favorite dish." },
-  { key: "j", english: "Wendy loves this dessert.", expected: "That's her favorite dessert." },
+  { key: "j", english: "Wendy loves this dessert.", expected: "This is her favorite dessert." },
 ];
 
 // ============================================
@@ -40,6 +40,7 @@ const substitutionPracticeI: SubstitutionExercise[] = [
     key: "sub1-1",
     original: "The children like to make popcorn.",
     options: [
+      { label: "popcorn", replacement: "The children like to make popcorn.", pt: "As crianças gostam de fazer pipoca." },
       { label: "desserts", replacement: "The children like to make desserts.", pt: "As crianças gostam de fazer sobremesas." },
       { label: "cakes", replacement: "The children like to make cakes.", pt: "As crianças gostam de fazer bolos." },
     ],
@@ -48,6 +49,7 @@ const substitutionPracticeI: SubstitutionExercise[] = [
     key: "sub1-2",
     original: "My grandmother makes a very good cake.",
     options: [
+      { label: "cake", replacement: "My grandmother makes a very good cake.", pt: "Minha avó faz um bolo muito bom." },
       { label: "pizza", replacement: "My grandmother makes a very good pizza.", pt: "Minha avó faz uma pizza muito boa." },
       { label: "sandwich", replacement: "My grandmother makes a very good sandwich.", pt: "Minha avó faz um sanduíche muito bom." },
     ],
@@ -56,6 +58,7 @@ const substitutionPracticeI: SubstitutionExercise[] = [
     key: "sub1-3",
     original: "It's cold. Do you want some soup?",
     options: [
+      { label: "soup", replacement: "It's cold. Do you want some soup?", pt: "Está frio. Você quer um pouco de sopa?" },
       { label: "coffee", replacement: "It's cold. Do you want some coffee?", pt: "Está frio. Você quer um pouco de café?" },
       { label: "tea", replacement: "It's cold. Do you want some tea?", pt: "Está frio. Você quer um pouco de chá?" },
     ],
@@ -64,6 +67,7 @@ const substitutionPracticeI: SubstitutionExercise[] = [
     key: "sub1-4",
     original: "It's hot. I want to buy some ice cream.",
     options: [
+      { label: "ice cream", replacement: "It's hot. I want to buy some ice cream.", pt: "Está quente. Eu quero comprar um pouco de sorvete." },
       { label: "soda", replacement: "It's hot. I want to buy some soda.", pt: "Está quente. Eu quero comprar um pouco de refrigerante." },
       { label: "juice", replacement: "It's hot. I want to buy some juice.", pt: "Está quente. Eu quero comprar um pouco de suco." },
     ],
@@ -72,6 +76,7 @@ const substitutionPracticeI: SubstitutionExercise[] = [
     key: "sub1-5",
     original: "Do you give gifts to your wife?",
     options: [
+      { label: "your wife", replacement: "Do you give gifts to your wife?", pt: "Você dá presentes para a sua esposa?" },
       { label: "your husband", replacement: "Do you give gifts to your husband?", pt: "Você dá presentes para o seu marido?" },
       { label: "your children", replacement: "Do you give gifts to your children?", pt: "Você dá presentes para os seus filhos?" },
     ],
@@ -84,6 +89,7 @@ const substitutionPracticeII: SubstitutionExercise[] = [
     key: "sub2-1",
     original: "What is your favorite dish?",
     options: [
+      { label: "your", replacement: "What is your favorite dish?", pt: "Qual é o seu prato favorito?" },
       { label: "his", replacement: "What is his favorite dish?", pt: "Qual é o prato favorito dele?" },
       { label: "their", replacement: "What is their favorite dish?", pt: "Qual é o prato favorito deles?" },
     ],
@@ -92,6 +98,7 @@ const substitutionPracticeII: SubstitutionExercise[] = [
     key: "sub2-2",
     original: "This is the best restaurant in the city.",
     options: [
+      { label: "restaurant", replacement: "This is the best restaurant in the city.", pt: "Este é o melhor restaurante da cidade." },
       { label: "coffee shop", replacement: "This is the best coffee shop in the city.", pt: "Esta é a melhor cafeteria da cidade." },
       { label: "school", replacement: "This is the best school in the city.", pt: "Esta é a melhor escola da cidade." },
     ],
@@ -100,6 +107,7 @@ const substitutionPracticeII: SubstitutionExercise[] = [
     key: "sub2-3",
     original: "Who is your best friend?",
     options: [
+      { label: "Who is your best friend?", replacement: "Who is your best friend?", pt: "Quem é o seu melhor amigo?" },
       { label: "Where is he?", replacement: "Where is he?", pt: "Onde ele está?" },
       { label: "How old is he?", replacement: "How old is he?", pt: "Quantos anos ele tem?" },
     ],
@@ -108,6 +116,7 @@ const substitutionPracticeII: SubstitutionExercise[] = [
     key: "sub2-4",
     original: "I really like this dish.",
     options: [
+      { label: "dish", replacement: "I really like this dish.", pt: "Eu realmente gosto deste prato." },
       { label: "hamburger", replacement: "I really like this hamburger.", pt: "Eu realmente gosto deste hambúrguer." },
       { label: "ice cream", replacement: "I really like this ice cream.", pt: "Eu realmente gosto deste sorvete." },
     ],
@@ -116,6 +125,7 @@ const substitutionPracticeII: SubstitutionExercise[] = [
     key: "sub2-5",
     original: "How many slices of pizza do you want?",
     options: [
+      { label: "pizza", replacement: "How many slices of pizza do you want?", pt: "Quantas fatias de pizza você quer?" },
       { label: "pie", replacement: "How many slices of pie do you want?", pt: "Quantas fatias de torta você quer?" },
       { label: "cheese", replacement: "How many slices of cheese do you want?", pt: "Quantas fatias de queijo você quer?" },
     ],
@@ -238,8 +248,8 @@ const videoVocabulary = [
   { english: "To notice", portuguese: "Perceber, notar" },
 ];
 
-// Possessive pronouns image URL
-const possessiveImageUrl = "https://github.com/Sullivan-code/english-audios/blob/main/Infogr%C3%A1fico%20neon%20de%20pronomes%20possessivos%20no%20restaurante.png?raw=true";
+// Transform the Sentences image URL
+const transformImageUrl = "https://github.com/Sullivan-code/english-audios/blob/main/l44-transform.png?raw=true";
 
 // ============================================
 // TEXT-TO-SPEECH FUNCTION - FEMININE VOICE
@@ -901,7 +911,32 @@ export default function Lesson44() {
           {sections.fluency && (
             <div className="p-8">
               <div className="mb-6 bg-orange-100 border-2 border-orange-300 rounded-xl p-6">
-                {/* CLICKABLE IMAGE: Possessive Pronouns Infographic */}
+
+                {/* ===== EXAMPLES BOX ===== */}
+                <div className="mb-8 p-5 bg-white rounded-xl border-2 border-orange-300 shadow-sm">
+                  <h3 className="text-lg font-bold text-orange-800 mb-3 flex items-center gap-2">
+                    📌 Examples
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center gap-3 p-3 bg-orange-50 rounded-lg">
+                      <SpeakButton text="They love that restaurant. That's their favorite restaurant." compact />
+                      <span className="text-gray-700">They love <b className="text-orange-600">that</b> restaurant.</span>
+                      <span className="text-orange-500 font-bold text-lg">→</span>
+                      <span className="text-orange-700 font-medium"><b>That's</b> their favorite restaurant.</span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 p-3 bg-orange-50 rounded-lg">
+                      <SpeakButton text="We love this mall. This is our favorite mall." compact />
+                      <span className="text-gray-700">We love <b className="text-orange-600">this</b> mall.</span>
+                      <span className="text-orange-500 font-bold text-lg">→</span>
+                      <span className="text-orange-700 font-medium"><b>This is</b> our favorite mall.</span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-orange-600 mt-3 italic text-center">
+                    💡 Rule: <b>that</b> → <b>That's...</b> &nbsp;|&nbsp; <b>this</b> → <b>This is...</b>
+                  </p>
+                </div>
+
+                {/* ===== IMAGE ===== */}
                 <div className="mb-8 flex justify-center">
                   <button
                     onClick={() => setImageModalOpen(true)}
@@ -910,8 +945,8 @@ export default function Lesson44() {
                     title="Click to enlarge the infographic"
                   >
                     <img
-                      src={possessiveImageUrl}
-                      alt="Infográfico de pronomes possessivos no restaurante"
+                      src={transformImageUrl}
+                      alt="Infográfico de transformação de frases: that / this → That's / This is"
                       className="w-full h-auto rounded-xl shadow-md transition-transform duration-300 group-hover:scale-[1.02] group-hover:shadow-xl cursor-zoom-in"
                     />
                     <span className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -1405,7 +1440,7 @@ export default function Lesson44() {
       </div>
 
       {/* ============================================ */}
-      {/* IMAGE MODAL — Possessive Pronouns Infographic */}
+      {/* IMAGE MODAL — Transform the Sentences Infographic */}
       {/* ============================================ */}
       {imageModalOpen && (
         <div
@@ -1422,8 +1457,8 @@ export default function Lesson44() {
             <X size={24} />
           </button>
           <img
-            src={possessiveImageUrl}
-            alt="Infográfico de pronomes possessivos no restaurante"
+            src={transformImageUrl}
+            alt="Infográfico de transformação de frases: that / this → That's / This is"
             className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />

@@ -13,7 +13,17 @@ interface NoteModalState {
 }
 
 // ============================================
+// HELPER – remove emojis antes de falar (TTS)
+// ============================================
+const stripEmojis = (text: string): string =>
+  text
+    .replace(/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F1E6}-\u{1F1FF}\u200d\ufe0f]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+// ============================================
 // SPEECH SYSTEM WITH AMERICAN FEMALE VOICE
+// (agora com suporte a pt-BR para textos em português)
 // ============================================
 
 interface SpeakTextProps {
@@ -21,31 +31,42 @@ interface SpeakTextProps {
   children?: React.ReactNode;
   className?: string;
   showIcon?: boolean;
+  lang?: 'en-US' | 'pt-BR';
 }
 
-const SpeakText = ({ text, children, className = "", showIcon = true }: SpeakTextProps) => {
+const SpeakText = ({ text, children, className = "", showIcon = true, lang = 'en-US' }: SpeakTextProps) => {
   const speak = () => {
     if (!text || typeof window === 'undefined') return;
+    const cleanText = stripEmojis(text);
+    if (!cleanText) return;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9;
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = lang;
+    utterance.rate = lang === 'pt-BR' ? 0.92 : 0.9;
     utterance.pitch = 1.0;
     const voices = window.speechSynthesis.getVoices();
-    const americanFemaleVoices = voices.filter(voice =>
-      (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
-      (voice.name.toLowerCase().includes('samantha') ||
-       voice.name.toLowerCase().includes('google us english') ||
-       voice.name.toLowerCase().includes('siri') ||
-       voice.name.toLowerCase().includes('female') ||
-       voice.name === 'Google US English' ||
-       voice.name === 'Samantha')
-    );
-    const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
-    if (americanFemaleVoices.length > 0) {
-      utterance.voice = americanFemaleVoices[0];
-    } else if (americanVoices.length > 0) {
-      utterance.voice = americanVoices[0];
+
+    if (lang === 'pt-BR') {
+      const ptBrVoice = voices.find(v => v.lang === 'pt-BR' || v.lang === 'pt_BR');
+      const anyPtVoice = voices.find(v => v.lang.toLowerCase().startsWith('pt'));
+      if (ptBrVoice) utterance.voice = ptBrVoice;
+      else if (anyPtVoice) utterance.voice = anyPtVoice;
+    } else {
+      const americanFemaleVoices = voices.filter(voice =>
+        (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+        (voice.name.toLowerCase().includes('samantha') ||
+         voice.name.toLowerCase().includes('google us english') ||
+         voice.name.toLowerCase().includes('siri') ||
+         voice.name.toLowerCase().includes('female') ||
+         voice.name === 'Google US English' ||
+         voice.name === 'Samantha')
+      );
+      const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+      if (americanFemaleVoices.length > 0) {
+        utterance.voice = americanFemaleVoices[0];
+      } else if (americanVoices.length > 0) {
+        utterance.voice = americanVoices[0];
+      }
     }
     window.speechSynthesis.speak(utterance);
   };
@@ -54,7 +75,7 @@ const SpeakText = ({ text, children, className = "", showIcon = true }: SpeakTex
     <button
       onClick={speak}
       className={`inline-flex items-center gap-1 cursor-pointer hover:bg-blue-100 px-1 rounded transition-colors group ${className}`}
-      title="Clique para ouvir a pronúncia americana"
+      title={lang === 'pt-BR' ? "Clique para ouvir em português" : "Clique para ouvir a pronúncia americana"}
     >
       {children || text}
       {showIcon && <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />}
@@ -66,7 +87,8 @@ const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
   return (
     <button
       onClick={() => {
-        const speechText = children && typeof children === 'string' ? children : text;
+        const rawText = children && typeof children === 'string' ? children : text;
+        const speechText = stripEmojis(rawText || "");
         if (speechText && typeof window !== 'undefined') {
           window.speechSynthesis.cancel();
           const utterance = new SpeechSynthesisUtterance(speechText);
@@ -93,36 +115,6 @@ const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
     >
       {children || text}
       <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
-    </button>
-  );
-};
-
-// ============================================
-// SPEAK PORTUGUESE – para instruções em português abaixo dos títulos
-// ============================================
-const SpeakPortuguese = ({ text, children, className = "" }: { text: string; children?: React.ReactNode; className?: string }) => {
-  const speak = () => {
-    if (!text || typeof window === 'undefined') return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-BR';
-    utterance.rate = 0.92;
-    utterance.pitch = 1.0;
-    const voices = window.speechSynthesis.getVoices();
-    const ptBrVoice = voices.find(v => v.lang === 'pt-BR' || v.lang === 'pt_BR');
-    const anyPtVoice = voices.find(v => v.lang.toLowerCase().startsWith('pt'));
-    if (ptBrVoice) utterance.voice = ptBrVoice;
-    else if (anyPtVoice) utterance.voice = anyPtVoice;
-    window.speechSynthesis.speak(utterance);
-  };
-  return (
-    <button
-      onClick={speak}
-      className={`group inline-flex items-center gap-2 cursor-pointer hover:bg-blue-100/40 px-2 py-1 rounded-lg transition-colors text-left ${className}`}
-      title="Clique para ouvir a instrução em português"
-    >
-      <span>{children || text}</span>
-      <Volume2 size={16} className="opacity-60 group-hover:opacity-100 transition-opacity flex-shrink-0" />
     </button>
   );
 };
@@ -255,7 +247,7 @@ function SubstitutionOptions({
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
-            <SpeakText text={getOptionLabel(option)} showIcon={false} />
+            <SpeakText text={getOptionLabel(option)} showIcon={false} lang="pt-BR" />
           </button>
         ))}
       </div>
@@ -310,8 +302,10 @@ function MakeItYoursPhrase({
           className="text-blue-600 font-bold cursor-pointer hover:text-blue-800 hover:bg-blue-50 rounded px-0.5 transition-colors"
           onClick={() => {
             if (typeof window !== 'undefined') {
+              const speechWord = stripEmojis(word.replace(/[.,!?;:]/g, ''));
+              if (!speechWord) return;
               window.speechSynthesis.cancel();
-              const utterance = new SpeechSynthesisUtterance(word.replace(/[.,!?;:]/g, ''));
+              const utterance = new SpeechSynthesisUtterance(speechWord);
               utterance.lang = 'en-US';
               utterance.rate = 0.9;
               utterance.pitch = 1.0;
@@ -433,8 +427,8 @@ export default function Lesson1FoodAndDrink() {
       original: "Eu como pão. / gosto / quero",
       options: [
         { label: "como pão", replacement: "I eat bread." },
-        { label: "gosto", replacement: "I like." },
-        { label: "quero", replacement: "I want." }
+        { label: "gosto de pão", replacement: "I like bread." },
+        { label: "quero pão", replacement: "I want bread." }
       ],
       currentIndex: 0,
     },
@@ -443,8 +437,8 @@ export default function Lesson1FoodAndDrink() {
       original: "Você bebe café? / gosta / prefere",
       options: [
         { label: "bebe café", replacement: "Do you drink coffee?" },
-        { label: "gosta", replacement: "Do you like?" },
-        { label: "prefere", replacement: "Do you prefer?" }
+        { label: "gosta de café", replacement: "Do you like coffee?" },
+        { label: "prefere café", replacement: "Do you prefer coffee?" }
       ],
       currentIndex: 0,
     },
@@ -453,8 +447,8 @@ export default function Lesson1FoodAndDrink() {
       original: "Nós comemos queijo. / preferimos / gostamos",
       options: [
         { label: "comemos queijo", replacement: "We eat cheese." },
-        { label: "preferimos", replacement: "We prefer." },
-        { label: "gostamos", replacement: "We like." }
+        { label: "preferimos queijo", replacement: "We prefer cheese." },
+        { label: "gostamos de queijo", replacement: "We like cheese." }
       ],
       currentIndex: 0,
     },
@@ -463,18 +457,18 @@ export default function Lesson1FoodAndDrink() {
       original: "Eles bebem água. / preferem / precisam",
       options: [
         { label: "bebem água", replacement: "They drink water." },
-        { label: "preferem", replacement: "They prefer." },
-        { label: "precisam", replacement: "They need." }
+        { label: "preferem água", replacement: "They prefer water." },
+        { label: "precisam de água", replacement: "They need water." }
       ],
       currentIndex: 0,
     },
     {
       key: "verb-7",
-      original: "Ela come biscoitos salgados. / biscoitos doces / ela quer",
+      original: "Ela come biscoitos salgados. / biscoitos doces / ela quer biscoitos doces",
       options: [
         { label: "biscoitos salgados", replacement: "She eats crackers." },
         { label: "biscoitos doces", replacement: "She eats cookies." },
-        { label: "quer", replacement: "She wants." }
+        { label: "quer biscoitos doces", replacement: "She wants cookies." }
       ],
       currentIndex: 0,
     },
@@ -483,8 +477,8 @@ export default function Lesson1FoodAndDrink() {
       original: "Eu bebo leite. / preciso / gosto",
       options: [
         { label: "bebo leite", replacement: "I drink milk." },
-        { label: "preciso", replacement: "I need." },
-        { label: "gosto", replacement: "I like." }
+        { label: "preciso de leite", replacement: "I need milk." },
+        { label: "gosto de leite", replacement: "I like milk." }
       ],
       currentIndex: 0,
     },
@@ -493,8 +487,8 @@ export default function Lesson1FoodAndDrink() {
       original: "Você come frutas? / gosta / prefere",
       options: [
         { label: "come frutas", replacement: "Do you eat fruit?" },
-        { label: "gosta", replacement: "Do you like?" },
-        { label: "prefere", replacement: "Do you prefer?" }
+        { label: "gosta de frutas", replacement: "Do you like fruit?" },
+        { label: "prefere frutas", replacement: "Do you prefer fruit?" }
       ],
       currentIndex: 0,
     },
@@ -503,8 +497,8 @@ export default function Lesson1FoodAndDrink() {
       original: "Nós bebemos chá. / preferimos / gostamos",
       options: [
         { label: "bebemos chá", replacement: "We drink tea." },
-        { label: "preferimos", replacement: "We prefer." },
-        { label: "gostamos", replacement: "We like." }
+        { label: "preferimos chá", replacement: "We prefer tea." },
+        { label: "gostamos de chá", replacement: "We like tea." }
       ],
       currentIndex: 0,
     },
@@ -714,9 +708,9 @@ export default function Lesson1FoodAndDrink() {
       key: "grammar-1",
       original: "Eu como pão com manteiga. / presunto / queijo",
       options: [
-        { label: "manteiga", replacement: "I eat bread with butter." },
-        { label: "presunto", replacement: "I eat bread with ham." },
-        { label: "queijo", replacement: "I eat bread with cheese." }
+        { label: "manteiga", replacement: "I eat bread and butter." },
+        { label: "presunto", replacement: "I eat bread and ham." },
+        { label: "queijo", replacement: "I eat bread and cheese." }
       ],
       currentIndex: 0,
     },
@@ -754,9 +748,9 @@ export default function Lesson1FoodAndDrink() {
       key: "grammar-5",
       original: "Você come queijo? / gosta de / prefere",
       options: [
-        { label: "come", replacement: "Do you eat cheese?" },
-        { label: "gosta de", replacement: "Do you like cheese?" },
-        { label: "prefere", replacement: "Do you prefer cheese?" }
+        { label: "come queijo", replacement: "Do you eat cheese?" },
+        { label: "gosta de queijo", replacement: "Do you like cheese?" },
+        { label: "prefere queijo", replacement: "Do you prefer cheese?" }
       ],
       currentIndex: 0,
     },
@@ -794,9 +788,9 @@ export default function Lesson1FoodAndDrink() {
       key: "grammar-9",
       original: "Eu gosto de café. / bebo / tomo",
       options: [
-        { label: "gosto de", replacement: "I like coffee." },
-        { label: "bebo", replacement: "I drink coffee." },
-        { label: "tomo", replacement: "I have coffee." }
+        { label: "gosto de café", replacement: "I like coffee." },
+        { label: "bebo café", replacement: "I drink coffee." },
+        { label: "tomo café", replacement: "I have coffee." }
       ],
       currentIndex: 0,
     },
@@ -804,9 +798,9 @@ export default function Lesson1FoodAndDrink() {
       key: "grammar-10",
       original: "Você prefere chá ou café? / bebe / toma",
       options: [
-        { label: "prefere", replacement: "Do you prefer tea or coffee?" },
-        { label: "bebe", replacement: "Do you drink tea or coffee?" },
-        { label: "toma", replacement: "Do you have tea or coffee?" }
+        { label: "prefere chá ou café", replacement: "Do you prefer tea or coffee?" },
+        { label: "bebe chá ou café", replacement: "Do you drink tea or coffee?" },
+        { label: "toma chá ou café", replacement: "Do you have tea or coffee?" }
       ],
       currentIndex: 0,
     },
@@ -870,9 +864,7 @@ export default function Lesson1FoodAndDrink() {
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">🍔 Lesson 1 - Food & Drink</h1>
           <div className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            <SpeakPortuguese text="Aprenda vocabulário essencial e expressões para falar sobre comida e bebida em inglês." className="text-xl text-gray-700">
-              📚 Aprenda vocabulário essencial e expressões para falar sobre comida e bebida em inglês. 🥤
-            </SpeakPortuguese>
+            📚 Aprenda vocabulário essencial e expressões para falar sobre comida e bebida em inglês. 🥤
           </div>
           <div className="w-64 h-64 mx-auto">
             <img src={mainImage} alt="Food and drink" className="w-full h-full object-cover rounded-2xl shadow-md" />
@@ -895,9 +887,7 @@ export default function Lesson1FoodAndDrink() {
           </div>
           <div className="p-8">
             <div className="text-md text-gray-600 mb-4 italic">
-              <SpeakPortuguese text="Clique nos verbos para ouvir a pronúncia e estudar suas conjugações" className="text-gray-600 italic">
-                🎧 Clique nos verbos para ouvir a pronúncia e estudar suas conjugações
-              </SpeakPortuguese>
+              🎧 Clique nos verbos para ouvir a pronúncia e estudar suas conjugações
             </div>
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
               <li><SpeakText text="to eat" className="text-blue-600 font-bold">to eat</SpeakText> = comer</li>
@@ -937,9 +927,7 @@ export default function Lesson1FoodAndDrink() {
           </div>
           <div className="p-8">
             <div className="text-md text-gray-600 mb-4 italic">
-              <SpeakPortuguese text="Clique em cada palavra para ouvir a pronúncia correta" className="text-gray-600 italic">
-                🎧 Clique em cada palavra para ouvir a pronúncia correta
-              </SpeakPortuguese>
+              🎧 Clique em cada palavra para ouvir a pronúncia correta
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {[
@@ -1002,9 +990,7 @@ export default function Lesson1FoodAndDrink() {
           </div>
           <div className="p-8">
             <div className="text-md text-gray-600 mb-4 italic">
-              <SpeakPortuguese text="Pratique frases comuns e expressões do dia a dia" className="text-gray-600 italic">
-                💬 Pratique frases comuns e expressões do dia a dia
-              </SpeakPortuguese>
+              💬 Pratique frases comuns e expressões do dia a dia
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               {usefulPhrasesData.map((item, idx) => (
@@ -1050,9 +1036,7 @@ export default function Lesson1FoodAndDrink() {
           </div>
           <div className="p-8">
             <div className="text-md text-gray-600 mb-4 italic">
-              <SpeakPortuguese text="Observe a estrutura das frases e pratique a formação correta" className="text-gray-600 italic">
-                📚 Observe a estrutura das frases e pratique a formação correta
-              </SpeakPortuguese>
+              📚 Observe a estrutura das frases e pratique a formação correta
             </div>
 
             <div className="mb-6 cursor-pointer" onClick={() => setIsImageModalOpen(true)}>
@@ -1067,7 +1051,7 @@ export default function Lesson1FoodAndDrink() {
             {/* Nota sobre gramática em português */}
             <div className="text-sm text-gray-600 mb-4 bg-blue-50/70 p-3 rounded-lg border border-blue-100">
               <p className="font-medium text-gray-700">💡 Dica de Gramática:</p>
-              <p>Tanto <span className="text-blue-600 font-medium">"with"</span> quanto <span className="text-blue-600 font-medium">"and"</span> podem ser usados para "com" (ex: <span className="italic">bread and butter</span> / <span className="italic">bread with butter</span>).</p>
+              <p>Tanto <span className="text-blue-600 font-medium">"with"</span> quanto <span className="text-blue-600 font-medium">"and"</span> podem ser usados para "com" (ex: <span className="italic">bread and butter</span> / <span className="italic">coffee with milk</span>).</p>
               <p>Verbos no infinitivo geralmente têm <span className="text-blue-600 font-medium">"to"</span> antes deles (ex: <span className="italic">to eat</span>), mas sem o <span className="text-blue-600 font-medium">"to"</span> eles também são infinitivos (ex: <span className="italic">eat</span>).</p>
             </div>
 
@@ -1118,9 +1102,9 @@ export default function Lesson1FoodAndDrink() {
           <div className="p-8">
             <div className="bg-blue-50 rounded-[20px] p-6">
               <div className="text-center mb-4">
-                <SpeakPortuguese text="Pratique situações da vida real substituindo as palavras em azul." className="text-blue-700 font-medium italic">
+                <div className="text-blue-700 font-medium italic">
                   👉 Pratique situações da vida real substituindo as palavras em <span className="text-blue-600 font-bold">azul</span>.
-                </SpeakPortuguese>
+                </div>
               </div>
               <div className="flex flex-col lg:flex-row gap-8">
                 <div className="lg:w-2/3 space-y-4">
@@ -1210,9 +1194,7 @@ export default function Lesson1FoodAndDrink() {
             <div>
               <h2 className="text-3xl font-bold">🔹 WRAP UP!</h2>
               <div className="mt-2 text-blue-100 italic">
-                <SpeakPortuguese text="Revise os pontos principais e as expressões essenciais da lição" className="text-blue-100 italic">
-                  📝 Revise os pontos principais e as expressões essenciais da lição
-                </SpeakPortuguese>
+                📝 Revise os pontos principais e as expressões essenciais da lição
               </div>
             </div>
           </div>
@@ -1242,7 +1224,7 @@ export default function Lesson1FoodAndDrink() {
                   <ul className="list-disc pl-5 space-y-2 text-blue-100">
                     <li>Use <strong className="text-white">"I eat"</strong> para dizer "eu como" e <strong className="text-white">"I drink"</strong> para dizer "eu bebo".</li>
                     <li>Na terceira pessoa do singular, adicionamos <strong className="text-white">-s</strong>: <em>he drinks, she eats</em> (ele bebe, ela come).</li>
-                    <li>Use <strong className="text-white">"with"</strong> ou <strong className="text-white">"and"</strong> para dizer "com". Ex: <em>bread with butter</em> / <em>bread and butter</em>.</li>
+                    <li>Use <strong className="text-white">"and"</strong> para dizer "com" em expressões como <em>bread and butter</em>, e <strong className="text-white">"with"</strong> em <em>coffee with milk</em>.</li>
                     <li>Use <strong className="text-white">"Do you...?"</strong> para fazer perguntas. Ex: <em>Do you drink coffee?</em> (Você bebe café?)</li>
                   </ul>
                 </div>

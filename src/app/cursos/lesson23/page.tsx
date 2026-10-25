@@ -407,11 +407,11 @@ export default function Lesson23LifestyleWeeklyPlanning() {
     },
     {
       key: "verb-8",
-      original: "Vocês aprendem inglês aqui? / lá / na Wizard",
+      original: "Vocês aprendem inglês aqui? / lá / na Leaf",
       options: [
         { label: "aqui", replacement: "Do you learn English here?", pt: "Vocês aprendem inglês aqui?" },
         { label: "lá", replacement: "Do you learn English there?", pt: "Vocês aprendem inglês lá?" },
-        { label: "na Wizard", replacement: "Do you learn English at Wizard?", pt: "Vocês aprendem inglês na Wizard?" }
+        { label: "na Leaf", replacement: "Do you learn English at Leaf?", pt: "Vocês aprendem inglês na Leaf?" }
       ],
       currentIndex: 0,
     },
@@ -724,9 +724,9 @@ export default function Lesson23LifestyleWeeklyPlanning() {
       green: ["wants", "know", "more", "subject"]
     },
     {
-      en: "She learns Italian at Wizard.",
-      pt: "Ela aprende italiano na Wizard.",
-      green: ["learns", "Italian", "Wizard"]
+      en: "She learns Italian at Leaf.",
+      pt: "Ela aprende italiano na Leaf.",
+      green: ["learns", "Italian", "Leaf"]
     }
   ];
 

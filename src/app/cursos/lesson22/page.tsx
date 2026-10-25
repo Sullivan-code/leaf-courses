@@ -394,7 +394,7 @@ export default function Lesson22LifestylePlanning() {
   const goalQuestions = tuneYourEarsData.goalQuestions;
 
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('/images/beach-bg.jpg')` }}>
+    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url('https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l21andl22.png')` }}>
       <div className="max-w-5xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">🏖️ Lesson 22 – Lifestyle & Weekly Planning</h1>

@@ -6,14 +6,14 @@ import { redirect } from "next/navigation";
 
 export default async function MeusCursos() {
   const user = await currentUser();
-  
+
   if (!user) {
     redirect("/sign-in");
   }
 
   const dbUser = await prisma.user.findUnique({
     where: { clerkId: user.id },
-    select: { subscriptionStatus: true }
+    select: { subscriptionStatus: true },
   });
 
   const isSubscribed = dbUser?.subscriptionStatus === "active";
@@ -27,18 +27,20 @@ export default async function MeusCursos() {
             Você ainda não tem acesso aos cursos
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            Adquira nosso curso completo e comece sua jornada no inglês hoje mesmo!
+            Adquira nosso curso completo e comece sua jornada no inglês hoje
+            mesmo!
           </p>
           <div className="flex gap-4 justify-center">
             <Button asChild size="lg" className="text-lg px-8">
-              <Link href="/nossos-cursos">
-                Ver Planos
-              </Link>
+              <Link href="/nossos-cursos">Ver Planos</Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-lg px-8">
-              <Link href="/aula-experimental">
-                Aula Experimental
-              </Link>
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="text-lg px-8"
+            >
+              <Link href="/aula-experimental">Aula Experimental</Link>
             </Button>
           </div>
         </div>
@@ -52,43 +54,64 @@ export default async function MeusCursos() {
         <h1 className="text-5xl font-bold mb-10 text-center text-gray-800">
           Meus Cursos
         </h1>
-        
+
         <div className="grid gap-8">
-          {/* Curso de Inglês Básico ao Intermediário (A1-B1) */}
-          <div className="bg-white shadow-2xl rounded-3xl p-8 border-4 border-blue-300 hover:shadow-3xl transition-all duration-300 transform hover:scale-105">
-            <div className="flex items-center gap-6 mb-6">
-              <div className="text-6xl">🇺🇸</div>
-              <div>
-                <h2 className="text-3xl font-bold text-blue-700">
-                  Inglês Básico ao Intermediário (A1-B1)
-                </h2>
-                <p className="text-xl text-gray-600 mt-2">
-                  Curso completo com 60 lições + 10 revisões
-                </p>
+          {/* Curso de Inglês Básico ao Intermediário (A1-B1) — COM IMAGEM DE FUNDO */}
+          <div className="relative bg-white shadow-2xl rounded-3xl p-8 border-4 border-blue-300 hover:shadow-3xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
+            {/* Imagem de fundo (Bandeira Americana em Movimento) */}
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage:
+                  "url('https://raw.githubusercontent.com/Sullivan-code/english-audios/main/Bandeira%20Americana%20em%20Movimento.png')",
+              }}
+            />
+            {/* Overlay branco para manter o texto legível */}
+            <div className="absolute inset-0 bg-white/80" />
+
+            {/* Conteúdo (acima do background) */}
+            <div className="relative z-10">
+              <div className="flex items-center gap-6 mb-6">
+                <div className="text-6xl">🇺🇸</div>
+                <div>
+                  <h2 className="text-3xl font-bold text-blue-700">
+                    Inglês Básico ao Intermediário (A1-B1)
+                  </h2>
+                  <p className="text-xl text-gray-600 mt-2">
+                    Curso completo com 60 lições + 10 revisões
+                  </p>
+                </div>
               </div>
-            </div>
-            
-            <div className="bg-blue-50 p-6 rounded-2xl mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-semibold text-gray-700">Progresso</span>
-                <span className="text-lg font-semibold text-blue-600">33%</span>
+
+              <div className="bg-blue-50/90 backdrop-blur-sm p-6 rounded-2xl mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-lg font-semibold text-gray-700">
+                    Progresso
+                  </span>
+                  <span className="text-lg font-semibold text-blue-600">
+                    33%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-4">
+                  <div className="bg-green-500 h-4 rounded-full w-1/3"></div>
+                </div>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-4">
-                <div className="bg-green-500 h-4 rounded-full w-1/3"></div>
+
+              <div className="flex gap-4">
+                <Button asChild size="lg" className="flex-1 text-lg">
+                  <Link href="/cursos/offshore/lesson1">
+                    Continuar de Onde Parei
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="text-lg bg-white/90"
+                >
+                  <Link href="/ver-todas">Ver Todas as Lições</Link>
+                </Button>
               </div>
-            </div>
-            
-            <div className="flex gap-4">
-              <Button asChild size="lg" className="flex-1 text-lg">
-                <Link href="/cursos/offshore/lesson1">
-                  Continuar de Onde Parei
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg">
-                <Link href="/ver-todas">
-                  Ver Todas as Lições
-                </Link>
-              </Button>
             </div>
           </div>
 
@@ -105,27 +128,38 @@ export default async function MeusCursos() {
                 </p>
               </div>
             </div>
-            
+
             <div className="bg-purple-50 p-6 rounded-2xl mb-6">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-semibold text-gray-700">Progresso</span>
-                <span className="text-lg font-semibold text-purple-600">10%</span>
+                <span className="text-lg font-semibold text-gray-700">
+                  Progresso
+                </span>
+                <span className="text-lg font-semibold text-purple-600">
+                  10%
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-4">
                 <div className="bg-green-500 h-4 rounded-full w-[10%]"></div>
               </div>
             </div>
-            
+
             <div className="flex gap-4">
-              <Button asChild size="lg" className="flex-1 text-lg bg-purple-600 hover:bg-purple-700">
+              <Button
+                asChild
+                size="lg"
+                className="flex-1 text-lg bg-purple-600 hover:bg-purple-700"
+              >
                 <Link href="/cursos/ingles-intermediario-avancado/lesson1">
                   Continuar de Onde Parei
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg border-purple-300 text-purple-700 hover:bg-purple-50">
-                <Link href="/ver-todas-b1b2">
-                  Ver Todas as Lições
-                </Link>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="text-lg border-purple-300 text-purple-700 hover:bg-purple-50"
+              >
+                <Link href="/ver-todas-b1b2">Ver Todas as Lições</Link>
               </Button>
             </div>
           </div>
@@ -143,27 +177,36 @@ export default async function MeusCursos() {
                 </p>
               </div>
             </div>
-            
+
             <div className="bg-red-50 p-6 rounded-2xl mb-6">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-semibold text-gray-700">Progresso</span>
+                <span className="text-lg font-semibold text-gray-700">
+                  Progresso
+                </span>
                 <span className="text-lg font-semibold text-red-600">15%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-4">
                 <div className="bg-green-500 h-4 rounded-full w-[15%]"></div>
               </div>
             </div>
-            
+
             <div className="flex gap-4">
-              <Button asChild size="lg" className="flex-1 text-lg bg-red-600 hover:bg-red-700">
+              <Button
+                asChild
+                size="lg"
+                className="flex-1 text-lg bg-red-600 hover:bg-red-700"
+              >
                 <Link href="/cursos/frances/lesson1">
                   Continuar de Onde Parei
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg border-red-300 text-red-700 hover:bg-red-50">
-                <Link href="/ver-todas-fr">
-                  Ver Todas as Lições
-                </Link>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="text-lg border-red-300 text-red-700 hover:bg-red-50"
+              >
+                <Link href="/ver-todas-fr">Ver Todas as Lições</Link>
               </Button>
             </div>
           </div>
@@ -177,31 +220,43 @@ export default async function MeusCursos() {
                   Inglês - Off Shore
                 </h2>
                 <p className="text-xl text-gray-600 mt-2">
-                  Curso especializado para profissionais embarcados - 40 lições técnicas
+                  Curso especializado para profissionais embarcados - 40 lições
+                  técnicas
                 </p>
               </div>
             </div>
-            
+
             <div className="bg-orange-50 p-6 rounded-2xl mb-6">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-semibold text-gray-700">Progresso</span>
-                <span className="text-lg font-semibold text-orange-600">0%</span>
+                <span className="text-lg font-semibold text-gray-700">
+                  Progresso
+                </span>
+                <span className="text-lg font-semibold text-orange-600">
+                  0%
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-4">
                 <div className="bg-green-500 h-4 rounded-full w-0"></div>
               </div>
             </div>
-            
+
             <div className="flex gap-4">
-              <Button asChild size="lg" className="flex-1 text-lg bg-orange-600 hover:bg-orange-700">
+              <Button
+                asChild
+                size="lg"
+                className="flex-1 text-lg bg-orange-600 hover:bg-orange-700"
+              >
                 <Link href="/cursos/offshore/lesson1-offshore">
                   Iniciar Curso Off Shore
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg border-orange-300 text-orange-700 hover:bg-orange-50">
-                <Link href="/ver-todas-os">
-                  Ver Todas as Lições
-                </Link>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="text-lg border-orange-300 text-orange-700 hover:bg-orange-50"
+              >
+                <Link href="/ver-todas-os">Ver Todas as Lições</Link>
               </Button>
             </div>
           </div>
@@ -213,11 +268,10 @@ export default async function MeusCursos() {
             Informações da Assinatura
           </h3>
           <p className="text-gray-600">
-            Status: <span className="text-green-600 font-semibold">Ativa</span>
+            Status:{" "}
+            <span className="text-green-600 font-semibold">Ativa</span>
           </p>
-          <p className="text-gray-600 mt-2">
-            Próxima cobrança: 15/04/2026
-          </p>
+          <p className="text-gray-600 mt-2">Próxima cobrança: 15/04/2026</p>
         </div>
       </div>
     </div>

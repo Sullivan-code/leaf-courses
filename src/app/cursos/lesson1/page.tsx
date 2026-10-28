@@ -14,16 +14,22 @@ interface NoteModalState {
 
 // ============================================
 // HELPER – remove emojis antes de falar (TTS)
+// Versão compatível com ES5 (Corrige o erro da Vercel)
 // ============================================
-const stripEmojis = (text: string): string =>
-  text
-    .replace(/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F1E6}-\u{1F1FF}\u200d\ufe0f]/gu, "")
+const stripEmojis = (text: string): string => {
+  return text
+    // Remove pares substitutos (a maioria dos emojis modernos)
+    .replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, "")
+    // Remove símbolos e dingbats (emojis mais antigos)
+    .replace(/[\u2600-\u27BF]/g, "")
+    // Remove seletores de variação e joiners
+    .replace(/[\uFE00-\uFE0F\u200D]/g, "")
     .replace(/\s+/g, " ")
     .trim();
+};
 
 // ============================================
 // SPEECH SYSTEM WITH AMERICAN FEMALE VOICE
-// (agora com suporte a pt-BR para textos em português)
 // ============================================
 
 interface SpeakTextProps {
@@ -388,7 +394,7 @@ export default function Lesson1FoodAndDrink() {
     }
   }, []);
 
-  // ===== IMAGENS (mesmas de antes) =====
+  // ===== IMAGENS =====
   const mainImage = "/images/first-l1.jpg";
   const readingImage = "/images/reallife-image1.jpg";
   const placesImage = "/images/reallife-image2.jpg";

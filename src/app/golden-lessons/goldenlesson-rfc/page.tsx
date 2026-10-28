@@ -39,7 +39,7 @@ const speakText = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
     utterance.rate = 0.85; // Um pouco mais devagar para iniciantes
-    
+
     const setVoice = () => {
       const voices = window.speechSynthesis.getVoices();
       const femaleVoice = voices.find(v => v.lang === 'en-US' && (v.name.includes('Samantha') || v.name.includes('Google US English') || v.name.includes('Microsoft Zira')));

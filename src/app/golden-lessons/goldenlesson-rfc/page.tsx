@@ -32,13 +32,13 @@ interface NoteModalState {
 
 // ================= COMPONENTES AUXILIARES =================
 
-// Função de Áudio
+// Função de Áudio (Text-to-Speech)
 const speakText = (text: string) => {
   if (typeof window !== 'undefined' && window.speechSynthesis) {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
-    utterance.rate = 0.9;
+    utterance.rate = 0.85; // Um pouco mais devagar para iniciantes
     
     const setVoice = () => {
       const voices = window.speechSynthesis.getVoices();
@@ -251,54 +251,140 @@ export default function EnglishMegaLesson() {
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
           <h1 className="text-4xl md:text-5xl font-extrabold text-blue-900 mb-4 tracking-tight">English Masterclass</h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Aprenda no seu ritmo com traduções interativas, textos curtos e exercícios detalhados. Clique nos ícones 🌐 para traduzir os enunciados e alternativas.
+            Do zero à interpretação de textos. Comece pela base gramatical abaixo, ouça as pronúncias, faça anotações e depois teste seus conhecimentos. Clique nos ícones 🌐 para traduzir os exercícios.
           </p>
         </div>
 
-        {/* 1. Textos Curtos para Interpretação */}
+        {/* SEÇÃO 0 - GRAMÁTICA PARA INICIANTES */}
+        <section className="bg-white rounded-[30px] shadow-md overflow-hidden border border-blue-100">
+          <div className="bg-gradient-to-r from-amber-500 to-orange-600 p-6 flex justify-between items-center text-white">
+            <h2 className="text-2xl font-bold">0. O Alicerce: Gramática Passo a Passo</h2>
+            <PencilIcon onClick={() => openNoteModal('Grammar Basics')} />
+          </div>
+          <div className="p-8 space-y-8">
+            <p className="text-gray-700 bg-yellow-50 p-4 rounded-xl border border-yellow-200">
+              <strong className="text-yellow-800">Regra de Ouro:</strong> Em inglês, a ordem das palavras é quase sempre <strong>Sujeito (quem faz) + Verbo (ação) + Complemento (o resto)</strong>. Exemplo: <em>She (Ela) + studies (estuda) + English (inglês)</em>.
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Card 1: Simple Present */}
+              <div className="bg-blue-50 p-6 rounded-2xl border border-blue-200">
+                <h3 className="font-bold text-blue-800 text-xl mb-3">1. Simple Present (Presente Simples)</h3>
+                <p className="text-gray-700 mb-2"><strong>Quando usar?</strong> Para hábitos, rotinas e verdades universais. (Ex: Eu estudo todos os dias).</p>
+                <ul className="space-y-3 text-sm text-gray-700">
+                  <li className="bg-white p-3 rounded-lg">
+                    <strong className="text-blue-600">Afirmativa:</strong> I / You / We / They + Verbo. <br/>
+                    He / She / It + Verbo com <strong>-s</strong> ou <strong>-es</strong>. <br/>
+                    <span className="italic text-gray-500 cursor-pointer hover:text-blue-500" onClick={() => speakText("She studies English. He goes to school.")}>Ex: She studies. / He goes.</span>
+                  </li>
+                  <li className="bg-white p-3 rounded-lg">
+                    <strong className="text-blue-600">Negativa:</strong> Usamos <strong>don't</strong> ou <strong>doesn't</strong>. <br/>
+                    <span className="italic text-gray-500 cursor-pointer hover:text-blue-500" onClick={() => speakText("I don't like. She doesn't like.")}>Ex: I don't like. / She doesn't like.</span><br/>
+                    <span className="text-xs text-red-500">Cuidado: O verbo depois de doesn't fica sem o -s.</span>
+                  </li>
+                  <li className="bg-white p-3 rounded-lg">
+                    <strong className="text-blue-600">Pergunta:</strong> Usamos <strong>Do</strong> ou <strong>Does</strong> antes do sujeito. <br/>
+                    <span className="italic text-gray-500 cursor-pointer hover:text-blue-500" onClick={() => speakText("Do you study? Does she study?")}>Ex: Do you study? / Does she study?</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Card 2: Present Continuous */}
+              <div className="bg-purple-50 p-6 rounded-2xl border border-purple-200">
+                <h3 className="font-bold text-purple-800 text-xl mb-3">2. Present Continuous (Presente Contínuo)</h3>
+                <p className="text-gray-700 mb-2"><strong>Quando usar?</strong> Para ações acontecendo <strong>AGORA</strong>, neste exato momento.</p>
+                <ul className="space-y-3 text-sm text-gray-700">
+                  <li className="bg-white p-3 rounded-lg">
+                    <strong className="text-purple-600">Fórmula:</strong> Sujeito + <strong>am / is / are</strong> + Verbo com <strong>-ing</strong>. <br/>
+                    <span className="italic text-gray-500 cursor-pointer hover:text-purple-500" onClick={() => speakText("I am studying. She is reading.")}>Ex: I am studying. / She is reading.</span>
+                  </li>
+                  <li className="bg-white p-3 rounded-lg">
+                    <strong className="text-purple-600">Palavras-chave:</strong> Now, right now, at the moment, Look!, Listen! <br/>
+                    <span className="text-xs text-purple-600">Se ver essas palavras, use o -ing!</span>
+                  </li>
+                  <li className="bg-white p-3 rounded-lg">
+                    <strong className="text-purple-600">Negativa e Pergunta:</strong> O verbo "to be" (am/is/are) manda. <br/>
+                    <span className="italic text-gray-500 cursor-pointer hover:text-purple-500" onClick={() => speakText("She is not studying. Are they studying?")}>Ex: She isn't studying. / Are they studying?</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Card 3 e 4 */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Card 3: Noun Phrases */}
+              <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-200">
+                <h3 className="font-bold text-emerald-800 text-xl mb-3">3. Noun Phrases (Grupos Nominais)</h3>
+                <p className="text-gray-700 mb-2">Em inglês, os adjetivos vêm <strong>ANTES</strong> do substantivo principal (O Núcleo / Head Noun).</p>
+                <div className="bg-white p-4 rounded-lg mb-2 text-sm">
+                  <p className="mb-1"><strong>Plastic</strong> pollution (Poluição <strong>plástica</strong>)</p>
+                  <p className="text-xs text-gray-500">Aqui, "pollution" (poluição) é o núcleo. "Plastic" é o adjetivo.</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg text-sm">
+                  <p className="mb-1">A <strong>useful digital</strong> keyboard (Um teclado <strong>digital útil</strong>)</p>
+                  <p className="text-xs text-gray-500">"keyboard" (teclado) é o núcleo. Os outros são características.</p>
+                </div>
+              </div>
+
+              {/* Card 4: Dicas de Leitura */}
+              <div className="bg-rose-50 p-6 rounded-2xl border border-rose-200">
+                <h3 className="font-bold text-rose-800 text-xl mb-3">4. Dica de Prova (Interpretação)</h3>
+                <p className="text-gray-700 mb-2">Você não precisa traduzir cada palavra do texto. Use estas técnicas:</p>
+                <ul className="list-disc pl-5 text-sm space-y-2 text-gray-700">
+                  <li><strong>Skimming:</strong> Ler rápido só para saber o assunto geral (título e primeiro parágrafo).</li>
+                  <li><strong>Scanning:</strong> Procurar no texto palavras específicas que aparecem na pergunta (nomes, anos).</li>
+                  <li><strong>Cognatos:</strong> Palavras parecidas com o português (ex: <em>technology, communication, pollution</em>). Mas cuidado com as falsas (ex: <em>actually</em> não é "atualmente", é "na verdade").</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 1. Textos Inéditos para Interpretação */}
         <section className="bg-white rounded-[30px] shadow-md overflow-hidden border border-blue-100">
           <div className="bg-gradient-to-r from-emerald-500 to-teal-600 p-6 flex justify-between items-center text-white">
-            <h2 className="text-2xl font-bold">1. Short Texts for Interpretation</h2>
-            <PencilIcon onClick={() => openNoteModal('Short Texts')} />
+            <h2 className="text-2xl font-bold">1. Textos de Interpretação (Nível Iniciante)</h2>
+            <PencilIcon onClick={() => openNoteModal('New Texts')} />
           </div>
           <div className="p-8 space-y-10">
             
             {/* Texto A */}
             <div>
               <InteractiveText 
-                title="Text A: Technology and Studies"
+                title="Text A: Community Action (Environment)"
                 lines={[
-                  { en: "Many students use digital tools to learn.", pt: "Muitos estudantes usam ferramentas digitais para aprender." },
-                  { en: "Today, Ana is searching for information about plastic pollution.", pt: "Hoje, Ana está procurando informações sobre poluição plástica." },
-                  { en: "She checks the source before sharing a story because online information is not always reliable.", pt: "Ela verifica a fonte antes de compartilhar uma história porque informações on-line nem sempre são confiáveis." }
+                  { en: "Every Saturday, a group of volunteers meets at the local beach.", pt: "Todo sábado, um grupo de voluntários se encontra na praia local." },
+                  { en: "They usually collect plastic waste to protect marine wildlife.", pt: "Eles geralmente coletam lixo plástico para proteger a vida selvagem marinha." },
+                  { en: "Today, they are building a sign to warn people about pollution.", pt: "Hoje, eles estão construindo uma placa para alertar as pessoas sobre a poluição." },
+                  { en: "They say that everyone must use reusable bottles instead of plastic ones.", pt: "Eles dizem que todos devem usar garrafas reutilizáveis em vez de garrafas plásticas." }
                 ]}
               />
               <Quiz questions={[
                 {
                   id: 1, 
-                  question: "What do many students use to learn?", 
-                  questionPt: "O que muitos estudantes usam para aprender?",
+                  question: "What do the volunteers usually do on Saturdays?", 
+                  questionPt: "O que os voluntários geralmente fazem aos sábados?",
                   options: [
-                    { en: "Books", pt: "Livros" },
-                    { en: "Digital tools", pt: "Ferramentas digitais" },
-                    { en: "Televisions", pt: "Televisões" },
-                    { en: "Newspapers", pt: "Jornais" }
+                    { en: "They build signs.", pt: "Eles constroem placas." },
+                    { en: "They collect plastic waste.", pt: "Eles coletam lixo plástico." },
+                    { en: "They drink reusable water.", pt: "Eles bebem água reutilizável." },
+                    { en: "They go fishing.", pt: "Eles vão pescar." }
                   ], 
                   correctAnswer: 1, 
-                  explanation: "O texto diz explicitamente: 'Many students use digital tools to learn'." 
+                  explanation: "O texto diz 'They usually collect plastic waste' (Simple Present, indicando hábito)." 
                 },
                 {
                   id: 2, 
-                  question: "Why does Ana check the source?", 
-                  questionPt: "Por que Ana verifica a fonte?",
+                  question: "What are they doing TODAY?", 
+                  questionPt: "O que eles estão fazendo HOJE?",
                   options: [
-                    { en: "Because she likes the writer.", pt: "Porque ela gosta do escritor." },
-                    { en: "Because online information is not always reliable.", pt: "Porque a informação online nem sempre é confiável." },
-                    { en: "Because her teacher asked her to.", pt: "Porque a professora pediu." },
-                    { en: "Because she wants to share it quickly.", pt: "Porque ela quer compartilhar rápido." }
+                    { en: "Collecting waste", pt: "Coletando lixo" },
+                    { en: "Building a sign", pt: "Construindo uma placa" },
+                    { en: "Swimming", pt: "Nadando" },
+                    { en: "Buying plastic bottles", pt: "Comprando garrafas plásticas" }
                   ], 
                   correctAnswer: 1, 
-                  explanation: "A frase final explica: 'because online information is not always reliable'." 
+                  explanation: "A palavra 'Today' neste contexto indica uma ação pontual no Present Continuous: 'they are building a sign'." 
                 }
               ]} />
             </div>
@@ -306,11 +392,12 @@ export default function EnglishMegaLesson() {
             {/* Texto B */}
             <div>
               <InteractiveText 
-                title="Text B: Daily Routine"
+                title="Text B: The Student's Routine (Technology)"
                 lines={[
-                  { en: "Lucas usually walks to school every day.", pt: "Lucas geralmente caminha para a escola todos os dias." },
-                  { en: "However, right now, he is taking the bus because it is raining.", pt: "No entanto, neste exato momento, ele está pegando o ônibus porque está chovendo." },
-                  { en: "He always carries a reusable bottle to avoid plastic waste.", pt: "Ele sempre carrega uma garrafa reutilizável para evitar lixo plástico." }
+                  { en: "Lucas usually walks to school every morning.", pt: "Lucas geralmente caminha para a escola todas as manhãs." },
+                  { en: "However, right now, he is taking the bus because it is raining heavily.", pt: "No entanto, neste exato momento, ele está pegando o ônibus porque está chovendo forte." },
+                  { en: "At school, he uses digital tools to search for information online.", pt: "Na escola, ele usa ferramentas digitais para procurar informações on-line." },
+                  { en: "He always checks the source before sharing a story on social media.", pt: "Ele sempre verifica a fonte antes de compartilhar uma história nas redes sociais." }
                 ]}
               />
               <Quiz questions={[
@@ -329,82 +416,108 @@ export default function EnglishMegaLesson() {
                 },
                 {
                   id: 4, 
-                  question: "What is Lucas doing right now?", 
-                  questionPt: "O que Lucas está fazendo agora?",
+                  question: "Why is he taking the bus right now?", 
+                  questionPt: "Por que ele está pegando o ônibus agora?",
                   options: [
-                    { en: "Walking to school", pt: "Caminhando para a escola" },
-                    { en: "Taking the bus", pt: "Pegando o ônibus" },
-                    { en: "Drinking water", pt: "Bebendo água" },
-                    { en: "Buying a bottle", pt: "Comprando uma garrafa" }
+                    { en: "Because he is late.", pt: "Porque ele está atrasado." },
+                    { en: "Because it is raining.", pt: "Porque está chovendo." },
+                    { en: "Because he is tired.", pt: "Porque ele está cansado." },
+                    { en: "Because his car broke.", pt: "Porque o carro dele quebrou." }
                   ], 
                   correctAnswer: 1, 
-                  explanation: "A expressão 'right now' (agora) exige o Present Continuous: 'he is taking the bus'." 
+                  explanation: "O texto afirma: 'because it is raining heavily' (porque está chovendo forte)." 
+                }
+              ]} />
+            </div>
+
+            {/* Texto C */}
+            <div>
+              <InteractiveText 
+                title="Text C: Social Media & Fake News"
+                lines={[
+                  { en: "Social media is a powerful tool for communication.", pt: "As redes sociais são uma ferramenta poderosa para a comunicação." },
+                  { en: "Many people use it to share news and express their opinions.", pt: "Muitas pessoas a usam para compartilhar notícias e expressar suas opiniões." },
+                  { en: "However, misinformation spreads quickly if users do not check the source.", pt: "No entanto, a desinformação se espalha rapidamente se os usuários não verificarem a fonte." },
+                  { en: "A reliable website usually has an author, a date, and verifiable facts.", pt: "Um site confiável geralmente tem um autor, uma data e fatos verificáveis." }
+                ]}
+              />
+              <Quiz questions={[
+                {
+                  id: 5, 
+                  question: "According to the text, what helps to identify a reliable website?", 
+                  questionPt: "De acordo com o texto, o que ajuda a identificar um site confiável?",
+                  options: [
+                    { en: "Having many likes.", pt: "Ter muitas curtidas." },
+                    { en: "Being shared by friends.", pt: "Ser compartilhado por amigos." },
+                    { en: "Having an author, a date, and facts.", pt: "Ter um autor, uma data e fatos." },
+                    { en: "Being visually beautiful.", pt: "Ser visualmente bonito." }
+                  ], 
+                  correctAnswer: 2, 
+                  explanation: "O texto diz explicitamente: 'A reliable website usually has an author, a date, and verifiable facts'." 
+                },
+                {
+                  id: 6, 
+                  question: "What happens if users do not check the source?", 
+                  questionPt: "O que acontece se os usuários não verificarem a fonte?",
+                  options: [
+                    { en: "Communication stops.", pt: "A comunicação para." },
+                    { en: "Misinformation spreads quickly.", pt: "A desinformação se espalha rapidamente." },
+                    { en: "Social media disappears.", pt: "As redes sociais desaparecem." },
+                    { en: "The website becomes reliable.", pt: "O site se torna confiável." }
+                  ], 
+                  correctAnswer: 1, 
+                  explanation: "O texto afirma: 'misinformation spreads quickly if users do not check the source'." 
                 }
               ]} />
             </div>
           </div>
         </section>
 
-        {/* 2. Gramática e Textos Maiores */}
+        {/* 2. Textos da Prova (Revisão) */}
         <section className="bg-white rounded-[30px] shadow-md overflow-hidden border border-blue-100">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 flex justify-between items-center text-white">
-            <h2 className="text-2xl font-bold">2. Reading Comprehension (Longer Texts)</h2>
-            <PencilIcon onClick={() => openNoteModal('Reading')} />
+            <h2 className="text-2xl font-bold">2. Revisão: Textos da Prova (ETEHL)</h2>
+            <PencilIcon onClick={() => openNoteModal('Exam Texts')} />
           </div>
           <div className="p-8 space-y-10">
             
             <InteractiveText 
-              title="Text C: An App Is Helping Indigenous Brazilians"
+              title="Text D: An App Is Helping Indigenous Brazilians"
               lines={[
                 { en: "For many Indigenous communities in the Brazilian Amazon, getting online is becoming increasingly important.", pt: "Para muitas comunidades indígenas na Amazônia brasileira, ficar on-line está se tornando cada vez mais importante." },
-                { en: "People are using smartphones not only to communicate with friends and relatives but also to protect and share their own languages.", pt: "As pessoas estão usando smartphones não apenas para se comunicar com amigos e parentes, mas também para proteger e compartilhar suas próprias línguas." },
                 { en: "In some far-flung villages, connections are still slow or unreliable.", pt: "Em algumas aldeias remotas, as conexões ainda são lentas ou não confiáveis." },
                 { en: "Another challenge remains: most keyboards are designed for Portuguese and do not always include the letters used in Indigenous languages.", pt: "Outro desafio permanece: a maioria dos teclados é projetada para o português e nem sempre inclui as letras usadas nas línguas indígenas." },
                 { en: "A new app called Linklado allows users to create their own keyboards and adapt them to their mother tongues.", pt: "Um novo aplicativo chamado Linklado permite que os usuários criem seus próprios teclados e os adaptem às suas línguas maternas." },
-                { en: "In some communities, younger users are teaching older relatives how to use the technology.", pt: "Em algumas comunidades, usuários mais jovens estão ensinando parentes mais velhos a usar a tecnologia." },
-                { en: "The technology is particularly useful in the Amazon, a sprawling region where villages can be separated by long distances.", pt: "A tecnologia é particularmente útil na Amazônia, uma região vasta onde as aldeias podem ser separadas por longas distâncias." }
+                { en: "In some communities, younger users are teaching older relatives how to use the technology.", pt: "Em algumas comunidades, usuários mais jovens estão ensinando parentes mais velhos a usar a tecnologia." }
               ]}
             />
 
             <Quiz questions={[
               {
-                id: 5, 
-                question: "According to the text, what is one of the main difficulties for Indigenous communities using smartphones?", 
-                questionPt: "De acordo com o texto, qual é uma das principais dificuldades para as comunidades indígenas que usam smartphones?",
-                options: [
-                  { en: "The devices cannot access communication apps.", pt: "Os dispositivos não podem acessar aplicativos de comunicação." },
-                  { en: "Many keyboards do not have characters for Indigenous languages.", pt: "Muitos teclados não têm caracteres para línguas indígenas." },
-                  { en: "Indigenous people show no interest in technology.", pt: "Os indígenas não demonstram interesse por tecnologia." },
-                  { en: "Digital communication is banned in some communities.", pt: "A comunicação digital é proibida em algumas comunidades." }
-                ], 
-                correctAnswer: 1, 
-                explanation: "O texto afirma que 'most keyboards are designed for Portuguese and do not always include the letters... used in Indigenous languages'." 
-              },
-              {
-                id: 6, 
-                question: "The expression 'far-flung villages' refers to:", 
-                questionPt: "A expressão 'far-flung villages' (aldeias distantes) refere-se a:",
-                options: [
-                  { en: "Villages with high population density.", pt: "Aldeias com alta densidade populacional." },
-                  { en: "Villages located in very distant or isolated areas.", pt: "Aldeias localizadas em áreas muito distantes ou isoladas." },
-                  { en: "Villages that do not use any technology.", pt: "Aldeias que não usam nenhuma tecnologia." },
-                  { en: "Economically developed villages.", pt: "Aldeias economicamente desenvolvidas." }
-                ], 
-                correctAnswer: 1, 
-                explanation: "Far-flung significa distante, remoto ou isolado." 
-              },
-              {
                 id: 7, 
-                question: "What role are young Indigenous people playing?", 
-                questionPt: "Qual papel os jovens indígenas estão desempenhando?",
+                question: "According to the text, what is a 'far-flung village'?", 
+                questionPt: "De acordo com o texto, o que é uma 'far-flung village'?",
                 options: [
-                  { en: "They are helping older people use new technologies.", pt: "Eles estão ajudando pessoas mais velhas a usar novas tecnologias." },
-                  { en: "They are abandoning their native languages.", pt: "Eles estão abandonando suas línguas nativas." },
-                  { en: "They are creating digital-only languages.", pt: "Eles estão criando línguas exclusivamente digitais." },
-                  { en: "They are refusing mobile technology.", pt: "Eles estão recusando a tecnologia móvel." }
+                  { en: "A village with high population.", pt: "Uma vila com alta população." },
+                  { en: "A village located in very distant or isolated areas.", pt: "Uma vila localizada em áreas muito distantes ou isoladas." },
+                  { en: "A village that doesn't use technology.", pt: "Uma vila que não usa tecnologia." },
+                  { en: "A developed village.", pt: "Uma vila desenvolvida." }
                 ], 
-                correctAnswer: 0, 
-                explanation: "O texto cita que 'younger users are teaching older relatives how to use the technology'." 
+                correctAnswer: 1, 
+                explanation: "'Far-flung' significa distante, remoto ou isolado." 
+              },
+              {
+                id: 8, 
+                question: "What is the main function of the app Linklado?", 
+                questionPt: "Qual é a principal função do aplicativo Linklado?",
+                options: [
+                  { en: "To translate Portuguese automatically.", pt: "Traduzir português automaticamente." },
+                  { en: "To provide free internet.", pt: "Fornecer internet grátis." },
+                  { en: "To allow users to create custom keyboards.", pt: "Permitir que os usuários criem teclados personalizados." },
+                  { en: "To replace smartphones.", pt: "Substituir smartphones." }
+                ], 
+                correctAnswer: 2, 
+                explanation: "O texto afirma que o app 'allows users to create their own keyboards'." 
               }
             ]} />
           </div>
@@ -419,59 +532,33 @@ export default function EnglishMegaLesson() {
           <div className="p-8 space-y-8">
             <Quiz questions={[
               {
-                id: 8, 
+                id: 9, 
                 question: "In what situation do we normally use the Simple Present?", 
                 questionPt: "Em qual situação normalmente usamos o Simple Present (Presente Simples)?",
                 options: [
                   { en: "To talk only about past actions.", pt: "Para falar apenas sobre ações passadas." },
                   { en: "To describe an action happening exactly now.", pt: "Para descrever uma ação acontecendo exatamente agora." },
-                  { en: "To talk about future plans.", pt: "Para falar sobre planos futuros." },
-                  { en: "To express habits, routines, and general facts.", pt: "Para expressar hábitos, rotinas e fatos gerais." }
+                  { en: "To express habits, routines, and general facts.", pt: "Para expressar hábitos, rotinas e fatos gerais." },
+                  { en: "To talk about future plans.", pt: "Para falar sobre planos futuros." }
                 ], 
-                correctAnswer: 3, 
+                correctAnswer: 2, 
                 explanation: "O Simple Present é usado para hábitos, rotinas e verdades universais." 
               },
               {
-                id: 9, 
-                question: "Choose the correct sentence.", 
-                questionPt: "Escolha a frase correta.",
+                id: 10, 
+                question: "Choose the correct Present Continuous sentence.", 
+                questionPt: "Escolha a frase correta no Present Continuous (Presente Contínuo).",
                 options: [
-                  { en: "Plastic pollution affect marine ecosystems.", pt: "A poluição plástica afetam os ecossistemas marinhos." },
-                  { en: "Plastic pollution affects marine ecosystems.", pt: "A poluição plástica afeta os ecossistemas marinhos." },
-                  { en: "Plastic pollution affecting marine ecosystems.", pt: "A poluição plástica afetando os ecossistemas marinhos." },
-                  { en: "Plastic pollution does affects marine ecosystems.", pt: "A poluição plástica faz afeta os ecossistemas marinhos." }
+                  { en: "Indigenous teenagers is using new digital tools.", pt: "Adolescentes indígenas está usando novas ferramentas digitais." },
+                  { en: "Indigenous teenagers are using new digital tools.", pt: "Adolescentes indígenas estão usando novas ferramentas digitais." },
+                  { en: "Indigenous teenagers are use new digital tools.", pt: "Adolescentes indígenas estão usar novas ferramentas digitais." },
+                  { en: "Indigenous teenagers using new digital tools.", pt: "Adolescentes indígenas usando novas ferramentas digitais." }
                 ], 
                 correctAnswer: 1, 
-                explanation: "Sujeito singular (pollution) exige verbo com -s (affects)." 
-              },
-              {
-                id: 10, 
-                question: "Choose the correct negative sentence in the Simple Present.", 
-                questionPt: "Escolha a frase negativa correta no Simple Present.",
-                options: [
-                  { en: "Many plastic products not disappear quickly.", pt: "Muitos produtos plásticos não desaparecem rapidamente." },
-                  { en: "Many plastic products doesn't disappear quickly.", pt: "Muitos produtos plásticos não desaparece rapidamente." },
-                  { en: "Many plastic products aren't disappear quickly.", pt: "Muitos produtos plásticos não estão desaparecer rapidamente." },
-                  { en: "Many plastic products don't disappear quickly.", pt: "Muitos produtos plásticos não desaparecem rapidamente." }
-                ], 
-                correctAnswer: 3, 
-                explanation: "Sujeito plural (products) usa 'don't' + verbo base (disappear)." 
+                explanation: "Sujeito plural (teenagers) usa 'are' + verbo-ing (using)." 
               },
               {
                 id: 11, 
-                question: "Regarding the Present Continuous, which alternative is correct?", 
-                questionPt: "Em relação ao Present Continuous (Presente Contínuo), qual alternativa é correta?",
-                options: [
-                  { en: "We use only the main verb with -ing.", pt: "Usamos apenas o verbo principal com -ing." },
-                  { en: "We use do/does + verb.", pt: "Usamos do/does + verbo." },
-                  { en: "We use the verb to be (am/is/are) + main verb with -ing.", pt: "Usamos o verbo to be (am/is/are) + verbo principal com -ing." },
-                  { en: "We use have/has + main verb.", pt: "Usamos have/has + verbo principal." }
-                ], 
-                correctAnswer: 2, 
-                explanation: "A fórmula do Present Continuous é Sujeito + am/is/are + verbo-ing." 
-              },
-              {
-                id: 12, 
                 question: "Which sentence contains a correctly formed noun phrase?", 
                 questionPt: "Qual frase contém um grupo nominal (noun phrase) formado corretamente?",
                 options: [
@@ -481,19 +568,19 @@ export default function EnglishMegaLesson() {
                   { en: "a useful digital keyboard", pt: "um teclado digital útil" }
                 ], 
                 correctAnswer: 3, 
-                explanation: "Em inglês, a ordem correta dos adjetivos é antes do substantivo (Adjetivo + Adjetivo + Substantivo)." 
+                explanation: "Em inglês, os adjetivos vêm antes do substantivo. 'A useful digital keyboard' está na ordem correta." 
               },
               {
-                id: 13, 
+                id: 12, 
                 question: "If you store leftovers, you:", 
                 questionPt: "Se você guardar sobras de comida (leftovers), você:",
                 options: [
                   { en: "throw away food you do not want.", pt: "joga fora a comida que não quer." },
                   { en: "cook a completely new meal.", pt: "cozinha uma refeição completamente nova." },
-                  { en: "give all your food to someone else.", pt: "dá toda a sua comida para outra pessoa." },
-                  { en: "keep the food that remains to eat later.", pt: "mantém a comida que sobrou para comer depois." }
+                  { en: "keep the food that remains to eat later.", pt: "mantém a comida que sobrou para comer depois." },
+                  { en: "give all your food to someone else.", pt: "dá toda a sua comida para outra pessoa." }
                 ], 
-                correctAnswer: 3, 
+                correctAnswer: 2, 
                 explanation: "Leftovers são sobras. Guardá-las significa mantê-las para comer depois." 
               }
             ]} />
@@ -507,7 +594,7 @@ export default function EnglishMegaLesson() {
             <PencilIcon onClick={() => openNoteModal('Vocabulary')} />
           </div>
           <div className="p-8">
-            <p className="text-gray-600 mb-6 italic">Clique nas palavras para ouvir a pronúncia correta.</p>
+            <p className="text-gray-600 mb-6 italic">Clique nas palavras para ouvir a pronúncia correta e treinar seu listening.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
                 { word: "deforestation", pt: "desmatamento" },

@@ -184,7 +184,7 @@ export default function VerbToBePresentContinuousLesson() {
           </div>
           <div className="p-8 space-y-6">
             <p className="text-gray-700">
-              O verbo <strong>TO BE</strong> significa <strong>SER ou ESTAR</strong>. No presente, ele tem três formas: <strong>AM</strong>, <strong>IS</strong> e <strong>ARE</strong>.
+              O verbo <strong>TO BE</strong> significa  <strong>SER ou ESTAR</strong>. No presente, ele tem três formas: <strong>AM</strong>, <strong>IS</strong> e <strong>ARE</strong>.
             </p>
             <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl">
               <p className="font-bold text-yellow-800">🧠 Macete para memorizar:</p>
@@ -450,7 +450,7 @@ export default function VerbToBePresentContinuousLesson() {
         {/* Navigation */}
         <div className="flex justify-center gap-4 mt-8 pb-12">
           <button onClick={() => router.push("/cursos")} className="px-8 py-3 bg-white text-blue-700 font-bold border-2 border-blue-600 rounded-full shadow hover:bg-blue-50 transition-all">
-            Voltar para Cursos
+            Voltar para Cursos!
           </button>
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold rounded-full shadow-lg hover:opacity-90 transition-all">
             Voltar ao Topo

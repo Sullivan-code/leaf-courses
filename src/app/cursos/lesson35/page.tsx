@@ -87,7 +87,6 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
 // Função para sintetizar voz feminina americana
 const speakText = (text: string) => {
   if (typeof window !== 'undefined' && window.speechSynthesis) {
-    // Cancela qualquer fala em andamento
     window.speechSynthesis.cancel();
     
     const utterance = new SpeechSynthesisUtterance(text);
@@ -96,7 +95,6 @@ const speakText = (text: string) => {
     utterance.pitch = 1.1;
     utterance.volume = 1;
     
-    // Tenta selecionar uma voz feminina americana
     const setVoice = () => {
       const voices = window.speechSynthesis.getVoices();
       const femaleVoice = voices.find(voice => 
@@ -334,56 +332,103 @@ export default function Lesson35StudiesIdeasOpinions() {
             
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText('I write. You write. We write.')}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">I write</span>. / You write. / We write.</p>
-                  <p className="text-sm text-gray-500 mt-1">Eu escrevo. / Vocês escrevem. / Nós escrevemos.</p>
+                  <p className="text-sm text-gray-500 mt-1">Eles escreveram. / Nós escrevemos. / Ela escreveu.</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText("He doesn't write. She doesn't write. You don't write.")}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">He doesn't write</span>. / She / You</p>
                   <p className="text-sm text-gray-500 mt-1">Ele não escreve. / Ela / Você</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('Do they write? Do you write? Does he write?')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do they write?</span> / You / He</p>
-                  <p className="text-sm text-gray-500 mt-1">Elas escrevem? / Você / Ele</p>
+                  onClick={() => speakText('He wants to write a composition. He wants to write a book. He wants to write a story.')}>
+                  <p className="text-lg font-medium text-gray-800">He wants to write a <span className="text-blue-600">composition</span>. / a book / a story</p>
+                  <p className="text-sm text-gray-500 mt-1">Ele quer escrever uma redação. / um livro / uma história</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('What does she write? When? Where?')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">What does she write?</span> / When / Where</p>
-                  <p className="text-sm text-gray-500 mt-1">O que ela escreve? / Quando / Onde</p>
+                  onClick={() => speakText('She wants to watch a good movie. She wants to watch a funny movie. She wants to watch a beautiful movie.')}>
+                  <p className="text-lg font-medium text-gray-800">She wants to watch a <span className="text-blue-600">good movie</span>. / funny / beautiful</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela queria assistir um filme bom. / engraçado / bonito</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('Do you like to write? Do you prefer to write? Do you want to write?')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do you like to write?</span> / prefer / want</p>
-                  <p className="text-sm text-gray-500 mt-1">Você gosta de escrever? / prefere / quer</p>
+                  onClick={() => speakText('I needed to write an important report. I needed to write an e-mail. I needed to write a message.')}>
+                  <p className="text-lg font-medium text-gray-800">I needed to write an <span className="text-blue-600">important report</span>. / an e-mail / a message</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu preciso escrever um relatório importante. / e-mail / uma mensagem</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('I think. He thinks. We think.')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">I think</span>. / He thinks. / We think.</p>
-                  <p className="text-sm text-gray-500 mt-1">Eu penso. / Ele pensa. / Nós pensamos.</p>
+                  onClick={() => speakText('I have an important meeting today. I have an interesting meeting today. I have a boring meeting today.')}>
+                  <p className="text-lg font-medium text-gray-800">I have an <span className="text-blue-600">important meeting</span> today. / interesting / boring</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu tenho uma reunião importante hoje. / interessante / chata</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText("They don't think. I don't think. He doesn't think.")}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">They don't think</span>. / I / He</p>
-                  <p className="text-sm text-gray-500 mt-1">Eles não acham. / Eu / Ele</p>
+                  onClick={() => speakText('You worked with a great person. You worked with a funny person. You worked with an important person.')}>
+                  <p className="text-lg font-medium text-gray-800">You worked with a <span className="text-blue-600">great person</span>. / funny / important</p>
+                  <p className="text-sm text-gray-500 mt-1">Vocês trabalharam com uma pessoa ótima. / engraçada / importante</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('Do you think? Do they think? Does she think?')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Do you think?</span> / They / She</p>
-                  <p className="text-sm text-gray-500 mt-1">Você acha? / Eles / Ela</p>
+                  onClick={() => speakText("We didn't live together. We didn't study together. We didn't work together.")}>
+                  <p className="text-lg font-medium text-gray-800">We didn't live <span className="text-blue-600">together</span>. / study / work</p>
+                  <p className="text-sm text-gray-500 mt-1">Nós não moramos juntos. / estudamos / trabalhamos</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('What do you think? About this subject? About this problem?')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">What do you think?</span> / about this subject / about this problem</p>
-                  <p className="text-sm text-gray-500 mt-1">O que você pensa? / sobre esse assunto / sobre esse problema</p>
+                  onClick={() => speakText('What did you think about this class? What did you think about this report? What did you think about this composition?')}>
+                  <p className="text-lg font-medium text-gray-800">What did you think about this <span className="text-blue-600">class</span>? / report / composition</p>
+                  <p className="text-sm text-gray-500 mt-1">O que você pensa sobre esta aula? / relatório / redação</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('What do you think about his opinion? What do you think about her opinion?')}>
-                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">What do you think about his opinion?</span> / her opinion</p>
-                  <p className="text-sm text-gray-500 mt-1">O que você pensa sobre a opinião dele? / dela</p>
+                  onClick={() => speakText("I think it's good. I think it's boring. I think it's interesting.")}>
+                  <p className="text-lg font-medium text-gray-800">I think it's <span className="text-blue-600">good</span>. / boring / interesting</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu acho que é boa. / chata / interessante</p>
                 </div>
+
+                <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
+                  onClick={() => speakText("I think it's easy to learn English. I think it's hard to learn English. I think it's important to learn English.")}>
+                  <p className="text-lg font-medium text-gray-800">I think it's <span className="text-blue-600">easy</span> to learn English. / hard / important</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu achei que era fácil aprender inglês. / difícil / importante</p>
+                </div>
+
+                <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
+                  onClick={() => speakText('What did you think about this book? What did you think about this video? What did you think about this movie?')}>
+                  <p className="text-lg font-medium text-gray-800">What did you think about this <span className="text-blue-600">book</span>? / video / movie</p>
+                  <p className="text-sm text-gray-500 mt-1">O que você achou sobre este livro? / vídeo / filme</p>
+                </div>
+
+                <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
+                  onClick={() => speakText("I think it's boring. I think it's beautiful. I think it's funny.")}>
+                  <p className="text-lg font-medium text-gray-800">I think it's <span className="text-blue-600">boring</span>. / beautiful / funny</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu acho que é chato. / bonito / engraçado</p>
+                </div>
+
+                <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
+                  onClick={() => speakText('She talks to everybody. He talks to everybody. We talk to everybody.')}>
+                  <p className="text-lg font-medium text-gray-800">She talks to <span className="text-blue-600">everybody</span>. / He / We</p>
+                  <p className="text-sm text-gray-500 mt-1">Ela conversa com todo mundo. / Ele / Nós</p>
+                </div>
+
+                <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
+                  onClick={() => speakText('Do you talk to everybody at work? Do you talk to everybody at school? Do you talk to everybody at church?')}>
+                  <p className="text-lg font-medium text-gray-800">Do you talk to <span className="text-blue-600">everybody</span> at work? / at school / at church</p>
+                  <p className="text-sm text-gray-500 mt-1">Você conversa com todos no trabalho? / na escola / na igreja</p>
+                </div>
+
+                <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
+                  onClick={() => speakText('Everybody spoke English here. Everybody spoke Portuguese here. Everybody spoke Spanish here.')}>
+                  <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">Everybody</span> spoke English here. / Portuguese / Spanish</p>
+                  <p className="text-sm text-gray-500 mt-1">Todos falam inglês aqui. / português / espanhol</p>
+                </div>
+
               </div>
             )}
           </div>
@@ -425,76 +470,92 @@ export default function Lesson35StudiesIdeasOpinions() {
             
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('He wants to write a composition. He wants to write a book. He wants to write a story.')}>
-                  <p className="text-lg font-medium text-gray-800">He wants to write a <span className="text-blue-600 font-bold">composition</span>. / a book / a story</p>
+                  onClick={() => speakText('He wanted to write a composition. He wanted to write a book. He wanted to write a story.')}>
+                  <p className="text-lg font-medium text-gray-800">He wanted to write a <span className="text-blue-600 font-bold">composition</span>. / a book / a story</p>
                   <p className="text-sm text-gray-500 mt-1">Ele quer escrever uma redação. / um livro / uma história</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText('She wants to watch a good movie. She wants to watch a funny movie. She wants to watch a beautiful movie.')}>
                   <p className="text-lg font-medium text-gray-800">She wants to watch a <span className="text-blue-600 font-bold">good movie</span>. / funny / beautiful</p>
                   <p className="text-sm text-gray-500 mt-1">Ela quer assistir um filme bom. / engraçado / bonito</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('I need to write an important report. I need to write an e-mail. I need to write a message.')}>
-                  <p className="text-lg font-medium text-gray-800">I need to write an <span className="text-blue-600 font-bold">important report</span>. / an e-mail / a message</p>
+                  onClick={() => speakText('I needed to write an important report. I needed to write an e-mail. I needed to write a message.')}>
+                  <p className="text-lg font-medium text-gray-800">I needed to write an <span className="text-blue-600 font-bold">important report</span>. / an e-mail / a message</p>
                   <p className="text-sm text-gray-500 mt-1">Eu preciso escrever um relatório importante. / e-mail / uma mensagem</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText('I have an important meeting today. I have an interesting meeting today. I have a boring meeting today.')}>
                   <p className="text-lg font-medium text-gray-800">I have an <span className="text-blue-600 font-bold">important meeting</span> today. / interesting / boring</p>
-                  <p className="text-sm text-gray-500 mt-1">Eu tenho uma reunião importante hoje. / interessante / chata</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu tinha uma reunião importante hoje. / interessante / chata</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText('You work with a great person. You work with a funny person. You work with an important person.')}>
                   <p className="text-lg font-medium text-gray-800">You work with a <span className="text-blue-600 font-bold">great person</span>. / funny / important</p>
                   <p className="text-sm text-gray-500 mt-1">Vocês trabalham com uma pessoa ótima. / engraçada / importante</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText("We don't live together. We don't study together. We don't work together.")}>
+                  onClick={() => speakText("We don't live together. We don't study together. We don't work together. They didn't live together. They didn't study together. They didn't eat together.")}>
                   <p className="text-lg font-medium text-gray-800">We don't live <span className="text-blue-600 font-bold">together</span>. / study / work</p>
+                  <p className="text-lg font-medium text-gray-800 mt-1">They didn't live <span className="text-blue-600 font-bold">together</span>. / study / eat</p>
                   <p className="text-sm text-gray-500 mt-1">Nós não moramos juntos. / estudamos / trabalhamos</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText('What do you think about this class? What do you think about this report? What do you think about this composition?')}>
                   <p className="text-lg font-medium text-gray-800">What do you think about this <span className="text-blue-600 font-bold">class</span>? / report / composition</p>
                   <p className="text-sm text-gray-500 mt-1">O que você pensa sobre esta aula? / relatório / redação</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText("I think it's good. I think it's boring. I think it's interesting.")}>
                   <p className="text-lg font-medium text-gray-800">I think it's <span className="text-blue-600 font-bold">good</span>. / boring / interesting</p>
                   <p className="text-sm text-gray-500 mt-1">Eu acho que é boa. / chata / interessante</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText("I think it's easy to learn English. I think it's hard to learn English. I think it's important to learn English.")}>
                   <p className="text-lg font-medium text-gray-800">I think it's <span className="text-blue-600 font-bold">easy</span> to learn English. / hard / important</p>
                   <p className="text-sm text-gray-500 mt-1">Eu acho que é fácil aprender inglês. / difícil / importante</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('What do you think about this book? What do you think about this video? What do you think about this movie?')}>
-                  <p className="text-lg font-medium text-gray-800">What do you think about this <span className="text-blue-600 font-bold">book</span>? / video / movie</p>
-                  <p className="text-sm text-gray-500 mt-1">O que você acha sobre este livro? / vídeo / filme</p>
+                  onClick={() => speakText('What did you think about this book? What did you think about this video? What did you think about this movie?')}>
+                  <p className="text-lg font-medium text-gray-800">What did you think about this <span className="text-blue-600 font-bold">book</span>? / video / movie</p>
+                  <p className="text-sm text-gray-500 mt-1">O que você achou sobre este livro? / vídeo / filme</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText("I think it's boring. I think it's beautiful. I think it's funny.")}>
-                  <p className="text-lg font-medium text-gray-800">I think it's <span className="text-blue-600 font-bold">boring</span>. / beautiful / funny</p>
+                  onClick={() => speakText("I thought it's boring. I thought it's beautiful. I thought it's funny.")}>
+                  <p className="text-lg font-medium text-gray-800">I thought it's <span className="text-blue-600 font-bold">boring</span>. / beautiful / funny</p>
                   <p className="text-sm text-gray-500 mt-1">Eu acho que é chato. / bonito / engraçado</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText('She talks to everybody. He talks to everybody. We talk to everybody.')}>
                   <p className="text-lg font-medium text-gray-800">She talks to <span className="text-blue-600 font-bold">everybody</span>. / He / We</p>
                   <p className="text-sm text-gray-500 mt-1">Ela conversa com todo mundo. / Ele / Nós</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText('Do you talk to everybody at work? Do you talk to everybody at school? Do you talk to everybody at church?')}>
                   <p className="text-lg font-medium text-gray-800">Do you talk to <span className="text-blue-600 font-bold">everybody</span> at work? / at school / at church</p>
                   <p className="text-sm text-gray-500 mt-1">Você conversa com todos no trabalho? / na escola / na igreja</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText('Everybody speaks English here. Everybody speaks Portuguese here. Everybody speaks Spanish here.')}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Everybody</span> speaks English here. / Portuguese / Spanish</p>
                   <p className="text-sm text-gray-500 mt-1">Todos falam inglês aqui. / português / espanhol</p>
                 </div>
+
               </div>
             )}
           </div>
@@ -562,36 +623,43 @@ export default function Lesson35StudiesIdeasOpinions() {
             
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText('How do you say casa in German? How do you say casa in French? How do you say casa in English?')}>
                   <p className="text-lg font-medium text-gray-800">How do you say "casa" in <span className="text-blue-600 font-bold">German</span>? / French / English</p>
                   <p className="text-sm text-gray-500 mt-1">Como se diz "casa" em alemão? / francês / inglês</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('How do you say difícil in English? How do you say fácil in English? How do you say juntos in English?')}>
+                  onClick={() => speakText('How do you say difícil in English? How do you say easy in English? How do you say together in English?')}>
                   <p className="text-lg font-medium text-gray-800">How do you say "difícil" in <span className="text-blue-600 font-bold">English</span>? / easy / together</p>
                   <p className="text-sm text-gray-500 mt-1">Como se diz "difícil" em inglês? / fácil / juntos</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText("What's the meaning of funny? What's the meaning of deadline? What's the meaning of composition?")}>
                   <p className="text-lg font-medium text-gray-800">What's the meaning of "<span className="text-blue-600 font-bold">funny</span>"? / deadline / composition</p>
                   <p className="text-sm text-gray-500 mt-1">O que significa "funny"? / deadline / composition</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText("What's the meaning of together? What's the meaning of everything? What's the meaning of everybody?")}>
                   <p className="text-lg font-medium text-gray-800">What's the meaning of "<span className="text-blue-600 font-bold">together</span>"? / everything / everybody</p>
                   <p className="text-sm text-gray-500 mt-1">O que significa "together"? / everything / everybody</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('Do you need to study more? Does he need to study more? Does she need to study more?')}>
-                  <p className="text-lg font-medium text-gray-800">Do you need to study <span className="text-blue-600 font-bold">more</span>? / Does he / Does she</p>
-                  <p className="text-sm text-gray-500 mt-1">Você precisa estudar mais? / Ele / Ela</p>
+                  onClick={() => speakText('Did you need to study more? Did he need to study more? Did she need to study more?')}>
+                  <p className="text-lg font-medium text-gray-800">Did you need to study <span className="text-blue-600 font-bold">more</span>? / he / she</p>
+                  <p className="text-sm text-gray-500 mt-1">Você precisava estudar mais? / Ele / Ela</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
                   onClick={() => speakText('I think so. I do not think so.')}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">I think so</span>. / I don't think so.</p>
                   <p className="text-sm text-gray-500 mt-1">Eu acho que sim. / Eu acho que não.</p>
                 </div>
+
               </div>
             )}
           </div>
@@ -637,41 +705,47 @@ export default function Lesson35StudiesIdeasOpinions() {
             
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('Why do you study English? Because I want to live in the United States.')}>
+                  onClick={() => speakText('Why do you study English? Why do you study Spanish? Why do you study French? Because I want to live in the United States. Because I want to live in Spain. Because I want to live in France.')}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Why</span> do you study English? / Spanish / French</p>
-                  <p className="text-sm text-gray-500 mt-1">Por que você estuda inglês? / espanhol / francês</p>
+                  <p className="text-sm text-gray-500 mt-1">Por que você estudava inglês? / espanhol / francês</p>
                   <p className="text-lg font-medium text-gray-800 mt-2"><span className="text-blue-600 font-bold">Because</span> I want to live in the United States. / in Spain / in France</p>
                   <p className="text-sm text-gray-500 mt-1">Porque eu quero morar nos Estados Unidos. / na Espanha / França</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('Why does he live in Italy? In Germany? In the UK? Because he studies there. He works there. He has a project there.')}>
+                  onClick={() => speakText('Why does he live in Italy? Why does he live in Germany? Why does he live in the UK? Because he studies there. Because he works there. Because he has a project there.')}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Why</span> does he live in Italy? / in Germany / in the UK</p>
                   <p className="text-sm text-gray-500 mt-1">Por que ele mora na Itália? / Alemanha / no Reino Unido</p>
                   <p className="text-lg font-medium text-gray-800 mt-2"><span className="text-blue-600 font-bold">Because</span> he studies there. / works / has a project</p>
                   <p className="text-sm text-gray-500 mt-1">Porque ele estuda lá. / trabalha / tem um projeto</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('Why do you need to study more? Read? Write? Because I have a test tomorrow. This week. This month.')}>
+                  onClick={() => speakText('Why do you need to study more? Why do you need to read more? Why do you need to write more? Because I have a test tomorrow. Because I have a test this week. Because I have a test this month.')}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Why</span> do you need to study more? / read / write</p>
                   <p className="text-sm text-gray-500 mt-1">Por que você precisa estudar mais? / ler / escrever</p>
                   <p className="text-lg font-medium text-gray-800 mt-2"><span className="text-blue-600 font-bold">Because</span> I have a test tomorrow. / this week / this month</p>
                   <p className="text-sm text-gray-500 mt-1">Porque eu tenho uma prova amanhã. / esta semana / este mês</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('Why does he need to go now? Does she? Do you? I need to go now because it is late.')}>
+                  onClick={() => speakText('Why does he need to go now? Why does she need to go now? Why do you need to go now? I need to go now because it is late. She needs to go now because it is late. He needs to go now because it is late.')}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Why</span> does he need to go now? / does she / do you</p>
                   <p className="text-sm text-gray-500 mt-1">Por que ele precisa ir agora? / ela / você</p>
                   <p className="text-lg font-medium text-gray-800 mt-2">I need to go now <span className="text-blue-600 font-bold">because</span> it's late. / She needs / He needs</p>
                   <p className="text-sm text-gray-500 mt-1">Eu preciso ir agora porque está tarde. / Ela / Ele</p>
                 </div>
+
                 <div className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer hover:bg-blue-50 transition-colors"
-                  onClick={() => speakText('Why do you want to read this book? This story? This report? I want to read this book because it is interesting. Important. Good.')}>
+                  onClick={() => speakText('Why do you want to read this book? Why do you want to read this story? Why do you want to read this report? I want to read this book because it is interesting. I want to read this book because it is important. I want to read this book because it is good.')}>
                   <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 font-bold">Why</span> do you want to read this book? / this story / this report</p>
                   <p className="text-sm text-gray-500 mt-1">Por que você quer ler este livro? / esta história / este relatório</p>
                   <p className="text-lg font-medium text-gray-800 mt-2">I want to read this book <span className="text-blue-600 font-bold">because</span> it's interesting. / important / good</p>
-                  <p className="text-sm text-gray-500 mt-1">Eu quero ler este livro porque é interessante. / importante / bom</p>
+                  <p className="text-sm text-gray-500 mt-1">Eu queria ler este livro porque é interessante. / importante / bom</p>
                 </div>
+
               </div>
             )}
           </div>

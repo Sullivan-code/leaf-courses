@@ -804,17 +804,17 @@ export default function Lesson43EatingOut() {
     }
   ];
 
-  // Dados da seção Make it yours com palavras-chave destacadas em azul
+  // Dados da seção Make it yours com palavras-chave destacadas em azul (A2/B1 low)
   const makeItYoursData = [
     {
-      en: "Last weekend, we went to that new Brazilian restaurant downtown, and I tried farofa for the first time.",
-      pt: "No último fim de semana, nós fomos àquele novo restaurante brasileiro no centro, e eu experimentei farofa pela primeira vez.",
+      en: "Last weekend, we went to a new Brazilian restaurant in the city center. I tried farofa for the first time.",
+      pt: "No último fim de semana, nós fomos a um novo restaurante brasileiro no centro da cidade. Eu experimentei farofa pela primeira vez.",
       parts: [
         { text: "Last weekend, we ", highlight: false },
         { text: "went", highlight: true },
-        { text: " to that new Brazilian ", highlight: false },
+        { text: " to a new Brazilian ", highlight: false },
         { text: "restaurant", highlight: true },
-        { text: " downtown, and I ", highlight: false },
+        { text: " in the city center. I ", highlight: false },
         { text: "tried", highlight: true },
         { text: " ", highlight: false },
         { text: "farofa", highlight: true },
@@ -822,33 +822,31 @@ export default function Lesson43EatingOut() {
       ]
     },
     {
-      en: "The waiter recommended a spicy sauce, but I decided to order the garlic sauce instead because I don't usually like hot food.",
-      pt: "O garçom recomendou um molho picante, mas eu decidi pedir o molho de alho em vez disso porque eu normalmente não gosto de comida apimentada.",
+      en: "The waiter suggested a spicy sauce. But I ordered the garlic sauce because I don't like hot food.",
+      pt: "O garçom sugeriu um molho picante. Mas eu pedi o molho de alho porque eu não gosto de comida apimentada.",
       parts: [
         { text: "The waiter ", highlight: false },
-        { text: "recommended", highlight: true },
+        { text: "suggested", highlight: true },
         { text: " a spicy ", highlight: false },
         { text: "sauce", highlight: true },
-        { text: ", but I ", highlight: false },
-        { text: "decided", highlight: true },
-        { text: " to ", highlight: false },
-        { text: "order", highlight: true },
+        { text: ". But I ", highlight: false },
+        { text: "ordered", highlight: true },
         { text: " the ", highlight: false },
         { text: "garlic sauce", highlight: true },
-        { text: " instead because I don't usually like ", highlight: false },
+        { text: " because I don't like ", highlight: false },
         { text: "hot food", highlight: true },
         { text: ".", highlight: false },
       ]
     },
     {
-      en: "My mother used to make a simple vinagrete with tomatoes and onions, and she always served it with grilled chicken.",
-      pt: "Minha mãe costumava fazer um vinagrete simples com tomate e cebola, e ela sempre servia com frango grelhado.",
+      en: "My mother made a simple vinagrete with tomatoes and onions. She always served it with grilled chicken.",
+      pt: "Minha mãe fazia um vinagrete simples com tomate e cebola. Ela sempre servia com frango grelhado.",
       parts: [
         { text: "My mother ", highlight: false },
-        { text: "used to make", highlight: true },
+        { text: "made", highlight: true },
         { text: " a simple ", highlight: false },
         { text: "vinagrete", highlight: true },
-        { text: " with tomatoes and onions, and she always ", highlight: false },
+        { text: " with tomatoes and onions. She always ", highlight: false },
         { text: "served", highlight: true },
         { text: " it with ", highlight: false },
         { text: "grilled chicken", highlight: true },
@@ -856,11 +854,11 @@ export default function Lesson43EatingOut() {
       ]
     },
     {
-      en: "I had never tasted such a delicious seasoning before I went to that steakhouse with my friends.",
+      en: "I never tasted such a delicious seasoning before I went to that steakhouse with my friends.",
       pt: "Eu nunca tinha provado um tempero tão delicioso antes de ir àquela churrascaria com meus amigos.",
       parts: [
         { text: "I ", highlight: false },
-        { text: "had never tasted", highlight: true },
+        { text: "never tasted", highlight: true },
         { text: " such a delicious ", highlight: false },
         { text: "seasoning", highlight: true },
         { text: " before I ", highlight: false },
@@ -871,8 +869,8 @@ export default function Lesson43EatingOut() {
       ]
     },
     {
-      en: "If you go to Brazil, you should try farofa with barbecue because it adds a crunchy texture to the meal.",
-      pt: "Se você for ao Brasil, você deveria experimentar farofa com churrasco porque ela adiciona uma textura crocante à refeição.",
+      en: "If you go to Brazil, you should try farofa with barbecue. It adds a crunchy texture to the meal.",
+      pt: "Se você for ao Brasil, você deveria experimentar farofa com churrasco. Ela adiciona uma textura crocante à refeição.",
       parts: [
         { text: "If you ", highlight: false },
         { text: "go", highlight: true },
@@ -882,19 +880,19 @@ export default function Lesson43EatingOut() {
         { text: "farofa", highlight: true },
         { text: " with ", highlight: false },
         { text: "barbecue", highlight: true },
-        { text: " because it adds a ", highlight: false },
+        { text: ". It adds a ", highlight: false },
         { text: "crunchy texture", highlight: true },
         { text: " to the meal.", highlight: false },
       ]
     },
     {
-      en: "Next time I cook dinner, I'm going to prepare a homemade tomato sauce with fresh basil and oregano.",
-      pt: "Na próxima vez que eu cozinhar o jantar, eu vou preparar um molho de tomate caseiro com manjericão fresco e orégano.",
+      en: "Next time I cook dinner, I'm going to make a homemade tomato sauce with fresh basil and oregano.",
+      pt: "Na próxima vez que eu cozinhar o jantar, eu vou fazer um molho de tomate caseiro com manjericão fresco e orégano.",
       parts: [
         { text: "Next time I ", highlight: false },
         { text: "cook", highlight: true },
         { text: " dinner, I'm ", highlight: false },
-        { text: "going to prepare", highlight: true },
+        { text: "going to make", highlight: true },
         { text: " a ", highlight: false },
         { text: "homemade", highlight: true },
         { text: " ", highlight: false },
@@ -903,27 +901,27 @@ export default function Lesson43EatingOut() {
       ]
     },
     {
-      en: "We were planning to eat out, but we ended up staying home and making our own sauce with garlic and olive oil.",
-      pt: "Nós estávamos planejando comer fora, mas acabamos ficando em casa e fazendo nosso próprio molho com alho e azeite.",
+      en: "We planned to eat out, but we stayed home and made our own sauce with garlic and olive oil.",
+      pt: "Nós planejamos comer fora, mas ficamos em casa e fizemos nosso próprio molho com alho e azeite.",
       parts: [
         { text: "We ", highlight: false },
-        { text: "were planning", highlight: true },
+        { text: "planned", highlight: true },
         { text: " to ", highlight: false },
         { text: "eat out", highlight: true },
         { text: ", but we ", highlight: false },
-        { text: "ended up", highlight: true },
-        { text: " staying home and ", highlight: false },
-        { text: "making", highlight: true },
+        { text: "stayed home", highlight: true },
+        { text: " and ", highlight: false },
+        { text: "made", highlight: true },
         { text: " our own ", highlight: false },
         { text: "sauce", highlight: true },
         { text: " with garlic and olive oil.", highlight: false },
       ]
     },
     {
-      en: "By the time the main dish arrived, I had already finished the small bowl of vinagrete that came as an appetizer.",
-      pt: "Quando o prato principal chegou, eu já tinha terminado a pequena tigela de vinagrete que veio como entrada.",
+      en: "When the main dish arrived, I had already finished the small bowl of vinagrete from the appetizer.",
+      pt: "Quando o prato principal chegou, eu já tinha terminado a pequena tigela de vinagrete da entrada.",
       parts: [
-        { text: "By the time the main ", highlight: false },
+        { text: "When the main ", highlight: false },
         { text: "dish", highlight: true },
         { text: " ", highlight: false },
         { text: "arrived", highlight: true },
@@ -931,27 +929,27 @@ export default function Lesson43EatingOut() {
         { text: "had already finished", highlight: true },
         { text: " the small bowl of ", highlight: false },
         { text: "vinagrete", highlight: true },
-        { text: " that came as an ", highlight: false },
+        { text: " from the ", highlight: false },
         { text: "appetizer", highlight: true },
         { text: ".", highlight: false },
       ]
     },
     {
-      en: "I will definitely order the fish with lemon sauce next time, even though the waiter said the pepper sauce was the most popular.",
-      pt: "Eu definitivamente vou pedir o peixe com molho de limão na próxima vez, mesmo que o garçom tenha dito que o molho de pimenta era o mais popular.",
+      en: "I will definitely order the fish with lemon sauce next time. The waiter said the pepper sauce was the most popular, but I prefer lemon.",
+      pt: "Eu definitivamente vou pedir o peixe com molho de limão na próxima vez. O garçom disse que o molho de pimenta era o mais popular, mas eu prefiro limão.",
       parts: [
         { text: "I ", highlight: false },
         { text: "will definitely order", highlight: true },
         { text: " the fish with ", highlight: false },
         { text: "lemon sauce", highlight: true },
-        { text: " next time, even though the waiter said the ", highlight: false },
+        { text: " next time. The waiter said the ", highlight: false },
         { text: "pepper sauce", highlight: true },
-        { text: " was the most popular.", highlight: false },
+        { text: " was the most popular, but I prefer lemon.", highlight: false },
       ]
     },
     {
-      en: "While we were waiting for the bill, the chef came to our table and explained how he made the special seasoning for the steak.",
-      pt: "Enquanto estávamos esperando a conta, o chef veio à nossa mesa e explicou como ele fez o tempero especial para o bife.",
+      en: "While we were waiting for the bill, the chef came to our table. He explained how he made the special seasoning for the steak.",
+      pt: "Enquanto estávamos esperando a conta, o chef veio à nossa mesa. Ele explicou como ele fez o tempero especial para o bife.",
       parts: [
         { text: "While we ", highlight: false },
         { text: "were waiting", highlight: true },
@@ -961,7 +959,7 @@ export default function Lesson43EatingOut() {
         { text: "chef", highlight: true },
         { text: " ", highlight: false },
         { text: "came", highlight: true },
-        { text: " to our table and ", highlight: false },
+        { text: " to our table. He ", highlight: false },
         { text: "explained", highlight: true },
         { text: " how he made the special ", highlight: false },
         { text: "seasoning", highlight: true },
@@ -971,23 +969,23 @@ export default function Lesson43EatingOut() {
       ]
     },
     {
-      en: "If I had known that the hot sauce was so strong, I would have asked for a milder one.",
-      pt: "Se eu soubesse que o molho de pimenta era tão forte, eu teria pedido um mais suave.",
+      en: "I didn't know the hot sauce was so strong. I will ask for a milder one next time.",
+      pt: "Eu não sabia que o molho de pimenta era tão forte. Eu vou pedir um mais suave na próxima vez.",
       parts: [
-        { text: "If I ", highlight: false },
-        { text: "had known", highlight: true },
-        { text: " that the ", highlight: false },
+        { text: "I ", highlight: false },
+        { text: "didn't know", highlight: true },
+        { text: " the ", highlight: false },
         { text: "hot sauce", highlight: true },
-        { text: " was so strong, I ", highlight: false },
-        { text: "would have asked", highlight: true },
+        { text: " was so strong. I ", highlight: false },
+        { text: "will ask", highlight: true },
         { text: " for a ", highlight: false },
         { text: "milder", highlight: true },
-        { text: " one.", highlight: false },
+        { text: " one next time.", highlight: false },
       ]
     },
     {
-      en: "In the future, I want to learn how to make farofa properly, so I can serve it whenever I invite my friends over for a Brazilian-style dinner.",
-      pt: "No futuro, eu quero aprender a fazer farofa corretamente, para que eu possa servi-la sempre que eu convidar meus amigos para um jantar no estilo brasileiro.",
+      en: "In the future, I want to learn how to make farofa. Then I can serve it when I invite my friends for a Brazilian dinner.",
+      pt: "No futuro, eu quero aprender a fazer farofa. Aí eu posso servi-la quando eu convidar meus amigos para um jantar brasileiro.",
       parts: [
         { text: "In the future, I ", highlight: false },
         { text: "want to learn", highlight: true },
@@ -995,12 +993,12 @@ export default function Lesson43EatingOut() {
         { text: "make", highlight: true },
         { text: " ", highlight: false },
         { text: "farofa", highlight: true },
-        { text: " properly, so I can ", highlight: false },
+        { text: ". Then I can ", highlight: false },
         { text: "serve", highlight: true },
-        { text: " it whenever I ", highlight: false },
+        { text: " it when I ", highlight: false },
         { text: "invite", highlight: true },
-        { text: " my friends over for a ", highlight: false },
-        { text: "Brazilian-style dinner", highlight: true },
+        { text: " my friends for a ", highlight: false },
+        { text: "Brazilian dinner", highlight: true },
         { text: ".", highlight: false },
       ]
     },

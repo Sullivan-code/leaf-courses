@@ -338,6 +338,8 @@ export default function Lesson33TalkAndWatch() {
     { english: "He goes to the company in the morning.", portuguese: "Ele vai para a empresa de manhã." },
     { english: "She needs to clean her house.", portuguese: "Ela precisa limpar a casa dela." },
     { english: "He doesn't understand this subject.", portuguese: "Ele não entende este assunto." },
+    { english: "He talked to my mother before lunch.", portuguese: "Ele conversou com minha mãe antes do almoço." },
+    { english: "She watched a movie on her tablet.", portuguese: "Ela assistiu a um filme no tablet dela." },
   ];
 
   // ========== VERBS SUBSTITUTION (11 drills) ==========
@@ -632,10 +634,22 @@ export default function Lesson33TalkAndWatch() {
     },
   ];
 
-  // ========== GRAMMAR SUBSTITUTION (11 drills) ==========
+  // ========== GRAMMAR SUBSTITUTION (13 drills – keys únicas) ==========
   const grammarSubstitution: SubstitutionExercise[] = [
+    // 1) Lugar / plataforma
     {
       key: "grammar-1",
+      original: "Ela assistiu um filme no tablet dela. / No celular dela. / Na Netflix.",
+      options: [
+        { label: "tablet", replacement: "She watched a movie on her tablet.", pt: "Ela assistiu um filme no tablet dela." },
+        { label: "celular", replacement: "She watched a movie on her phone.", pt: "Ela assistiu um filme no celular dela." },
+        { label: "netflix", replacement: "She watched a movie on Netflix.", pt: "Ela assistiu um filme na Netflix." },
+      ],
+      currentIndex: 0,
+    },
+    // 2) Verbo (gosta / quer / prefere)
+    {
+      key: "grammar-2",
       original: "Ela gosta de conversar sobre esportes. / Quer conversar sobre esportes. / Prefere conversar sobre esportes.",
       options: [
         { label: "gosta", replacement: "She likes to talk about sports.", pt: "Ela gosta de conversar sobre esportes." },
@@ -644,8 +658,20 @@ export default function Lesson33TalkAndWatch() {
       ],
       currentIndex: 0,
     },
+    // 3) Companhia (com quem conversa)
     {
-      key: "grammar-2",
+      key: "grammar-3",
+      original: "Ela conversou sobre esportes com os amigos. / Com os colegas de trabalho. / Com a família.",
+      options: [
+        { label: "amigos", replacement: "She talked about sports with her friends.", pt: "Ela conversou sobre esportes com os amigos." },
+        { label: "colegas", replacement: "She talked about sports with her coworkers.", pt: "Ela conversou sobre esportes com os colegas de trabalho." },
+        { label: "família", replacement: "She talked about sports with her family.", pt: "Ela conversou sobre esportes com a família." },
+      ],
+      currentIndex: 0,
+    },
+    // 4) Vai / dirige / caminha
+    {
+      key: "grammar-4",
       original: "Ele vai para a empresa de manhã. / Ele dirige para a empresa de manhã. / Ele caminha para a empresa de manhã.",
       options: [
         { label: "vai", replacement: "He goes to the company in the morning.", pt: "Ele vai para a empresa de manhã." },
@@ -654,28 +680,31 @@ export default function Lesson33TalkAndWatch() {
       ],
       currentIndex: 0,
     },
-    {
-      key: "grammar-3",
-      original: "Ela precisa limpar a casa dela. / Ela quer limpar a casa dela. / Ela tem que limpar a casa dela.",
-      options: [
-        { label: "precisa", replacement: "She needs to clean her house.", pt: "Ela precisa limpar a casa dela." },
-        { label: "quer", replacement: "She wants to clean her house.", pt: "Ela quer limpar a casa dela." },
-        { label: "tem que", replacement: "She has to clean her house.", pt: "Ela tem que limpar a casa dela." },
-      ],
-      currentIndex: 0,
-    },
-    {
-      key: "grammar-4",
-      original: "Ela não mora aqui. / Ela não mora lá. / Ela não mora no centro da cidade.",
-      options: [
-        { label: "aqui", replacement: "She doesn't live here.", pt: "Ela não mora aqui." },
-        { label: "lá", replacement: "She doesn't live there.", pt: "Ela não mora lá." },
-        { label: "centro", replacement: "She doesn't live downtown.", pt: "Ela não mora no centro da cidade." },
-      ],
-      currentIndex: 0,
-    },
+    // 5) Precisa / quer / tem que
     {
       key: "grammar-5",
+      original: "Ela precisou limpar a casa dela. / Ela quis limpar a casa dela. / Ela teve que limpar a casa dela.",
+      options: [
+        { label: "precisou", replacement: "She needed to clean her house.", pt: "Ela precisou limpar a casa dela." },
+        { label: "quis", replacement: "She wanted to clean her house.", pt: "Ela quis limpar a casa dela." },
+        { label: "teve que", replacement: "She had to clean her house.", pt: "Ela teve que limpar a casa dela." },
+      ],
+      currentIndex: 0,
+    },
+    // 6) Não mora aqui / lá / centro
+    {
+      key: "grammar-6",
+      original: "Ela não morou aqui. / Ela não morou lá. / Ela não morou no centro da cidade.",
+      options: [
+        { label: "aqui", replacement: "She didn't live here.", pt: "Ela não morou aqui." },
+        { label: "lá", replacement: "She didn't live there.", pt: "Ela não morou lá." },
+        { label: "centro", replacement: "She didn't live downtown.", pt: "Ela não morou no centro da cidade." },
+      ],
+      currentIndex: 0,
+    },
+    // 7) Não entende assunto / palavra / língua
+    {
+      key: "grammar-7",
       original: "Ele não entende este assunto. / Esta palavra / Esta língua.",
       options: [
         { label: "assunto", replacement: "He doesn't understand this subject.", pt: "Ele não entende este assunto." },
@@ -684,8 +713,9 @@ export default function Lesson33TalkAndWatch() {
       ],
       currentIndex: 0,
     },
+    // 8) Aprender / estudar / saber mais
     {
-      key: "grammar-6",
+      key: "grammar-8",
       original: "Ela quer aprender mais? / Estudar mais? / Saber mais?",
       options: [
         { label: "aprender", replacement: "Does she want to learn more?", pt: "Ela quer aprender mais?" },
@@ -694,8 +724,9 @@ export default function Lesson33TalkAndWatch() {
       ],
       currentIndex: 0,
     },
+    // 9) Fica em casa fins de semana / sábados / férias
     {
-      key: "grammar-7",
+      key: "grammar-9",
       original: "Ela fica em casa nos fins de semana? / Aos sábados? / Nas férias?",
       options: [
         { label: "fins de semana", replacement: "Does she stay home on weekends?", pt: "Ela fica em casa nos fins de semana?" },
@@ -704,8 +735,9 @@ export default function Lesson33TalkAndWatch() {
       ],
       currentIndex: 0,
     },
+    // 10) Começa às oito / nove / dez
     {
-      key: "grammar-8",
+      key: "grammar-10",
       original: "Começa às oito horas. / Às nove horas / Às dez horas.",
       options: [
         { label: "oito", replacement: "It starts at eight o'clock.", pt: "Começa às oito horas." },
@@ -714,8 +746,9 @@ export default function Lesson33TalkAndWatch() {
       ],
       currentIndex: 0,
     },
+    // 11) Curso / projeto / série começa amanhã
     {
-      key: "grammar-9",
+      key: "grammar-11",
       original: "O curso começa amanhã. / O projeto começa amanhã. / A série começa amanhã.",
       options: [
         { label: "curso", replacement: "The course starts tomorrow.", pt: "O curso começa amanhã." },
@@ -724,8 +757,9 @@ export default function Lesson33TalkAndWatch() {
       ],
       currentIndex: 0,
     },
+    // 12) Não termina esta semana / esta tarde / hoje
     {
-      key: "grammar-10",
+      key: "grammar-12",
       original: "Não termina esta semana. / Não termina esta tarde. / Não termina hoje.",
       options: [
         { label: "esta semana", replacement: "It doesn't finish this week.", pt: "Não termina esta semana." },
@@ -734,8 +768,9 @@ export default function Lesson33TalkAndWatch() {
       ],
       currentIndex: 0,
     },
+    // 13) Começa agora / em 15 minutos / em uma hora
     {
-      key: "grammar-11",
+      key: "grammar-13",
       original: "Começa agora? / Em 15 minutos? / Em uma hora?",
       options: [
         { label: "agora", replacement: "Does it start now?", pt: "Começa agora?" },
@@ -746,18 +781,58 @@ export default function Lesson33TalkAndWatch() {
     },
   ];
 
-  // Real Life Practice sentences
+  // ========== REAL LIFE PRACTICE – PAST & PAST INTERROGATIVE ==========
   const realLifeSentences = [
-    { english: "I need to talk to you about the project.", portuguese: "Eu preciso conversar com você sobre o projeto." },
-    { english: "She talks to her mother about everything.", portuguese: "Ela conversa com a mãe dela sobre tudo." },
-    { english: "What do you want to watch on TV tonight?", portuguese: "O que você quer assistir na TV esta noite?" },
-    { english: "They want to watch a movie this weekend.", portuguese: "Eles querem assistir um filme neste fim de semana." },
-    { english: "Do you have an opinion about this problem?", portuguese: "Você tem uma opinião sobre este problema?" },
-    { english: "I like to talk about science and politics.", portuguese: "Eu gosto de falar sobre ciência e política." },
-    { english: "He usually has great ideas.", portuguese: "Ele geralmente tem ótimas ideias." },
-    { english: "We watch series on our phones.", portuguese: "Nós assistimos séries nos nossos celulares." },
-    { english: "What time does the movie start?", portuguese: "A que horas começa o filme?" },
-    { english: "She doesn't want to talk about this subject.", portuguese: "Ela não quer falar sobre este assunto." },
+    {
+      english: "I talked to my teacher about the project yesterday.",
+      portuguese: "Eu conversei com meu professor sobre o projeto ontem.",
+      jsx: <>I <span className="text-blue-600 font-bold">talked</span> to my teacher about the <span className="text-blue-600 font-bold">project</span> yesterday.</>,
+    },
+    {
+      english: "She watched a movie on her tablet last night.",
+      portuguese: "Ela assistiu um filme no tablet dela ontem à noite.",
+      jsx: <>She <span className="text-blue-600 font-bold">watched</span> a <span className="text-blue-600 font-bold">movie</span> on her tablet last night.</>,
+    },
+    {
+      english: "Did you talk to your boss about the meeting?",
+      portuguese: "Você conversou com seu chefe sobre a reunião?",
+      jsx: <><span className="text-blue-600 font-bold">Did</span> you <span className="text-blue-600 font-bold">talk</span> to your boss about the <span className="text-blue-600 font-bold">meeting</span>?</>,
+    },
+    {
+      english: "They watched a series on Netflix last weekend.",
+      portuguese: "Eles assistiram uma série na Netflix no fim de semana passado.",
+      jsx: <>They <span className="text-blue-600 font-bold">watched</span> a <span className="text-blue-600 font-bold">series</span> on Netflix last weekend.</>,
+    },
+    {
+      english: "Did he have an opinion about this problem?",
+      portuguese: "Ele teve uma opinião sobre este problema?",
+      jsx: <><span className="text-blue-600 font-bold">Did</span> he <span className="text-blue-600 font-bold">have</span> an <span className="text-blue-600 font-bold">opinion</span> about this problem?</>,
+    },
+    {
+      english: "I liked to talk about science when I was a child.",
+      portuguese: "Eu gostava de falar sobre ciência quando era criança.",
+      jsx: <>I <span className="text-blue-600 font-bold">liked</span> to <span className="text-blue-600 font-bold">talk</span> about <span className="text-blue-600 font-bold">science</span> when I was a child.</>,
+    },
+    {
+      english: "We watched videos on our phones yesterday.",
+      portuguese: "Nós assistimos vídeos nos nossos celulares ontem.",
+      jsx: <>We <span className="text-blue-600 font-bold">watched</span> <span className="text-blue-600 font-bold">videos</span> on our phones yesterday.</>,
+    },
+    {
+      english: "Did she want to talk about this subject?",
+      portuguese: "Ela quis falar sobre este assunto?",
+      jsx: <><span className="text-blue-600 font-bold">Did</span> she <span className="text-blue-600 font-bold">want</span> to <span className="text-blue-600 font-bold">talk</span> about this <span className="text-blue-600 font-bold">subject</span>?</>,
+    },
+    {
+      english: "He talked to his mother before lunch.",
+      portuguese: "Ele conversou com a mãe dele antes do almoço.",
+      jsx: <>He <span className="text-blue-600 font-bold">talked</span> to his <span className="text-blue-600 font-bold">mother</span> before lunch.</>,
+    },
+    {
+      english: "Did they watch the movie on TV?",
+      portuguese: "Eles assistiram o filme na TV?",
+      jsx: <><span className="text-blue-600 font-bold">Did</span> they <span className="text-blue-600 font-bold">watch</span> the <span className="text-blue-600 font-bold">movie</span> on TV?</>,
+    },
   ];
 
   return (
@@ -982,7 +1057,7 @@ export default function Lesson33TalkAndWatch() {
               <PencilIcon onClick={() => openNoteModal('Real Life Practice')} />
             </div>
             <div className="text-sm text-blue-100">
-              Practice real-life situations
+              Past & Past Interrogative
             </div>
           </div>
 
@@ -994,7 +1069,7 @@ export default function Lesson33TalkAndWatch() {
                     <div key={index} className="group">
                       <div className="flex items-start">
                         <SpeakSentence text={sentence.english} className="text-base font-medium">
-                          {index + 1}. {sentence.english}
+                          {index + 1}. {sentence.jsx || sentence.english}
                         </SpeakSentence>
                       </div>
                       <p className="text-sm text-gray-600 mt-0.5 ml-6">{sentence.portuguese}</p>

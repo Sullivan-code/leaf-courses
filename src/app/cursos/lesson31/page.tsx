@@ -246,13 +246,13 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
 }
 
 // ============================================
-// CHECK IT OUT HORIZONTAL
+// CHECK IT OUT HORIZONTAL (now used inside WRAP UP!)
 // ============================================
 function CheckItOutHorizontal() {
   return (
     <div className="w-full mx-auto border-2 border-gray-800 rounded-lg overflow-hidden shadow-lg">
       <div className="flex items-center justify-between px-6 py-3 bg-white border-b-2 border-gray-800">
-        <h2 className="text-xl font-bold tracking-widest text-gray-900">CHECK IT OUT!</h2>
+        <h2 className="text-xl font-bold tracking-widest text-gray-900">WRAP UP!</h2>
         <div className="flex items-center gap-3 text-gray-600">
           <span className="cursor-pointer hover:text-gray-900">≡</span>
           <span className="cursor-pointer hover:text-gray-900">✕</span>
@@ -395,10 +395,12 @@ export default function Lesson31StartFinish() {
   ];
 
   const grammarExamples = [
-    { english: "You need to go to the office now.", portuguese: "Você precisa ir ao escritório agora." },
-    { english: "We have to speak English at the meeting.", portuguese: "Nós temos que falar inglês na reunião." },
-    { english: "I really want to study business.", portuguese: "Eu realmente quero estudar negócios." },
-    { english: "They know great restaurants here.", portuguese: "Eles conhecem ótimos restaurantes aqui." },
+    { english: "You needed to go to the office yesterday.", portuguese: "Você precisou ir ao escritório ontem." },
+    { english: "You started the meeting.", portuguese: "Você começou a reunião." },
+    { english: "Did she want to study business at LEAF?", portuguese: "Ela quis estudar negócios na LEAF?" },
+    { english: "We had to speak English at the meeting.", portuguese: "Nós tivemos que falar inglês na reunião." },
+    { english: "I finished the project.", portuguese: "Eu terminei o projeto." },
+    { english: "They knew great restaurants here.", portuguese: "Eles conheciam ótimos restaurantes aqui." },
   ];
 
   // Assessment
@@ -725,7 +727,7 @@ export default function Lesson31StartFinish() {
     },
   ];
 
-  // ========== GRAMMAR SUBSTITUTION ==========
+  // ========== GRAMMAR SUBSTITUTION (keys fixed to be unique) ==========
   const grammarSubstitution: SubstitutionExercise[] = [
     {
       key: "grammar-1",
@@ -751,9 +753,9 @@ export default function Lesson31StartFinish() {
       key: "grammar-3",
       original: "Eu realmente quero estudar negócios. / Matemática / Geografia.",
       options: [
-        { label: "negócios", replacement: "I really want to study business.", pt: "Eu realmente quero estudar negócios." },
-        { label: "matemática", replacement: "I really want to study math.", pt: "Eu realmente quero estudar matemática." },
-        { label: "geografia", replacement: "I really want to study geography.", pt: "Eu realmente quero estudar geografia." },
+        { label: "negócios", replacement: "I really wanted to study business.", pt: "Eu realmente quis estudar negócios." },
+        { label: "matemática", replacement: "I really wanted to study math.", pt: "Eu realmente quis estudar matemática." },
+        { label: "geografia", replacement: "I really wanted to study geography.", pt: "Eu realmente quis estudar geografia." },
       ],
       currentIndex: 0,
     },
@@ -769,11 +771,11 @@ export default function Lesson31StartFinish() {
     },
     {
       key: "grammar-5",
-      original: "Eu preciso começar a reunião em uma hora. / Em 15 minutos / Em 10 minutos.",
+      original: "Eu precisei começar a reunião em uma hora. / Em 15 minutos / Em 10 minutos.",
       options: [
-        { label: "uma hora", replacement: "I need to start the meeting in one hour.", pt: "Eu preciso começar a reunião em uma hora." },
-        { label: "15 min", replacement: "I need to start the meeting in 15 minutes.", pt: "Eu preciso começar a reunião em 15 minutos." },
-        { label: "10 min", replacement: "I need to start the meeting in 10 minutes.", pt: "Eu preciso começar a reunião em 10 minutos." },
+        { label: "uma hora", replacement: "I needed to start the meeting in one hour.", pt: "Eu precisei começar a reunião em uma hora." },
+        { label: "15 min", replacement: "I needed to start the meeting in 15 minutes.", pt: "Eu precisei começar a reunião em 15 minutos." },
+        { label: "10 min", replacement: "I needed to start the meeting in 10 minutes.", pt: "Eu precisei começar a reunião em 10 minutos." },
       ],
       currentIndex: 0,
     },
@@ -781,13 +783,40 @@ export default function Lesson31StartFinish() {
       key: "grammar-6",
       original: "Eu tenho que terminar esta tarefa em duas horas. / Em três horas.",
       options: [
-        { label: "duas", replacement: "I have to finish this task in two hours.", pt: "Eu tenho que terminar esta tarefa em duas horas." },
-        { label: "três", replacement: "I have to finish this task in three hours.", pt: "Eu tenho que terminar esta tarefa em três horas." },
+        { label: "duas", replacement: "I had to finish this task in two hours.", pt: "Eu tive que terminar esta tarefa em duas horas." },
+        { label: "três", replacement: "I had to finish this task in three hours.", pt: "Eu tive que terminar esta tarefa em três horas." },
       ],
       currentIndex: 0,
     },
     {
       key: "grammar-7",
+      original: "Eu terminei esta tarefa em duas horas. / Em três horas.",
+      options: [
+        { label: "duas", replacement: "I finished this task in two hours.", pt: "Eu terminei esta tarefa em duas horas." },
+        { label: "três", replacement: "I finished this task in three hours.", pt: "Eu terminei esta tarefa em três horas." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-8",
+      original: "Ela terminou esta tarefa em duas horas. / Em três horas.",
+      options: [
+        { label: "duas", replacement: "She finished this task in two hours.", pt: "Ela terminou esta tarefa em duas horas." },
+        { label: "três", replacement: "She finished this task in three hours.", pt: "Ela terminou esta tarefa em três horas." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-9",
+      original: "Ela começou esta matéria ontem. / Hoje.",
+      options: [
+        { label: "ontem", replacement: "She started this subject yesterday.", pt: "Ela começou esta matéria ontem." },
+        { label: "hoje", replacement: "She started this subject today.", pt: "Ela começou esta matéria hoje." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-10",
       original: "Nós não queremos começar esta tarefa. / Na próxima semana / No próximo mês.",
       options: [
         { label: "agora", replacement: "We don't want to start this task.", pt: "Nós não queremos começar esta tarefa." },
@@ -797,7 +826,7 @@ export default function Lesson31StartFinish() {
       currentIndex: 0,
     },
     {
-      key: "grammar-8",
+      key: "grammar-11",
       original: "Nós não sabemos tudo. / Eles não sabem tudo / Eu não sei tudo.",
       options: [
         { label: "nós", replacement: "We don't know everything.", pt: "Nós não sabemos tudo." },
@@ -807,7 +836,7 @@ export default function Lesson31StartFinish() {
       currentIndex: 0,
     },
     {
-      key: "grammar-9",
+      key: "grammar-12",
       original: "A que horas você quer começar este curso? / Este projeto / Esta tarefa.",
       options: [
         { label: "curso", replacement: "What time do you want to start this course?", pt: "A que horas você quer começar este curso?" },
@@ -817,7 +846,7 @@ export default function Lesson31StartFinish() {
       currentIndex: 0,
     },
     {
-      key: "grammar-10",
+      key: "grammar-13",
       original: "A que horas você quer terminar esta tarefa? / Este projeto / Este curso.",
       options: [
         { label: "tarefa", replacement: "What time do you want to finish this task?", pt: "A que horas você quer terminar esta tarefa?" },
@@ -1083,21 +1112,61 @@ export default function Lesson31StartFinish() {
               <div className="flex flex-col lg:flex-row gap-8">
                 <div className="lg:w-2/3 space-y-4">
                   {[
-                    { en: "I started a new course last semester.", pt: "Eu comecei um novo curso no semestre passado." },
-                    { en: "She finished the project yesterday.", pt: "Ela terminou o projeto ontem." },
-                    { en: "He will start college next year.", pt: "Ele vai começar a faculdade no ano que vem." },
-                    { en: "We will finish this task in five minutes.", pt: "Nós vamos terminar esta tarefa em cinco minutos." },
-                    { en: "Does he start work at 8 AM?", pt: "Ele começa a trabalhar às 8 da manhã?" },
-                    { en: "Does she have a deadline this Friday?", pt: "Ela tem um prazo nesta sexta-feira?" },
-                    { en: "Does the meeting start at 3 PM?", pt: "A reunião começa às 15 horas?" },
-                    { en: "When does he finish college?", pt: "Quando ele termina a faculdade?" },
-                    { en: "What time does she start her course?", pt: "Que horas ela começa o curso dela?" },
-                    { en: "Why does it start so late?", pt: "Por que isso começa tão tarde?" },
+                    {
+                      en: "I started a new course last semester.",
+                      pt: "Eu comecei um novo curso no semestre passado.",
+                      jsx: <>I <span className="text-blue-600 font-bold">started</span> a new <span className="text-blue-600 font-bold">course</span> last semester.</>,
+                    },
+                    {
+                      en: "She finished the project yesterday.",
+                      pt: "Ela terminou o projeto ontem.",
+                      jsx: <>She <span className="text-blue-600 font-bold">finished</span> the <span className="text-blue-600 font-bold">project</span> yesterday.</>,
+                    },
+                    {
+                      en: "He started college last year.",
+                      pt: "Ele começou a faculdade no ano passado.",
+                      jsx: <>He <span className="text-blue-600 font-bold">started</span> <span className="text-blue-600 font-bold">college</span> last year.</>,
+                    },
+                    {
+                      en: "We finished this task in five minutes.",
+                      pt: "Nós terminamos esta tarefa em cinco minutos.",
+                      jsx: <>We <span className="text-blue-600 font-bold">finished</span> this <span className="text-blue-600 font-bold">task</span> in <span className="text-blue-600 font-bold">five minutes</span>.</>,
+                    },
+                    {
+                      en: "Did he start work at 8 AM?",
+                      pt: "Ele começou a trabalhar às 8 da manhã?",
+                      jsx: <>Did he <span className="text-blue-600 font-bold">start</span> <span className="text-blue-600 font-bold">work</span> at 8 AM?</>,
+                    },
+                    {
+                      en: "She had a deadline this Friday.",
+                      pt: "Ela teve um prazo nesta sexta-feira.",
+                      jsx: <>She had a <span className="text-blue-600 font-bold">deadline</span> this Friday.</>,
+                    },
+                    {
+                      en: "Did the meeting start at 3 PM?",
+                      pt: "A reunião começou às 15 horas?",
+                      jsx: <>Did the <span className="text-blue-600 font-bold">meeting</span> <span className="text-blue-600 font-bold">start</span> at 3 PM?</>,
+                    },
+                    {
+                      en: "When did he finish college?",
+                      pt: "Quando ele terminou a faculdade?",
+                      jsx: <>When did he <span className="text-blue-600 font-bold">finish</span> <span className="text-blue-600 font-bold">college</span>?</>,
+                    },
+                    {
+                      en: "What time did she start her course?",
+                      pt: "Que horas ela começou o curso dela?",
+                      jsx: <>What time did she <span className="text-blue-600 font-bold">start</span> her <span className="text-blue-600 font-bold">course</span>?</>,
+                    },
+                    {
+                      en: "Why did it start so late?",
+                      pt: "Por que isso começou tão tarde?",
+                      jsx: <>Why did it <span className="text-blue-600 font-bold">start</span> so late?</>,
+                    },
                   ].map((sentence, index) => (
                     <div key={index} className="group">
                       <div className="flex items-start">
                         <SpeakSentence text={sentence.en} className="text-base font-medium">
-                          {index + 1}. {sentence.en}
+                          {index + 1}. {sentence.jsx}
                         </SpeakSentence>
                       </div>
                       <p className="text-sm text-gray-600 mt-0.5 ml-6">{sentence.pt}</p>
@@ -1130,21 +1199,7 @@ export default function Lesson31StartFinish() {
           </div>
         </div>
 
-        {/* ===================== SECTION 6 – CHECK IT OUT ===================== */}
-        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔹 CHECK IT OUT!</h2>
-              <PencilIcon onClick={() => openNoteModal('Check It Out')} />
-            </div>
-            <p className="text-sm text-blue-100">Time Expressions & Question Patterns</p>
-          </div>
-          <div className="p-6">
-            <CheckItOutHorizontal />
-          </div>
-        </div>
-
-        {/* ===================== SECTION 7 – FINAL SPEAKING ===================== */}
+        {/* ===================== SECTION 6 – FINAL SPEAKING ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
             <h2 className="text-2xl font-bold">🔹 FINAL ACTIVITY - SPEAKING</h2>
@@ -1170,14 +1225,22 @@ export default function Lesson31StartFinish() {
           </div>
         </div>
 
-        {/* ===================== WRAP UP ===================== */}
+        {/* ===================== WRAP UP! (merged with old CHECK IT OUT) ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
-            <h2 className="text-3xl font-bold">🔹 WRAP UP!</h2>
-            <SpeakSentence text="Key expressions to remember" className="mt-2 text-blue-100 italic">
-              📝 Key expressions to remember
-            </SpeakSentence>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-3xl font-bold">🔹 WRAP UP!</h2>
+              <PencilIcon onClick={() => openNoteModal('Wrap Up')} />
+            </div>
+            <p className="text-sm text-blue-100">Time Expressions & Question Patterns</p>
           </div>
+
+          {/* Check It Out horizontal card */}
+          <div className="p-6">
+            <CheckItOutHorizontal />
+          </div>
+
+          {/* Affirmative / Negative & Questions */}
           <div className="flex flex-col md:flex-row">
             <div className="bg-green-800 text-white flex-1 p-6 space-y-4">
               <h3 className="font-bold text-lg mb-4 text-yellow-300">AFFIRMATIVE</h3>

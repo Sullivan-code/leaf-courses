@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Volume2, Eye, EyeOff } from "lucide-react";
 
 type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar';
 
@@ -9,6 +10,81 @@ interface NoteModalState {
   isOpen: boolean;
   sectionTitle: string;
   noteContent: string;
+}
+
+// ============================================
+// SPEECH SYSTEM WITH AMERICAN FEMALE VOICE
+// ============================================
+
+interface SpeakTextProps {
+  text: string;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+const speakEnglish = (text: string, rate = 0.9) => {
+  if (!text || typeof window === 'undefined') return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = rate;
+  utterance.pitch = 1.0;
+  const voices = window.speechSynthesis.getVoices();
+  const americanFemaleVoices = voices.filter(voice =>
+    (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+    (voice.name.toLowerCase().includes('samantha') ||
+     voice.name.toLowerCase().includes('google us english') ||
+     voice.name.toLowerCase().includes('siri') ||
+     voice.name.toLowerCase().includes('female') ||
+     voice.name === 'Google US English' ||
+     voice.name === 'Samantha')
+  );
+  const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+  if (americanFemaleVoices.length > 0) utterance.voice = americanFemaleVoices[0];
+  else if (americanVoices.length > 0) utterance.voice = americanVoices[0];
+  window.speechSynthesis.speak(utterance);
+};
+
+const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
+  const speak = () => speakEnglish(text, 0.9);
+
+  return (
+    <button
+      onClick={speak}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
+      title="Click to hear American pronunciation"
+    >
+      {children || text}
+      <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+    </button>
+  );
+};
+
+const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
+  return (
+    <button
+      onClick={() => {
+        const speechText = children && typeof children === 'string' ? children : text;
+        speakEnglish(speechText, 0.85);
+      }}
+      className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors text-left w-full ${className}`}
+    >
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
+    </button>
+  );
+};
+
+// ============================================
+// SUBSTITUTION EXERCISE COMPONENT
+// ============================================
+type OptionType = string | { label: string; replacement: string; pt?: string };
+
+interface SubstitutionExercise {
+  key: string;
+  original: string;
+  options: OptionType[];
+  currentIndex: number;
 }
 
 // Note Modal Component
@@ -84,83 +160,106 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
   );
 }
 
-// Native Browser Speech Synthesis Audio Button (Female American English voice)
-function AudioButton({ text }: { text: string }) {
-  const [isPlaying, setIsPlaying] = useState(false);
+// Substitution Component
+function SubstitutionOptions({
+  exercise,
+  onOptionClick,
+}: {
+  exercise: SubstitutionExercise;
+  onOptionClick: (key: string, index: number) => void;
+}) {
+  const [showEnglish, setShowEnglish] = useState(true);
 
-  const speakText = () => {
-    // Cancel any ongoing speech to avoid overlapping
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    
-    // Try to get a female voice (American English)
-    const setVoiceAndSpeak = () => {
-      const voices = window.speechSynthesis.getVoices();
-      // Prefer female voices like Samantha, Google UK Female, or any female-sounding voice
-      const femaleVoice = voices.find(voice => 
-        (voice.lang === 'en-US' && (voice.name.includes('Samantha') || voice.name.includes('Google UK Female') || voice.name.includes('Female') || voice.name.includes('Ellen') || voice.name.includes('Susan')))
-      ) || voices.find(voice => voice.lang === 'en-US');
-      
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
-      }
-      window.speechSynthesis.speak(utterance);
-      utterance.onstart = () => setIsPlaying(true);
-      utterance.onend = () => setIsPlaying(false);
-      utterance.onerror = () => setIsPlaying(false);
-    };
-    
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length > 0) {
-      setVoiceAndSpeak();
-    } else {
-      window.speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
-    }
+  const isObjectOption = (opt: OptionType): opt is { label: string; replacement: string; pt?: string } => {
+    return typeof opt === 'object' && opt !== null && 'label' in opt && 'replacement' in opt;
   };
 
+  const currentOption = exercise.options[exercise.currentIndex];
+  let currentSentence: string;
+  let currentPt: string | undefined;
+  if (isObjectOption(currentOption)) {
+    currentSentence = currentOption.replacement;
+    currentPt = currentOption.pt;
+  } else {
+    currentSentence = String(currentOption);
+  }
+
+  const toggleVisibility = () => setShowEnglish(prev => !prev);
+  const getOptionLabel = (opt: OptionType): string => isObjectOption(opt) ? opt.label : String(opt);
+  const getOptionReplacement = (opt: OptionType): string => isObjectOption(opt) ? opt.replacement : String(opt);
+
   return (
-    <button
-      onClick={speakText}
-      className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-700 transition-colors focus:outline-none"
-      aria-label={`Ouvir: ${text}`}
-      title="Clique para ouvir (voz nativa americana)"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${isPlaying ? 'text-green-500 animate-pulse' : ''}`} viewBox="0 0 20 20" fill="currentColor">
-        <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
-      </svg>
-      {isPlaying && <span className="text-xs text-green-600">🔊</span>}
-    </button>
+    <div className="bg-white p-4 rounded-xl border border-purple-200 shadow-sm">
+      <div className="flex items-start justify-between mb-2">
+        <p className="text-blue-600 font-medium block">{exercise.original}</p>
+        <button
+          onClick={toggleVisibility}
+          className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-700 ml-2 flex-shrink-0"
+          title={showEnglish ? "Ocultar resposta em inglês" : "Mostrar resposta em inglês"}
+        >
+          {showEnglish ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
+
+      {showEnglish && (
+        <div className="mb-3 p-3 bg-blue-50 rounded-md">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-start gap-2">
+              <span className="text-blue-700 font-medium flex-shrink-0">🇺🇸</span>
+              <SpeakSentence text={currentSentence} className="text-blue-700 font-medium">
+                {currentSentence}
+              </SpeakSentence>
+            </div>
+            {currentPt && (
+              <>
+                <div className="border-t border-blue-200 my-1"></div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-600 text-sm flex-shrink-0">🇧🇷</span>
+                  <p className="text-sm text-gray-600">{currentPt}</p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        {exercise.options.map((option, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              onOptionClick(exercise.key, index);
+              speakEnglish(getOptionReplacement(option), 0.9);
+            }}
+            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+              exercise.currentIndex === index
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {getOptionLabel(option)}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
-// Wrap Up Component (formerly Check It Out)
+// Wrap Up Component
 function WrapUp() {
   return (
     <div className="flex flex-col md:flex-row rounded-lg overflow-hidden shadow-lg border-2 border-teal-200">
-      {/* Left column - Expressions and Grammar */}
       <div className="bg-teal-900 text-white flex-1 p-6 space-y-4">
         <div className="mb-4">
           <h3 className="font-bold text-lg text-yellow-300 mb-3">USEFUL EXPRESSIONS</h3>
           <div className="space-y-3">
-            <div className="p-3 bg-teal-800 rounded-lg flex items-center justify-between">
-              <div>
-                <p className="font-bold text-xl text-yellow-200">Get well soon.</p>
-                <p className="text-teal-200 text-sm mt-1">Melhoras.</p>
-              </div>
-              <AudioButton text="Get well soon" />
+            <div className="p-3 bg-teal-800 rounded-lg">
+              <SpeakText text="Get well soon" className="font-bold text-xl text-yellow-200">Get well soon.</SpeakText>
+              <p className="text-teal-200 text-sm mt-1">Melhoras.</p>
             </div>
-            <div className="p-3 bg-teal-800 rounded-lg flex items-center justify-between">
-              <div>
-                <p className="font-bold text-xl text-yellow-200">Bless you!</p>
-                <p className="text-teal-200 text-sm mt-1">Saúde!</p>
-              </div>
-              <AudioButton text="Bless you" />
+            <div className="p-3 bg-teal-800 rounded-lg">
+              <SpeakText text="Bless you" className="font-bold text-xl text-yellow-200">Bless you!</SpeakText>
+              <p className="text-teal-200 text-sm mt-1">Saúde!</p>
             </div>
           </div>
         </div>
@@ -168,70 +267,37 @@ function WrapUp() {
         <div className="pt-6 border-t border-teal-700">
           <h3 className="font-bold text-lg text-yellow-300 mb-3">THIS / THAT vs THESE / THOSE</h3>
           <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 bg-teal-800 rounded-lg flex items-center justify-between">
-              <div>
-                <p className="font-bold text-teal-200">this is</p>
-                <p className="text-teal-300 text-sm">isto é / este é</p>
-              </div>
-              <AudioButton text="this is" />
+            <div className="p-3 bg-teal-800 rounded-lg">
+              <SpeakText text="this is" className="font-bold text-teal-200">this is</SpeakText>
+              <p className="text-teal-300 text-sm">isto é / este é</p>
             </div>
-            <div className="p-3 bg-teal-800 rounded-lg flex items-center justify-between">
-              <div>
-                <p className="font-bold text-teal-200">these are</p>
-                <p className="text-teal-300 text-sm">estes/estas são</p>
-              </div>
-              <AudioButton text="these are" />
+            <div className="p-3 bg-teal-800 rounded-lg">
+              <SpeakText text="these are" className="font-bold text-teal-200">these are</SpeakText>
+              <p className="text-teal-300 text-sm">estes/estas são</p>
             </div>
-            <div className="p-3 bg-teal-800 rounded-lg flex items-center justify-between">
-              <div>
-                <p className="font-bold text-teal-200">that is</p>
-                <p className="text-teal-300 text-sm">aquilo é / aquele é</p>
-              </div>
-              <AudioButton text="that is" />
+            <div className="p-3 bg-teal-800 rounded-lg">
+              <SpeakText text="that is" className="font-bold text-teal-200">that is</SpeakText>
+              <p className="text-teal-300 text-sm">aquilo é / aquele é</p>
             </div>
-            <div className="p-3 bg-teal-800 rounded-lg flex items-center justify-between">
-              <div>
-                <p className="font-bold text-teal-200">those are</p>
-                <p className="text-teal-300 text-sm">aqueles/aquelas são</p>
-              </div>
-              <AudioButton text="those are" />
+            <div className="p-3 bg-teal-800 rounded-lg">
+              <SpeakText text="those are" className="font-bold text-teal-200">those are</SpeakText>
+              <p className="text-teal-300 text-sm">aqueles/aquelas são</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Right column - Contractions and Asking about symptoms */}
       <div className="bg-teal-800 text-white flex-1 p-6 space-y-4">
         <div>
           <h3 className="font-bold text-lg text-yellow-300 mb-3">CONTRACTIONS</h3>
           <div className="grid grid-cols-2 gap-2">
-            <div className="p-2 bg-teal-700 rounded-lg text-center flex items-center justify-between">
-              <p className="font-bold">I'm</p>
-              <AudioButton text="I'm" />
-            </div>
-            <div className="p-2 bg-teal-700 rounded-lg text-center flex items-center justify-between">
-              <p className="font-bold">You're</p>
-              <AudioButton text="You're" />
-            </div>
-            <div className="p-2 bg-teal-700 rounded-lg text-center flex items-center justify-between">
-              <p className="font-bold">He's</p>
-              <AudioButton text="He's" />
-            </div>
-            <div className="p-2 bg-teal-700 rounded-lg text-center flex items-center justify-between">
-              <p className="font-bold">She's</p>
-              <AudioButton text="She's" />
-            </div>
-            <div className="p-2 bg-teal-700 rounded-lg text-center flex items-center justify-between">
-              <p className="font-bold">It's</p>
-              <AudioButton text="It's" />
-            </div>
-            <div className="p-2 bg-teal-700 rounded-lg text-center flex items-center justify-between">
-              <p className="font-bold">We're</p>
-              <AudioButton text="We're" />
-            </div>
-            <div className="p-2 bg-teal-700 rounded-lg text-center col-span-2 flex items-center justify-between">
-              <p className="font-bold">They're</p>
-              <AudioButton text="They're" />
+            {["I'm", "You're", "He's", "She's", "It's", "We're"].map((c, i) => (
+              <div key={i} className="p-2 bg-teal-700 rounded-lg text-center">
+                <SpeakText text={c} className="font-bold">{c}</SpeakText>
+              </div>
+            ))}
+            <div className="p-2 bg-teal-700 rounded-lg text-center col-span-2">
+              <SpeakText text="They're" className="font-bold">They're</SpeakText>
             </div>
           </div>
         </div>
@@ -239,26 +305,17 @@ function WrapUp() {
         <div className="pt-6 border-t border-teal-700">
           <h3 className="font-bold text-lg text-yellow-300 mb-3">ASKING ABOUT SYMPTOMS</h3>
           <div className="space-y-3">
-            <div className="p-3 bg-teal-700 rounded-lg flex items-center justify-between">
-              <div>
-                <p className="font-bold text-yellow-200">What's the matter?</p>
-                <p className="text-teal-200 text-sm mt-1">O que houve? / Qual é o problema?</p>
-              </div>
-              <AudioButton text="What's the matter" />
+            <div className="p-3 bg-teal-700 rounded-lg">
+              <SpeakText text="What's the matter" className="font-bold text-yellow-200">What's the matter?</SpeakText>
+              <p className="text-teal-200 text-sm mt-1">O que houve? / Qual é o problema?</p>
             </div>
-            <div className="p-3 bg-teal-700 rounded-lg flex items-center justify-between">
-              <div>
-                <p className="font-bold text-yellow-200">I have a toothache.</p>
-                <p className="text-teal-200 text-sm mt-1">Estou com dor de dente.</p>
-              </div>
-              <AudioButton text="I have a toothache" />
+            <div className="p-3 bg-teal-700 rounded-lg">
+              <SpeakText text="I have a toothache" className="font-bold text-yellow-200">I have a toothache.</SpeakText>
+              <p className="text-teal-200 text-sm mt-1">Estou com dor de dente.</p>
             </div>
-            <div className="p-3 bg-teal-700 rounded-lg flex items-center justify-between">
-              <div>
-                <p className="font-bold text-yellow-200 text-sm">I want to make an appointment to see a dentist.</p>
-                <p className="text-teal-200 text-sm mt-1">Quero marcar uma consulta para ver um dentista.</p>
-              </div>
-              <AudioButton text="I want to make an appointment to see a dentist" />
+            <div className="p-3 bg-teal-700 rounded-lg">
+              <SpeakText text="I want to make an appointment to see a dentist" className="font-bold text-yellow-200 text-sm">I want to make an appointment to see a dentist.</SpeakText>
+              <p className="text-teal-200 text-sm mt-1">Quero marcar uma consulta para ver um dentista.</p>
             </div>
           </div>
         </div>
@@ -283,6 +340,7 @@ export default function Lesson37HealthFeelingsProfessions() {
   });
   
   const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
+  const [substitutionState, setSubstitutionState] = useState<Record<string, number>>({});
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills({
@@ -306,6 +364,18 @@ export default function Lesson37HealthFeelingsProfessions() {
     }));
   };
 
+  const handleOptionClick = (key: string, index: number) => {
+    setSubstitutionState(prev => ({ ...prev, [key]: index }));
+  };
+
+  const getCurrentIndex = (key: string) => substitutionState[key] || 0;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
+
   // Image URLs
   const mainImage = "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
   const doctorImage = "https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
@@ -313,7 +383,8 @@ export default function Lesson37HealthFeelingsProfessions() {
 
   const verbs = [
     { english: "I'm", portuguese: "eu sou / estou" },
-    { english: "You're", portuguese: "você é / está" },
+    { english: "You're", portuguese: "você é / está (singular)" },
+    { english: "You're", portuguese: "vocês são / estão (plural)" },
     { english: "He's", portuguese: "ele é / está" },
     { english: "She's", portuguese: "ela é / está" },
     { english: "It's", portuguese: "ele/ela é / está" },
@@ -341,13 +412,6 @@ export default function Lesson37HealthFeelingsProfessions() {
     { english: "those", portuguese: "aqueles/aquelas" },
   ];
 
-  const usefulPhrases = [
-    { english: "Take this medicine for your toothache.", portuguese: "Tome este remédio para sua dor de dente." },
-    { english: "I'll feel better on Sunday.", portuguese: "Eu vou me sentir melhor no Domingo." },
-    { english: "I had to go to the dentist.", portuguese: "Eu tive que ir ao dentista." },
-    { english: "I was in pain.", portuguese: "Eu estava com dor." }
-  ];
-
   const grammarExamples = [
     { english: "I'm a teacher.", portuguese: "Eu sou professor." },
     { english: "You're a nurse.", portuguese: "Você é enfermeira." },
@@ -359,19 +423,521 @@ export default function Lesson37HealthFeelingsProfessions() {
     { english: "They'll be at the hospital the day after tomorrow.", portuguese: "Eles estarão no hospital depois de amanhã." }
   ];
 
+  // Static phrases from the image + Past versions
+  const staticUsefulPhrases = [
+    { english: "Take this medicine for your toothache.", portuguese: "Tome este remédio para sua dor de dente." },
+    { english: "I feel better now.", portuguese: "Eu me sinto melhor agora." },
+    { english: "I still have to go to the dentist.", portuguese: "Eu ainda tenho que ir ao dentista." },
+    { english: "I'm in pain.", portuguese: "Eu estou com dor." },
+    { english: "He took this medicine yesterday.", portuguese: "Ele tomou este remédio ontem." },
+    { english: "I felt better yesterday.", portuguese: "Eu me senti melhor ontem." },
+  ];
+
+  // Make It Yours: verb to be → past | other verbs → present
   const realLifeSentences = [
-    { english: "I had a headache.", portuguese: "Eu estava com dor de cabeça." },
-    { english: "She had an appointment at the dentist today.", portuguese: "Ela teve uma consulta no dentista hoje." },
-    { english: "Did he have a fever?", portuguese: "Ele estava com febre?" },
-    { english: "Take a painkiller for your toothache.", portuguese: "Tome um analgésico para sua dor de dente." },
-    { english: "I think she has a stomachache.", portuguese: "Acho que ela está com dor de estômago." },
-    { english: "I still take that medicine every day.", portuguese: "Eu ainda tomo aquele remédio todos os dias." },
-    { english: "I'm in pain. I need to go to the hospital.", portuguese: "Estou com dor. Preciso ir ao hospital." },
-    { english: "He'll be at the train station.", portuguese: "Ele estará na estação de trem." },
-    { english: "Drink a lot of water. It's good for your health.", portuguese: "Beba muita água. É bom para sua saúde." },
-    { english: "The children were at home because they were sick.", portuguese: "As crianças estavam em casa porque estavam doentes." },
-    { english: "Please take those reports to the doctor.", portuguese: "Por favor, leve aqueles relatórios ao médico." },
-    { english: "Do you have to take these pills?", portuguese: "Você tem que tomar estes comprimidos?" },
+    {
+      english: "I have a headache today.",
+      portuguese: "Eu estou com dor de cabeça hoje.",
+      jsx: <>I <span className="text-blue-600 font-bold">have</span> a <span className="text-blue-600 font-bold">headache</span> today.</>
+    },
+    {
+      english: "I prefer to drink tea for my stomachache.",
+      portuguese: "Eu prefiro beber chá para minha dor de estômago.",
+      jsx: <>I <span className="text-blue-600 font-bold">prefer</span> to drink tea for my <span className="text-blue-600 font-bold">stomachache</span>.</>
+    },
+    {
+      english: "He takes the medicine every morning.",
+      portuguese: "Ele toma o remédio toda manhã.",
+      jsx: <>He <span className="text-blue-600 font-bold">takes</span> the <span className="text-blue-600 font-bold">medicine</span> every morning.</>
+    },
+    {
+      english: "I was sick yesterday, but I was better later.",
+      portuguese: "Eu estava doente ontem, mas eu estava melhor depois.",
+      jsx: <>I <span className="text-blue-600 font-bold">was sick</span> yesterday, but I <span className="text-blue-600 font-bold">was better</span> later.</>
+    },
+    {
+      english: "Do you have a fever?",
+      portuguese: "Você está com febre?",
+      jsx: <><span className="text-blue-600 font-bold">Do</span> you <span className="text-blue-600 font-bold">have</span> a <span className="text-blue-600 font-bold">fever</span>?</>
+    },
+    {
+      english: "She has an appointment at the dentist today.",
+      portuguese: "Ela tem uma consulta no dentista hoje.",
+      jsx: <>She <span className="text-blue-600 font-bold">has</span> an <span className="text-blue-600 font-bold">appointment</span> at the dentist today.</>
+    },
+    {
+      english: "I still take that medicine every day.",
+      portuguese: "Eu ainda tomo aquele remédio todos os dias.",
+      jsx: <>I still <span className="text-blue-600 font-bold">take</span> that <span className="text-blue-600 font-bold">medicine</span> every day.</>
+    },
+    {
+      english: "The children were at home because they were sick.",
+      portuguese: "As crianças estavam em casa porque estavam doentes.",
+      jsx: <>The children <span className="text-blue-600 font-bold">were</span> at home because they <span className="text-blue-600 font-bold">were sick</span>.</>
+    },
+    {
+      english: "Please take those reports to the doctor.",
+      portuguese: "Por favor, leve aqueles relatórios ao médico.",
+      jsx: <>Please <span className="text-blue-600 font-bold">take</span> those <span className="text-blue-600 font-bold">reports</span> to the doctor.</>
+    },
+    {
+      english: "Do you have to take these pills?",
+      portuguese: "Você tem que tomar estes comprimidos?",
+      jsx: <><span className="text-blue-600 font-bold">Do</span> you <span className="text-blue-600 font-bold">have</span> to <span className="text-blue-600 font-bold">take</span> these <span className="text-blue-600 font-bold">pills</span>?</>
+    },
+  ];
+
+  // ========== DRILLS: VERBS ==========
+  const verbsSubstitution: SubstitutionExercise[] = [
+    {
+      key: "verb-1",
+      original: "ser / estar - Eu sou. / Eu estou.",
+      options: [
+        { label: "ser", replacement: "to be", pt: "ser" },
+        { label: "Eu sou/estou", replacement: "I am.", pt: "Eu sou / Eu estou." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-2",
+      original: "Você é. / Vocês são. / Nós somos. / Eles são.",
+      options: [
+        { label: "Você", replacement: "You are.", pt: "Você é." },
+        { label: "Vocês", replacement: "You are.", pt: "Vocês são." },
+        { label: "Nós", replacement: "We are.", pt: "Nós somos." },
+        { label: "Eles", replacement: "They are.", pt: "Eles são." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-3",
+      original: "Ele está. / Ela está.",
+      options: [
+        { label: "Ele", replacement: "He is.", pt: "Ele está." },
+        { label: "Ela", replacement: "She is.", pt: "Ela está." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-4",
+      original: "Está aqui. / lá / em casa",
+      options: [
+        { label: "aqui", replacement: "It is here.", pt: "Está aqui." },
+        { label: "lá", replacement: "It is there.", pt: "Está lá." },
+        { label: "em casa", replacement: "It is at home.", pt: "Está em casa." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-5",
+      original: "Eu estou na escola. / no trabalho / na igreja",
+      options: [
+        { label: "escola", replacement: "I am at school.", pt: "Eu estou na escola." },
+        { label: "trabalho", replacement: "I am at work.", pt: "Eu estou no trabalho." },
+        { label: "igreja", replacement: "I am at church.", pt: "Eu estou na igreja." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-6",
+      original: "Eles são meus amigos. / colegas de classe / vizinhos",
+      options: [
+        { label: "amigos", replacement: "They are my friends.", pt: "Eles são meus amigos." },
+        { label: "colegas", replacement: "They are my classmates.", pt: "Eles são meus colegas de classe." },
+        { label: "vizinhos", replacement: "They are my neighbors.", pt: "Eles são meus vizinhos." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-7",
+      original: "É bom. / ruim / engraçado",
+      options: [
+        { label: "bom", replacement: "It is good.", pt: "É bom." },
+        { label: "ruim", replacement: "It is bad.", pt: "É ruim." },
+        { label: "engraçado", replacement: "It is funny.", pt: "É engraçado." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-8",
+      original: "ser / Eu quero ser. / Ele quer ser.",
+      options: [
+        { label: "ser", replacement: "to be", pt: "ser" },
+        { label: "Eu quero", replacement: "I want to be.", pt: "Eu quero ser." },
+        { label: "Ele quer", replacement: "He wants to be.", pt: "Ele quer ser." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-9",
+      original: "O que você quer ser? / eles / ela",
+      options: [
+        { label: "você", replacement: "What do you want to be?", pt: "O que você quer ser?" },
+        { label: "eles", replacement: "What do they want to be?", pt: "O que eles querem ser?" },
+        { label: "ela", replacement: "What does she want to be?", pt: "O que ela quer ser?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-10",
+      original: "Eu sou. / Ela é. / Vocês são.",
+      options: [
+        { label: "Eu", replacement: "I am.", pt: "Eu sou." },
+        { label: "Ela", replacement: "She is.", pt: "Ela é." },
+        { label: "Vocês", replacement: "You are.", pt: "Vocês são." },
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ========== DRILLS: NEW WORDS ==========
+  const vocabSubstitution: SubstitutionExercise[] = [
+    {
+      key: "vocab-1",
+      original: "Eu preciso falar com o médico. / enfermeiro / dentista",
+      options: [
+        { label: "médico", replacement: "I need to talk to the doctor.", pt: "Eu preciso falar com o médico." },
+        { label: "enfermeiro", replacement: "I need to talk to the nurse.", pt: "Eu preciso falar com o enfermeiro." },
+        { label: "dentista", replacement: "I need to talk to the dentist.", pt: "Eu preciso falar com o dentista." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-2",
+      original: "Eu tenho que ir ao hospital amanhã. / ao médico / ao dentista",
+      options: [
+        { label: "hospital", replacement: "I have to go to the hospital tomorrow.", pt: "Eu tenho que ir ao hospital amanhã." },
+        { label: "médico", replacement: "I have to go to the doctor tomorrow.", pt: "Eu tenho que ir ao médico amanhã." },
+        { label: "dentista", replacement: "I have to go to the dentist tomorrow.", pt: "Eu tenho que ir ao dentista amanhã." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-3",
+      original: "Você conhece aquele médico? / dentista / aquela enfermeira",
+      options: [
+        { label: "médico", replacement: "Do you know that doctor?", pt: "Você conhece aquele médico?" },
+        { label: "dentista", replacement: "Do you know that dentist?", pt: "Você conhece aquele dentista?" },
+        { label: "enfermeira", replacement: "Do you know that nurse?", pt: "Você conhece aquela enfermeira?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-4",
+      original: "Eu tenho uma consulta no dentista. / no médico / no hospital",
+      options: [
+        { label: "dentista", replacement: "I have an appointment at the dentist.", pt: "Eu tenho uma consulta no dentista." },
+        { label: "médico", replacement: "I have an appointment at the doctor.", pt: "Eu tenho uma consulta no médico." },
+        { label: "hospital", replacement: "I have an appointment at the hospital.", pt: "Eu tenho uma consulta no hospital." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-5",
+      original: "Você tem um compromisso hoje? / esta tarde / amanhã",
+      options: [
+        { label: "hoje", replacement: "Do you have an appointment today?", pt: "Você tem um compromisso hoje?" },
+        { label: "esta tarde", replacement: "Do you have an appointment this afternoon?", pt: "Você tem um compromisso esta tarde?" },
+        { label: "amanhã", replacement: "Do you have an appointment tomorrow?", pt: "Você tem um compromisso amanhã?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-6",
+      original: "Eu não gosto de tomar remédio. / analgésicos / comprimidos",
+      options: [
+        { label: "remédio", replacement: "I don't like to take medicine.", pt: "Eu não gosto de tomar remédio." },
+        { label: "analgésicos", replacement: "I don't like to take painkillers.", pt: "Eu não gosto de tomar analgésicos." },
+        { label: "comprimidos", replacement: "I don't like to take pills.", pt: "Eu não gosto de tomar comprimidos." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-7",
+      original: "Você precisa tomar um analgésico? / Ela / Ele",
+      options: [
+        { label: "Você", replacement: "Do you need to take a painkiller?", pt: "Você precisa tomar um analgésico?" },
+        { label: "Ela", replacement: "Does she need to take a painkiller?", pt: "Ela precisa tomar um analgésico?" },
+        { label: "Ele", replacement: "Does he need to take a painkiller?", pt: "Ele precisa tomar um analgésico?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-8",
+      original: "Eu estou com dor de cabeça. / dor de estômago / dor de dente",
+      options: [
+        { label: "cabeça", replacement: "I have a headache.", pt: "Eu estou com dor de cabeça." },
+        { label: "estômago", replacement: "I have a stomachache.", pt: "Eu estou com dor de estômago." },
+        { label: "dente", replacement: "I have a toothache.", pt: "Eu estou com dor de dente." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-9",
+      original: "Minha irmã está com febre. / dor de garganta / resfriada",
+      options: [
+        { label: "febre", replacement: "My sister has a fever.", pt: "Minha irmã está com febre." },
+        { label: "garganta", replacement: "My sister has a sore throat.", pt: "Minha irmã está com dor de garganta." },
+        { label: "resfriada", replacement: "My sister has a cold.", pt: "Minha irmã está resfriada." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-10",
+      original: "Ele está com dor de dente. / dor de cabeça / dor de estômago",
+      options: [
+        { label: "dente", replacement: "He has a toothache.", pt: "Ele está com dor de dente." },
+        { label: "cabeça", replacement: "He has a headache.", pt: "Ele está com dor de cabeça." },
+        { label: "estômago", replacement: "He has a stomachache.", pt: "Ele está com dor de estômago." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-11",
+      original: "Você está com dor de garganta? / febre / resfriado",
+      options: [
+        { label: "garganta", replacement: "Do you have a sore throat?", pt: "Você está com dor de garganta?" },
+        { label: "febre", replacement: "Do you have a fever?", pt: "Você está com febre?" },
+        { label: "resfriado", replacement: "Do you have a cold?", pt: "Você está resfriado?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-12",
+      original: "Quando você toma estes comprimidos? / analgésicos",
+      options: [
+        { label: "comprimidos", replacement: "When do you take these pills?", pt: "Quando você toma estes comprimidos?" },
+        { label: "analgésicos", replacement: "When do you take these painkillers?", pt: "Quando você toma estes analgésicos?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-13",
+      original: "Eu preciso conversar com aqueles médicos. / professores / enfermeiros",
+      options: [
+        { label: "médicos", replacement: "I need to talk to those doctors.", pt: "Eu preciso conversar com aqueles médicos." },
+        { label: "professores", replacement: "I need to talk to those teachers.", pt: "Eu preciso conversar com aqueles professores." },
+        { label: "enfermeiros", replacement: "I need to talk to those nurses.", pt: "Eu preciso conversar com aqueles enfermeiros." },
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ========== DRILLS: SPEAK LIKE A NATIVE ==========
+  const phrasesSubstitution: SubstitutionExercise[] = [
+    {
+      key: "phrase-1",
+      original: "Eu preferi beber chá para minha dor de estômago. / dor de cabeça / dor de garganta",
+      options: [
+        { label: "estômago", replacement: "I preferred to drink tea for my stomachache.", pt: "Eu preferi beber chá para minha dor de estômago." },
+        { label: "cabeça", replacement: "I preferred to drink tea for my headache.", pt: "Eu preferi beber chá para minha dor de cabeça." },
+        { label: "garganta", replacement: "I preferred to drink tea for my sore throat.", pt: "Eu preferi beber chá para minha dor de garganta." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-2",
+      original: "Eu me sinto melhor agora, obrigado. / Ele se sente / Nós nos sentimos",
+      options: [
+        { label: "Eu", replacement: "I feel better now, thanks.", pt: "Eu me sinto melhor agora, obrigado." },
+        { label: "Ele", replacement: "He feels better now, thanks.", pt: "Ele se sente melhor agora, obrigado." },
+        { label: "Nós", replacement: "We feel better now, thanks.", pt: "Nós nos sentimos melhor agora, obrigado." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-3",
+      original: "Eu ainda estudo de manhã. / à tarde / à noite",
+      options: [
+        { label: "manhã", replacement: "I still study in the morning.", pt: "Eu ainda estudo de manhã." },
+        { label: "tarde", replacement: "I still study in the afternoon.", pt: "Eu ainda estudo à tarde." },
+        { label: "noite", replacement: "I still study at night.", pt: "Eu ainda estudo à noite." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-4",
+      original: "Ele ainda precisa ir ao médico. / ao dentista / à farmácia",
+      options: [
+        { label: "médico", replacement: "He still needs to go to the doctor.", pt: "Ele ainda precisa ir ao médico." },
+        { label: "dentista", replacement: "He still needs to go to the dentist.", pt: "Ele ainda precisa ir ao dentista." },
+        { label: "farmácia", replacement: "He still needs to go to the pharmacy.", pt: "Ele ainda precisa ir à farmácia." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-5",
+      original: "Eu estou com dor. / Ela está / Eles estão",
+      options: [
+        { label: "Eu", replacement: "I am in pain.", pt: "Eu estou com dor." },
+        { label: "Ela", replacement: "She is in pain.", pt: "Ela está com dor." },
+        { label: "Eles", replacement: "They are in pain.", pt: "Eles estão com dor." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-6",
+      original: "Eu ainda estou com dor. / Ela / Ele",
+      options: [
+        { label: "Eu", replacement: "I am still in pain.", pt: "Eu ainda estou com dor." },
+        { label: "Ela", replacement: "She is still in pain.", pt: "Ela ainda está com dor." },
+        { label: "Ele", replacement: "He is still in pain.", pt: "Ele ainda está com dor." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-7",
+      original: "Eu tive que ir ao dentista ontem. / ao médico / ao hospital",
+      options: [
+        { label: "dentista", replacement: "I had to go to the dentist yesterday.", pt: "Eu tive que ir ao dentista ontem." },
+        { label: "médico", replacement: "I had to go to the doctor yesterday.", pt: "Eu tive que ir ao médico ontem." },
+        { label: "hospital", replacement: "I had to go to the hospital yesterday.", pt: "Eu tive que ir ao hospital ontem." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-8",
+      original: "Ele tomou o remédio esta manhã. / analgésico / comprimido",
+      options: [
+        { label: "remédio", replacement: "He took the medicine this morning.", pt: "Ele tomou o remédio esta manhã." },
+        { label: "analgésico", replacement: "He took the painkiller this morning.", pt: "Ele tomou o analgésico esta manhã." },
+        { label: "comprimido", replacement: "He took the pill this morning.", pt: "Ele tomou o comprimido esta manhã." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-9",
+      original: "Eu não me senti bem ontem. / Ela não se sentiu / Nós não nos sentimos",
+      options: [
+        { label: "Eu", replacement: "I didn't feel well yesterday.", pt: "Eu não me senti bem ontem." },
+        { label: "Ela", replacement: "She didn't feel well yesterday.", pt: "Ela não se sentiu bem ontem." },
+        { label: "Nós", replacement: "We didn't feel well yesterday.", pt: "Nós não nos sentimos bem ontem." },
+      ],
+      currentIndex: 0,
+    },
+  ];
+
+  // ========== DRILLS: GRAMMAR ==========
+  const grammarSubstitution: SubstitutionExercise[] = [
+    {
+      key: "grammar-1",
+      original: "Eu sou médico. / dentista / enfermeiro",
+      options: [
+        { label: "médico", replacement: "I'm a doctor.", pt: "Eu sou médico." },
+        { label: "dentista", replacement: "I'm a dentist.", pt: "Eu sou dentista." },
+        { label: "enfermeiro", replacement: "I'm a nurse.", pt: "Eu sou enfermeiro." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-2",
+      original: "Ela é professora. / enfermeira / dentista",
+      options: [
+        { label: "professora", replacement: "She is a teacher.", pt: "Ela é professora." },
+        { label: "enfermeira", replacement: "She is a nurse.", pt: "Ela é enfermeira." },
+        { label: "dentista", replacement: "She is a dentist.", pt: "Ela é dentista." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-3",
+      original: "Ele é dentista. / professor / médico",
+      options: [
+        { label: "dentista", replacement: "He is a dentist.", pt: "Ele é dentista." },
+        { label: "professor", replacement: "He is a teacher.", pt: "Ele é professor." },
+        { label: "médico", replacement: "He is a doctor.", pt: "Ele é médico." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-4",
+      original: "Está cedo. / tarde / novo",
+      options: [
+        { label: "cedo", replacement: "It's early.", pt: "Está cedo." },
+        { label: "tarde", replacement: "It's late.", pt: "Está tarde." },
+        { label: "novo", replacement: "It's new.", pt: "É novo." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-5",
+      original: "Aquela aula é importante. / interessante / ótima",
+      options: [
+        { label: "importante", replacement: "That class is important.", pt: "Aquela aula é importante." },
+        { label: "interessante", replacement: "That class is interesting.", pt: "Aquela aula é interessante." },
+        { label: "ótima", replacement: "That class is great.", pt: "Aquela aula é ótima." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-6",
+      original: "Ela é gentil. / engraçada / bonita",
+      options: [
+        { label: "gentil", replacement: "She is kind.", pt: "Ela é gentil." },
+        { label: "engraçada", replacement: "She is funny.", pt: "Ela é engraçada." },
+        { label: "bonita", replacement: "She is beautiful.", pt: "Ela é bonita." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-7",
+      original: "Ele é brasileiro. / americano / britânico",
+      options: [
+        { label: "brasileiro", replacement: "He is Brazilian.", pt: "Ele é brasileiro." },
+        { label: "americano", replacement: "He is American.", pt: "Ele é americano." },
+        { label: "britânico", replacement: "He is British.", pt: "Ele é britânico." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-8",
+      original: "Eu estou doente. / Ela está / Eles estão",
+      options: [
+        { label: "Eu", replacement: "I am sick.", pt: "Eu estou doente." },
+        { label: "Ela", replacement: "She is sick.", pt: "Ela está doente." },
+        { label: "Eles", replacement: "They are sick.", pt: "Eles estão doentes." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-9",
+      original: "Eles são meus pais. / avós / amigos",
+      options: [
+        { label: "pais", replacement: "They are my parents.", pt: "Eles são meus pais." },
+        { label: "avós", replacement: "They are my grandparents.", pt: "Eles são meus avós." },
+        { label: "amigos", replacement: "They are my friends.", pt: "Eles são meus amigos." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-10",
+      original: "Estes são meus amigos. / Aqueles são meus professores",
+      options: [
+        { label: "Estes", replacement: "These are my friends.", pt: "Estes são meus amigos." },
+        { label: "Aqueles", replacement: "Those are my teachers.", pt: "Aqueles são meus professores." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-11",
+      original: "É bom para sua saúde. / importante / ótimo",
+      options: [
+        { label: "bom", replacement: "It's good for your health.", pt: "É bom para sua saúde." },
+        { label: "importante", replacement: "It's important for your health.", pt: "É importante para sua saúde." },
+        { label: "ótimo", replacement: "It's great for your health.", pt: "É ótimo para sua saúde." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-12",
+      original: "Nós estamos em casa. / no shopping / na praia",
+      options: [
+        { label: "casa", replacement: "We are at home.", pt: "Nós estamos em casa." },
+        { label: "shopping", replacement: "We are at the mall.", pt: "Nós estamos no shopping." },
+        { label: "praia", replacement: "We are at the beach.", pt: "Nós estamos na praia." },
+      ],
+      currentIndex: 0,
+    },
   ];
 
   return (
@@ -392,9 +958,9 @@ export default function Lesson37HealthFeelingsProfessions() {
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
             🏥 Lesson 37 - Health, Feelings & Professions
           </h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Learn to talk about health issues, medical professions, feelings, and making appointments. 👨‍⚕️🤒💊
-          </p>
+          <SpeakSentence text="Learn to talk about health issues, medical professions, feelings, and making appointments." className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
+            👨‍⚕️🤒💊 Learn to talk about health issues, medical professions, feelings, and making appointments.
+          </SpeakSentence>
           <div className="w-64 h-64 mx-auto">
             <img
               src={mainImage}
@@ -422,90 +988,28 @@ export default function Lesson37HealthFeelingsProfessions() {
           </div>
           
           <div className="p-8">
-            <p className="text-md text-gray-600 mb-4 italic">Click on the speaker icon to hear the pronunciation (Native American English voice)</p>
+            <SpeakSentence text="Click on the verbs to hear the pronunciation and practice their forms" className="text-md text-gray-600 mb-4 italic">
+              🎧 Click on the verbs to hear the pronunciation and practice their forms
+            </SpeakSentence>
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
               {verbs.map((verb, index) => (
-                <li key={index} className="flex items-center justify-between">
-                  <div>
-                    <span className="text-blue-600 font-bold">{verb.english}</span> = {verb.portuguese}
-                  </div>
-                  <AudioButton text={verb.english} />
+                <li key={index}>
+                  <SpeakText text={verb.english} className="text-blue-600 font-bold">
+                    {verb.english}
+                  </SpeakText> = {verb.portuguese}
                 </li>
               ))}
             </ul>
             
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">I'm a teacher</span>.</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu sou professor.</p>
-                  </div>
-                  <AudioButton text="I am a teacher" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">You're a nurse</span>.</p>
-                    <p className="text-sm text-gray-500 mt-1">Você é enfermeiro(a).</p>
-                  </div>
-                  <AudioButton text="You are a nurse" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">He's a doctor</span>.</p>
-                    <p className="text-sm text-gray-500 mt-1">Ele é médico.</p>
-                  </div>
-                  <AudioButton text="He is a doctor" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">She's a dentist</span>.</p>
-                    <p className="text-sm text-gray-500 mt-1">Ela é dentista.</p>
-                  </div>
-                  <AudioButton text="She is a dentist" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">It's here / there / at home</span></p>
-                    <p className="text-sm text-gray-500 mt-1">Está aqui / lá / em casa</p>
-                  </div>
-                  <AudioButton text="it is here" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">We're friends</span> / classmates / neighbors</p>
-                    <p className="text-sm text-gray-500 mt-1">Nós somos amigos / colegas de classe / vizinhos</p>
-                  </div>
-                  <AudioButton text="we are friends" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">They're at the hospital</span> / at work / at school</p>
-                    <p className="text-sm text-gray-500 mt-1">Eles estão no hospital / no trabalho / na escola</p>
-                  </div>
-                  <AudioButton text="they are at the hospital" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">It's good</span> / bad / important for your health</p>
-                    <p className="text-sm text-gray-500 mt-1">É bom / ruim / importante para sua saúde</p>
-                  </div>
-                  <AudioButton text="it is good for your health" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">I want to be</span> / He wants to be / She wants to be</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu quero ser / Ele quer ser / Ela quer ser</p>
-                  </div>
-                  <AudioButton text="I want to be" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-blue-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-blue-600">What do you want to be</span>? / What does he want to be?</p>
-                    <p className="text-sm text-gray-500 mt-1">O que você quer ser? / O que ele quer ser?</p>
-                  </div>
-                  <AudioButton text="What do you want to be" />
-                </div>
+                {verbsSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -527,117 +1031,34 @@ export default function Lesson37HealthFeelingsProfessions() {
           </div>
           
           <div className="p-8">
-            <p className="text-md text-gray-600 mb-4 italic">Click on the speaker icon to hear each word pronounced (Native voice)</p>
+            <SpeakSentence text="Click on each word to hear its correct pronunciation" className="text-md text-gray-600 mb-4 italic">
+              🎧 Click on each word to hear its correct pronunciation
+            </SpeakSentence>
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               {newWords.map((word, index) => (
-                <li key={index} className="flex items-center justify-between">
-                  <div>
-                    <span className="text-green-600 font-bold">{word.english}</span> = {word.portuguese}
-                  </div>
-                  <AudioButton text={word.english} />
+                <li key={index}>
+                  <SpeakText text={word.english} className="text-green-600 font-bold">
+                    {word.english}
+                  </SpeakText> = {word.portuguese}
                 </li>
               ))}
             </ul>
             
             {openDrills.vocabulary && (
               <div className="mt-4 bg-green-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">I need to talk to the doctor</span> / nurse / dentist</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu preciso falar com o médico / enfermeiro / dentista</p>
-                  </div>
-                  <AudioButton text="I need to talk to the doctor" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">I have to go to the hospital</span> / to the doctor / to the dentist</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu tenho que ir ao hospital / ao médico / ao dentista</p>
-                  </div>
-                  <AudioButton text="I have to go to the hospital tomorrow" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">Do you know that doctor</span>? / dentist / nurse</p>
-                    <p className="text-sm text-gray-500 mt-1">Você conhece aquele médico / dentista / enfermeira</p>
-                  </div>
-                  <AudioButton text="Do you know that doctor" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">I have an appointment at the dentist</span> / at the doctor / at the hospital</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu tenho uma consulta no dentista / no médico / no hospital</p>
-                  </div>
-                  <AudioButton text="I have an appointment at the dentist" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">Do you have an appointment today</span>? / this afternoon / tomorrow</p>
-                    <p className="text-sm text-gray-500 mt-1">Você tem um compromisso hoje? / esta tarde / amanhã</p>
-                  </div>
-                  <AudioButton text="Do you have an appointment today" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">I don't like to take medicine</span> / painkillers / pills</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu não gosto de tomar remédio / analgésicos / comprimidos</p>
-                  </div>
-                  <AudioButton text="I do not like to take medicine" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">Do you need to take a painkiller</span>? / Does she need / Does he need</p>
-                    <p className="text-sm text-gray-500 mt-1">Você precisa tomar um analgésico? / Ela / Ele</p>
-                  </div>
-                  <AudioButton text="Do you need to take a painkiller" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">I have a headache</span> / stomachache / toothache</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu estou com dor de cabeça / dor de estômago / dor de dente</p>
-                  </div>
-                  <AudioButton text="I have a headache" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">My sister has a fever</span> / sore throat / cold</p>
-                    <p className="text-sm text-gray-500 mt-1">Minha irmã está com febre / dor de garganta / resfriada</p>
-                  </div>
-                  <AudioButton text="My sister has a fever" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">He has a toothache</span> / headache / stomachache</p>
-                    <p className="text-sm text-gray-500 mt-1">Ele está com dor de dente / dor de cabeça / dor de estômago</p>
-                  </div>
-                  <AudioButton text="He has a toothache" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">Do you have a sore throat</span>? / fever / cold</p>
-                    <p className="text-sm text-gray-500 mt-1">Você está com dor de garganta? / febre / resfriado</p>
-                  </div>
-                  <AudioButton text="Do you have a sore throat" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">When do you take these pills</span>? / painkillers</p>
-                    <p className="text-sm text-gray-500 mt-1">Quando você toma estes comprimidos? / analgésicos</p>
-                  </div>
-                  <AudioButton text="When do you take these pills" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-green-200 flex justify-between items-center cursor-pointer hover:bg-green-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-green-600">I need to talk to those doctors</span> / teachers / nurses</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu preciso conversar com aqueles médicos / professores / enfermeiros</p>
-                  </div>
-                  <AudioButton text="I need to talk to those doctors" />
-                </div>
+                {vocabSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 3 - Speak Like a Native (formerly Useful Phrases) with Drill + FUTURE & PAST */}
+        {/* Section 3 - Speak Like a Native with Static Phrases + Drill */}
         <div className="bg-white border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -653,104 +1074,35 @@ export default function Lesson37HealthFeelingsProfessions() {
           </div>
           
           <div className="p-8">
-            <p className="text-md text-gray-600 mb-4 italic">Practice common phrases to talk about health and medical situations</p>
+            <SpeakSentence text="Practice common phrases to talk about health and medical situations" className="text-md text-gray-600 mb-4 italic">
+              💬 Practice common phrases to talk about health and medical situations (Includes Past Tense Action Verbs)
+            </SpeakSentence>
+            
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
-              {usefulPhrases.map((phrase, index) => (
-                <li key={index} className="flex items-center justify-between">
-                  <div>
-                    <span className="text-yellow-600 font-bold">{phrase.english}</span> = {phrase.portuguese}
-                  </div>
-                  <AudioButton text={phrase.english} />
+              {staticUsefulPhrases.map((phrase, index) => (
+                <li key={index}>
+                  <SpeakText text={phrase.english} className="text-yellow-600 font-bold">
+                    {phrase.english}
+                  </SpeakText> = {phrase.portuguese}
                 </li>
               ))}
             </ul>
-            
+
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-yellow-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-yellow-200 flex justify-between items-center cursor-pointer hover:bg-yellow-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-yellow-600">I preferred to drink tea for my stomachache</span> / headache / sore throat</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu preferi beber chá para minha dor de estômago / dor de cabeça / dor de garganta</p>
-                  </div>
-                  <AudioButton text="I prefer to drink tea for my stomachache" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-200 flex justify-between items-center cursor-pointer hover:bg-yellow-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-yellow-600">I feel better now</span>. / He feels / We feel</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu me sinto melhor agora / Ele se sente / Nós nos sentimos</p>
-                  </div>
-                  <AudioButton text="I feel better now" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-200 flex justify-between items-center cursor-pointer hover:bg-yellow-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-yellow-600">I still study in the morning</span> / in the afternoon / at night</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu ainda estudo de manhã / à tarde / à noite</p>
-                  </div>
-                  <AudioButton text="I still study in the morning" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-200 flex justify-between items-center cursor-pointer hover:bg-yellow-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-yellow-600">He still needs to go to the doctor</span> / to the dentist / to the pharmacy</p>
-                    <p className="text-sm text-gray-500 mt-1">Ele ainda precisa ir ao médico / ao dentista / à farmácia</p>
-                  </div>
-                  <AudioButton text="He still needs to go to the doctor" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-200 flex justify-between items-center cursor-pointer hover:bg-yellow-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-yellow-600">I am in pain</span>. / She is / They are</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu estou com dor / Ela está / Eles estão</p>
-                  </div>
-                  <AudioButton text="I am in pain" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-200 flex justify-between items-center cursor-pointer hover:bg-yellow-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-yellow-600">I am still in pain</span>. / She is / He is</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu ainda estou com dor / Ela / Ele</p>
-                  </div>
-                  <AudioButton text="I am still in pain" />
-                </div>
-                {/* NEW FUTURE & PAST EXAMPLES */}
-                <div className="p-4 bg-white rounded-xl border border-yellow-300 bg-yellow-50 flex justify-between items-center">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">🔮 FUTURE: <span className="text-yellow-700">I will call the doctor tomorrow morning.</span></p>
-                    <p className="text-sm text-gray-500">Eu ligarei para o médico amanhã de manhã.</p>
-                  </div>
-                  <AudioButton text="I will call the doctor tomorrow morning" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-300 bg-yellow-50 flex justify-between items-center">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">🔮 FUTURE: <span className="text-yellow-700">She will take these pills after lunch.</span></p>
-                    <p className="text-sm text-gray-500">Ela tomará estes comprimidos depois do almoço.</p>
-                  </div>
-                  <AudioButton text="She will take these pills after lunch" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-300 bg-yellow-50 flex justify-between items-center">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">❓ PAST QUESTION: <span className="text-yellow-700">Did you have a fever yesterday?</span></p>
-                    <p className="text-sm text-gray-500">Você estava com febre ontem?</p>
-                  </div>
-                  <AudioButton text="Did you have a fever yesterday" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-300 bg-yellow-50 flex justify-between items-center">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">❓ PAST QUESTION: <span className="text-yellow-700">Did he go to the hospital last week?</span></p>
-                    <p className="text-sm text-gray-500">Ele foi ao hospital semana passada?</p>
-                  </div>
-                  <AudioButton text="Did he go to the hospital last week" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-yellow-300 bg-yellow-50 flex justify-between items-center">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">📆 PAST STATEMENT: <span className="text-yellow-700">I didn't feel well yesterday, but today I'm better.</span></p>
-                    <p className="text-sm text-gray-500">Não me senti bem ontem, mas hoje estou melhor.</p>
-                  </div>
-                  <AudioButton text="I did not feel well yesterday but today I am better" />
-                </div>
+                {phrasesSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 4 - GRAMMAR with Drill + FUTURE & PAST */}
+        {/* Section 4 - GRAMMAR with Drill */}
         <div className="bg-white border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -766,191 +1118,60 @@ export default function Lesson37HealthFeelingsProfessions() {
           </div>
           
           <div className="p-8">
-            <p className="text-md text-gray-600 mb-4 italic">Complete structures with the verb to be in affirmative sentences</p>
+            <SpeakSentence text="Complete structures with the verb to be in affirmative sentences" className="text-md text-gray-600 mb-4 italic">
+              📚 Complete structures with the verb to be in affirmative sentences
+            </SpeakSentence>
             <div className="bg-purple-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
               {grammarExamples.map((example, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div>
-                    <span className="text-purple-600 font-bold">{example.english}</span> = {example.portuguese}
-                  </div>
-                  <AudioButton text={example.english} />
+                <div key={index}>
+                  <SpeakSentence text={example.english} className="text-purple-600 font-bold">
+                    {example.english}
+                  </SpeakSentence>
+                  <p className="text-sm text-gray-600">= {example.portuguese}</p>
                 </div>
               ))}
             </div>
             
             {openDrills.grammar && (
               <div className="mt-4 bg-purple-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">I'm a doctor</span> / dentist / nurse</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu sou médico / dentista / enfermeiro</p>
-                  </div>
-                  <AudioButton text="I'm a doctor" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">She is a teacher</span> / nurse / dentist</p>
-                    <p className="text-sm text-gray-500 mt-1">Ela é professora / enfermeira / dentista</p>
-                  </div>
-                  <AudioButton text="She is a teacher" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">He is a dentist</span> / teacher / doctor</p>
-                    <p className="text-sm text-gray-500 mt-1">Ele é dentista / professor / médico</p>
-                  </div>
-                  <AudioButton text="He is a dentist" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">It's early</span> / late / new</p>
-                    <p className="text-sm text-gray-500 mt-1">Está cedo / tarde / novo</p>
-                  </div>
-                  <AudioButton text="It's early" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">That class is important</span> / interesting / great</p>
-                    <p className="text-sm text-gray-500 mt-1">Aquela aula é importante / interessante / ótima</p>
-                  </div>
-                  <AudioButton text="That class is important" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">She is kind</span> / funny / beautiful</p>
-                    <p className="text-sm text-gray-500 mt-1">Ela é gentil / engraçada / bonita</p>
-                  </div>
-                  <AudioButton text="She is kind" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">He is Brazilian</span> / American / British</p>
-                    <p className="text-sm text-gray-500 mt-1">Ele é brasileiro / americano / britânico</p>
-                  </div>
-                  <AudioButton text="He is Brazilian" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">I am sick</span> / She is / They are</p>
-                    <p className="text-sm text-gray-500 mt-1">Eu estou doente / Ela está / Eles estão</p>
-                  </div>
-                  <AudioButton text="I am sick" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">They are my parents</span> / grandparents / friends</p>
-                    <p className="text-sm text-gray-500 mt-1">Eles são meus pais / avós / amigos</p>
-                  </div>
-                  <AudioButton text="They are my parents" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">These are my friends</span>. / Those are my teachers</p>
-                    <p className="text-sm text-gray-500 mt-1">Estes são meus amigos / Aqueles são meus professores</p>
-                  </div>
-                  <AudioButton text="These are my friends" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">It is good for your health</span> / important / great</p>
-                    <p className="text-sm text-gray-500 mt-1">É bom para sua saúde / importante / ótimo</p>
-                  </div>
-                  <AudioButton text="It is good for your health" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-200 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition-colors">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800"><span className="text-purple-600">We are at home</span> / at the mall / at the beach</p>
-                    <p className="text-sm text-gray-500 mt-1">Nós estamos em casa / no shopping / na praia</p>
-                  </div>
-                  <AudioButton text="We are at home" />
-                </div>
-                {/* NEW FUTURE & PAST GRAMMAR */}
-                <div className="p-4 bg-white rounded-xl border border-purple-300 bg-purple-50 flex justify-between items-center">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">🔮 FUTURE: <span className="text-purple-700">I will visit the dentist next Monday.</span></p>
-                    <p className="text-sm text-gray-500">Visitarei o dentista na próxima segunda-feira.</p>
-                  </div>
-                  <AudioButton text="I will visit the dentist next Monday" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-300 bg-purple-50 flex justify-between items-center">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">❓ PAST QUESTION: <span className="text-purple-700">Did you take your medicine this morning?</span></p>
-                    <p className="text-sm text-gray-500">Você tomou seu remédio esta manhã?</p>
-                  </div>
-                  <AudioButton text="Did you take your medicine this morning" />
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-purple-300 bg-purple-50 flex justify-between items-center">
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">📆 PAST: <span className="text-purple-700">He didn't come to the appointment because he was busy.</span></p>
-                    <p className="text-sm text-gray-500">Ele não veio à consulta porque estava ocupado.</p>
-                  </div>
-                  <AudioButton text="He did not come to the appointment because he was busy" />
-                </div>
+                {grammarSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Section 5 - Make It Yours (formerly Real Life) + FUTURE & PAST */}
+        {/* Section 5 - Make It Yours */}
         <div className="bg-white border-2 border-red-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
               <h2 className="text-2xl font-bold">🔹 Make It Yours</h2>
               <PencilIcon onClick={() => openNoteModal('Make It Yours')} />
             </div>
-            <div className="text-sm text-blue-100">
-              Replace the blue words to practice | Includes Future & Past
+            <div className="text-sm text-blue-100 text-right">
+              Verb to be in the PAST | Other verbs in the PRESENT
             </div>
           </div>
           
           <div className="p-8">
             <div className="bg-red-50 rounded-[20px] p-6">
               <div className="flex flex-col lg:flex-row gap-8">
-                {/* Sentences - 2/3 width on large */}
                 <div className="lg:w-2/3 space-y-6">
                   {realLifeSentences.map((sentence, index) => (
-                    <div key={index} className="group flex items-center justify-between">
-                      <div>
-                        <p className="text-lg font-medium">
-                          {index + 1}. {sentence.english}
-                        </p>
-                        <p className="text-sm text-gray-600">{sentence.portuguese}</p>
-                      </div>
-                      <AudioButton text={sentence.english} />
+                    <div key={index} className="group">
+                      <SpeakSentence text={sentence.english} className="text-lg font-medium">
+                        {index + 1}. {sentence.jsx}
+                      </SpeakSentence>
+                      <p className="text-sm text-gray-600 ml-6">{sentence.portuguese}</p>
                     </div>
                   ))}
-                  {/* NEW FUTURE & PAST examples for Make It Yours */}
-                  <div className="group flex items-center justify-between border-t pt-4 border-red-200">
-                    <div>
-                      <p className="text-lg font-medium">✨ FUTURE: <span className="text-red-600">I will take a painkiller for my toothache.</span></p>
-                      <p className="text-sm text-gray-600">Tomarei um analgésico para minha dor de dente.</p>
-                    </div>
-                    <AudioButton text="I will take a painkiller for my toothache" />
-                  </div>
-                  <div className="group flex items-center justify-between">
-                    <div>
-                      <p className="text-lg font-medium">❓ PAST: <span className="text-red-600">Did you feel sick after the party?</span></p>
-                      <p className="text-sm text-gray-600">Você se sentiu mal depois da festa?</p>
-                    </div>
-                    <AudioButton text="Did you feel sick after the party" />
-                  </div>
-                  <div className="group flex items-center justify-between">
-                    <div>
-                      <p className="text-lg font-medium">📆 PAST: <span className="text-red-600">He didn't go to the doctor because he felt better.</span></p>
-                      <p className="text-sm text-gray-600">Ele não foi ao médico porque se sentiu melhor.</p>
-                    </div>
-                    <AudioButton text="He did not go to the doctor because he felt better" />
-                  </div>
-                  <div className="group flex items-center justify-between">
-                    <div>
-                      <p className="text-lg font-medium">🔮 FUTURE: <span className="text-red-600">They will call us when they arrive at the hospital.</span></p>
-                      <p className="text-sm text-gray-600">Eles nos ligarão quando chegarem ao hospital.</p>
-                    </div>
-                    <AudioButton text="They will call us when they arrive at the hospital" />
-                  </div>
                 </div>
 
-                {/* Image container - 1/3 width on large */}
                 <div className="lg:w-1/3 flex flex-col gap-4">
                   <div className="bg-white rounded-2xl p-4 shadow-md h-full">
                     <div className="relative h-64 w-full">
@@ -987,7 +1208,7 @@ export default function Lesson37HealthFeelingsProfessions() {
           </div>
         </div>
 
-        {/* Section 6 - WRAP UP (formerly Check It Out) */}
+        {/* Section 6 - WRAP UP */}
         <div className="bg-white border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">

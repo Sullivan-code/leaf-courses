@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Volume2, Eye, EyeOff } from "lucide-react";
 
 type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar' | 'realLife' | 'wrapUp';
 
@@ -9,6 +10,166 @@ interface NoteModalState {
   isOpen: boolean;
   sectionTitle: string;
   noteContent: string;
+}
+
+// ============================================
+// SPEECH SYSTEM WITH AMERICAN FEMALE VOICE
+// ============================================
+
+interface SpeakTextProps {
+  text: string;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+const speakEnglish = (text: string, rate = 0.9) => {
+  if (!text || typeof window === 'undefined') return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = rate;
+  utterance.pitch = 1.0;
+  const voices = window.speechSynthesis.getVoices();
+  const americanFemaleVoices = voices.filter(voice =>
+    (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+    (voice.name.toLowerCase().includes('samantha') ||
+     voice.name.toLowerCase().includes('google us english') ||
+     voice.name.toLowerCase().includes('siri') ||
+     voice.name.toLowerCase().includes('female') ||
+     voice.name === 'Google US English' ||
+     voice.name === 'Samantha')
+  );
+  const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+  if (americanFemaleVoices.length > 0) utterance.voice = americanFemaleVoices[0];
+  else if (americanVoices.length > 0) utterance.voice = americanVoices[0];
+  window.speechSynthesis.speak(utterance);
+};
+
+const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
+  const speak = () => speakEnglish(text, 0.9);
+
+  return (
+    <button
+      onClick={speak}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
+      title="Click to hear American pronunciation"
+    >
+      {children || text}
+      <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+    </button>
+  );
+};
+
+const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
+  return (
+    <button
+      onClick={() => {
+        const speechText = text;
+        speakEnglish(speechText, 0.85);
+      }}
+      className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors text-left w-full ${className}`}
+    >
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-green-500" />
+    </button>
+  );
+};
+
+// ============================================
+// SUBSTITUTION EXERCISE COMPONENT
+// ============================================
+type OptionType = string | { label: string; replacement: string; pt?: string };
+
+interface SubstitutionExercise {
+  key: string;
+  original: string;
+  options: OptionType[];
+  currentIndex: number;
+}
+
+function SubstitutionOptions({
+  exercise,
+  onOptionClick,
+}: {
+  exercise: SubstitutionExercise;
+  onOptionClick: (key: string, index: number) => void;
+}) {
+  const [showEnglish, setShowEnglish] = useState(true);
+
+  const isObjectOption = (opt: OptionType): opt is { label: string; replacement: string; pt?: string } => {
+    return typeof opt === 'object' && opt !== null && 'label' in opt && 'replacement' in opt;
+  };
+
+  const currentOption = exercise.options[exercise.currentIndex];
+  let currentSentence: string;
+  let currentPt: string | undefined;
+  if (isObjectOption(currentOption)) {
+    currentSentence = currentOption.replacement;
+    currentPt = currentOption.pt;
+  } else {
+    currentSentence = String(currentOption);
+  }
+
+  const toggleVisibility = () => setShowEnglish(prev => !prev);
+
+  const getOptionLabel = (opt: OptionType): string => isObjectOption(opt) ? opt.label : String(opt);
+  const getOptionReplacement = (opt: OptionType): string => isObjectOption(opt) ? opt.replacement : String(opt);
+
+  return (
+    <div className="bg-white p-4 rounded-xl border border-purple-200 shadow-sm">
+      <div className="flex items-start justify-between mb-2">
+        <p className="text-blue-600 font-medium block">{exercise.original}</p>
+        <button
+          onClick={toggleVisibility}
+          className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-700 ml-2 flex-shrink-0"
+          title={showEnglish ? "Ocultar resposta em inglês" : "Mostrar resposta em inglês"}
+        >
+          {showEnglish ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
+
+      {showEnglish && (
+        <div className="mb-3 p-3 bg-blue-50 rounded-md">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-start gap-2">
+              <span className="text-blue-700 font-medium flex-shrink-0">🇺🇸</span>
+              <SpeakSentence text={currentSentence} className="text-blue-700 font-medium">
+                {currentSentence}
+              </SpeakSentence>
+            </div>
+            {currentPt && (
+              <>
+                <div className="border-t border-blue-200 my-1"></div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-600 text-sm flex-shrink-0">🇧🇷</span>
+                  <p className="text-sm text-gray-600">{currentPt}</p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        {exercise.options.map((option, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              onOptionClick(exercise.key, index);
+              speakEnglish(getOptionReplacement(option), 0.9);
+            }}
+            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+              exercise.currentIndex === index
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {getOptionLabel(option)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // Note Modal Component
@@ -84,98 +245,6 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
   );
 }
 
-// Native Browser Speech Synthesis Audio Button (Female American English voice)
-function AudioButton({ text, children }: { text: string; children?: React.ReactNode }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const speakText = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    
-    const setVoiceAndSpeak = () => {
-      const voices = window.speechSynthesis.getVoices();
-      const femaleVoice = voices.find(voice => 
-        (voice.lang === 'en-US' && (voice.name.includes('Samantha') || voice.name.includes('Google UK Female') || voice.name.includes('Female') || voice.name.includes('Ellen') || voice.name.includes('Susan')))
-      ) || voices.find(voice => voice.lang === 'en-US');
-      
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
-      }
-      window.speechSynthesis.speak(utterance);
-      utterance.onstart = () => setIsPlaying(true);
-      utterance.onend = () => setIsPlaying(false);
-      utterance.onerror = () => setIsPlaying(false);
-    };
-    
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length > 0) {
-      setVoiceAndSpeak();
-    } else {
-      window.speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
-    }
-  };
-
-  return (
-    <span onClick={speakText} className="cursor-pointer inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors">
-      {children}
-      {isPlaying && <span className="text-xs text-green-500 ml-1">🔊</span>}
-    </span>
-  );
-}
-
-// Audio click wrapper - makes any text clickable for audio
-function AudioText({ text, children }: { text: string; children: React.ReactNode }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const speakText = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    
-    const setVoiceAndSpeak = () => {
-      const voices = window.speechSynthesis.getVoices();
-      const femaleVoice = voices.find(voice => 
-        (voice.lang === 'en-US' && (voice.name.includes('Samantha') || voice.name.includes('Google UK Female') || voice.name.includes('Female') || voice.name.includes('Ellen') || voice.name.includes('Susan')))
-      ) || voices.find(voice => voice.lang === 'en-US');
-      
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
-      }
-      window.speechSynthesis.speak(utterance);
-      utterance.onstart = () => setIsPlaying(true);
-      utterance.onend = () => setIsPlaying(false);
-      utterance.onerror = () => setIsPlaying(false);
-    };
-    
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length > 0) {
-      setVoiceAndSpeak();
-    } else {
-      window.speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
-    }
-  };
-
-  return (
-    <span onClick={speakText} className="cursor-pointer hover:text-blue-800 transition-colors">
-      {children}
-      {isPlaying && <span className="text-xs text-green-500 ml-1">🔊</span>}
-    </span>
-  );
-}
-
 // Wrap Up Component - Ordinal Numbers
 function WrapUp() {
   const ordinalNumbers = [
@@ -208,9 +277,9 @@ function WrapUp() {
           {ordinalNumbers.map((ordinal) => (
             <div key={ordinal.number} className="bg-blue-50 rounded-xl p-3 text-center border border-blue-200 hover:shadow-md transition-all">
               <p className="text-2xl font-bold text-blue-600">{ordinal.number}</p>
-              <AudioText text={ordinal.english}>
-                <p className="text-lg font-medium text-blue-700 mt-1 hover:text-blue-900">{ordinal.english}</p>
-              </AudioText>
+              <SpeakText text={ordinal.english} className="text-lg font-medium text-blue-700 mt-1 hover:text-blue-900 block w-full justify-center">
+                {ordinal.english}
+              </SpeakText>
               <p className="text-sm text-blue-500">{ordinal.portuguese}</p>
             </div>
           ))}
@@ -220,27 +289,27 @@ function WrapUp() {
           <h4 className="font-bold text-blue-800 mb-2">🎯 Examples in context:</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="p-3 bg-white rounded-lg border border-blue-200">
-              <AudioText text="This is my first time at the dentist">
-                <p className="text-gray-800">"This is my <span className="font-bold text-blue-600">first</span> time at the dentist."</p>
-              </AudioText>
+              <SpeakSentence text="This is my first time at the dentist" className="text-gray-800">
+                "This is my <span className="font-bold text-blue-600">first</span> time at the dentist."
+              </SpeakSentence>
               <p className="text-sm text-gray-500">É minha primeira vez no dentista.</p>
             </div>
             <div className="p-3 bg-white rounded-lg border border-blue-200">
-              <AudioText text="He is in second place">
-                <p className="text-gray-800">"He is in <span className="font-bold text-blue-600">second</span> place."</p>
-              </AudioText>
+              <SpeakSentence text="He is in second place" className="text-gray-800">
+                "He is in <span className="font-bold text-blue-600">second</span> place."
+              </SpeakSentence>
               <p className="text-sm text-gray-500">Ele está em segundo lugar.</p>
             </div>
             <div className="p-3 bg-white rounded-lg border border-blue-200">
-              <AudioText text="This is the third time I take this medicine">
-                <p className="text-gray-800">"This is the <span className="font-bold text-blue-600">third</span> time I take this medicine."</p>
-              </AudioText>
+              <SpeakSentence text="This is the third time I take this medicine" className="text-gray-800">
+                "This is the <span className="font-bold text-blue-600">third</span> time I take this medicine."
+              </SpeakSentence>
               <p className="text-sm text-gray-500">Esta é a terceira vez que tomo este remédio.</p>
             </div>
             <div className="p-3 bg-white rounded-lg border border-blue-200">
-              <AudioText text="She lives on the fifth floor">
-                <p className="text-gray-800">"She lives on the <span className="font-bold text-blue-600">fifth</span> floor."</p>
-              </AudioText>
+              <SpeakSentence text="She lives on the fifth floor" className="text-gray-800">
+                "She lives on the <span className="font-bold text-blue-600">fifth</span> floor."
+              </SpeakSentence>
               <p className="text-sm text-gray-500">Ela mora no quinto andar.</p>
             </div>
           </div>
@@ -268,6 +337,7 @@ export default function Lesson39HealthFeelingsProfessions() {
   });
   
   const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
+  const [substitutionState, setSubstitutionState] = useState<Record<string, number>>({});
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills({
@@ -291,6 +361,18 @@ export default function Lesson39HealthFeelingsProfessions() {
     }));
   };
 
+  const handleOptionClick = (key: string, index: number) => {
+    setSubstitutionState(prev => ({ ...prev, [key]: index }));
+  };
+
+  const getCurrentIndex = (key: string) => substitutionState[key] || 0;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
+
   // Image URLs
   const mainImage = "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
   const sickImage = "https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
@@ -298,16 +380,17 @@ export default function Lesson39HealthFeelingsProfessions() {
 
   // Lesson 39 - Verbs (to be) - Extended
   const verbs = [
-  { english: "I'm not", portuguese: "eu não sou / estou" },
-  { english: "you aren't", portuguese: "você não é / está" },
-  { english: "he isn't", portuguese: "ele não é / está" },
-  { english: "she isn't", portuguese: "ela não é / está" },
-  { english: "it isn't", portuguese: "ele/ela não é / está" },
-  { english: "we aren't", portuguese: "nós não somos / estamos" },
-  { english: "they aren't", portuguese: "eles/elas não são / estão" }
+    { english: "I'm not", portuguese: "eu não sou / estou" },
+    { english: "you aren't", portuguese: "você não é / está" },
+    { english: "you aren't", portuguese: "vocês não são / estão (plural)" },
+    { english: "he isn't", portuguese: "ele não é / está" },
+    { english: "she isn't", portuguese: "ela não é / está" },
+    { english: "it isn't", portuguese: "ele/ela não é / está" },
+    { english: "we aren't", portuguese: "nós não somos / estamos" },
+    { english: "they aren't", portuguese: "eles/elas não são / estão" }
   ];
 
-  // Lesson 39 - New Words (Extended)
+  // Lesson 39 - New Words
   const newWords = [
     { english: "student", portuguese: "estudante" },
     { english: "manager", portuguese: "gerente" },
@@ -333,17 +416,6 @@ export default function Lesson39HealthFeelingsProfessions() {
     { english: "toothache", portuguese: "dor de dente" },
   ];
 
-  const usefulPhrases = [
-    { english: "What do you do?", portuguese: "O que você faz?" },
-    { english: "I'm sure", portuguese: "Eu tenho certeza" },
-    { english: "I'm worried about the exam", portuguese: "Estou preocupado com a prova" },
-    { english: "I'm worried about the project", portuguese: "Estou preocupado com o projeto" },
-    { english: "I'm worried about the reports", portuguese: "Estou preocupado com os relatórios" },
-    { english: "I'm worried about my friend", portuguese: "Estou preocupado com meu amigo" },
-    { english: "I'm worried about my classmate", portuguese: "Estou preocupado com meu colega de classe" },
-    { english: "I'm worried about you", portuguese: "Estou preocupado com você" },
-  ];
-
   const grammarExamples = [
     { english: "I'm not hungry now.", portuguese: "Eu não estou com fome agora." },
     { english: "You are not very far from here.", portuguese: "Você não está muito longe daqui." },
@@ -352,150 +424,499 @@ export default function Lesson39HealthFeelingsProfessions() {
     { english: "It is not late to go there.", portuguese: "Não é tarde para ir lá." },
     { english: "We are not lawyers, we're managers.", portuguese: "Nós não somos advogados, somos gerentes." },
     { english: "They are not upset.", portuguese: "Eles não estão chateados." },
-    { english: "I'm not a designer.", portuguese: "Eu não sou projetista." },
-    { english: "They are not at school now.", portuguese: "Eles não estão na escola agora." },
-    { english: "You are not late for class.", portuguese: "Você não está atrasado para a aula." },
-    { english: "She is not at home.", portuguese: "Ela não está em casa." },
-    { english: "We are not at church now, we're at the park.", portuguese: "Nós não estamos na igreja agora, estamos no parque." },
-    { english: "It is not an interesting story.", portuguese: "Não é uma história interessante." },
-    { english: "We are not very tired.", portuguese: "Nós não estamos muito cansados." },
-    { english: "They are not engineers.", portuguese: "Eles não são engenheiros." },
-    { english: "The exam is not very hard.", portuguese: "A prova não é muito difícil." },
-    { english: "I think French fries are not healthy.", portuguese: "Eu acho que batatas fritas não são saudáveis." },
-    { english: "They are not sad, they're happy.", portuguese: "Eles não estão tristes, estão felizes." },
-    { english: "These are not her shoes.", portuguese: "Estes não são os sapatos dela." },
   ];
 
-  // Real Life Practice Sentences (Extended)
+  // Make It Yours - to be in Past | other verbs in Present (Updated with Blue Keywords)
   const realLifeSentences = [
-    { english: "I am not a designer.", portuguese: "Eu não sou projetista." },
-    { english: "They are not at school now.", portuguese: "Eles não estão na escola agora." },
-    { english: "You are not late for class.", portuguese: "Você não está atrasado para a aula." },
-    { english: "She is not at home.", portuguese: "Ela não está em casa." },
-    { english: "We are not at church now, we're at the park.", portuguese: "Nós não estamos na igreja agora, estamos no parque." },
-    { english: "It is not an interesting story.", portuguese: "Não é uma história interessante." },
-    { english: "We are not very tired.", portuguese: "Nós não estamos muito cansados." },
-    { english: "They are not engineers.", portuguese: "Eles não são engenheiros." },
-    { english: "The exam is not very hard.", portuguese: "A prova não é muito difícil." },
-    { english: "I think French fries are not healthy.", portuguese: "Eu acho que batatas fritas não são saudáveis." },
-    { english: "They are not sad, they're happy.", portuguese: "Eles não estão tristes, estão felizes." },
-    { english: "These are not her shoes.", portuguese: "Estes não são os sapatos dela." },
-    { english: "He is not a doctor, he's a nurse.", portuguese: "Ele não é médico, é enfermeiro." },
-    { english: "She is not a teacher, she's a lawyer.", portuguese: "Ela não é professora, é advogada." },
-    { english: "I'm not hungry, I'm thirsty.", portuguese: "Eu não estou com fome, estou com sede." },
-    { english: "They are not at home, they're at work.", portuguese: "Eles não estão em casa, estão no trabalho." },
+    {
+      english: "I wasn't a designer.",
+      portuguese: "Eu não era projetista.",
+      jsx: <>I <span className="text-blue-600 font-bold">wasn't</span> a <span className="text-blue-600 font-bold">designer</span>.</>
+    },
+    {
+      english: "They are not at school now.",
+      portuguese: "Eles não estão na escola agora.",
+      jsx: <>They <span className="text-blue-600 font-bold">are not</span> at <span className="text-blue-600 font-bold">school</span> now.</>
+    },
+    {
+      english: "You weren't late for class.",
+      portuguese: "Você não estava atrasado para a aula.",
+      jsx: <>You <span className="text-blue-600 font-bold">weren't</span> <span className="text-blue-600 font-bold">late</span> for class.</>
+    },
+    {
+      english: "She is not at home.",
+      portuguese: "Ela não está em casa.",
+      jsx: <>She <span className="text-blue-600 font-bold">is not</span> at <span className="text-blue-600 font-bold">home</span>.</>
+    },
+    {
+      english: "We weren't at church yesterday, we were at the park.",
+      portuguese: "Nós não estávamos na igreja ontem, estávamos no parque.",
+      jsx: <>We <span className="text-blue-600 font-bold">weren't</span> at church yesterday, we <span className="text-blue-600 font-bold">were</span> at the <span className="text-blue-600 font-bold">park</span>.</>
+    },
+    {
+      english: "It is not an interesting story.",
+      portuguese: "Não é uma história interessante.",
+      jsx: <>It <span className="text-blue-600 font-bold">is not</span> an <span className="text-blue-600 font-bold">interesting</span> story.</>
+    },
+    {
+      english: "We are not very tired.",
+      portuguese: "Nós não estamos muito cansados.",
+      jsx: <>We <span className="text-blue-600 font-bold">are not</span> very <span className="text-blue-600 font-bold">tired</span>.</>
+    },
+    {
+      english: "They aren't engineers.",
+      portuguese: "Eles não são engenheiros.",
+      jsx: <>They <span className="text-blue-600 font-bold">aren't</span> <span className="text-blue-600 font-bold">engineers</span>.</>
+    },
+    {
+      english: "The exam wasn't very hard.",
+      portuguese: "A prova não era muito difícil.",
+      jsx: <>The exam <span className="text-blue-600 font-bold">wasn't</span> very <span className="text-blue-600 font-bold">hard</span>.</>
+    },
+    {
+      english: "I think French fries are not healthy.",
+      portuguese: "Eu acho que batatas fritas não são saudáveis.",
+      jsx: <>I think French fries <span className="text-blue-600 font-bold">are not</span> <span className="text-blue-600 font-bold">healthy</span>.</>
+    },
+    {
+      english: "They were not sad, they were happy.",
+      portuguese: "Eles não estavam tristes, estavam felizes.",
+      jsx: <>They <span className="text-blue-600 font-bold">were not</span> <span className="text-blue-600 font-bold">sad</span>, they <span className="text-blue-600 font-bold">were</span> <span className="text-blue-600 font-bold">happy</span>.</>
+    },
+    {
+      english: "These are not her shoes.",
+      portuguese: "Estes não são os sapatos dela.",
+      jsx: <>These <span className="text-blue-600 font-bold">are not</span> her <span className="text-blue-600 font-bold">shoes</span>.</>
+    },
+    {
+      english: "He is not a doctor, he is a nurse.",
+      portuguese: "Ele não é médico, é enfermeiro.",
+      jsx: <>He <span className="text-blue-600 font-bold">is not</span> a <span className="text-blue-600 font-bold">doctor</span>, he <span className="text-blue-600 font-bold">is</span> a <span className="text-blue-600 font-bold">nurse</span>.</>
+    },
+    {
+      english: "She was not a teacher, she was a lawyer.",
+      portuguese: "Ela não era professora, era advogada.",
+      jsx: <>She <span className="text-blue-600 font-bold">was not</span> a <span className="text-blue-600 font-bold">teacher</span>, she <span className="text-blue-600 font-bold">was</span> a <span className="text-blue-600 font-bold">lawyer</span>.</>
+    },
+    {
+      english: "I am not hungry, I am thirsty.",
+      portuguese: "Eu não estou com fome, estou com sede.",
+      jsx: <>I <span className="text-blue-600 font-bold">am not</span> <span className="text-blue-600 font-bold">hungry</span>, I <span className="text-blue-600 font-bold">am</span> <span className="text-blue-600 font-bold">thirsty</span>.</>
+    },
+    {
+      english: "They aren't at home, they are at work.",
+      portuguese: "Eles não estão em casa, estão no trabalho.",
+      jsx: <>They <span className="text-blue-600 font-bold">aren't</span> at home, they <span className="text-blue-600 font-bold">are</span> at <span className="text-blue-600 font-bold">work</span>.</>
+    },
   ];
 
-  // Drill exercise data for each section
-  const verbDrills = [
-    { english: "I am a doctor", portuguese: "Eu sou médico" },
-    { english: "I am not a doctor", portuguese: "Eu não sou médico" },
-    { english: "I am a dentist", portuguese: "Eu sou dentista" },
-    { english: "I am in Brazil", portuguese: "Eu estou no Brasil" },
-    { english: "I am not in Brazil", portuguese: "Eu não estou no Brasil" },
-    { english: "I am in Italy", portuguese: "Eu estou na Itália" },
-    { english: "You are not sick", portuguese: "Você não está doente" },
-    { english: "He is not sick", portuguese: "Ele não está doente" },
-    { english: "She is not sick", portuguese: "Ela não está doente" },
-    { english: "He is not a dentist", portuguese: "Ele não é dentista" },
-    { english: "He is a teacher", portuguese: "Ele é professor" },
-    { english: "He is a nurse", portuguese: "Ele é enfermeiro" },
-    { english: "She is not here", portuguese: "Ela não está aqui" },
-    { english: "She is there", portuguese: "Ela está lá" },
-    { english: "She is at school", portuguese: "Ela está na escola" },
-    { english: "It is not easy", portuguese: "Não é fácil" },
-    { english: "It is difficult", portuguese: "É difícil" },
-    { english: "It is boring", portuguese: "É chato" },
-    { english: "We are not late", portuguese: "Nós não estamos atrasados" },
-    { english: "They are not late", portuguese: "Eles não estão atrasados" },
-    { english: "You are not late", portuguese: "Vocês não estão atrasados" },
-    { english: "They are not my cousins", portuguese: "Eles não são meus primos" },
-    { english: "They are my relatives", portuguese: "Eles são meus parentes" },
-    { english: "They are my neighbors", portuguese: "Eles são meus vizinhos" },
-    { english: "They are not at home", portuguese: "Eles não estão em casa" },
-    { english: "They are at the cinema", portuguese: "Eles estão no cinema" },
-    { english: "They are at the train station", portuguese: "Eles estão na estação de trem" },
-    { english: "What do you do?", portuguese: "O que você faz?" },
-    { english: "What does she do?", portuguese: "O que ela faz?" },
-    { english: "What does he do?", portuguese: "O que ele faz?" },
-    { english: "I'm sure", portuguese: "Eu tenho certeza" },
-    { english: "She's sure", portuguese: "Ela tem certeza" },
-    { english: "We're sure", portuguese: "Nós temos certeza" },
-    { english: "I'm worried about the exam", portuguese: "Estou preocupado com a prova" },
-    { english: "I'm worried about the project", portuguese: "Estou preocupado com o projeto" },
-    { english: "I'm worried about the reports", portuguese: "Estou preocupado com os relatórios" },
+  // ==========================================
+  // SUBSTITUTION DRILLS DATA (IMAGES MAPPED)
+  // ==========================================
+
+  const verbsSubstitution: SubstitutionExercise[] = [
+    {
+      key: "verb-1",
+      original: "Eu sou médico. / não sou / dentista",
+      options: [
+        { label: "Eu sou", replacement: "I am a doctor.", pt: "Eu sou médico." },
+        { label: "Eu não sou", replacement: "I am not a doctor.", pt: "Eu não sou médico." },
+        { label: "dentista", replacement: "I am not a dentist.", pt: "Eu não sou dentista." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-2",
+      original: "Eu estou no Brasil. / não estou / na Itália",
+      options: [
+        { label: "Brasil", replacement: "I am in Brazil.", pt: "Eu estou no Brasil." },
+        { label: "não estou", replacement: "I am not in Brazil.", pt: "Eu não estou no Brasil." },
+        { label: "Itália", replacement: "I am not in Italy.", pt: "Eu não estou na Itália." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-3",
+      original: "Você não está doente. / Ele / Ela",
+      options: [
+        { label: "Você", replacement: "You are not sick.", pt: "Você não está doente." },
+        { label: "Ele", replacement: "He is not sick.", pt: "Ele não está doente." },
+        { label: "Ela", replacement: "She is not sick.", pt: "Ela não está doente." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-4",
+      original: "Ele não é dentista. / professor / enfermeiro",
+      options: [
+        { label: "dentista", replacement: "He is not a dentist.", pt: "Ele não é dentista." },
+        { label: "professor", replacement: "He is not a teacher.", pt: "Ele não é professor." },
+        { label: "enfermeiro", replacement: "He is not a nurse.", pt: "Ele não é enfermeiro." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-5",
+      original: "Ela não está aqui. / lá / na escola",
+      options: [
+        { label: "aqui", replacement: "She is not here.", pt: "Ela não está aqui." },
+        { label: "lá", replacement: "She is not there.", pt: "Ela não está lá." },
+        { label: "na escola", replacement: "She is not at school.", pt: "Ela não está na escola." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-6",
+      original: "Não é fácil. / difícil / chato",
+      options: [
+        { label: "fácil", replacement: "It is not easy.", pt: "Não é fácil." },
+        { label: "difícil", replacement: "It is not difficult.", pt: "Não é difícil." },
+        { label: "chato", replacement: "It is not boring.", pt: "Não é chato." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-7",
+      original: "Nós não estamos atrasados. / Eles não estão / Vocês não estão",
+      options: [
+        { label: "Nós", replacement: "We are not late.", pt: "Nós não estamos atrasados." },
+        { label: "Eles", replacement: "They are not late.", pt: "Eles não estão atrasados." },
+        { label: "Vocês", replacement: "You are not late.", pt: "Vocês não estão atrasados." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-8",
+      original: "Eles não são meus primos. / parentes / vizinhos",
+      options: [
+        { label: "primos", replacement: "They are not my cousins.", pt: "Eles não são meus primos." },
+        { label: "parentes", replacement: "They are not my relatives.", pt: "Eles não são meus parentes." },
+        { label: "vizinhos", replacement: "They are not my neighbors.", pt: "Eles não são meus vizinhos." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-9",
+      original: "Elas não estão em casa. / no cinema / na estação de trem",
+      options: [
+        { label: "em casa", replacement: "They are not at home.", pt: "Elas não estão em casa." },
+        { label: "no cinema", replacement: "They are not at the movies.", pt: "Elas não estão no cinema." },
+        { label: "na estação", replacement: "They are not at the train station.", pt: "Elas não estão na estação de trem." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-10",
+      original: "Meu irmão é advogado. / estudante / vendedor",
+      options: [
+        { label: "advogado", replacement: "My brother is a lawyer.", pt: "Meu irmão é advogado." },
+        { label: "estudante", replacement: "My brother is a student.", pt: "Meu irmão é estudante." },
+        { label: "vendedor", replacement: "My brother is a sales clerk.", pt: "Meu irmão é vendedor." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-11",
+      original: "Ela não é projetista. / gerente / enfermeira",
+      options: [
+        { label: "projetista", replacement: "She is not a designer.", pt: "Ela não é projetista." },
+        { label: "gerente", replacement: "She is not a manager.", pt: "Ela não é gerente." },
+        { label: "enfermeira", replacement: "She is not a nurse.", pt: "Ela não é enfermeira." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-12",
+      original: "He is an engineer. / Ela é engenheira / Eu sou engenheiro",
+      options: [
+        { label: "Ele", replacement: "He is an engineer.", pt: "Ele é engenheiro." },
+        { label: "Ela", replacement: "She is an engineer.", pt: "Ela é engenheira." },
+        { label: "Eu", replacement: "I am an engineer.", pt: "Eu sou engenheiro." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-13",
+      original: "Nós estamos cansados. / ocupados / chateados",
+      options: [
+        { label: "cansados", replacement: "We are tired.", pt: "Nós estamos cansados." },
+        { label: "ocupados", replacement: "We are busy.", pt: "Nós estamos ocupados." },
+        { label: "chateados", replacement: "We are upset.", pt: "Nós estamos chateados." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-14",
+      original: "Ele não está triste. / preocupado / ocupado",
+      options: [
+        { label: "triste", replacement: "He is not sad.", pt: "Ele não está triste." },
+        { label: "preocupado", replacement: "He is not worried.", pt: "Ele não está preocupado." },
+        { label: "ocupado", replacement: "He is not busy.", pt: "Ele não está ocupado." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-15",
+      original: "Seus filhos são bonitos. / espertos / gentis",
+      options: [
+        { label: "bonitos", replacement: "Your children are pretty.", pt: "Seus filhos são bonitos." },
+        { label: "espertos", replacement: "Your children are smart.", pt: "Seus filhos são espertos." },
+        { label: "gentis", replacement: "Your children are kind.", pt: "Seus filhos são gentis." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-16",
+      original: "We are very happy. / Nós estamos muito cansados / ocupados",
+      options: [
+        { label: "felizes", replacement: "We are very happy.", pt: "Nós estamos muito felizes." },
+        { label: "cansados", replacement: "We are very tired.", pt: "Nós estamos muito cansados." },
+        { label: "ocupados", replacement: "We are very busy.", pt: "Nós estamos muito ocupados." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-17",
+      original: "Eu estou com fome. / Ela está / Nós estamos",
+      options: [
+        { label: "Eu", replacement: "I am hungry.", pt: "Eu estou com fome." },
+        { label: "Ela", replacement: "She is hungry.", pt: "Ela está com fome." },
+        { label: "Nós", replacement: "We are hungry.", pt: "Nós estamos com fome." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-18",
+      original: "Eu não estou com sede. / Ele não está / Eles não estão",
+      options: [
+        { label: "Eu", replacement: "I am not thirsty.", pt: "Eu não estou com sede." },
+        { label: "Ele", replacement: "He is not thirsty.", pt: "Ele não está com sede." },
+        { label: "Eles", replacement: "They are not thirsty.", pt: "Eles não estão com sede." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "verb-19",
+      original: "Eu conheço aqueles alunos. / vendedores / advogados",
+      options: [
+        { label: "alunos", replacement: "I know those students.", pt: "Eu conheço aqueles alunos." },
+        { label: "vendedores", replacement: "I know those sales clerks.", pt: "Eu conheço aqueles vendedores." },
+        { label: "advogados", replacement: "I know those lawyers.", pt: "Eu conheço aqueles advogados." },
+      ],
+      currentIndex: 0,
+    },
   ];
 
-  const vocabularyDrills = [
-    { english: "My brother is a lawyer", portuguese: "Meu irmão é advogado" },
-    { english: "My brother is a student", portuguese: "Meu irmão é estudante" },
-    { english: "My brother is a sales clerk", portuguese: "Meu irmão é vendedor" },
-    { english: "She is not a designer", portuguese: "Ela não é projetista" },
-    { english: "She is not a manager", portuguese: "Ela não é gerente" },
-    { english: "She is not a nurse", portuguese: "Ela não é enfermeira" },
-    { english: "He is an engineer", portuguese: "Ele é engenheiro" },
-    { english: "She is an engineer", portuguese: "Ela é engenheira" },
-    { english: "I am an engineer", portuguese: "Eu sou engenheiro" },
-    { english: "We are tired", portuguese: "Nós estamos cansados" },
-    { english: "We are busy", portuguese: "Nós estamos ocupados" },
-    { english: "We are upset", portuguese: "Nós estamos chateados" },
-    { english: "He is not sad", portuguese: "Ele não está triste" },
-    { english: "He is not worried", portuguese: "Ele não está preocupado" },
-    { english: "He is not busy", portuguese: "Ele não está ocupado" },
-    { english: "Your children are pretty", portuguese: "Seus filhos são bonitos" },
-    { english: "Your children are smart", portuguese: "Seus filhos são espertos" },
-    { english: "Your children are kind", portuguese: "Seus filhos são gentis" },
-    { english: "We are very happy", portuguese: "Nós estamos muito felizes" },
-    { english: "We are very tired", portuguese: "Nós estamos muito cansados" },
-    { english: "We are very busy", portuguese: "Nós estamos muito ocupados" },
-    { english: "I am hungry", portuguese: "Eu estou com fome" },
-    { english: "She is hungry", portuguese: "Ela está com fome" },
-    { english: "We are hungry", portuguese: "Nós estamos com fome" },
-    { english: "I am not thirsty", portuguese: "Eu não estou com sede" },
-    { english: "He is not thirsty", portuguese: "Ele não está com sede" },
-    { english: "They are not thirsty", portuguese: "Eles não estão com sede" },
-    { english: "I know those students", portuguese: "Eu conheço aqueles alunos" },
-    { english: "I know those sales clerks", portuguese: "Eu conheço aqueles vendedores" },
-    { english: "I know those lawyers", portuguese: "Eu conheço aqueles advogados" },
-    { english: "I have a headache", portuguese: "Estou com dor de cabeça" },
-    { english: "I have a stomachache", portuguese: "Estou com dor de estômago" },
-    { english: "I have a toothache", portuguese: "Estou com dor de dente" },
-    { english: "She is healthy", portuguese: "Ela é saudável" },
-    { english: "She is sick", portuguese: "Ela está doente" },
-    { english: "She is tired", portuguese: "Ela está cansada" },
+  const vocabSubstitution: SubstitutionExercise[] = [
+    {
+      key: "vocab-1",
+      original: "Eu sou estudante. / gerente / advogado",
+      options: [
+        { label: "estudante", replacement: "I am a student.", pt: "Eu sou estudante." },
+        { label: "gerente", replacement: "I am a manager.", pt: "Eu sou gerente." },
+        { label: "advogado", replacement: "I am a lawyer.", pt: "Eu sou advogado." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-2",
+      original: "Ela está com fome. / com sede / cansada",
+      options: [
+        { label: "com fome", replacement: "She is hungry.", pt: "Ela está com fome." },
+        { label: "com sede", replacement: "She is thirsty.", pt: "Ela está com sede." },
+        { label: "cansada", replacement: "She is tired.", pt: "Ela está cansada." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-3",
+      original: "Ele não está triste. / preocupado / chateado",
+      options: [
+        { label: "triste", replacement: "He is not sad.", pt: "Ele não está triste." },
+        { label: "preocupado", replacement: "He is not worried.", pt: "Ele não está preocupado." },
+        { label: "chateado", replacement: "He is not upset.", pt: "Ele não está chateado." },
+      ],
+      currentIndex: 0,
+    },
   ];
 
-  const grammarDrills = [
-    { english: "I am not busy this week", portuguese: "Eu não estou ocupado esta semana" },
-    { english: "I am not busy tomorrow", portuguese: "Eu não estou ocupado amanhã" },
-    { english: "I am not busy next week", portuguese: "Eu não estou ocupado na próxima semana" },
-    { english: "He is not my brother", portuguese: "Ele não é meu irmão" },
-    { english: "He is not my father", portuguese: "Ele não é meu pai" },
-    { english: "He is not my grandfather", portuguese: "Ele não é meu avô" },
-    { english: "We are not tired", portuguese: "Nós não estamos cansados" },
-    { english: "We are not sad", portuguese: "Nós não estamos tristes" },
-    { english: "We are not worried", portuguese: "Nós não estamos preocupados" },
-    { english: "They are not upset", portuguese: "Elas não estão chateadas" },
-    { english: "They are not hungry", portuguese: "Elas não estão com fome" },
-    { english: "They are not thirsty", portuguese: "Elas não estão com sede" },
-    { english: "It is not very healthy", portuguese: "Não é muito saudável" },
-    { english: "It is not very good", portuguese: "Não é muito bom" },
-    { english: "It is not very interesting", portuguese: "Não é muito interessante" },
-    { english: "My sister is not a designer", portuguese: "Minha irmã não é projetista" },
-    { english: "My sister is not a manager", portuguese: "Minha irmã não é gerente" },
-    { english: "My sister is not a sales clerk", portuguese: "Minha irmã não é vendedora" },
-    { english: "The book is not boring", portuguese: "O livro não é chato" },
-    { english: "The book is not funny", portuguese: "O livro não é engraçado" },
-    { english: "The book is not bad", portuguese: "O livro não é ruim" },
-    { english: "My boyfriend is not sick", portuguese: "Meu namorado não está doente" },
-    { english: "My girlfriend is not sick", portuguese: "Minha namorada não está doente" },
-    { english: "My husband is not sick", portuguese: "Meu marido não está doente" },
-    { english: "My family is not in Germany", portuguese: "Minha família não está na Alemanha" },
-    { english: "My family is not in France", portuguese: "Minha família não está na França" },
-    { english: "My family is not in the United States", portuguese: "Minha família não está nos Estados Unidos" },
-    { english: "We think he is healthy", portuguese: "Nós achamos que ele está saudável" },
-    { english: "We think he is happy", portuguese: "Nós achamos que ele está feliz" },
-    { english: "We think he is tired", portuguese: "Nós achamos que ele está cansado" },
+  const phrasesSubstitution: SubstitutionExercise[] = [
+    {
+      key: "phrase-1",
+      original: "O que você faz? / Ele / Ela",
+      options: [
+        { label: "você", replacement: "What do you do?", pt: "O que você faz?" },
+        { label: "Ele", replacement: "What does he do?", pt: "O que ele faz?" },
+        { label: "Ela", replacement: "What does she do?", pt: "O que ela faz?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-2",
+      original: "Eu tenho certeza! / Ela tem certeza / Nós temos certeza",
+      options: [
+        { label: "Eu", replacement: "I'm sure!", pt: "Eu tenho certeza!" },
+        { label: "Ela", replacement: "She's sure!", pt: "Ela tem certeza!" },
+        { label: "Nós", replacement: "We're sure!", pt: "Nós temos certeza!" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-3",
+      original: "Eu estou preocupado com a prova. / com o projeto / com os relatórios",
+      options: [
+        { label: "prova", replacement: "I'm worried about the exam.", pt: "Eu estou preocupado com a prova." },
+        { label: "projeto", replacement: "I'm worried about the project.", pt: "Eu estou preocupado com o projeto." },
+        { label: "relatórios", replacement: "I'm worried about the reports.", pt: "Eu estou preocupado com os relatórios." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-4",
+      original: "Eu estou preocupado com meu amigo. / com meu colega / com você",
+      options: [
+        { label: "amigo", replacement: "I'm worried about my friend.", pt: "Eu estou preocupado com meu amigo." },
+        { label: "colega", replacement: "I'm worried about my classmate.", pt: "Eu estou preocupado com meu colega." },
+        { label: "você", replacement: "I'm worried about you.", pt: "Eu estou preocupado com você." },
+      ],
+      currentIndex: 0,
+    },
+    // Passado com "DO" - Exercício 1
+    {
+      key: "phrase-5-past",
+      original: "Você fez sua lição de casa ontem? / Ele / Ela",
+      options: [
+        { label: "Você", replacement: "Did you do your homework yesterday?", pt: "Você fez sua lição de casa ontem?" },
+        { label: "Ele", replacement: "Did he do his homework yesterday?", pt: "Ele fez a lição de casa dele ontem?" },
+        { label: "Ela", replacement: "Did she do her homework yesterday?", pt: "Ela fez a lição de casa dela ontem?" },
+      ],
+      currentIndex: 0,
+    },
+    // Passado com "DO" - Exercício 2
+    {
+      key: "phrase-6-past",
+      original: "Eu não fiz o projeto na semana passada. / Ela / Nós",
+      options: [
+        { label: "Eu", replacement: "I didn't do the project last week.", pt: "Eu não fiz o projeto na semana passada." },
+        { label: "Ela", replacement: "She didn't do the project last week.", pt: "Ela não fez o projeto na semana passada." },
+        { label: "Nós", replacement: "We didn't do the project last week.", pt: "Nós não fizemos o projeto na semana passada." },
+      ],
+      currentIndex: 0,
+    },
+    // Passado com "DO" - Exercício 3
+    {
+      key: "phrase-7-past",
+      original: "Eles fizeram os exercícios ontem? / Vocês / Nós",
+      options: [
+        { label: "Eles", replacement: "Did they do the exercises yesterday?", pt: "Eles fizeram os exercícios ontem?" },
+        { label: "Vocês", replacement: "Did you do the exercises yesterday?", pt: "Vocês fizeram os exercícios ontem?" },
+        { label: "Nós", replacement: "Did we do the exercises yesterday?", pt: "Nós fizemos os exercícios ontem?" },
+      ],
+      currentIndex: 0,
+    }
+  ];
+
+  const grammarSubstitution: SubstitutionExercise[] = [
+    {
+      key: "grammar-1",
+      original: "Eu não estou ocupado esta semana. / amanhã / na próxima semana",
+      options: [
+        { label: "esta semana", replacement: "I am not busy this week.", pt: "Eu não estou ocupado esta semana." },
+        { label: "amanhã", replacement: "I am not busy tomorrow.", pt: "Eu não estou ocupado amanhã." },
+        { label: "próxima semana", replacement: "I am not busy next week.", pt: "Eu não estou ocupado na próxima semana." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-2",
+      original: "Ele não é meu irmão. / pai / avô",
+      options: [
+        { label: "irmão", replacement: "He is not my brother.", pt: "Ele não é meu irmão." },
+        { label: "pai", replacement: "He is not my father.", pt: "Ele não é meu pai." },
+        { label: "avô", replacement: "He is not my grandfather.", pt: "Ele não é meu avô." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-3",
+      original: "Nós não estamos cansados. / tristes / preocupados",
+      options: [
+        { label: "cansados", replacement: "We are not tired.", pt: "Nós não estamos cansados." },
+        { label: "tristes", replacement: "We are not sad.", pt: "Nós não estamos tristes." },
+        { label: "preocupados", replacement: "We are not worried.", pt: "Nós não estamos preocupados." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-4",
+      original: "Elas não estão chateadas. / com fome / com sede",
+      options: [
+        { label: "chateadas", replacement: "They are not upset.", pt: "Elas não estão chateadas." },
+        { label: "com fome", replacement: "They are not hungry.", pt: "Elas não estão com fome." },
+        { label: "com sede", replacement: "They are not thirsty.", pt: "Elas não estão com sede." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-5",
+      original: "Não é muito saudável. / bom / interessante",
+      options: [
+        { label: "saudável", replacement: "It is not very healthy.", pt: "Não é muito saudável." },
+        { label: "bom", replacement: "It is not very good.", pt: "Não é muito bom." },
+        { label: "interessante", replacement: "It is not very interesting.", pt: "Não é muito interessante." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-6",
+      original: "Minha irmã não é projetista. / gerente / vendedora",
+      options: [
+        { label: "projetista", replacement: "My sister is not a designer.", pt: "Minha irmã não é projetista." },
+        { label: "gerente", replacement: "My sister is not a manager.", pt: "Minha irmã não é gerente." },
+        { label: "vendedora", replacement: "My sister is not a sales clerk.", pt: "Minha irmã não é vendedora." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-7",
+      original: "O livro não é chato. / engraçado / ruim",
+      options: [
+        { label: "chato", replacement: "The book is not boring.", pt: "O livro não é chato." },
+        { label: "engraçado", replacement: "The book is not funny.", pt: "O livro não é engraçado." },
+        { label: "ruim", replacement: "The book is not bad.", pt: "O livro não é ruim." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-8",
+      original: "Meu namorado não está doente. / Minha namorada / Meu marido",
+      options: [
+        { label: "namorado", replacement: "My boyfriend is not sick.", pt: "Meu namorado não está doente." },
+        { label: "namorada", replacement: "My girlfriend is not sick.", pt: "Minha namorada não está doente." },
+        { label: "marido", replacement: "My husband is not sick.", pt: "Meu marido não está doente." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-9",
+      original: "Minha família não está na Alemanha. / na França / nos Estados Unidos",
+      options: [
+        { label: "Alemanha", replacement: "My family is not in Germany.", pt: "Minha família não está na Alemanha." },
+        { label: "França", replacement: "My family is not in France.", pt: "Minha família não está na França." },
+        { label: "Estados Unidos", replacement: "My family is not in the United States.", pt: "Minha família não está nos Estados Unidos." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-10",
+      original: "Nós achamos que ele está saudável. / feliz / cansado",
+      options: [
+        { label: "saudável", replacement: "We think he is healthy.", pt: "Nós achamos que ele está saudável." },
+        { label: "feliz", replacement: "We think he is happy.", pt: "Nós achamos que ele está feliz." },
+        { label: "cansado", replacement: "We think he is tired.", pt: "Nós achamos que ele está cansado." },
+      ],
+      currentIndex: 0,
+    },
   ];
 
   return (
@@ -511,7 +932,7 @@ export default function Lesson39HealthFeelingsProfessions() {
     >
       <div className="max-w-5xl mx-auto bg-[#f0f8ff] bg-opacity-95 rounded-[40px] p-10 shadow-lg">
         
-        {/* Instagram Video Embed - Large vertical space */}
+        {/* Instagram Video Embed */}
         <div className="mb-16 flex justify-center">
           <div className="w-full max-w-3xl rounded-2xl overflow-hidden shadow-xl border-2 border-blue-300 bg-white p-4">
             <div className="flex items-center justify-between mb-3 px-2">
@@ -548,9 +969,9 @@ export default function Lesson39HealthFeelingsProfessions() {
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
             🏥 Lesson 39 - Health, Feelings & Professions
           </h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Learn to talk about health issues, feelings, professions, and use the verb "to be" in negative and affirmative forms. 👨‍⚕️🤒💊
-          </p>
+          <SpeakSentence text="Learn to talk about health issues, feelings, professions, and use the verb to be in negative and affirmative forms." className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
+            👨‍⚕️🤒💊 Learn to talk about health issues, feelings, professions, and use the verb "to be" in negative and affirmative forms.
+          </SpeakSentence>
           <div className="w-64 h-64 mx-auto">
             <img
               src={mainImage}
@@ -578,31 +999,27 @@ export default function Lesson39HealthFeelingsProfessions() {
           </div>
           
           <div className="p-8">
-            <p className="text-md text-gray-600 mb-4 italic">Click on any English text to hear the pronunciation (Native American English voice)</p>
+            <SpeakSentence text="Click on the verbs to hear the pronunciation and practice their forms" className="text-md text-gray-600 mb-4 italic">
+              🎧 Click on the verbs to hear the pronunciation and practice their forms
+            </SpeakSentence>
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               {verbs.map((verb, index) => (
-                <li key={index} className="flex items-center justify-between">
-                  <div>
-                    <AudioText text={verb.english}>
-                      <span className="text-blue-600 font-bold cursor-pointer">{verb.english}</span>
-                    </AudioText>
-                    <span className="text-gray-600"> = {verb.portuguese}</span>
-                  </div>
+                <li key={index}>
+                  <SpeakText text={verb.english} className="text-blue-600 font-bold">
+                    {verb.english}
+                  </SpeakText> = {verb.portuguese}
                 </li>
               ))}
             </ul>
             
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                {verbDrills.map((drill, index) => (
-                  <div key={index} className="p-4 bg-white rounded-xl border border-purple-200 hover:bg-blue-50 transition-colors">
-                    <div>
-                      <AudioText text={drill.english}>
-                        <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 cursor-pointer">{drill.english}</span></p>
-                      </AudioText>
-                      <p className="text-sm text-gray-500 mt-1">{drill.portuguese}</p>
-                    </div>
-                  </div>
+                {verbsSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
                 ))}
               </div>
             )}
@@ -625,31 +1042,27 @@ export default function Lesson39HealthFeelingsProfessions() {
           </div>
           
           <div className="p-8">
-            <p className="text-md text-gray-600 mb-4 italic">Click on any English word to hear it pronounced (Native voice)</p>
+            <SpeakSentence text="Click on each word to hear its correct pronunciation" className="text-md text-gray-600 mb-4 italic">
+              🎧 Click on each word to hear its correct pronunciation
+            </SpeakSentence>
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               {newWords.map((word, index) => (
-                <li key={index} className="flex items-center justify-between">
-                  <div>
-                    <AudioText text={word.english}>
-                      <span className="text-blue-600 font-bold cursor-pointer">{word.english}</span>
-                    </AudioText>
-                    <span className="text-gray-600"> = {word.portuguese}</span>
-                  </div>
+                <li key={index}>
+                  <SpeakText text={word.english} className="text-blue-600 font-bold">
+                    {word.english}
+                  </SpeakText> = {word.portuguese}
                 </li>
               ))}
             </ul>
             
             {openDrills.vocabulary && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                {vocabularyDrills.map((drill, index) => (
-                  <div key={index} className="p-4 bg-white rounded-xl border border-blue-200 hover:bg-blue-50 transition-colors">
-                    <div>
-                      <AudioText text={drill.english}>
-                        <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 cursor-pointer">{drill.english}</span></p>
-                      </AudioText>
-                      <p className="text-sm text-gray-500 mt-1">{drill.portuguese}</p>
-                    </div>
-                  </div>
+                {vocabSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
                 ))}
               </div>
             )}
@@ -672,54 +1085,38 @@ export default function Lesson39HealthFeelingsProfessions() {
           </div>
           
           <div className="p-8">
-            <p className="text-md text-gray-600 mb-4 italic">Click on any English phrase to hear it spoken</p>
-            <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
-              {usefulPhrases.map((phrase, index) => (
-                <li key={index} className="flex items-center justify-between">
-                  <div>
-                    <AudioText text={phrase.english}>
-                      <span className="text-blue-600 font-bold cursor-pointer">{phrase.english}</span>
-                    </AudioText>
-                    <span className="text-gray-600"> = {phrase.portuguese}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <SpeakSentence text="Practice common phrases and past tense questions" className="text-md text-gray-600 mb-4 italic">
+              💬 Practice common phrases and past tense questions with "Do"
+            </SpeakSentence>
             
+            {/* Lista fixa com as frases exatas da imagem */}
+            <ul className="list-disc pl-6 text-gray-600 space-y-3 mb-6">
+              <li>
+                <SpeakText text="What do you do?" className="text-blue-600 font-bold">
+                  What do you do?
+                </SpeakText> — O que você faz?
+              </li>
+              <li>
+                <SpeakText text="I'm sure!" className="text-blue-600 font-bold">
+                  I'm sure!
+                </SpeakText> — Eu tenho certeza!
+              </li>
+              <li>
+                <SpeakText text="I'm worried about the exam." className="text-blue-600 font-bold">
+                  I'm worried about the exam.
+                </SpeakText> — Eu estou preocupado com a prova.
+              </li>
+            </ul>
+
             {openDrills.usefulPhrases && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                <div className="p-4 bg-white rounded-xl border border-blue-200 hover:bg-blue-50 transition-colors">
-                  <div>
-                    <AudioText text="What do you do?">
-                      <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 cursor-pointer">What do you do?</span> / What does he do? / What does she do?</p>
-                    </AudioText>
-                    <p className="text-sm text-gray-500 mt-1">O que você faz? / O que ele faz? / O que ela faz?</p>
-                  </div>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200 hover:bg-blue-50 transition-colors">
-                  <div>
-                    <AudioText text="I'm sure">
-                      <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 cursor-pointer">I'm sure</span> / She's sure / We're sure</p>
-                    </AudioText>
-                    <p className="text-sm text-gray-500 mt-1">Eu tenho certeza / Ela tem certeza / Nós temos certeza</p>
-                  </div>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200 hover:bg-blue-50 transition-colors">
-                  <div>
-                    <AudioText text="I'm worried about the exam">
-                      <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 cursor-pointer">I'm worried about the exam</span> / the project / the reports</p>
-                    </AudioText>
-                    <p className="text-sm text-gray-500 mt-1">Estou preocupado com a prova / o projeto / os relatórios</p>
-                  </div>
-                </div>
-                <div className="p-4 bg-white rounded-xl border border-blue-200 hover:bg-blue-50 transition-colors">
-                  <div>
-                    <AudioText text="I'm worried about my friend">
-                      <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 cursor-pointer">I'm worried about my friend</span> / my classmate / you</p>
-                    </AudioText>
-                    <p className="text-sm text-gray-500 mt-1">Estou preocupado com meu amigo / meu colega / você</p>
-                  </div>
-                </div>
+                {phrasesSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -741,31 +1138,28 @@ export default function Lesson39HealthFeelingsProfessions() {
           </div>
           
           <div className="p-8">
-            <p className="text-md text-gray-600 mb-4 italic">Click on any English sentence to hear it spoken</p>
+            <SpeakSentence text="Complete structures with the verb to be in negative sentences" className="text-md text-gray-600 mb-4 italic">
+              📚 Complete structures with the verb to be in negative sentences
+            </SpeakSentence>
             <div className="bg-blue-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
-              {grammarExamples.slice(0, 7).map((example, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div>
-                    <AudioText text={example.english}>
-                      <span className="text-blue-600 font-bold cursor-pointer">{example.english}</span>
-                    </AudioText>
-                    <span className="text-gray-600"> = {example.portuguese}</span>
-                  </div>
+              {grammarExamples.slice(0, 5).map((example, index) => (
+                <div key={index}>
+                  <SpeakSentence text={example.english} className="text-blue-600 font-bold">
+                    {example.english}
+                  </SpeakSentence>
+                  <p className="text-sm text-gray-600">= {example.portuguese}</p>
                 </div>
               ))}
             </div>
             
             {openDrills.grammar && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4 animate-fadeIn">
-                {grammarDrills.map((drill, index) => (
-                  <div key={index} className="p-4 bg-white rounded-xl border border-blue-200 hover:bg-blue-50 transition-colors">
-                    <div>
-                      <AudioText text={drill.english}>
-                        <p className="text-lg font-medium text-gray-800"><span className="text-blue-600 cursor-pointer">{drill.english}</span></p>
-                      </AudioText>
-                      <p className="text-sm text-gray-500 mt-1">{drill.portuguese}</p>
-                    </div>
-                  </div>
+                {grammarSubstitution.map((ex) => (
+                  <SubstitutionOptions
+                    key={ex.key}
+                    exercise={{ ...ex, currentIndex: getCurrentIndex(ex.key) }}
+                    onOptionClick={handleOptionClick}
+                  />
                 ))}
               </div>
             )}
@@ -780,24 +1174,20 @@ export default function Lesson39HealthFeelingsProfessions() {
               <PencilIcon onClick={() => openNoteModal('Make It Yours')} />
             </div>
             <div className="text-sm text-blue-100">
-              Click on any English text to hear it
+              Verb to be in the PAST | Other verbs in the PRESENT
             </div>
           </div>
           
           <div className="p-8">
             <div className="bg-blue-50 rounded-[20px] p-6">
               <div className="flex flex-col lg:flex-row gap-8">
-                <div className="lg:w-2/3 space-y-6">
+                <div className="lg:w-2/3 space-y-4">
                   {realLifeSentences.map((sentence, index) => (
                     <div key={index} className="group">
-                      <div>
-                        <AudioText text={sentence.english}>
-                          <p className="text-lg font-medium">
-                            {index + 1}. <span className="text-blue-600 cursor-pointer">{sentence.english}</span>
-                          </p>
-                        </AudioText>
-                        <p className="text-sm text-gray-600">{sentence.portuguese}</p>
-                      </div>
+                      <SpeakSentence text={sentence.english} className="text-lg font-medium">
+                        {index + 1}. {sentence.jsx}
+                      </SpeakSentence>
+                      <p className="text-sm text-gray-600 ml-6">{sentence.portuguese}</p>
                     </div>
                   ))}
                 </div>

@@ -319,6 +319,8 @@ export default function Lesson31StartFinish() {
     grammar: false,
   });
 
+  const [assessmentOpen, setAssessmentOpen] = useState(false);
+
   const [noteModal, setNoteModal] = useState<NoteModalState>({
     isOpen: false,
     sectionTitle: '',
@@ -781,7 +783,7 @@ export default function Lesson31StartFinish() {
     },
     {
       key: "grammar-6",
-      original: "Eu tenho que terminar esta tarefa em duas horas. / Em três horas.",
+      original: "Eu tive que terminar esta tarefa em duas horas. / Em três horas.",
       options: [
         { label: "duas", replacement: "I had to finish this task in two hours.", pt: "Eu tive que terminar esta tarefa em duas horas." },
         { label: "três", replacement: "I had to finish this task in three hours.", pt: "Eu tive que terminar esta tarefa em três horas." },
@@ -855,6 +857,36 @@ export default function Lesson31StartFinish() {
       ],
       currentIndex: 0,
     },
+    {
+      key: "grammar-14",
+      original: "Ela quis estudar Espanhol? / Português / Italiano",
+      options: [
+        { label: "Espanhol", replacement: "Did she want to study Spanish?", pt: "Ela quis estudar Espanhol?" },
+        { label: "Português", replacement: "Did she want to study Portuguese?", pt: "Ela quis estudar Português?" },
+        { label: "Italiano", replacement: "Did she want to study Italian?", pt: "Ela quis estudar Italiano?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-15",
+      original: "Ela comeu pão com manteiga no café da manhã? / Pão com queijo / Pão com presunto",
+      options: [
+        { label: "manteiga", replacement: "Did she eat bread and butter for breakfast?", pt: "Ela comeu pão com manteiga no café da manhã?" },
+        { label: "queijo", replacement: "Did she eat bread and cheese for breakfast?", pt: "Ela comeu pão com queijo no café da manhã?" },
+        { label: "presunto", replacement: "Did she eat bread and ham for breakfast?", pt: "Ela comeu pão com presunto no café da manhã?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "grammar-16",
+      original: "Ela bebeu café com leite no café da manhã? / Chá / Chá de camomila",
+      options: [
+        { label: "café com leite", replacement: "Did she drink coffee with milk for breakfast?", pt: "Ela bebeu café com leite no café da manhã?" },
+        { label: "chá", replacement: "Did she drink tea for breakfast?", pt: "Ela bebeu chá no café da manhã?" },
+        { label: "chá de camomila", replacement: "Did she drink chamomile tea for breakfast?", pt: "Ela bebeu chá de camomila no café da manhã?" },
+      ],
+      currentIndex: 0,
+    },
   ];
 
   return (
@@ -890,26 +922,35 @@ export default function Lesson31StartFinish() {
 
         {/* ===================== ASSESSMENT ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 flex justify-between items-center gap-4">
             <div>
-              <h2 className="text-2xl font-bold">🔵 Assessment</h2>
-              <SpeakSentence text="Answer these review questions in English" className="mt-2 text-blue-100 italic">
+              <h2 className="text-xl font-bold">🔵 Assessment</h2>
+              <SpeakSentence text="Answer these review questions in English" className="mt-1 text-sm text-blue-100 italic">
                 Responda estas perguntas de revisão em inglês
               </SpeakSentence>
             </div>
+            <button
+              onClick={() => setAssessmentOpen(prev => !prev)}
+              className="inline-block rounded-full bg-white/20 hover:bg-white/30 text-white px-5 py-2 text-sm font-medium transition-all duration-300 flex-shrink-0"
+            >
+              {assessmentOpen ? 'Hide Assessment' : 'Show Assessment'}
+            </button>
           </div>
-          <div className="p-8">
-            <div className="bg-blue-50 rounded-2xl p-6 space-y-4">
-              {assessmentData.map((item, index) => (
-                <div key={index} className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-lg font-medium">
-                    {index + 1}. <SpeakSentence text={item.en} className="inline text-blue-700 font-semibold">{item.en}</SpeakSentence>
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1 ml-6">🇧🇷 {item.pt}</p>
-                </div>
-              ))}
+
+          {assessmentOpen && (
+            <div className="p-6" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+              <div className="bg-blue-50 rounded-2xl p-4 space-y-3">
+                {assessmentData.map((item, index) => (
+                  <div key={index} className="p-3 bg-white rounded-xl border border-blue-200">
+                    <p className="text-base font-medium">
+                      {index + 1}. <SpeakSentence text={item.en} className="inline text-blue-700 font-semibold">{item.en}</SpeakSentence>
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1 ml-6">🇧🇷 {item.pt}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* ===================== SECTION 1 – VERBS ===================== */}
@@ -1199,33 +1240,7 @@ export default function Lesson31StartFinish() {
           </div>
         </div>
 
-        {/* ===================== SECTION 6 – FINAL SPEAKING ===================== */}
-        <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8">
-            <h2 className="text-2xl font-bold">🔹 FINAL ACTIVITY - SPEAKING</h2>
-            <SpeakSentence text="Answer in English:" className="mt-2 text-blue-100 italic">
-              🗣️ Answer in English:
-            </SpeakSentence>
-          </div>
-          <div className="p-8">
-            <div className="bg-blue-50 rounded-[20px] p-8 space-y-6">
-              {[
-                { q: "When do you start work or school?", a: "I start at _______ . / I start on _______ ." },
-                { q: "What do you want to study?", a: "I want to study _______ ." },
-                { q: "Do you have a deadline this week?", a: "Yes, I do. / No, I don't." },
-                { q: "Do you have a meeting today?", a: "Yes, I do. / No, I don't." },
-                { q: "What do you want to start this year?", a: "I want to start _______ ." },
-              ].map((item, idx) => (
-                <div key={idx} className="p-4 bg-white rounded-xl border border-blue-200">
-                  <p className="text-xl font-bold text-blue-800">🗣️ {idx + 1}. {item.q}</p>
-                  <p className="text-gray-600 mt-2">{item.a}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ===================== WRAP UP! (merged with old CHECK IT OUT) ===================== */}
+        {/* ===================== WRAP UP! ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -1235,12 +1250,10 @@ export default function Lesson31StartFinish() {
             <p className="text-sm text-blue-100">Time Expressions & Question Patterns</p>
           </div>
 
-          {/* Check It Out horizontal card */}
           <div className="p-6">
             <CheckItOutHorizontal />
           </div>
 
-          {/* Affirmative / Negative & Questions */}
           <div className="flex flex-col md:flex-row">
             <div className="bg-green-800 text-white flex-1 p-6 space-y-4">
               <h3 className="font-bold text-lg mb-4 text-yellow-300">AFFIRMATIVE</h3>

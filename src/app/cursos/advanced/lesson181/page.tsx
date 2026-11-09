@@ -13,6 +13,8 @@ import {
   Eye,
   EyeOff,
   X,
+  Play,
+  Pause,
 } from "lucide-react";
 
 // ============================================
@@ -24,7 +26,8 @@ type SectionKey =
   | "speakNative"
   | "functions"
   | "openDrills"
-  | "reading";
+  | "reading"
+  | "realLife";
 
 interface VocabularyItem {
   word: string;
@@ -46,14 +49,19 @@ interface SubstitutionExercise {
 }
 
 // ============================================
-// IMAGES
+// IMAGES & AUDIO
 // ============================================
 const HERO_IMAGE =
   "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/Sobrecarga%20de%20Redes%20Sociais.png";
 
-// News-themed background that appears on the borders/edges of the lesson
 const NEWS_BACKGROUND =
   "https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg?auto=compress&cs=tinysrgb&w=1920&q=80";
+
+const REAL_LIFE_IMAGE =
+  "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/181REALLIFE.png";
+
+const REAL_LIFE_AUDIO =
+  "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/181reallife%20(online-audio-converter.com).mp3";
 
 // ============================================
 // SPEECH SYSTEM (American Female Voice)
@@ -144,6 +152,129 @@ const SpeakSentence = ({
         className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-amber-600"
       />
     </button>
+  );
+};
+
+// ============================================
+// AUDIO PLAYER
+// ============================================
+const AudioPlayer = ({ src }: { src: string }) => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const onLoaded = () => setDuration(audio.duration || 0);
+    const onTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+      if (audio.duration) {
+        setProgress((audio.currentTime / audio.duration) * 100);
+      }
+    };
+    const onEnded = () => {
+      setIsPlaying(false);
+      setProgress(100);
+    };
+
+    audio.addEventListener("loadedmetadata", onLoaded);
+    audio.addEventListener("timeupdate", onTimeUpdate);
+    audio.addEventListener("ended", onEnded);
+
+    return () => {
+      audio.removeEventListener("loadedmetadata", onLoaded);
+      audio.removeEventListener("timeupdate", onTimeUpdate);
+      audio.removeEventListener("ended", onEnded);
+      audio.pause();
+    };
+  }, []);
+
+  const togglePlayPause = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play().catch((err) => console.error("Audio error:", err));
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const resetAudio = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+      setIsPlaying(false);
+      setProgress(0);
+      setCurrentTime(0);
+    }
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const newTime = Number(e.target.value);
+    audio.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const fmt = (s: number) => {
+    if (!isFinite(s)) return "0:00";
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, "0")}`;
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-red-900 to-amber-700 rounded-2xl p-4 shadow-lg">
+      <audio ref={audioRef} src={src} preload="auto" />
+
+      <div className="flex items-center gap-3">
+        <button
+          onClick={togglePlayPause}
+          className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-100 text-red-900 hover:bg-amber-200 transition flex items-center justify-center shadow-md"
+          title={isPlaying ? "Pause" : "Play"}
+        >
+          {isPlaying ? <Pause size={20} /> : <Play size={20} className="ml-0.5" />}
+        </button>
+
+        <button
+          onClick={resetAudio}
+          className="flex-shrink-0 w-9 h-9 rounded-full bg-red-900/60 text-amber-100 hover:bg-red-900 transition flex items-center justify-center"
+          title="Restart"
+        >
+          <RotateCcw size={16} />
+        </button>
+
+        <div className="flex-1">
+          <input
+            type="range"
+            min={0}
+            max={duration || 0}
+            step={0.1}
+            value={currentTime}
+            onChange={handleSeek}
+            className="w-full accent-amber-400 cursor-pointer"
+          />
+          <div className="flex justify-between text-xs text-amber-100 mt-1">
+            <span>{fmt(currentTime)}</span>
+            <span>{fmt(duration)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-2 h-1 bg-red-900/60 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-amber-400 transition-all"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
   );
 };
 
@@ -452,6 +583,66 @@ const READING_QUESTIONS: ReadingQuestion[] = [
 ];
 
 // ============================================
+// REAL LIFE – TEXT + TITLE
+// ============================================
+const REAL_LIFE_TITLE =
+  "Tabloid Journalism and Its Negative Impact on Society";
+
+const REAL_LIFE_TEXT = `While some people say that tabloid journalism is not gossip, bad news, or fake news, there is still clear evidence of its negative ramifications on society. Scandals provide entertainment, but is it worth the cost of someone's reputation or career? Tabloids are created for the typical middle-class person who does not have the same problems rich people do. However, it's no secret that they are usually negative. They typically consist of scandals, gossip, marriage, and upsetting divorce rumors, especially surrounding the celebrity world. Some headlines are extremely offensive and accuse people of things they may not have done. So, tabloids are not only meant to entertain. The purpose is to convey issues and not to solve problems in society. That's why they are seen as problematic by many people, since they are full of news that is not properly credited. While some people say that tabloid journalism can be a good thing, it refers to astonishing bad news or scandals. That's why, theoretically, there cannot be good tabloid journalism. Otherwise, it would not be called tabloid journalism.`;
+
+// Real-life text key words (highlighted)
+const REAL_LIFE_KEY_WORDS: Record<string, string> = {
+  tabloid: "a newspaper focused on sensational stories",
+  gossip: "casual talk about other people's private lives",
+  scandals: "shocking events involving immoral or illegal behavior",
+  reputation: "the opinion people have about someone",
+  career: "a person's professional life or job path",
+  upsetting: "making someone feel unhappy or worried",
+  divorce: "the legal ending of a marriage",
+  headlines: "the titles of news articles",
+  offensive: "rude or insulting",
+  convey: "to communicate or express something",
+  astonishing: "extremely surprising",
+  "ramifications": "the consequences or results of an action",
+};
+
+const REAL_LIFE_QUESTIONS: ReadingQuestion[] = [
+  {
+    id: 1,
+    question:
+      "According to the audio, what is the main problem with tabloid journalism for society?",
+  },
+  {
+    id: 2,
+    question: "Who are tabloids typically created for?",
+  },
+  {
+    id: 3,
+    question:
+      "What kinds of topics usually appear in tabloids (name at least three)?",
+  },
+  {
+    id: 4,
+    question:
+      "Why are some tabloid headlines considered extremely offensive?",
+  },
+  {
+    id: 5,
+    question:
+      "What is the real purpose of tabloids, according to the audio?",
+  },
+  {
+    id: 6,
+    question: "Why are tabloids seen as problematic by many people?",
+  },
+  {
+    id: 7,
+    question:
+      "According to the speaker, can there be 'good tabloid journalism'? Why or why not?",
+  },
+];
+
+// ============================================
 // HIGHLIGHTED READING COMPONENT
 // ============================================
 function ReadingText({
@@ -480,7 +671,8 @@ function ReadingText({
                   clean === kw ||
                   clean === kw + "s" ||
                   clean === kw + "ed" ||
-                  clean === kw + "ing"
+                  clean === kw + "ing" ||
+                  clean === kw + "es"
               );
               if (matchedKey) {
                 return (
@@ -559,10 +751,15 @@ export default function Lesson1NewsMedia() {
     functions: true,
     openDrills: true,
     reading: true,
+    realLife: true,
   });
 
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [realLifeAnswers, setRealLifeAnswers] = useState<Record<number, string>>({});
+
   const [activeWord, setActiveWord] = useState<string | null>(null);
+  const [activeRealLifeWord, setActiveRealLifeWord] = useState<string | null>(null);
+
   const [lastSaved, setLastSaved] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -570,8 +767,8 @@ export default function Lesson1NewsMedia() {
   const [showVerbTranslation, setShowVerbTranslation] = useState(true);
   const [drillState, setDrillState] = useState<Record<string, number>>({});
 
-  // Hero image modal
   const [isHeroModalOpen, setIsHeroModalOpen] = useState(false);
+  const [isRealLifeImageModalOpen, setIsRealLifeImageModalOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -579,6 +776,7 @@ export default function Lesson1NewsMedia() {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed.answers) setAnswers(parsed.answers);
+        if (parsed.realLifeAnswers) setRealLifeAnswers(parsed.realLifeAnswers);
         if (parsed.lastSaved) setLastSaved(parsed.lastSaved);
       }
     } catch (err) {
@@ -587,10 +785,14 @@ export default function Lesson1NewsMedia() {
     if (typeof window !== "undefined") window.speechSynthesis.getVoices();
   }, []);
 
-  const persist = (nextAnswers: Record<number, string>) => {
+  const persist = (
+    nextAnswers: Record<number, string>,
+    nextRealLifeAnswers: Record<number, string>
+  ) => {
     try {
       const payload = {
         answers: nextAnswers,
+        realLifeAnswers: nextRealLifeAnswers,
         lastSaved: new Date().toISOString(),
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -606,20 +808,24 @@ export default function Lesson1NewsMedia() {
     if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     autoSaveTimer.current = setTimeout(() => {
       setSaveStatus("saving");
-      persist(answers);
+      persist(answers, realLifeAnswers);
     }, 900);
     return () => {
       if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [answers]);
+  }, [answers, realLifeAnswers]);
 
   const handleAnswerChange = (id: number, value: string) =>
     setAnswers((prev) => ({ ...prev, [id]: value }));
 
+  const handleRealLifeChange = (id: number, value: string) =>
+    setRealLifeAnswers((prev) => ({ ...prev, [id]: value }));
+
   const clearAll = () => {
     if (confirm("Are you sure you want to delete all your saved answers?")) {
       setAnswers({});
+      setRealLifeAnswers({});
       localStorage.removeItem(STORAGE_KEY);
       setLastSaved(null);
       setSaveStatus("idle");
@@ -641,7 +847,6 @@ export default function Lesson1NewsMedia() {
   const innerCard = "bg-white border border-amber-300 rounded-xl shadow-sm";
 
   return (
-    // ===== OUTER BACKGROUND – news-themed image on borders =====
     <div
       className="min-h-screen py-8 md:py-16 px-4 md:px-6"
       style={{
@@ -652,11 +857,11 @@ export default function Lesson1NewsMedia() {
         backgroundAttachment: "fixed",
       }}
     >
-      {/* ===== INNER CONTENT CARD (borders reveal news background) ===== */}
       <div className="max-w-5xl mx-auto bg-white/95 backdrop-blur-sm rounded-[40px] shadow-2xl p-6 md:p-10 border-4 border-amber-500/40">
         {/* ===================== HERO IMAGE ===================== */}
         <div className="mb-10">
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-600/60 group cursor-pointer"
+          <div
+            className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-600/60 group cursor-pointer"
             onClick={() => setIsHeroModalOpen(true)}
             title="Click to enlarge"
           >
@@ -712,7 +917,10 @@ export default function Lesson1NewsMedia() {
             )}
           </div>
           <div className="flex gap-2">
-            <button onClick={() => persist(answers)} className={btnPrimary}>
+            <button
+              onClick={() => persist(answers, realLifeAnswers)}
+              className={btnPrimary}
+            >
               <span className="inline-flex items-center gap-2">
                 <Save size={16} /> Save now
               </span>
@@ -1039,7 +1247,186 @@ export default function Lesson1NewsMedia() {
             </div>
 
             <div className="mt-6 flex flex-wrap justify-end gap-3">
-              <button onClick={() => persist(answers)} className={btnPrimary}>
+              <button
+                onClick={() => persist(answers, realLifeAnswers)}
+                className={btnPrimary}
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Save size={16} /> Save answers now
+                </span>
+              </button>
+            </div>
+            {lastSaved && (
+              <p className="text-xs text-right text-gray-500 mt-2">
+                ✓ Answers stored locally at{" "}
+                {new Date(lastSaved).toLocaleString()}
+              </p>
+            )}
+          </div>
+        </Section>
+
+        {/* ===================== 7. REAL LIFE ===================== */}
+        <Section
+          title="REAL LIFE"
+          icon="🎧"
+          open={openSections.realLife}
+          onToggle={() => toggleSection("realLife")}
+        >
+          {/* Real Life card image */}
+          <div className="mb-6">
+            <div
+              className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-red-400/60 group cursor-pointer"
+              onClick={() => setIsRealLifeImageModalOpen(true)}
+              title="Click to enlarge"
+            >
+              <img
+                src={REAL_LIFE_IMAGE}
+                alt="Real Life – Tabloid Journalism"
+                className="w-full max-h-[340px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-red-950/75 via-transparent to-transparent flex items-end p-4">
+                <div>
+                  <div className="inline-block px-3 py-1 rounded-full bg-amber-500 text-red-950 text-xs font-extrabold tracking-wider mb-2 shadow">
+                    🎧 REAL LIFE
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-extrabold text-amber-50 drop-shadow">
+                    Tabloid Journalism — Good or Bad?
+                  </h3>
+                </div>
+              </div>
+              <div className="absolute top-3 right-3 bg-red-900/70 text-amber-100 text-xs px-3 py-1 rounded-full backdrop-blur">
+                🔍 Click to enlarge
+              </div>
+            </div>
+          </div>
+
+          {/* ============ REAL LIFE TEXT (TITLE + TEXT) ============ */}
+          <div className="bg-white rounded-2xl border border-amber-300 shadow-sm p-6 mb-6">
+            <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
+              <h3 className="font-bold text-red-900 text-lg md:text-xl">
+                📰 {REAL_LIFE_TITLE}
+              </h3>
+              <SpeakBtn
+                text={`${REAL_LIFE_TITLE}. ${REAL_LIFE_TEXT}`}
+                className="text-sm font-semibold text-red-800 border border-red-300 rounded-full px-3 py-1 hover:bg-red-100"
+              >
+                🔊 Listen to the text
+              </SpeakBtn>
+            </div>
+
+            <div className="border-l-4 border-amber-500 pl-4 mb-4">
+              <p className="text-sm text-gray-600 italic">
+                Read the text below, or listen to the audio. Click any{" "}
+                <span className="text-red-600 font-bold">red word</span> to see
+                its English definition.
+              </p>
+            </div>
+
+            <ReadingText
+              text={REAL_LIFE_TEXT}
+              keyWords={REAL_LIFE_KEY_WORDS}
+              onWordClick={setActiveRealLifeWord}
+              activeWord={activeRealLifeWord}
+            />
+
+            {activeRealLifeWord && (
+              <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-red-800 to-amber-700 text-amber-50 shadow-lg animate-[fadeIn_0.2s_ease-out]">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-amber-200 mb-1">
+                      Definition
+                    </div>
+                    <div className="text-xl font-bold mb-1">
+                      {activeRealLifeWord}
+                    </div>
+                    <div className="text-sm">
+                      {REAL_LIFE_KEY_WORDS[activeRealLifeWord]}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setActiveRealLifeWord(null)}
+                    className="text-amber-200 hover:text-white text-2xl font-bold leading-none"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Instruction */}
+          <p className="text-red-700 italic mb-4">
+            <SpeakBtn text="Listen to the audio about tabloid journalism. Then answer the questions below. Your answers are saved automatically.">
+              🎧 Listen to the audio about tabloid journalism. Then answer the
+              questions below. Your answers are saved automatically.
+            </SpeakBtn>
+          </p>
+
+          {/* Audio Player */}
+          <div className="mb-6">
+            <AudioPlayer src={REAL_LIFE_AUDIO} />
+          </div>
+
+          {/* Questions */}
+          <div className="bg-white rounded-2xl border border-amber-300 shadow-sm p-6">
+            <h3 className="font-bold text-red-900 text-lg mb-1">
+              ✍️ Real Life Comprehension
+            </h3>
+            <p className="text-sm text-red-700 mb-5 italic">
+              Answer the questions based on what you heard in the audio.
+            </p>
+
+            <div className="space-y-5">
+              {REAL_LIFE_QUESTIONS.map((q) => (
+                <div
+                  key={q.id}
+                  className="p-4 rounded-xl bg-amber-50 border border-amber-300"
+                >
+                  <div className="flex items-start gap-2 mb-2">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-700 text-white text-sm font-bold flex items-center justify-center">
+                      {q.id}
+                    </span>
+                    <SpeakBtn
+                      text={q.question}
+                      className="text-gray-900 font-medium"
+                    >
+                      {q.question}
+                    </SpeakBtn>
+                  </div>
+                  <textarea
+                    value={realLifeAnswers[q.id] || ""}
+                    onChange={(e) =>
+                      handleRealLifeChange(q.id, e.target.value)
+                    }
+                    placeholder="Write your answer here…"
+                    className="w-full h-24 p-3 rounded-lg border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none text-gray-800"
+                  />
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-xs text-gray-500">
+                      {realLifeAnswers[q.id]
+                        ?.trim()
+                        .split(/\s+/)
+                        .filter(Boolean).length || 0}{" "}
+                      words
+                    </span>
+                    <button
+                      onClick={() => handleRealLifeChange(q.id, "")}
+                      className="text-xs px-2 py-1 rounded bg-amber-200 text-red-800 hover:bg-amber-300 transition"
+                    >
+                      <span className="inline-flex items-center gap-1">
+                        <RotateCcw size={12} /> Clear
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 flex flex-wrap justify-end gap-3">
+              <button
+                onClick={() => persist(answers, realLifeAnswers)}
+                className={btnPrimary}
+              >
                 <span className="inline-flex items-center gap-2">
                   <Save size={16} /> Save answers now
                 </span>
@@ -1092,6 +1479,29 @@ export default function Lesson1NewsMedia() {
             />
             <button
               onClick={() => setIsHeroModalOpen(false)}
+              className="absolute top-3 right-3 bg-red-900/80 hover:bg-red-800 text-amber-100 rounded-full p-2 transition"
+              aria-label="Close"
+            >
+              <X size={22} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===== REAL LIFE IMAGE MODAL ===== */}
+      {isRealLifeImageModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4"
+          onClick={() => setIsRealLifeImageModalOpen(false)}
+        >
+          <div className="relative max-w-6xl max-h-full">
+            <img
+              src={REAL_LIFE_IMAGE}
+              alt="Real Life – Tabloid Journalism – enlarged"
+              className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
+            />
+            <button
+              onClick={() => setIsRealLifeImageModalOpen(false)}
               className="absolute top-3 right-3 bg-red-900/80 hover:bg-red-800 text-amber-100 rounded-full p-2 transition"
               aria-label="Close"
             >

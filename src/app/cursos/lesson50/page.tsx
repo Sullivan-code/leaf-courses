@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, Check, XCircle, ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronDown, ChevronUp, Check, XCircle, Volume2 } from "lucide-react";
 
 // ============================================
 // LESSON 50 - CLOTHES, DESCRIPTIONS & THERE WAS/WERE
@@ -30,88 +30,82 @@ const grammarExplanation = {
 };
 
 // ============================================
-// SPEAK RIGHT NOW - DESCRIBING PEOPLE (10 SITUATIONS)
+// SPEAK RIGHT NOW - DESCRIBING PEOPLE (9 SITUATIONS)
 // ============================================
 const speakRightNowItems = [
   {
     id: 1,
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format",
-    alt: "Man with white T-shirt and jeans",
-    description: "👨 Man: white T-shirt + jeans",
+    alt: "Person wearing a white T-shirt",
+    description: "white T-shirt",
     pronoun: "He",
-    example: "He is wearing a white T-shirt and blue jeans."
+    example: "He is wearing a white T-shirt."
   },
   {
     id: 2,
     image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=500&auto=format",
-    alt: "Woman with elegant blue dress",
-    description: "👩 Woman: elegant blue dress",
+    alt: "Person wearing a dress",
+    description: "dress",
     pronoun: "She",
-    example: "She is wearing an elegant blue dress."
+    example: "She is wearing a dress."
   },
   {
     id: 3,
     image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=500&auto=format",
-    alt: "Gentleman with black suit and tie",
-    description: "👨‍🦳 Gentleman: black suit + tie",
+    alt: "Person wearing a suit",
+    description: "suit",
     pronoun: "He",
-    example: "He is wearing a black suit and a tie."
+    example: "He is wearing a suit and a tie.",
+    vocabulary: [{ word: "tie", translation: "gravata" }]
   },
   {
     id: 4,
-    image: "https://images.unsplash.com/photo-1521119989659-a83eee488004?w=500&auto=format",
-    alt: "Young man with denim jacket and sneakers",
-    description: "🧑 Young man: denim jacket + sneakers",
+    image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&auto=format",
+    alt: "Person wearing a black sweater and beanie",
+    description: "black sweater",
     pronoun: "He",
-    example: "He is wearing a denim jacket and white sneakers."
+    example: "He is wearing a black sweater and a beanie.",
+    vocabulary: [{ word: "beanie", translation: "touca" }]
   },
   {
     id: 5,
     image: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=500&auto=format",
-    alt: "Girl with pink dress",
-    description: "👧 Girl: pink dress",
+    alt: "Person wearing a pink dress",
+    description: "pink dress",
     pronoun: "She",
-    example: "She is wearing a lovely pink dress."
+    example: "She is wearing a pink dress."
   },
   {
     id: 6,
     image: "https://images.unsplash.com/photo-1529333166437-77579a9dd4c6?w=500&auto=format",
-    alt: "Couple in casual clothes",
-    description: "💑 Couple: casual clothes (t-shirt + shorts)",
+    alt: "People wearing casual clothes",
+    description: "casual clothes (t-shirt + shorts)",
     pronoun: "They",
-    example: "They are wearing casual T-shirts and shorts."
+    example: "They are wearing casual clothes."
   },
   {
     id: 7,
     image: "https://images.unsplash.com/photo-1577221084712-45b0445d2b00?w=500&auto=format",
-    alt: "Woman in gym outfit",
-    description: "🏋️ Woman: gym outfit",
+    alt: "Person wearing a gym outfit",
+    description: "gym outfit",
     pronoun: "She",
-    example: "She is wearing a pink tank top and black leggings."
+    example: "She is wearing a gym outfit."
   },
   {
     id: 8,
-    image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=500&auto=format",
-    alt: "Man in hoodie and sweatpants",
-    description: "🧥 Man: hoodie + sweatpants",
+    image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&auto=format",
+    alt: "Person wearing a hoodie",
+    description: "hoodie",
     pronoun: "He",
-    example: "He is wearing a comfortable hoodie and black sweatpants."
-  },
-  {
-    id: 9,
-    image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=500&auto=format",
-    alt: "Two kids in colorful clothes",
-    description: "👧🧒 Two children: colorful clothes",
-    pronoun: "They",
-    example: "They are wearing colorful T-shirts and shorts."
+    example: "He is wearing a hoodie."
   },
   {
     id: 10,
-    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&auto=format",
-    alt: "Woman in yellow dress with hat",
-    description: "👒 Woman: yellow dress + hat",
+    image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=500&auto=format",
+    alt: "Person wearing a red dress",
+    description: "red dress",
     pronoun: "She",
-    example: "She is wearing a beautiful yellow dress and a straw hat."
+    example: "She is wearing a red dress."
   }
 ];
 
@@ -226,9 +220,28 @@ const GrammarExplanation = () => {
           </div>
         </div>
       </div>
-      <div className="px-8 pb-6">
-        <div className="bg-indigo-100 p-4 rounded-xl">
-          <p className="font-mono text-indigo-800">📌 Perguntas: <strong>Was there a restaurant?</strong> / <strong>Were there many people?</strong></p>
+
+      {/* QUESTIONS SECTION */}
+      <div className="px-8 pb-8">
+        <div className="bg-indigo-50 p-6 rounded-xl border-2 border-indigo-200">
+          <h3 className="text-xl font-bold text-indigo-700 mb-4">❓ QUESTIONS – Was there / Were there?</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-white p-4 rounded-lg border border-blue-200 shadow-sm">
+              <p className="font-semibold text-blue-700 mb-2">Singular</p>
+              <p className="text-gray-700"><strong>Was there</strong> a restaurant near your house?</p>
+              <p className="text-gray-600 text-sm mt-1">✅ Yes, there was. &nbsp;|&nbsp; ❌ No, there wasn't.</p>
+              <p className="text-gray-700 mt-2"><strong>Was there</strong> any water at the hotel?</p>
+              <p className="text-gray-600 text-sm mt-1">✅ Yes, there was. &nbsp;|&nbsp; ❌ No, there wasn't.</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg border border-green-200 shadow-sm">
+              <p className="font-semibold text-green-700 mb-2">Plural</p>
+              <p className="text-gray-700"><strong>Were there</strong> many people at the party?</p>
+              <p className="text-gray-600 text-sm mt-1">✅ Yes, there were. &nbsp;|&nbsp; ❌ No, there weren't.</p>
+              <p className="text-gray-700 mt-2"><strong>Were there</strong> any chairs in the room?</p>
+              <p className="text-gray-600 text-sm mt-1">✅ Yes, there were. &nbsp;|&nbsp; ❌ No, there weren't.</p>
+            </div>
+          </div>
+          <p className="text-sm text-gray-600 mt-4 italic">💡 Notice: in questions, the verb comes BEFORE the word "there".</p>
         </div>
       </div>
     </div>
@@ -261,6 +274,17 @@ export default function Lesson50() {
 
   // Speak Right Now - user created sentences
   const [userSentences, setUserSentences] = useState<Record<number, string>>({});
+
+  // Audio helper
+  const speakWord = (text: string) => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.85;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
   // ============================================
   // PERSISTENCE
@@ -349,7 +373,7 @@ export default function Lesson50() {
         <div className="bg-pink-50 border-2 border-pink-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-pink-500 text-white py-4 px-8 flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🎤 SPEAK RIGHT NOW – Describing People</h2>
+              <h2 className="text-2xl font-bold">🎤 SPEAK RIGHT NOW – Describing Clothes</h2>
               <button onClick={() => toggleSection('speakRightNow')} className="ml-4 p-2 rounded-full hover:bg-pink-600">
                 {sections.speakRightNow ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
               </button>
@@ -357,7 +381,7 @@ export default function Lesson50() {
           </div>
           {sections.speakRightNow && (
             <div className="p-8">
-              <p className="text-gray-700 mb-6"><strong>💡 Model:</strong> <span className="bg-pink-100 px-3 py-1 rounded-full font-mono">He is wearing a white T-shirt.</span> Create your own sentences changing pronoun, color and clothing.</p>
+              <p className="text-gray-700 mb-6"><strong>💡 Model:</strong> <span className="bg-pink-100 px-3 py-1 rounded-full font-mono">He is wearing a white T-shirt.</span> Create your own sentences changing pronoun, color and clothing items.</p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {speakRightNowItems.map((item) => (
                   <div key={item.id} className="bg-white rounded-2xl border border-pink-200 overflow-hidden shadow-md hover:shadow-lg transition">
@@ -373,6 +397,19 @@ export default function Lesson50() {
                         onChange={(e) => handleSentenceChange(item.id, e.target.value)}
                         className="w-full mt-3 p-2 border border-gray-300 rounded-xl text-sm focus:ring-pink-500"
                       />
+                      {item.vocabulary && item.vocabulary.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {item.vocabulary.map((v, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => speakWord(v.word)}
+                              className="inline-flex items-center gap-1 bg-purple-100 hover:bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full transition"
+                            >
+                              <Volume2 size={14} /> {v.word} = {v.translation}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                       <details className="mt-2">
                         <summary className="text-xs text-gray-400 cursor-pointer">✨ example</summary>
                         <p className="text-xs bg-gray-50 p-2 rounded mt-1">{item.example}</p>
@@ -382,7 +419,7 @@ export default function Lesson50() {
                 ))}
               </div>
               <div className="mt-6 bg-yellow-50 p-4 rounded-xl border border-yellow-200">
-                <p className="font-medium text-gray-700">✨ <strong>Your turn!</strong> Create at least 10 sentences changing pronoun (He/She/They), colors and clothing items.</p>
+                <p className="font-medium text-gray-700">✨ <strong>Your turn!</strong> Create a sentence for each image, changing pronoun (He/She/They), colors and clothing items. Use the 🔊 audio buttons to practice the vocabulary.</p>
               </div>
             </div>
           )}
@@ -434,27 +471,22 @@ export default function Lesson50() {
                 <strong>B –</strong> It was pretty nice Josh. But when I got to the hotel I was thirsty but ______ any bottle of water at the front desk.</p>
                 <div className="flex gap-2"><input type="text" className="flex-1 border rounded p-2" value={writtenAnswers["pb-1"] || ""} onChange={(e) => handleWrittenChange("pb-1", e.target.value)} /><button onClick={() => handleCheck("pb-1", writtenAnswers["pb-1"] || "", "there wasn't")} className="bg-purple-500 text-white px-4 rounded">Check</button></div>
                 {showAnswerResults["pb-1"] && <AnswerResult isCorrect={answerResults["pb-1"]} correctAnswer="there wasn't" />}
-                <div className="answer-hidden-tag bg-yellow-100 p-2 rounded text-xs border-l-4 border-yellow-500 mt-2">🔒 RESPOSTA: there wasn't</div>
 
                 <p><strong>A –</strong> I don't believe it!! ______ a vending machine at the lobby?</p>
                 <div className="flex gap-2"><input type="text" className="flex-1 border rounded p-2" value={writtenAnswers["pb-2"] || ""} onChange={(e) => handleWrittenChange("pb-2", e.target.value)} /><button onClick={() => handleCheck("pb-2", writtenAnswers["pb-2"] || "", "Was there")} className="bg-purple-500 text-white px-4 rounded">Check</button></div>
                 {showAnswerResults["pb-2"] && <AnswerResult isCorrect={answerResults["pb-2"]} correctAnswer="Was there" />}
-                <div className="answer-hidden-tag bg-yellow-100 p-2 rounded text-xs">🔒 RESPOSTA: Was there</div>
 
                 <p><strong>B –</strong> Yes, ______. But ______ many people working that day so ______ anyone to fill the machine.</p>
                 <div className="flex gap-2"><input type="text" className="flex-1 border rounded p-2" placeholder="answer1 / answer2 / answer3" value={writtenAnswers["pb-3"] || ""} onChange={(e) => handleWrittenChange("pb-3", e.target.value)} /><button onClick={() => handleCheck("pb-3", writtenAnswers["pb-3"] || "", "there was / there were / there wasn't")} className="bg-purple-500 text-white px-4 rounded">Check</button></div>
                 {showAnswerResults["pb-3"] && <AnswerResult isCorrect={answerResults["pb-3"]} correctAnswer="there was / there were / there wasn't" />}
-                <div className="answer-hidden-tag bg-yellow-100 p-2 rounded text-xs">🔒 RESPOSTAS: there was / there were / there wasn't</div>
 
                 <p><strong>A –</strong> Well, I'm sure ______ other people dealing with the same problem.</p>
                 <div className="flex gap-2"><input type="text" className="flex-1 border rounded p-2" value={writtenAnswers["pb-4"] || ""} onChange={(e) => handleWrittenChange("pb-4", e.target.value)} /><button onClick={() => handleCheck("pb-4", writtenAnswers["pb-4"] || "", "there were")} className="bg-purple-500 text-white px-4 rounded">Check</button></div>
                 {showAnswerResults["pb-4"] && <AnswerResult isCorrect={answerResults["pb-4"]} correctAnswer="there were" />}
-                <div className="answer-hidden-tag bg-yellow-100 p-2 rounded text-xs">🔒 RESPOSTA: there were</div>
 
                 <p><strong>B –</strong> Yes, ______ many others complaining and ______ all the items available.</p>
                 <div className="flex gap-2"><input type="text" className="flex-1 border rounded p-2" placeholder="there were / there weren't" value={writtenAnswers["pb-5"] || ""} onChange={(e) => handleWrittenChange("pb-5", e.target.value)} /><button onClick={() => handleCheck("pb-5", writtenAnswers["pb-5"] || "", "there were / there weren't")} className="bg-purple-500 text-white px-4 rounded">Check</button></div>
                 {showAnswerResults["pb-5"] && <AnswerResult isCorrect={answerResults["pb-5"]} correctAnswer="there were / there weren't" />}
-                <div className="answer-hidden-tag bg-yellow-100 p-2 rounded text-xs">🔒 RESPOSTAS: there were / there weren't</div>
               </div>
             </div>
           )}
@@ -463,28 +495,34 @@ export default function Lesson50() {
         {/* ========== PRACTICE C ========== */}
         <div className="bg-amber-50 border-2 border-amber-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-amber-600 text-white py-4 px-8 flex items-center justify-between">
-            <h2 className="text-2xl font-bold">🔴 PRACTICE C – Multiple Choice</h2>
+            <h2 className="text-2xl font-bold">🔴 PRACTICE C – Multiple Choice (PAST TENSE)</h2>
             <button onClick={() => toggleSection('practiceC')} className="ml-4 p-2 rounded-full hover:bg-amber-700">
               {sections.practiceC ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
             </button>
           </div>
           {sections.practiceC && (
-            <div className="p-8 grid md:grid-cols-2 gap-5">
-              {practiceCExercises.map((ex) => (
-                <div key={ex.key} className="bg-white p-5 rounded-xl shadow border border-amber-200">
-                  <p className="font-medium mb-3">{ex.question}</p>
-                  <div className="space-y-1">
-                    {ex.options.map((opt, idx) => (
-                      <label key={idx} className="flex items-center gap-2 text-sm">
-                        <input type="radio" name={ex.key} value={opt} onChange={(e) => handleWrittenChange(ex.key, e.target.value)} /> {opt}
-                      </label>
-                    ))}
+            <div className="p-8">
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded">
+                <p className="text-red-800 font-medium">
+                  ⚠️ <strong>Atenção:</strong> Este exercício é sobre o <strong>PASSADO</strong>. Algumas opções estão no <strong>presente</strong> (is, are, have, had) para te confundir! Leia o contexto e escolha a forma correta no passado.
+                </p>
+              </div>
+              <div className="grid md:grid-cols-2 gap-5">
+                {practiceCExercises.map((ex) => (
+                  <div key={ex.key} className="bg-white p-5 rounded-xl shadow border border-amber-200">
+                    <p className="font-medium mb-3">{ex.question}</p>
+                    <div className="space-y-1">
+                      {ex.options.map((opt, idx) => (
+                        <label key={idx} className="flex items-center gap-2 text-sm">
+                          <input type="radio" name={ex.key} value={opt} onChange={(e) => handleWrittenChange(ex.key, e.target.value)} /> {opt}
+                        </label>
+                      ))}
+                    </div>
+                    <button onClick={() => handleCheck(ex.key, writtenAnswers[ex.key] || "", ex.correct)} className="mt-3 bg-amber-500 text-white px-4 py-1 rounded text-sm">Check</button>
+                    {showAnswerResults[ex.key] && <AnswerResult isCorrect={answerResults[ex.key]} correctAnswer={ex.correct} />}
                   </div>
-                  <button onClick={() => handleCheck(ex.key, writtenAnswers[ex.key] || "", ex.correct)} className="mt-3 bg-amber-500 text-white px-4 py-1 rounded text-sm">Check</button>
-                  {showAnswerResults[ex.key] && <AnswerResult isCorrect={answerResults[ex.key]} correctAnswer={ex.correct} />}
-                  <div className="answer-hidden-tag bg-yellow-100 p-1 rounded text-xs mt-2">🔒 RESPOSTA: {ex.correct}</div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </div>

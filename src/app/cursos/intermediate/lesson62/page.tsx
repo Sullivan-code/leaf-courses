@@ -636,13 +636,13 @@ export default function Lesson62() {
 
   // ============ LISTEN AND NUMBER ============
   const numberItems = [
-    { key: "img1", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/img62-1.png", correctAnswer: 5 },
+    { key: "img1", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l62-num5.png", correctAnswer: 5 },
     { key: "img2", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/img62-2.png", correctAnswer: 7 },
     { key: "img3", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/img62-3.png", correctAnswer: 4 },
-    { key: "img4", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/img62-4.png", correctAnswer: 2 },
+    { key: "img4", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l62-num2.png", correctAnswer: 2 },
     { key: "img5", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/img62-5.png", correctAnswer: 6 },
     { key: "img6", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/img62-6.png", correctAnswer: 3 },
-    { key: "img7", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/img62-7.png", correctAnswer: 8 },
+    { key: "img7", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l62-num8.png", correctAnswer: 8 },
     { key: "img8", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/img62-8.png", correctAnswer: 1 },
   ];
   const NUMBER_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8];

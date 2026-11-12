@@ -96,7 +96,7 @@ function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
     onClose();
   };
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]" style={{ animation: 'fadeIn 0.3s ease-out' }}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
         <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-6">
           <h3 className="text-xl font-bold">📝 Anotações - {sectionTitle}</h3>
@@ -155,6 +155,7 @@ function SubstitutionOptions({
   onOptionClick: (key: string, index: number) => void;
 }) {
   const [showEnglish, setShowEnglish] = useState(true);
+  const [showPt, setShowPt] = useState(true); // NOVO ESTADO: Controla a tradução individual
 
   const isObjectOption = (opt: OptionType): opt is { label: string; replacement: string; pt?: string } => {
     return typeof opt === 'object' && opt !== null && 'label' in opt && 'replacement' in opt;
@@ -205,7 +206,28 @@ function SubstitutionOptions({
         <div className="mb-3 p-3 bg-green-50 rounded-md">
           <SpeakSentence text={currentSentence} className="text-green-700 font-medium" />
           {currentPt && (
-            <p className="text-sm text-gray-600 mt-1 border-t border-green-200 pt-1">🇧🇷 {currentPt}</p>
+            <div className="flex items-center justify-between mt-1 border-t border-green-200 pt-1">
+              {showPt ? (
+                <>
+                  <p className="text-sm text-gray-600">🇧🇷 {currentPt}</p>
+                  <button 
+                    onClick={() => setShowPt(false)} 
+                    className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1"
+                    title="Ocultar tradução em português"
+                  >
+                    <EyeOff size={12} /> Ocultar
+                  </button>
+                </>
+              ) : (
+                <button 
+                  onClick={() => setShowPt(true)} 
+                  className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1 ml-auto"
+                  title="Mostrar tradução em português"
+                >
+                  <Eye size={12} /> Mostrar tradução
+                </button>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -280,6 +302,9 @@ export default function Lesson63MyHouseRoutine() {
 
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isMainImageModalOpen, setIsMainImageModalOpen] = useState(false);
+
+  // NOVO ESTADO: Controla a visibilidade do português na seção "Make it yours!"
+  const [showMakeItYoursPt, setShowMakeItYoursPt] = useState(true);
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills(prev => ({ ...prev, [section]: !prev[section] }));
@@ -684,6 +709,22 @@ export default function Lesson63MyHouseRoutine() {
     }
   ];
 
+  // ---------- MAKE IT YOURS DATA COM PALAVRAS VERDES ----------
+  const makeItYoursData = [
+    { en: "I live in a small apartment in a gated community, and I really like it there.", pt: "Eu moro em um apartamento pequeno em um condomínio fechado, e eu realmente gosto de morar lá.", green: ["live", "small apartment", "gated community"] },
+    { en: "There is a tiny house to rent here, but it's too small for my family.", pt: "Tem uma tiny house para alugar aqui, mas é pequena demais para a minha família.", green: ["tiny house", "rent", "small"] },
+    { en: "This studio apartment is tiny, so I need a place with more space.", pt: "Esta quitinete é minúscula, então eu preciso de um lugar com mais espaço.", green: ["studio apartment", "tiny", "space"] },
+    { en: "They don't like to live in a townhouse because they prefer more privacy.", pt: "Eles não gostam de morar em uma casa geminada porque preferem mais privacidade.", green: ["live", "townhouse", "privacy"] },
+    { en: "My brother has a lot of friends in the building, so he never feels lonely.", pt: "Meu irmão tem muitos amigos no prédio, então ele nunca se sente sozinho.", green: ["friends", "building", "lonely"] },
+    { en: "Is there a room to rent here? I'm looking for something cheap.", pt: "Tem um cômodo para alugar aqui? Estou procurando algo barato.", green: ["room", "rent", "cheap"] },
+    { en: "Let's rent a two-story house so everyone can have their own room.", pt: "Vamos alugar um sobrado para que todos possam ter o próprio quarto.", green: ["rent", "two-story house", "room"] },
+    { en: "I live on the first floor, which is very convenient for my parents.", pt: "Eu moro no primeiro andar, o que é muito conveniente para os meus pais.", green: ["live", "first floor", "convenient"] },
+    { en: "There isn't an elevator in this building, so we have to use the stairs.", pt: "Não tem elevador neste prédio, então temos que usar as escadas.", green: ["elevator", "building", "stairs"] },
+    { en: "There are plenty of good studio apartments to rent if you look online.", pt: "Tem muitas quitinetes boas para alugar se você procurar online.", green: ["plenty of", "studio apartments", "rent"] },
+    { en: "This detached house has plenty of space for a big family like ours.", pt: "Esta casa isolada tem bastante espaço para uma família grande como a nossa.", green: ["detached house", "plenty of space", "big family"] },
+    { en: "She doesn't like houses with large rooms because she prefers cozy places.", pt: "Ela não gosta de casas com cômodos grandes porque prefere lugares aconchegantes.", green: ["houses", "large rooms", "cozy places"] },
+  ];
+
   return (
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
@@ -929,33 +970,48 @@ export default function Lesson63MyHouseRoutine() {
               <h2 className="text-2xl font-bold">🔹 Make it yours!</h2>
               <PencilIcon onClick={() => openNoteModal('Make it yours!')} />
             </div>
-            <div className="text-sm text-green-100">Practice real-life situations</div>
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-green-100 hidden md:block">Practice real-life situations</div>
+              <button
+                onClick={() => setShowMakeItYoursPt(!showMakeItYoursPt)}
+                className="p-1 rounded hover:bg-white/20 transition-colors text-white"
+                title={showMakeItYoursPt ? "Ocultar tradução em português" : "Mostrar tradução em português"}
+              >
+                {showMakeItYoursPt ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
           <div className="p-8">
             <div className="bg-green-50 rounded-[20px] p-6">
+              
+              {/* INSTRUÇÃO EM INGLÊS AQUI */}
+              <div className="mb-6 p-4 bg-white/60 border border-green-200 rounded-xl flex items-start gap-3">
+                <span className="text-xl">💡</span>
+                <p className="text-gray-700 font-medium">
+                  <strong className="text-green-600">Instructions:</strong> Substitute the words highlighted in <span className="text-green-600 font-bold">green</span> with words of your choice to create new sentences in English. Use the eye button at the top to hide the Portuguese translation.
+                </p>
+              </div>
+
               <div className="flex flex-col lg:flex-row gap-8">
                 <div className="lg:w-2/3 space-y-5">
-                  {[
-                    { en: "I live in a small apartment in a gated community, and I really like it there.", pt: "Eu moro em um apartamento pequeno em um condomínio fechado, e eu realmente gosto de morar lá." },
-                    { en: "There is a tiny house to rent here, but it's too small for my family.", pt: "Tem uma tiny house para alugar aqui, mas é pequena demais para a minha família." },
-                    { en: "This studio apartment is tiny, so I need a place with more space.", pt: "Esta quitinete é minúscula, então eu preciso de um lugar com mais espaço." },
-                    { en: "They don't like to live in a townhouse because they prefer more privacy.", pt: "Eles não gostam de morar em uma casa geminada porque preferem mais privacidade." },
-                    { en: "My brother has a lot of friends in the building, so he never feels lonely.", pt: "Meu irmão tem muitos amigos no prédio, então ele nunca se sente sozinho." },
-                    { en: "Is there a room to rent here? I'm looking for something cheap.", pt: "Tem um cômodo para alugar aqui? Estou procurando algo barato." },
-                    { en: "Let's rent a two-story house so everyone can have their own room.", pt: "Vamos alugar um sobrado para que todos possam ter o próprio quarto." },
-                    { en: "I live on the first floor, which is very convenient for my parents.", pt: "Eu moro no primeiro andar, o que é muito conveniente para os meus pais." },
-                    { en: "There isn't an elevator in this building, so we have to use the stairs.", pt: "Não tem elevador neste prédio, então temos que usar as escadas." },
-                    { en: "There are plenty of good studio apartments to rent if you look online.", pt: "Tem muitas quitinetes boas para alugar se você procurar online." },
-                    { en: "This detached house has plenty of space for a big family like ours.", pt: "Esta casa isolada tem bastante espaço para uma família grande como a nossa." },
-                    { en: "She doesn't like houses with large rooms because she prefers cozy places.", pt: "Ela não gosta de casas com cômodos grandes porque prefere lugares aconchegantes." },
-                  ].map((s, idx) => (
-                    <div key={idx} className="group">
+                  {makeItYoursData.map((s, idx) => (
+                    <div key={idx} className="group bg-white p-4 rounded-xl shadow-sm border border-green-100">
                       <div className="flex items-start">
                         <SpeakSentence text={s.en} className="text-lg font-medium leading-relaxed">
-                          {idx+1}. {s.en}
+                          {idx+1}. {s.en.split(/(\s+)/).map((word, i) => {
+                            const cleanWord = word.replace(/[.,!?;:]/g, '');
+                            if (s.green.some(gw => cleanWord.toLowerCase() === gw.toLowerCase())) {
+                              return <span key={i} className="text-green-600 font-bold">{word}</span>;
+                            }
+                            return <span key={i}>{word}</span>;
+                          })}
                         </SpeakSentence>
                       </div>
-                      <p className="text-base text-gray-600 mt-1 ml-6">{s.pt}</p>
+                      
+                      {/* TRADUÇÃO CONDICIONAL */}
+                      {showMakeItYoursPt && (
+                        <p className="text-base text-gray-600 mt-1 ml-6 border-t border-gray-100 pt-2">🇧🇷 {s.pt}</p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1049,6 +1105,17 @@ export default function Lesson63MyHouseRoutine() {
         </div>
       </div>
 
+      {/* ===== BOTÃO FLUTUANTE DE ANOTAÇÕES COM ANIMAÇÃO ===== */}
+      <button
+        onClick={() => openNoteModal('Anotações Gerais')}
+        className="fixed bottom-6 right-6 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-emerald-800 transition-all duration-300 z-50 flex items-center justify-center"
+        title="Fazer anotações gerais"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 animate-[spin-slow_4s_linear_infinite]" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+        </svg>
+      </button>
+
       {/* ===== MODAL PARA AMPLIAR A IMAGEM DA GRAMMAR ===== */}
       {isImageModalOpen && (
         <div
@@ -1105,6 +1172,10 @@ export default function Lesson63MyHouseRoutine() {
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>

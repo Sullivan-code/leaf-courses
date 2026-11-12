@@ -96,7 +96,7 @@ function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
     onClose();
   };
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]" style={{ animation: 'fadeIn 0.3s ease-out' }}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
         <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-6">
           <h3 className="text-xl font-bold">📝 Anotações - {sectionTitle}</h3>
@@ -155,6 +155,7 @@ function SubstitutionOptions({
   onOptionClick: (key: string, index: number) => void;
 }) {
   const [showEnglish, setShowEnglish] = useState(true);
+  const [showPt, setShowPt] = useState(true); // NOVO ESTADO: Controla a tradução em português individualmente
 
   const isObjectOption = (opt: OptionType): opt is { label: string; replacement: string; pt?: string } => {
     return typeof opt === 'object' && opt !== null && 'label' in opt && 'replacement' in opt;
@@ -205,7 +206,28 @@ function SubstitutionOptions({
         <div className="mb-3 p-3 bg-green-50 rounded-md">
           <SpeakSentence text={currentSentence} className="text-green-700 font-medium" />
           {currentPt && (
-            <p className="text-sm text-gray-600 mt-1 border-t border-green-200 pt-1">🇧🇷 {currentPt}</p>
+            <div className="flex items-center justify-between mt-1 border-t border-green-200 pt-1">
+              {showPt ? (
+                <>
+                  <p className="text-sm text-gray-600">🇧🇷 {currentPt}</p>
+                  <button 
+                    onClick={() => setShowPt(false)} 
+                    className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1"
+                    title="Ocultar tradução em português"
+                  >
+                    <EyeOff size={12} /> Ocultar
+                  </button>
+                </>
+              ) : (
+                <button 
+                  onClick={() => setShowPt(true)} 
+                  className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1 ml-auto"
+                  title="Mostrar tradução em português"
+                >
+                  <Eye size={12} /> Mostrar tradução
+                </button>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -280,6 +302,9 @@ export default function Lesson61MyHouseRoutine() {
 
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isMainImageModalOpen, setIsMainImageModalOpen] = useState(false);
+
+  // NOVO ESTADO: Controla a visibilidade do português na seção "Make it yours!"
+  const [showMakeItYoursPt, setShowMakeItYoursPt] = useState(true);
 
   const toggleDrill = (section: SectionKey) => {
     setOpenDrills(prev => ({ ...prev, [section]: !prev[section] }));
@@ -698,6 +723,66 @@ export default function Lesson61MyHouseRoutine() {
     }
   ];
 
+  // ---------- NEW B2 SENTENCES FOR "MAKE IT YOURS!" ----------
+  const makeItYoursData = [
+    {
+      en: "Please move this coffee table to the left.",
+      pt: "Por favor, mova esta mesa de centro para a esquerda.",
+      green: ["move", "coffee table", "left"]
+    },
+    {
+      en: "Please don't put the dirty carpets here.",
+      pt: "Por favor, não coloque os tapetes sujos aqui.",
+      green: ["don't put", "dirty carpets", "here"]
+    },
+    {
+      en: "Let's move this armchair to the right side.",
+      pt: "Vamos mover esta poltrona para o lado direito.",
+      green: ["move", "armchair", "right side"]
+    },
+    {
+      en: "Please put the desk next to the dresser.",
+      pt: "Por favor, coloque a escrivaninha ao lado da cômoda.",
+      green: ["put", "desk", "dresser"]
+    },
+    {
+      en: "Your bedroom is incredibly tidy, whereas my house is actually quite messy!",
+      pt: "Seu quarto é incrivelmente arrumado, enquanto minha casa é realmente bastante bagunçada!",
+      green: ["bedroom", "tidy", "messy"]
+    },
+    {
+      en: "What a mess! I really need to clean up this kitchen right now.",
+      pt: "Que bagunça! Eu realmente preciso limpar esta cozinha agora mesmo.",
+      green: ["mess", "clean up", "kitchen"]
+    },
+    {
+      en: "Could you explain why you need to move to New York?",
+      pt: "Você poderia explicar por que precisa se mudar para Nova York?",
+      green: ["need to move", "New York"]
+    },
+    {
+      en: "My husband is eager to put a brand new closet in our bedroom.",
+      pt: "Meu marido está ansioso para colocar um guarda-roupa novo no nosso quarto.",
+      green: ["put", "brand new closet", "bedroom"]
+    },
+    {
+      en: "The laptop resting on the desk is unfortunately broken.",
+      pt: "O notebook descansando sobre a escrivaninha está infelizmente quebrado.",
+      green: ["laptop", "desk", "broken"]
+    },
+    {
+      en: "Could you tell me if there is a vegan restaurant near here?",
+      pt: "Você poderia me dizer se há um restaurante vegano perto daqui?",
+      green: ["vegan restaurant", "near here"]
+    },
+    {
+      en: "There are actually several good bookstores located in this mall.",
+      pt: "Na verdade, há várias boas livrarias localizadas neste shopping.",
+      green: ["several", "good bookstores", "mall"]
+    }
+  ];
+
+
   return (
     <div
       className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
@@ -945,32 +1030,48 @@ export default function Lesson61MyHouseRoutine() {
               <h2 className="text-2xl font-bold">🔹 Make it yours!</h2>
               <PencilIcon onClick={() => openNoteModal('Make it yours!')} />
             </div>
-            <div className="text-sm text-green-100">Practice real-life situations</div>
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-green-100 hidden md:block">Practice real-life situations</div>
+              <button
+                onClick={() => setShowMakeItYoursPt(!showMakeItYoursPt)}
+                className="p-1 rounded hover:bg-white/20 transition-colors text-white"
+                title={showMakeItYoursPt ? "Ocultar tradução em português" : "Mostrar tradução em português"}
+              >
+                {showMakeItYoursPt ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
           <div className="p-8">
             <div className="bg-green-50 rounded-[20px] p-6">
+              
+              {/* INSTRUÇÃO EM INGLÊS AQUI */}
+              <div className="mb-6 p-4 bg-white/60 border border-green-200 rounded-xl flex items-start gap-3">
+                <span className="text-xl">💡</span>
+                <p className="text-gray-700 font-medium">
+                  <strong className="text-green-600">Instructions:</strong> Substitute the words highlighted in <span className="text-green-600 font-bold">green</span> with words of your choice to create new sentences in English. Use the eye button at the top to hide the Portuguese translation.
+                </p>
+              </div>
+
               <div className="flex flex-col lg:flex-row gap-8">
                 <div className="lg:w-2/3 space-y-4">
-                  {[
-                    { en: "Move this coffee table to the left, please.", pt: "Mude esta mesa de centro para a esquerda, por favor." },
-                    { en: "Don't put the dirty carpets here, please.", pt: "Não coloque os tapetes sujos aqui, por favor." },
-                    { en: "Let's move this armchair to the right side.", pt: "Vamos mover esta poltrona para o lado direito." },
-                    { en: "Put the desk next to the dresser, please.", pt: "Coloque a escrivaninha ao lado da cômoda, por favor." },
-                    { en: "Your bedroom is so tidy. My house is really messy!", pt: "Seu quarto é tão arrumado. Minha casa é muito bagunçada!" },
-                    { en: "What a mess! I need to clean up this kitchen.", pt: "Que bagunça! Eu preciso limpar esta cozinha." },
-                    { en: "Why do you need to move to New York?", pt: "Por que você precisa se mudar para Nova York?" },
-                    { en: "My husband wants to put a new closet in our bedroom.", pt: "Meu marido quer colocar um guarda-roupa novo no nosso quarto." },
-                    { en: "The laptop on the desk is broken.", pt: "O notebook em cima da escrivaninha está quebrado." },
-                    { en: "Is there a vegan restaurant near here?", pt: "Tem algum restaurante vegano aqui perto?" },
-                    { en: "There are some good bookstores in this mall.", pt: "Tem algumas livrarias boas neste shopping." },
-                  ].map((s, idx) => (
-                    <div key={idx} className="group">
+                  {makeItYoursData.map((s, idx) => (
+                    <div key={idx} className="group bg-white p-4 rounded-xl shadow-sm border border-green-100">
                       <div className="flex items-start">
                         <SpeakSentence text={s.en} className="text-base font-medium">
-                          {idx+1}. {s.en}
+                          {idx+1}. {s.en.split(/(\s+)/).map((word, i) => {
+                            const cleanWord = word.replace(/[.,!?;:]/g, '');
+                            if (s.green.some(gw => cleanWord.toLowerCase() === gw.toLowerCase())) {
+                              return <span key={i} className="text-green-600 font-bold">{word}</span>;
+                            }
+                            return <span key={i}>{word}</span>;
+                          })}
                         </SpeakSentence>
                       </div>
-                      <p className="text-sm text-gray-600 mt-0.5 ml-6">{s.pt}</p>
+                      
+                      {/* TRADUÇÃO CONDICIONAL */}
+                      {showMakeItYoursPt && (
+                        <p className="text-sm text-gray-600 mt-2 ml-6 border-t border-gray-100 pt-2">🇧🇷 {s.pt}</p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1063,6 +1164,17 @@ export default function Lesson61MyHouseRoutine() {
           </button>
         </div>
       </div>
+
+      {/* ===== BOTÃO FLUTUANTE DE ANOTAÇÕES (FIXO NA TELA) ===== */}
+      <button
+        onClick={() => openNoteModal('Anotações Gerais')}
+        className="fixed bottom-6 right-6 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-emerald-800 transition-all duration-300 z-50 flex items-center justify-center"
+        title="Fazer anotações gerais"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+        </svg>
+      </button>
 
       {/* ===== MODAL PARA AMPLIAR A IMAGEM DA GRAMMAR ===== */}
       {isImageModalOpen && (

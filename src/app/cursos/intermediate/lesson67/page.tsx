@@ -1020,10 +1020,10 @@ export default function Lesson67MyStory() {
 
         {/* ===================== NAVIGATION ===================== */}
         <div className="flex justify-center gap-4 mt-8">
-          <button onClick={() => router.push("/cursos/lesson66")} className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors">
+          <button onClick={() => router.push("/cursos/intermediate/lesson66")} className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors">
             &larr; Previous Lesson (66)
           </button>
-          <button onClick={() => router.push("/cursos/lesson68")} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">
+          <button onClick={() => router.push("/cursos/intermediate/lesson68")} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">
             Next Lesson (68) &rarr;
           </button>
         </div>

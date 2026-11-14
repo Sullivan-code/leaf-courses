@@ -17,6 +17,7 @@ import {
   User,
   MessageSquare,
   Instagram,
+  Users,
 } from "lucide-react";
 
 type SectionKey = "listen" | "substitution" | "negative" | "dialogue" | "past" | "tuneIn";
@@ -27,9 +28,15 @@ interface NoteModalState {
   noteContent: string;
 }
 
+interface Character {
+  id: string;
+  name: string;
+  gender: "female" | "male";
+}
+
 interface DialogueLine {
   id: string;
-  character: string;
+  characterId: string;
   text: string;
 }
 
@@ -497,6 +504,19 @@ const KEY_VOCABULARY = [
 ];
 
 // ============================================
+// DEFAULT CHARACTERS + DIALOGUE
+// ============================================
+const DEFAULT_CHARACTERS: Character[] = [
+  { id: "char-1", name: "Sullivan", gender: "male" },
+  { id: "char-2", name: "Student", gender: "female" },
+];
+
+const DEFAULT_DIALOGUE_LINES: DialogueLine[] = [
+  { id: "line-1", characterId: "char-1", text: "Hello! How are you today?" },
+  { id: "line-2", characterId: "char-2", text: "I'm fine, thank you! And you?" },
+];
+
+// ============================================
 // MAIN COMPONENT – LESSON 62
 // ============================================
 export default function Lesson62() {
@@ -532,10 +552,9 @@ export default function Lesson62() {
   const [pastChecked, setPastChecked] = useState<Record<string, boolean>>({});
   const [pastResults, setPastResults] = useState<Record<string, boolean>>({});
 
-  const [dialogueLines, setDialogueLines] = useState<DialogueLine[]>([
-    { id: "line-1", character: "Sullivan", text: "Hello! How are you today?" },
-    { id: "line-2", character: "Student", text: "I'm fine, thank you! And you?" },
-  ]);
+  // ===== DIALOGUE STATE (NEW) =====
+  const [characters, setCharacters] = useState<Character[]>(DEFAULT_CHARACTERS);
+  const [dialogueLines, setDialogueLines] = useState<DialogueLine[]>(DEFAULT_DIALOGUE_LINES);
 
   const [tuneInAnswers, setTuneInAnswers] = useState<Record<string, string>>({});
 
@@ -566,8 +585,45 @@ export default function Lesson62() {
         setPastChecked(data.pastChecked || {});
         setPastResults(data.pastResults || {});
         setSavedNotes(data.savedNotes || {});
-        if (data.dialogueLines) setDialogueLines(data.dialogueLines);
         if (data.tuneInAnswers) setTuneInAnswers(data.tuneInAnswers);
+
+        // ===== CHARACTERS + DIALOGUE (with migration from old format) =====
+        let loadedChars: Character[] = data.characters
+          ? data.characters
+          : [...DEFAULT_CHARACTERS];
+
+        if (data.dialogueLines) {
+          const migratedLines: DialogueLine[] = data.dialogueLines.map(
+            (l: any, idx: number) => {
+              // New format already
+              if (l.characterId) {
+                return {
+                  id: l.id,
+                  characterId: l.characterId,
+                  text: l.text,
+                } as DialogueLine;
+              }
+              // Old format: { id, character, text } → migrate
+              const oldName = l.character || `Speaker ${idx + 1}`;
+              let match = loadedChars.find((c) => c.name === oldName);
+              if (!match) {
+                match = {
+                  id: `char-migrated-${idx}`,
+                  name: oldName,
+                  gender: idx % 2 === 0 ? "female" : "male",
+                };
+                loadedChars.push(match);
+              }
+              return {
+                id: l.id,
+                characterId: match.id,
+                text: l.text || "",
+              } as DialogueLine;
+            }
+          );
+          setDialogueLines(migratedLines);
+        }
+        setCharacters(loadedChars);
       } catch (e) {
         console.error("Erro ao carregar:", e);
       }
@@ -590,6 +646,7 @@ export default function Lesson62() {
           pastChecked,
           pastResults,
           savedNotes,
+          characters,
           dialogueLines,
           tuneInAnswers,
         })
@@ -612,10 +669,8 @@ export default function Lesson62() {
       setPastAnswers({});
       setPastChecked({});
       setPastResults({});
-      setDialogueLines([
-        { id: "line-1", character: "Sullivan", text: "Hello! How are you today?" },
-        { id: "line-2", character: "Student", text: "I'm fine, thank you! And you?" },
-      ]);
+      setCharacters(DEFAULT_CHARACTERS);
+      setDialogueLines(DEFAULT_DIALOGUE_LINES);
       setTuneInAnswers({});
       localStorage.removeItem("lesson62Answers");
     }
@@ -687,10 +742,11 @@ export default function Lesson62() {
       currentIndex: 0,
     },
     {
+      // ===== UPDATED: ATM =====
       key: "sub-3",
-      original: "Is there an electronic box near here? / a shopping mall / a garage sale",
+      original: "Is there an ATM near here? / a shopping mall / a garage sale",
       options: [
-        { label: "an electronic box", replacement: "Is there an electronic box near here?", pt: "Tem uma caixa eletrônica aqui perto?" },
+        { label: "ATM", replacement: "Is there an ATM near here?", pt: "Tem um caixa eletrônico aqui perto?" },
         { label: "a shopping mall", replacement: "Is there a shopping mall near here?", pt: "Tem um shopping aqui perto?" },
         { label: "a garage sale", replacement: "Is there a garage sale near here?", pt: "Tem um bazar/garagem aqui perto?" },
       ],
@@ -838,10 +894,54 @@ export default function Lesson62() {
     setPastChecked((prev) => ({ ...prev, [id]: true }));
   };
 
-  // ============ CREATE A DIALOGUE ============
+  // ============ CHARACTERS (NEW) ============
+  const addCharacter = () => {
+    const newId = `char-${Date.now()}`;
+    setCharacters((prev) => [
+      ...prev,
+      {
+        id: newId,
+        name: `Person ${prev.length + 1}`,
+        gender: prev.length % 2 === 0 ? "female" : "male",
+      },
+    ]);
+  };
+
+  const updateCharacter = (
+    id: string,
+    field: "name" | "gender",
+    value: string
+  ) => {
+    setCharacters((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, [field]: value } : c))
+    );
+  };
+
+  const removeCharacter = (id: string) => {
+    if (characters.length <= 1) return;
+    const remaining = characters.filter((c) => c.id !== id);
+    setCharacters(remaining);
+    // Reassign any lines from the removed character to the first remaining one
+    setDialogueLines((prev) =>
+      prev.map((l) =>
+        l.characterId === id ? { ...l, characterId: remaining[0].id } : l
+      )
+    );
+  };
+
+  const getCharacter = (id: string) => characters.find((c) => c.id === id);
+
+  // ============ DIALOGUE (UPDATED) ============
   const addDialogueLine = () => {
     const newId = `line-${Date.now()}`;
-    setDialogueLines((prev) => [...prev, { id: newId, character: "", text: "" }]);
+    setDialogueLines((prev) => [
+      ...prev,
+      {
+        id: newId,
+        characterId: characters[0]?.id || "char-1",
+        text: "",
+      },
+    ]);
   };
 
   const removeDialogueLine = (id: string) => {
@@ -851,7 +951,7 @@ export default function Lesson62() {
 
   const updateDialogueLine = (
     id: string,
-    field: "character" | "text",
+    field: "characterId" | "text",
     value: string
   ) => {
     setDialogueLines((prev) =>
@@ -860,10 +960,24 @@ export default function Lesson62() {
   };
 
   const speakFullDialogue = () => {
-    speakDialogueAlternating(
-      dialogueLines.map((l) => ({ character: l.character, text: l.text })),
-      0.88
-    );
+    if (typeof window === "undefined") return;
+    window.speechSynthesis.cancel();
+    const { female, male } = getVoices();
+    const valid = dialogueLines.filter((l) => l.text.trim());
+
+    valid.forEach((line) => {
+      const char = getCharacter(line.characterId);
+      const gender = char?.gender || "female";
+      const voice = gender === "female" ? female : male;
+      const utterance = new SpeechSynthesisUtterance(
+        `${char?.name || "Speaker"}: ${line.text}`
+      );
+      utterance.lang = "en-US";
+      utterance.rate = 0.88;
+      utterance.pitch = gender === "female" ? 1.05 : 0.95;
+      if (voice) utterance.voice = voice;
+      window.speechSynthesis.speak(utterance);
+    });
   };
 
   // ============ TUNE IN HANDLERS ============
@@ -874,7 +988,7 @@ export default function Lesson62() {
   const legoImage =
     "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/ChatGPT%20Image%2027%20de%20set.%20de%202026%2C%2000_46_46.png";
 
-  // ============ ÁUDIO DO TUNE IN (ATUALIZADO) ============
+  // ============ ÁUDIO DO TUNE IN ============
   const tuneInAudio =
     "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/Record%20(online-voice-recorder.com)%20(6).mp3";
 
@@ -1175,7 +1289,7 @@ export default function Lesson62() {
         </div>
 
         {/* ============================================== */}
-        {/* SEÇÃO 4 – CREATE A DIALOGUE */}
+        {/* SEÇÃO 4 – CREATE A DIALOGUE (UPDATED) */}
         {/* ============================================== */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
@@ -1240,10 +1354,107 @@ export default function Lesson62() {
                 💬 Create your own dialogue with a teacher or another student. Add as many lines as you want.
               </SpeakSentence>
 
-              {/* DIÁLOGO */}
+              {/* ===== CHARACTERS MANAGEMENT (NEW) ===== */}
+              <div className="bg-indigo-50 rounded-2xl p-6 mb-6 border-2 border-indigo-200">
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+                  <div className="flex items-center gap-2">
+                    <Users size={22} className="text-indigo-700" />
+                    <h4 className="font-bold text-indigo-800 text-lg">
+                      Characters
+                    </h4>
+                    <span className="text-xs bg-indigo-200 text-indigo-800 px-2 py-1 rounded-full font-semibold">
+                      {characters.length}
+                    </span>
+                  </div>
+                  <button
+                    onClick={addCharacter}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-full transition text-sm flex items-center gap-2"
+                  >
+                    <Plus size={16} />
+                    Add Character
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {characters.map((char) => (
+                    <div
+                      key={char.id}
+                      className={`bg-white p-3 rounded-xl border-2 flex flex-col md:flex-row gap-3 items-stretch md:items-center ${
+                        char.gender === "female"
+                          ? "border-pink-300"
+                          : "border-blue-300"
+                      }`}
+                    >
+                      <div className="flex-1 flex items-center gap-2">
+                        <User
+                          size={16}
+                          className={
+                            char.gender === "female"
+                              ? "text-pink-500"
+                              : "text-blue-500"
+                          }
+                        />
+                        <input
+                          type="text"
+                          value={char.name}
+                          onChange={(e) =>
+                            updateCharacter(char.id, "name", e.target.value)
+                          }
+                          placeholder="Character name"
+                          className="flex-1 p-2 border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-400 outline-none text-sm font-medium"
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() =>
+                            updateCharacter(char.id, "gender", "female")
+                          }
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold transition ${
+                            char.gender === "female"
+                              ? "bg-pink-500 text-white shadow-md"
+                              : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                          }`}
+                          title="Feminine voice"
+                        >
+                          👩 Female
+                        </button>
+                        <button
+                          onClick={() =>
+                            updateCharacter(char.id, "gender", "male")
+                          }
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold transition ${
+                            char.gender === "male"
+                              ? "bg-blue-500 text-white shadow-md"
+                              : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                          }`}
+                          title="Masculine voice"
+                        >
+                          👨 Male
+                        </button>
+                        <button
+                          onClick={() => removeCharacter(char.id)}
+                          disabled={characters.length <= 1}
+                          className={`p-1.5 rounded transition ${
+                            characters.length <= 1
+                              ? "text-gray-300 cursor-not-allowed"
+                              : "text-red-500 hover:bg-red-50"
+                          }`}
+                          title="Remove character"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ===== DIALOGUE LINES (UPDATED) ===== */}
               <div className="bg-green-50 rounded-2xl p-6 space-y-4">
                 {dialogueLines.map((line, index) => {
-                  const isFemale = index % 2 === 0;
+                  const char = getCharacter(line.characterId);
+                  const isFemale = char?.gender === "female";
                   return (
                     <div
                       key={line.id}
@@ -1270,20 +1481,39 @@ export default function Lesson62() {
                       </div>
 
                       <div className="flex flex-col md:flex-row gap-3">
-                        <div className="md:w-48 flex items-center gap-2 bg-green-50 rounded-lg px-3 py-2">
-                          <User size={16} className="text-green-600 flex-shrink-0" />
-                          <input
-                            type="text"
-                            value={line.character}
-                            onChange={(e) =>
-                              updateDialogueLine(line.id, "character", e.target.value)
+                        {/* Character selector */}
+                        <div className="md:w-52 flex items-center gap-2 bg-green-50 rounded-lg px-3 py-2">
+                          <User
+                            size={16}
+                            className={
+                              isFemale ? "text-pink-500" : "text-blue-500"
                             }
-                            placeholder="Character name"
-                            className="flex-1 bg-transparent outline-none text-sm font-medium text-green-700 placeholder-green-400"
                           />
+                          <select
+                            value={line.characterId}
+                            onChange={(e) =>
+                              updateDialogueLine(
+                                line.id,
+                                "characterId",
+                                e.target.value
+                              )
+                            }
+                            className="flex-1 bg-transparent outline-none text-sm font-medium text-green-700 cursor-pointer"
+                          >
+                            {characters.map((c) => (
+                              <option key={c.id} value={c.id}>
+                                {c.name} ({c.gender === "female" ? "F" : "M"})
+                              </option>
+                            ))}
+                          </select>
                         </div>
+
+                        {/* Text input */}
                         <div className="flex-1 flex items-center gap-2 bg-green-50 rounded-lg px-3 py-2">
-                          <MessageSquare size={16} className="text-green-600 flex-shrink-0" />
+                          <MessageSquare
+                            size={16}
+                            className="text-green-600 flex-shrink-0"
+                          />
                           <input
                             type="text"
                             value={line.text}
@@ -1294,12 +1524,14 @@ export default function Lesson62() {
                             className="flex-1 bg-transparent outline-none text-sm text-gray-700"
                           />
                         </div>
+
+                        {/* Speaker button */}
                         <button
                           onClick={() =>
                             speakEnglish(
                               line.text || "",
                               0.85,
-                              isFemale ? "female" : "male"
+                              char?.gender || "female"
                             )
                           }
                           disabled={!line.text.trim()}
@@ -1339,8 +1571,18 @@ export default function Lesson62() {
               <div className="mt-6 bg-green-100 p-4 rounded-lg border border-green-300">
                 <h4 className="font-bold text-green-800 mb-2">💡 Tips:</h4>
                 <ul className="text-sm text-green-700 space-y-1 list-disc pl-5">
+                  <li>
+                    Add more characters with the <strong>Add Character</strong>{" "}
+                    button and toggle their gender (👩 Female / 👨 Male).
+                  </li>
+                  <li>
+                    Each dialogue line uses the voice of the selected character.
+                  </li>
                   <li>Use "There is / There are" to describe what exists.</li>
-                  <li>Practice "Put away", "Move", "Is there...?", "There aren't...".</li>
+                  <li>
+                    Practice "Put away", "Move", "Is there...?", "There
+                    aren't...".
+                  </li>
                   <li>Add at least 4 lines to have a complete dialogue.</li>
                   <li>Click the 🔊 icon to hear each line.</li>
                 </ul>
@@ -1368,7 +1610,6 @@ export default function Lesson62() {
 
           {openDrills.past && (
             <div className="p-8" style={{ animation: "fadeIn 0.3s ease-out" }}>
-              {/* IMAGEM GRANDE DA TABELA DE VERBOS NO PASSADO */}
               <div
                 className="relative w-full mb-8 rounded-2xl overflow-hidden border-4 border-green-400 shadow-lg cursor-pointer bg-white"
                 onClick={() => {
@@ -1471,10 +1712,19 @@ export default function Lesson62() {
               <div className="mt-6 bg-green-100 p-4 rounded-lg border border-green-300">
                 <h4 className="font-bold text-green-800 mb-2">💡 Tips:</h4>
                 <ul className="text-sm text-green-700 space-y-1 list-disc pl-5">
-                  <li>Use the simple past: <strong>was / were</strong> for "there is / there are".</li>
-                  <li>Regular verbs: <strong>move → moved</strong>, <strong>put → put</strong> (irregular, same form).</li>
+                  <li>
+                    Use the simple past: <strong>was / were</strong> for "there
+                    is / there are".
+                  </li>
+                  <li>
+                    Regular verbs: <strong>move → moved</strong>,{" "}
+                    <strong>put → put</strong> (irregular, same form).
+                  </li>
                   <li>Click 🔊 to hear the sentence in the past.</li>
-                  <li>Pay attention to time expressions like <em>last week</em>, <em>yesterday</em>.</li>
+                  <li>
+                    Pay attention to time expressions like <em>last week</em>,{" "}
+                    <em>yesterday</em>.
+                  </li>
                 </ul>
               </div>
             </div>
@@ -1504,7 +1754,6 @@ export default function Lesson62() {
                 🔊 Repetition Practice — My House
               </h3>
 
-              {/* ÁUDIO PRINCIPAL DO TUNE IN (ATUALIZADO) */}
               <div className="bg-green-100 rounded-2xl p-6 mb-6 border-2 border-green-300 flex flex-col items-center gap-3">
                 <p className="text-sm text-green-800 font-semibold">
                   🎧 Listen to the full audio for this section:
@@ -1512,7 +1761,6 @@ export default function Lesson62() {
                 <AudioPlayer src={tuneInAudio} />
               </div>
 
-              {/* TEXTO EM INGLÊS COM PALAVRAS DESTACADAS */}
               <div className="bg-green-50 rounded-2xl p-6 mb-6 border border-green-200">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="font-bold text-green-800 text-lg">
@@ -1567,7 +1815,6 @@ export default function Lesson62() {
                 </div>
               </div>
 
-              {/* TRADUÇÃO EM PORTUGUÊS */}
               <div className="bg-blue-50 rounded-2xl p-6 mb-6 border border-blue-200">
                 <h4 className="font-bold text-blue-800 text-lg mb-4">
                   🇧🇷 Tradução
@@ -1613,7 +1860,6 @@ export default function Lesson62() {
                 </div>
               </div>
 
-              {/* NOVA SEÇÃO: KEY VOCABULARY FROM THE AUDIO */}
               <div className="bg-teal-50 rounded-2xl p-6 mb-6 border border-teal-200">
                 <h4 className="font-bold text-teal-800 text-lg mb-4 flex items-center gap-2">
                   📚 Key Vocabulary from the Audio
@@ -1644,7 +1890,6 @@ export default function Lesson62() {
                 </div>
               </div>
 
-              {/* PERGUNTAS */}
               <div className="bg-purple-50 rounded-2xl p-6 border border-purple-200">
                 <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                   <h4 className="font-bold text-purple-800 text-lg">
@@ -1703,7 +1948,6 @@ export default function Lesson62() {
                 </div>
               </div>
 
-              {/* DICAS */}
               <div className="mt-6 bg-green-100 p-4 rounded-lg border border-green-300">
                 <h4 className="font-bold text-green-800 mb-2">💡 Tips:</h4>
                 <ul className="text-sm text-green-700 space-y-1 list-disc pl-5">
@@ -1726,13 +1970,13 @@ export default function Lesson62() {
         {/* ============ NAVEGAÇÃO ============ */}
         <div className="flex justify-center gap-4 mt-8">
           <button
-            onClick={() => router.push("/cursos/lesson61")}
+            onClick={() => router.push("/cursos/intermediate/lesson61")}
             className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
           >
             &larr; Previous Lesson (61)
           </button>
           <button
-            onClick={() => router.push("/cursos/lesson63")}
+            onClick={() => router.push("/cursos/intermediate/lesson63")}
             className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
           >
             Next Lesson (63) &rarr;
@@ -1763,6 +2007,7 @@ export default function Lesson62() {
       )}
 
       <NoteModal
+        key={noteModal.sectionTitle}
         isOpen={noteModal.isOpen}
         onClose={() => setNoteModal((prev) => ({ ...prev, isOpen: false }))}
         sectionTitle={noteModal.sectionTitle}

@@ -1345,13 +1345,13 @@ export default function Lesson64() {
         {/* ============ NAVEGAÇÃO ============ */}
         <div className="flex justify-center gap-4 mt-8">
           <button
-            onClick={() => router.push("/cursos/lesson63")}
+            onClick={() => router.push("/cursos/intermediate/lesson63")}
             className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
           >
             &larr; Previous Lesson (63)
           </button>
           <button
-            onClick={() => router.push("/cursos/lesson65")}
+            onClick={() => router.push("/cursos/intermediate/lesson65")}
             className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
           >
             Next Lesson (65) &rarr;

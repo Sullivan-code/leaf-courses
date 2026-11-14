@@ -314,7 +314,8 @@ export default function Lesson65LostAndFound() {
   const readingImage = "https://images.pexels.com/photos/7147017/pexels-photo-7147017.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   const placesImage = "https://images.pexels.com/photos/8386403/pexels-photo-8386403.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   const digitalImage = "https://images.pexels.com/photos/4065876/pexels-photo-4065876.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
-  const grammarImage = "https://images.pexels.com/photos/6980691/pexels-photo-6980691.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+  // NOVA IMAGEM DA GRAMMAR
+  const grammarImage = "https://images.pexels.com/photos/4144923/pexels-photo-4144923.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
 
   // ---------- VERBS ----------
   const verbsSubstitution: SubstitutionExercise[] = [
@@ -569,6 +570,17 @@ export default function Lesson65LostAndFound() {
       ],
       currentIndex: 0,
     },
+    // ===== NOVO CARD (TERCEIRO) – LOST + WILL =====
+    {
+      key: "grammar-2b",
+      original: "Ela perdeu as chaves dela, mas ela vai encontrá-las logo. / ele / eles",
+      options: [
+        { label: "ela", replacement: "She lost her keys, but she will find them soon.", pt: "Ela perdeu as chaves dela, mas ela vai encontrá-las logo." },
+        { label: "ele", replacement: "He lost his keys, but he will find them soon.", pt: "Ele perdeu as chaves dele, mas ele vai encontrá-las logo." },
+        { label: "eles", replacement: "They lost their keys, but they will find them soon.", pt: "Eles perderam as chaves deles, mas eles vão encontrá-las logo." }
+      ],
+      currentIndex: 0,
+    },
     {
       key: "grammar-3",
       original: "Onde está a chave da porta da frente? Não consigo encontrá-la em lugar nenhum na minha bolsa. / carregador / fone",
@@ -609,6 +621,17 @@ export default function Lesson65LostAndFound() {
       ],
       currentIndex: 0,
     },
+    // ===== NOVO CARD (MEIO) – FOUND =====
+    {
+      key: "grammar-6b",
+      original: "Eu encontrei seu passaporte atrás da porta do quarto esta manhã. / identidade / carteira de habilitação",
+      options: [
+        { label: "passaporte", replacement: "I found your passport behind the bedroom door this morning.", pt: "Eu encontrei seu passaporte atrás da porta do quarto esta manhã." },
+        { label: "identidade", replacement: "I found your ID behind the bedroom door this morning.", pt: "Eu encontrei sua identidade atrás da porta do quarto esta manhã." },
+        { label: "carteira", replacement: "I found your driver's license behind the bedroom door this morning.", pt: "Eu encontrei sua carteira de habilitação atrás da porta do quarto esta manhã." }
+      ],
+      currentIndex: 0,
+    },
     {
       key: "grammar-7",
       original: "As chaves reservas estão na gaveta da cozinha, logo ao lado da pia. / remédios / passaportes",
@@ -639,6 +662,17 @@ export default function Lesson65LostAndFound() {
       ],
       currentIndex: 0,
     },
+    // ===== NOVO CARD (MEIO/AVANÇADO) – LOST + WILL + FIND IT/THEM =====
+    {
+      key: "grammar-9b",
+      original: "Ele perdeu o crachá dele, mas ele vai encontrá-lo antes da reunião. / ela / eles",
+      options: [
+        { label: "ele", replacement: "He lost his name tag, but he will find it before the meeting.", pt: "Ele perdeu o crachá dele, mas ele vai encontrá-lo antes da reunião." },
+        { label: "ela", replacement: "She lost her name tag, but she will find it before the meeting.", pt: "Ela perdeu o crachá dela, mas ela vai encontrá-lo antes da reunião." },
+        { label: "eles", replacement: "They lost their name tags, but they will find them before the meeting.", pt: "Eles perderam os crachás deles, mas eles vão encontrá-los antes da reunião." }
+      ],
+      currentIndex: 0,
+    },
     {
       key: "grammar-10",
       original: "Estes são meus novos colegas de quarto. Você os conhece do prédio? / professores / advogados",
@@ -666,6 +700,28 @@ export default function Lesson65LostAndFound() {
         { label: "França", replacement: "I got completely lost in France when I was trying to find my hotel.", pt: "Eu me perdi completamente na França quando estava tentando encontrar meu hotel." },
         { label: "Europa", replacement: "I got completely lost in Europe when I was trying to find my hotel.", pt: "Eu me perdi completamente na Europa quando estava tentando encontrar meu hotel." },
         { label: "Estados Unidos", replacement: "I got completely lost in the United States when I was trying to find my hotel.", pt: "Eu me perdi completamente nos Estados Unidos quando estava tentando encontrar meu hotel." }
+      ],
+      currentIndex: 0,
+    },
+    // ===== NOVO CARD (FINAL) – FOUND =====
+    {
+      key: "grammar-12b",
+      original: "Eu encontrei seu carregador no sofá da sala no final do dia. / óculos / chaves",
+      options: [
+        { label: "carregador", replacement: "I found your charger on the living room couch at the end of the day.", pt: "Eu encontrei seu carregador no sofá da sala no final do dia." },
+        { label: "óculos", replacement: "I found your glasses on the living room couch at the end of the day.", pt: "Eu encontrei seus óculos no sofá da sala no final do dia." },
+        { label: "chaves", replacement: "I found your keys on the living room couch at the end of the day.", pt: "Eu encontrei suas chaves no sofá da sala no final do dia." }
+      ],
+      currentIndex: 0,
+    },
+    // ===== NOVO CARD (FINAL) – LOST + WILL =====
+    {
+      key: "grammar-12c",
+      original: "Nós perdemos o mapa, mas nós vamos encontrar o caminho para o hotel. / eles / ela",
+      options: [
+        { label: "nós", replacement: "We lost the map, but we will find the way to the hotel.", pt: "Nós perdemos o mapa, mas nós vamos encontrar o caminho para o hotel." },
+        { label: "eles", replacement: "They lost the map, but they will find the way to the hotel.", pt: "Eles perderam o mapa, mas eles vão encontrar o caminho para o hotel." },
+        { label: "ela", replacement: "She lost the map, but she will find the way to the hotel.", pt: "Ela perdeu o mapa, mas ela vai encontrar o caminho para o hotel." }
       ],
       currentIndex: 0,
     }
@@ -731,7 +787,8 @@ export default function Lesson65LostAndFound() {
           <SpeakSentence text="Learn how to talk about losing and finding things, and everyday vocabulary for daily life." className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
             📚 Learn how to talk about losing and finding things, and everyday vocabulary.
           </SpeakSentence>
-          <div className="w-64 h-64 mx-auto">
+          {/* IMAGEM PRINCIPAL – MENOR E MAIS PARA BAIXO */}
+          <div className="w-40 h-40 mx-auto mt-12">
             <img
               src={mainImage}
               alt="Lost and Found"
@@ -917,7 +974,9 @@ export default function Lesson65LostAndFound() {
             <div className="bg-green-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
               {[
                 { en: "Could you give me a hand? I can't seem to find my ID.", pt: "Você pode me dar uma mão? Eu não consigo encontrar minha identidade." },
+                { en: "She lost her keys, but she will find them soon.", pt: "Ela perdeu as chaves dela, mas ela vai encontrá-las." },
                 { en: "I must have left my charger behind. Let me track it down.", pt: "Eu devo ter deixado meu carregador para trás. Deixe-me rastreá-lo." },
+                { en: "I found your wallet under my bed at the end of the day.", pt: "Eu encontrei sua carteira debaixo da minha cama no final do dia." },
                 { en: "Let's help him track down his keys before he loses his mind.", pt: "Vamos ajudá-lo a rastrear as chaves dele antes que ele perca a cabeça." },
                 { en: "I'm trying really hard not to lose my temper.", pt: "Eu estou me esforçando muito para não perder a paciência." },
                 { en: "Where are my keys? They are nowhere to be found.", pt: "Onde estão minhas chaves? Elas não estão em lugar nenhum." },
@@ -1049,10 +1108,10 @@ export default function Lesson65LostAndFound() {
 
         {/* ===================== NAVIGATION ===================== */}
         <div className="flex justify-center gap-4 mt-8">
-          <button onClick={() => router.push("/cursos/lesson64")} className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors">
+          <button onClick={() => router.push("/cursos/intermediate/lesson64")} className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors">
             &larr; Previous Lesson (64)
           </button>
-          <button onClick={() => router.push("/cursos/lesson66")} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">
+          <button onClick={() => router.push("/cursos/intermediate/lesson66")} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-full transition-colors">
             Next Lesson (66) &rarr;
           </button>
         </div>

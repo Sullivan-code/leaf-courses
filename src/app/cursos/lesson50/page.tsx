@@ -30,7 +30,7 @@ const grammarExplanation = {
 };
 
 // ============================================
-// SPEAK RIGHT NOW - DESCRIBING PEOPLE (9 SITUATIONS)
+// SPEAK RIGHT NOW - DESCRIBING PEOPLE (8 SITUATIONS)
 // ============================================
 const speakRightNowItems = [
   {
@@ -70,18 +70,10 @@ const speakRightNowItems = [
   {
     id: 5,
     image: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=500&auto=format",
-    alt: "Person wearing a pink dress",
-    description: "pink dress",
+    alt: "Person wearing a white dress",
+    description: "white dress",
     pronoun: "She",
-    example: "She is wearing a pink dress."
-  },
-  {
-    id: 6,
-    image: "https://images.unsplash.com/photo-1529333166437-77579a9dd4c6?w=500&auto=format",
-    alt: "People wearing casual clothes",
-    description: "casual clothes (t-shirt + shorts)",
-    pronoun: "They",
-    example: "They are wearing casual clothes."
+    example: "She is wearing a white dress."
   },
   {
     id: 7,
@@ -262,7 +254,8 @@ export default function Lesson50() {
     grammarTime: true,
     practiceB: true,
     practiceC: true,
-    speaking: true
+    speaking: true,
+    tuneIn: true
   });
 
   // Exercise states
@@ -273,7 +266,9 @@ export default function Lesson50() {
   const [speakingOutput, setSpeakingOutput] = useState("");
 
   // Speak Right Now - user created sentences
-  const [userSentences, setUserSentences] = useState<Record<number, string>>({});
+  const [userSentences, setUserSentences] = useState<Record<number, string>>({
+    1: "He's wearing a white T-shirt" // Pre-filled as requested
+  });
 
   // Audio helper
   const speakWord = (text: string) => {
@@ -298,7 +293,7 @@ export default function Lesson50() {
         setAnswerResults(data.answerResults || {});
         setShowAnswerResults(data.showAnswerResults || {});
         setPersonalAnswers(data.personalAnswers || {});
-        setUserSentences(data.userSentences || {});
+        setUserSentences(data.userSentences || { 1: "He's wearing a white T-shirt" });
         setSpeakingOutput(data.speakingOutput || "");
         if (data.sections) setSections(data.sections);
         console.log("✅ Lesson 50 data loaded");
@@ -328,7 +323,7 @@ export default function Lesson50() {
       setAnswerResults({});
       setShowAnswerResults({});
       setPersonalAnswers({});
-      setUserSentences({});
+      setUserSentences({ 1: "He's wearing a white T-shirt" });
       setSpeakingOutput("");
       localStorage.removeItem("lesson50Answers");
       alert("✅ Cleared!");
@@ -539,6 +534,32 @@ export default function Lesson50() {
             <div className="p-8">
               <p className="mb-4">Use: <strong>There was / There were / There wasn't / There weren't</strong>. Example: <em>There was a restaurant near my house. There were many people. There wasn't any music. There weren't enough tables.</em></p>
               <textarea rows={6} className="w-full p-4 border rounded-2xl" placeholder="Tell about a place you visited..." value={speakingOutput} onChange={(e) => setSpeakingOutput(e.target.value)} />
+            </div>
+          )}
+        </div>
+
+        {/* ========== TUNE IN YOUR EARS ========== */}
+        <div className="bg-sky-50 border-2 border-sky-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-sky-600 text-white py-4 px-8 flex items-center justify-between">
+            <h2 className="text-2xl font-bold">🎧 TUNE IN YOUR EARS – Everyday English</h2>
+            <button onClick={() => toggleSection('tuneIn')} className="ml-4 p-2 rounded-full hover:bg-sky-700">
+              {sections.tuneIn ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+            </button>
+          </div>
+          {sections.tuneIn && (
+            <div className="p-8">
+              <p className="text-gray-700 mb-4">Listen to the text below. It's an everyday story (A2/B1 level) to help you practice your listening skills.</p>
+              <div className="bg-white p-6 rounded-2xl shadow-md border border-sky-100">
+                <p className="text-lg leading-relaxed text-gray-800 mb-6">
+                  Last weekend, I went shopping with my sister because she needed a new outfit for a job interview. She wanted something professional but comfortable. First, we looked at some blouses, but they were too expensive. Then, she tried on a beautiful blue suit. It fit perfectly! However, there was a problem: there weren't any matching shoes in her size. We walked around the mall for an hour. Finally, we found a great pair of black flats on sale. She bought the suit and the shoes. There was a big smile on her face. Now, she feels confident and ready for her interview.
+                </p>
+                <button
+                  onClick={() => speakWord("Last weekend, I went shopping with my sister because she needed a new outfit for a job interview. She wanted something professional but comfortable. First, we looked at some blouses, but they were too expensive. Then, she tried on a beautiful blue suit. It fit perfectly! However, there was a problem: there weren't any matching shoes in her size. We walked around the mall for an hour. Finally, we found a great pair of black flats on sale. She bought the suit and the shoes. There was a big smile on her face. Now, she feels confident and ready for her interview.")}
+                  className="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-full transition font-semibold shadow-md"
+                >
+                  <Volume2 size={20} /> Listen to the text
+                </button>
+              </div>
             </div>
           )}
         </div>

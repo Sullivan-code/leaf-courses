@@ -46,6 +46,7 @@ interface SubstitutionExercise {
   original: string;
   options: OptionType[];
   currentIndex: number;
+  readTense?: "present" | "past";
 }
 
 // ============================================
@@ -95,15 +96,32 @@ const speakEnglish = (text: string, rate = 0.9) => {
 };
 
 // ============================================
+// READ PRONUNCIATION HELPER
+// ============================================
+// "read" no presente → /riːd/ ("reed")
+// "read" no passado → /rɛd/  ("red")
+const pronounceRead = (text: string, tense: "present" | "past") => {
+  const replacement = tense === "present" ? "reed" : "red";
+  return text.replace(/\bread\b/gi, (match) => {
+    if (match === "Read")
+      return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+    if (match === "READ") return replacement.toUpperCase();
+    return replacement;
+  });
+};
+
+// ============================================
 // SPEAK BUTTON
 // ============================================
 const SpeakBtn = ({
   text,
+  speech,
   children,
   className = "",
   rate = 0.9,
 }: {
   text: string;
+  speech?: string;
   children?: React.ReactNode;
   className?: string;
   rate?: number;
@@ -111,7 +129,7 @@ const SpeakBtn = ({
   <button
     onClick={(e) => {
       e.stopPropagation();
-      speakEnglish(text, rate);
+      speakEnglish(speech || text, rate);
     }}
     className={`inline-flex items-center gap-1 cursor-pointer hover:bg-amber-100 px-1 rounded transition-colors group text-left ${className}`}
     title="Click to hear American pronunciation"
@@ -129,10 +147,12 @@ const SpeakBtn = ({
 // ============================================
 const SpeakSentence = ({
   text,
+  speech,
   children,
   className = "",
 }: {
   text: string;
+  speech?: string;
   children?: React.ReactNode;
   className?: string;
 }) => {
@@ -141,7 +161,8 @@ const SpeakSentence = ({
       onClick={(e) => {
         e.stopPropagation();
         const speechText =
-          children && typeof children === "string" ? children : text;
+          speech ||
+          (children && typeof children === "string" ? children : text);
         speakEnglish(speechText, 0.85);
       }}
       className={`group cursor-pointer hover:bg-red-50 px-1 rounded transition-colors text-left w-full ${className}`}
@@ -289,6 +310,7 @@ function SubstitutionOptions({
   onOptionClick: (key: string, index: number) => void;
 }) {
   const [showEnglish, setShowEnglish] = useState(true);
+  const tense = exercise.readTense || "present";
 
   const isObjectOption = (
     opt: OptionType
@@ -338,6 +360,7 @@ function SubstitutionOptions({
         <div className="mb-3 p-3 bg-gradient-to-r from-red-50 to-amber-50 rounded-md border border-red-200">
           <SpeakSentence
             text={currentSentence}
+            speech={pronounceRead(currentSentence, tense)}
             className="text-red-800 font-medium"
           >
             {currentSentence}
@@ -356,7 +379,10 @@ function SubstitutionOptions({
             key={index}
             onClick={() => {
               onOptionClick(exercise.key, index);
-              speakEnglish(getOptionReplacement(option), 0.9);
+              speakEnglish(
+                pronounceRead(getOptionReplacement(option), tense),
+                0.9
+              );
             }}
             className={`px-3 py-1.5 rounded-md text-sm font-semibold transition ${
               exercise.currentIndex === index
@@ -402,7 +428,7 @@ const NATIVE_PHRASES = [
   },
   {
     en: "This website is always the first one to bring the latest breaking news.",
-    pt: "Este site é sempre o primeiro a trazer as últimas notícias de última hora.",
+    pt: "Este site é sempre o primeiro a trazer as últimas notícias quentes.",
     green: ["website", "first", "latest", "breaking", "news"],
   },
   {
@@ -416,22 +442,32 @@ const LANGUAGE_FUNCTIONS = [
   {
     direct: "Do you prefer tabloids or more serious news?",
     reported: "He asked me if I preferred tabloids or more serious news.",
+    directTense: "present" as const,
+    reportedTense: "past" as const,
   },
   {
     direct: "Is the information confidential or not?",
     reported: "They asked me whether the information was confidential or not.",
+    directTense: "present" as const,
+    reportedTense: "past" as const,
   },
   {
     direct: "What are the tabloids going to convey?",
     reported: "She wondered what the tabloids were going to convey.",
+    directTense: "present" as const,
+    reportedTense: "past" as const,
   },
   {
     direct: "Why do you read such sensationalist news?",
     reported: "She asked me why I read such sensationalist news.",
+    directTense: "present" as const,
+    reportedTense: "past" as const,
   },
   {
     direct: "Can you tell who the stalker is?",
     reported: "He wanted to know if I could tell who the stalker was.",
+    directTense: "present" as const,
+    reportedTense: "past" as const,
   },
 ];
 
@@ -491,6 +527,7 @@ const OPEN_DRILLS: SubstitutionExercise[] = [
       },
     ],
     currentIndex: 0,
+    readTense: "past",
   },
   {
     key: "drill-4",
@@ -525,6 +562,7 @@ const OPEN_DRILLS: SubstitutionExercise[] = [
       },
     ],
     currentIndex: 0,
+    readTense: "present",
   },
   {
     key: "drill-6",
@@ -942,8 +980,9 @@ export default function Lesson1NewsMedia() {
         >
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <p className="text-red-700 italic">
-              <SpeakBtn text="Click on each verb to hear the pronunciation.">
-                🎧 Click on each verb to hear the pronunciation.
+              <SpeakBtn text="Click on each verb, past form, or participle to hear the pronunciation.">
+                🎧 Click on each verb, past form, or participle to hear the
+                pronunciation.
               </SpeakBtn>
             </p>
             <button
@@ -975,13 +1014,24 @@ export default function Lesson1NewsMedia() {
                 >
                   {v.base}
                 </SpeakBtn>
-                <div className="text-sm text-gray-600 mt-2">
+                <div className="text-sm text-gray-600 mt-2 space-y-0.5">
                   <div>
-                    Past: <span className="font-semibold">{v.past}</span>
+                    Past:{" "}
+                    <SpeakBtn
+                      text={v.past}
+                      className="font-semibold text-red-700"
+                    >
+                      {v.past}
+                    </SpeakBtn>
                   </div>
                   <div>
                     Participle:{" "}
-                    <span className="font-semibold">{v.participle}</span>
+                    <SpeakBtn
+                      text={v.participle}
+                      className="font-semibold text-red-700"
+                    >
+                      {v.participle}
+                    </SpeakBtn>
                   </div>
                   {showVerbTranslation && (
                     <div className="mt-1 text-amber-800 italic">{v.pt}</div>
@@ -1074,7 +1124,11 @@ export default function Lesson1NewsMedia() {
                     Direct
                   </span>
                   <div>
-                    <SpeakBtn text={f.direct} className="text-gray-800">
+                    <SpeakBtn
+                      text={f.direct}
+                      speech={pronounceRead(f.direct, f.directTense)}
+                      className="text-gray-800"
+                    >
                       {f.direct}
                     </SpeakBtn>
                   </div>
@@ -1086,6 +1140,7 @@ export default function Lesson1NewsMedia() {
                   <div>
                     <SpeakBtn
                       text={f.reported}
+                      speech={pronounceRead(f.reported, f.reportedTense)}
                       className="text-red-800 font-semibold"
                     >
                       {f.reported}
@@ -1450,7 +1505,7 @@ export default function Lesson1NewsMedia() {
             ← Back to Courses
           </button>
           <button
-            onClick={() => router.push("/cursos/lesson2")}
+            onClick={() => router.push("/cursos/advanced/lesson182")}
             className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-8 rounded-full transition"
           >
             Next Lesson (2) →
@@ -1459,7 +1514,7 @@ export default function Lesson1NewsMedia() {
 
         <footer className="text-center text-xs text-red-800/70 mt-10">
           <p>
-            Lesson 1 – News & Media · Answers auto-saved in your browser
+            Lesson 181 – News & Media · Answers auto-saved in your browser
             localStorage.
           </p>
         </footer>

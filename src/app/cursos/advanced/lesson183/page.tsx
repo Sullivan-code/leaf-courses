@@ -62,8 +62,9 @@ const HERO_IMAGE =
 const NEWS_BACKGROUND =
   "https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg?auto=compress&cs=tinysrgb&w=1920&q=80";
 
+// ✅ NOVA IMAGEM DO REAL LIFE
 const REAL_LIFE_IMAGE =
-  "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/181REALLIFE.png";
+  "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/Confian%C3%A7a%20Cega%2C%20Not%C3%ADcias%20Falsas.png";
 
 const REAL_LIFE_AUDIO =
   "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/L183-reallife%20(online-audio-converter.com).mp3";
@@ -510,21 +511,21 @@ const OPEN_DRILLS: SubstitutionExercise[] = [
   },
   {
     key: "drill-3",
-    original: "We recommend that you don’t share fake news.",
+    original: "We recommend that you don't share fake news.",
     options: [
       {
         label: "outdated news",
-        replacement: "We recommend that you don’t share outdated news.",
+        replacement: "We recommend that you don't share outdated news.",
         pt: "Nós recomendamos que você não compartilhe notícias desatualizadas.",
       },
       {
         label: "the source",
-        replacement: "We recommend that you don’t share the source.",
+        replacement: "We recommend that you don't share the source.",
         pt: "Nós recomendamos que você não compartilhe a fonte.",
       },
       {
         label: "unverified information",
-        replacement: "We recommend that you don’t share unverified information.",
+        replacement: "We recommend that you don't share unverified information.",
         pt: "Nós recomendamos que você não compartilhe informações não verificadas.",
       },
     ],
@@ -544,21 +545,21 @@ const OPEN_DRILLS: SubstitutionExercise[] = [
   },
   {
     key: "drill-5",
-    original: "He didn’t tell me if his boss had a bias against that story or not.",
+    original: "He didn't tell me if his boss had a bias against that story or not.",
     options: [
       {
         label: "report",
-        replacement: "He didn’t tell me if his boss had a bias against that report or not.",
+        replacement: "He didn't tell me if his boss had a bias against that report or not.",
         pt: "Ele não me disse se seu chefe tinha um viés contra aquele relatório ou não.",
       },
       {
         label: "theory",
-        replacement: "He didn’t tell me if his boss had a bias against that theory or not.",
+        replacement: "He didn't tell me if his boss had a bias against that theory or not.",
         pt: "Ele não me disse se seu chefe tinha um viés contra aquela teoria ou não.",
       },
       {
         label: "investigation",
-        replacement: "He didn’t tell me if his boss had a bias against that investigation or not.",
+        replacement: "He didn't tell me if his boss had a bias against that investigation or not.",
         pt: "Ele não me disse se seu chefe tinha um viés contra aquela investigação ou não.",
       },
     ],
@@ -660,7 +661,7 @@ const CHECK_IT_OUT_DRILLS: SubstitutionExercise[] = [
 ];
 
 // ============================================
-// REAL LIFE – TEXT + TITLE (UPDATED)
+// REAL LIFE – TEXT + TITLE
 // ============================================
 const REAL_LIFE_TITLE = "Overconfident of spotting fake news?";
 
@@ -780,13 +781,11 @@ function Section({
   const [isNoteOpen, setIsNoteOpen] = useState(false);
   const [note, setNote] = useState("");
 
-  // Load note from localStorage on mount
   useEffect(() => {
     const savedNote = localStorage.getItem(`lesson183_note_${id}`);
     if (savedNote) setNote(savedNote);
   }, [id]);
 
-  // Save note to localStorage on change
   const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
     setNote(val);
@@ -815,8 +814,7 @@ function Section({
         </div>
         {open ? <ChevronUp size={22} /> : <ChevronDown size={22} />}
       </button>
-      
-      {/* Note Area */}
+
       {isNoteOpen && (
         <div className="bg-amber-100 border-b border-amber-300 p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="flex items-center gap-2 mb-2 text-amber-900 font-semibold text-sm">
@@ -978,7 +976,7 @@ export default function Lesson183NewsMedia() {
 
   const handleDrillSelect = (key: string, index: number) =>
     setDrillState((prev) => ({ ...prev, [key]: index }));
-  
+
   const handleCheckItOutSelect = (key: string, index: number) =>
     setCheckItOutState((prev) => ({ ...prev, [key]: index }));
 

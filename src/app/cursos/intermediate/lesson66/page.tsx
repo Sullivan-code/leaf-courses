@@ -540,18 +540,15 @@ export default function Lesson66() {
     setAffChecked(prev => ({ ...prev, [id]: true }));
   };
 
-  // ============ SUBSTITUTION PRACTICE 2 ============
+  // ============ SUBSTITUTION PRACTICE 2 (3 OPTIONS PER EXERCISE - MIXED REGISTERS) ============
   const substitutionExercises2: SubstitutionExercise[] = [
     {
       key: "sub2-1",
       original: "Tem alguém em casa? / na escola? / na universidade?",
       options: [
         { label: "em casa", replacement: "Is anyone at home?", pt: "Tem alguém em casa?" },
-        { label: "na escola", replacement: "Is anyone at school?", pt: "Tem alguém na escola?" },
+        { label: "na escola", replacement: "Do you know whether anyone is at school?", pt: "Você sabe se tem alguém na escola?" },
         { label: "na universidade", replacement: "Is anyone at university?", pt: "Tem alguém na universidade?" },
-        { label: "em casa (formal)", replacement: "Do you know whether anyone is at home?", pt: "Você sabe se tem alguém em casa?" },
-        { label: "na escola (formal)", replacement: "Do you know whether anyone is at school?", pt: "Você sabe se tem alguém na escola?" },
-        { label: "na universidade (formal)", replacement: "Do you know whether anyone is at university?", pt: "Você sabe se tem alguém na universidade?" },
       ],
       currentIndex: 0,
     },
@@ -559,12 +556,9 @@ export default function Lesson66() {
       key: "sub2-2",
       original: "Eu não quero falar com ele / ela / eles.",
       options: [
-        { label: "ele", replacement: "I don't want to talk to him.", pt: "Eu não quero falar com ele." },
+        { label: "ele", replacement: "I'd rather not speak to him.", pt: "Eu preferiria não conversar com ele." },
         { label: "ela", replacement: "I don't want to talk to her.", pt: "Eu não quero falar com ela." },
-        { label: "eles", replacement: "I don't want to talk to them.", pt: "Eu não quero falar com eles." },
-        { label: "ele (formal)", replacement: "I'd rather not speak to him.", pt: "Eu preferiria não conversar com ele." },
-        { label: "ela (formal)", replacement: "I'd rather not speak to her.", pt: "Eu preferiria não conversar com ela." },
-        { label: "eles (formal)", replacement: "I'd rather not speak to them.", pt: "Eu preferiria não conversar com eles." },
+        { label: "eles", replacement: "I'd rather not speak to them.", pt: "Eu preferiria não conversar com eles." },
       ],
       currentIndex: 0,
     },
@@ -573,11 +567,8 @@ export default function Lesson66() {
       original: "Vamos dividir / compartilhar este carregador / estes fones de ouvido / este closet.",
       options: [
         { label: "carregador", replacement: "Let's share this charger.", pt: "Vamos dividir este carregador." },
-        { label: "fones", replacement: "Let's share these headphones.", pt: "Vamos dividir estes fones de ouvido." },
+        { label: "fones", replacement: "Why don't we share these headphones?", pt: "Por que não compartilhamos estes fones de ouvido?" },
         { label: "closet", replacement: "Let's share this closet.", pt: "Vamos dividir este closet." },
-        { label: "carregador (formal)", replacement: "Why don't we share this charger?", pt: "Por que não compartilhamos este carregador?" },
-        { label: "fones (formal)", replacement: "Why don't we share these headphones?", pt: "Por que não compartilhamos estes fones de ouvido?" },
-        { label: "closet (formal)", replacement: "Why don't we share this closet?", pt: "Por que não compartilhamos este closet?" },
       ],
       currentIndex: 0,
     },
@@ -585,12 +576,9 @@ export default function Lesson66() {
       key: "sub2-4",
       original: "Eu sempre me perco aqui / ali / nesta cidade.",
       options: [
-        { label: "aqui", replacement: "I always get lost here.", pt: "Eu sempre me perco aqui." },
+        { label: "aqui", replacement: "I always seem to lose my way around here.", pt: "Eu sempre acabo me perdendo por aqui." },
         { label: "ali", replacement: "I always get lost there.", pt: "Eu sempre me perco ali." },
-        { label: "nesta cidade", replacement: "I always get lost in this city.", pt: "Eu sempre me perco nesta cidade." },
-        { label: "aqui (formal)", replacement: "I always seem to lose my way around here.", pt: "Eu sempre acabo me perdendo por aqui." },
-        { label: "ali (formal)", replacement: "I always seem to lose my way around there.", pt: "Eu sempre acabo me perdendo por ali." },
-        { label: "nesta cidade (formal)", replacement: "I always seem to lose my way in this city.", pt: "Eu sempre acabo me perdendo nesta cidade." },
+        { label: "nesta cidade", replacement: "I always seem to lose my way in this city.", pt: "Eu sempre acabo me perdendo nesta cidade." },
       ],
       currentIndex: 0,
     },
@@ -599,11 +587,8 @@ export default function Lesson66() {
       original: "Não perca a fé no seu trabalho / país / cidade.",
       options: [
         { label: "trabalho", replacement: "Don't lose faith in your work.", pt: "Não perca a fé no seu trabalho." },
-        { label: "país", replacement: "Don't lose faith in your country.", pt: "Não perca a fé no seu país." },
+        { label: "país", replacement: "Whatever happens, don't lose faith in your country.", pt: "Independentemente do que aconteça, não perca a fé no seu país." },
         { label: "cidade", replacement: "Don't lose faith in your city.", pt: "Não perca a fé na sua cidade." },
-        { label: "trabalho (formal)", replacement: "Whatever happens, don't lose faith in your work.", pt: "Independentemente do que aconteça, não perca a fé no seu trabalho." },
-        { label: "país (formal)", replacement: "Whatever happens, don't lose faith in your country.", pt: "Independentemente do que aconteça, não perca a fé no seu país." },
-        { label: "cidade (formal)", replacement: "Whatever happens, don't lose faith in your city.", pt: "Independentemente do que aconteça, não perca a fé na sua cidade." },
       ],
       currentIndex: 0,
     },
@@ -671,8 +656,14 @@ export default function Lesson66() {
     speakEnglish(text, 0.85, "female");
   };
 
-  // ============ TUNE IN YOUR EARS ============
-  const tuneInText = "Today, I got the keys to my studio apartment. It's great. Studio apartment? What's that? And why are you so tired, busy darling? Because I'm moving in today, and the place is a real mess. Excuse me again, Adam. There is a passport under that desk. Oh, thank you. I got my passport, Mom.";
+  // ============ TUNE IN YOUR EARS (3-PERSON DIALOGUE) ============
+  const tuneInDialogue = [
+    { speaker: "Woman", text: "Today, I got the keys to my studio apartment. It's great." },
+    { speaker: "Person on the phone", text: "Studio apartment? What's that? And why are you so tired, busy darling?" },
+    { speaker: "Woman", text: "Because I'm moving in today, and the place is a real mess." },
+    { speaker: "Furniture mover", text: "Excuse me again, Madam. There is a passport under that desk." },
+    { speaker: "Woman", text: "Oh, thank you. I got my passport, Mom." },
+  ];
 
   const tuneQuestions = [
     { id: "tq1", question: "1. What did the person get today?", options: ["Keys to a new car", "Keys to a studio apartment", "A new passport"], correct: 1 },
@@ -781,7 +772,11 @@ export default function Lesson66() {
                               type="radio"
                               name={q.id}
                               checked={listenAnswers[q.id] === idx}
-                              onChange={() => setListenAnswers({ ...listenAnswers, [q.id]: idx })}
+                              onChange={() => {
+                                setListenAnswers({ ...listenAnswers, [q.id]: idx });
+                                // Reset check when answer changes so feedback is only shown after clicking "Check Answer"
+                                setListenChecked((prev) => ({ ...prev, [q.id]: false }));
+                              }}
                               className="w-4 h-4 text-green-600 focus:ring-green-500"
                             />
                             <span className="text-gray-700">{opt}</span>
@@ -1127,7 +1122,7 @@ export default function Lesson66() {
         </div>
 
         {/* ============================================== */}
-        {/* SEÇÃO 7 – TUNE IN YOUR EARS */}
+        {/* SEÇÃO 7 – TUNE IN YOUR EARS (3-PERSON DIALOGUE) */}
         {/* ============================================== */}
         <div className="bg-white border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-8 flex justify-between items-center">
@@ -1147,16 +1142,43 @@ export default function Lesson66() {
             <div className="p-8" style={{ animation: "fadeIn 0.3s ease-out" }}>
               <div className="bg-green-50 rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-green-800">Listen to the text:</h3>
+                  <h3 className="text-lg font-bold text-green-800">Listen to the dialogue:</h3>
                   <AudioPlayer src="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/L66-tuneinyourears.mp4" />
                 </div>
 
-                <div className="bg-white p-6 rounded-xl border border-green-200 shadow-sm text-lg leading-relaxed mb-8 italic text-gray-700">
-                  <p>{tuneInText}</p>
+                {/* 3-PERSON DIALOGUE BLOCK */}
+                <div className="bg-white p-6 rounded-xl border border-green-200 shadow-sm mb-8 space-y-3">
+                  {tuneInDialogue.map((line, idx) => {
+                    const isWoman = line.speaker === "Woman";
+                    const isPhone = line.speaker === "Person on the phone";
+                    const bgColor = isWoman
+                      ? "bg-green-50 border-green-200"
+                      : isPhone
+                      ? "bg-blue-50 border-blue-200"
+                      : "bg-amber-50 border-amber-200";
+                    const nameColor = isWoman
+                      ? "text-green-800"
+                      : isPhone
+                      ? "text-blue-800"
+                      : "text-amber-800";
+                    return (
+                      <div key={idx} className={`p-3 rounded-lg border ${bgColor}`}>
+                        <p className={`font-bold text-sm mb-1 ${nameColor}`}>
+                          {line.speaker}:
+                        </p>
+                        <SpeakSentence
+                          text={line.text}
+                          className="text-gray-800 text-base leading-relaxed"
+                        >
+                          {line.text}
+                        </SpeakSentence>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* QUIZ ABOUT THE TEXT */}
-                <h3 className="text-lg font-bold text-green-800 mb-4">Questions about the text:</h3>
+                <h3 className="text-lg font-bold text-green-800 mb-4">Questions about the dialogue:</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {tuneQuestions.map((q) => (
                     <div key={q.id} className="bg-white p-4 rounded-lg border border-green-200 shadow-sm">
@@ -1168,7 +1190,11 @@ export default function Lesson66() {
                               type="radio"
                               name={q.id}
                               checked={tuneAnswers[q.id] === idx}
-                              onChange={() => setTuneAnswers({ ...tuneAnswers, [q.id]: idx })}
+                              onChange={() => {
+                                setTuneAnswers({ ...tuneAnswers, [q.id]: idx });
+                                // Reset check on change so feedback only appears after clicking "Check"
+                                setTuneChecked((prev) => ({ ...prev, [q.id]: false }));
+                              }}
                               className="w-4 h-4 text-green-600 focus:ring-green-500"
                             />
                             <span className="text-sm text-gray-700">{opt}</span>

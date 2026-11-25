@@ -22,10 +22,22 @@ interface SpeakTextProps {
   className?: string;
 }
 
+const sanitizeForSpeech = (text: string): string => {
+  if (!text) return "";
+  return text
+    .replace(/[\p{Extended_Pictographic}]/gu, "")
+    .replace(/[\u{FE0F}\u{200D}\u{20E3}]/gu, "")
+    .replace(/[·—]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
 const speakEnglish = (text: string, rate = 0.9) => {
   if (!text || typeof window === 'undefined') return;
+  const cleanText = sanitizeForSpeech(text);
+  if (!cleanText) return;
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
+  const utterance = new SpeechSynthesisUtterance(cleanText);
   utterance.lang = 'en-US';
   utterance.rate = rate;
   utterance.pitch = 1.0;
@@ -51,11 +63,11 @@ const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
   return (
     <button
       onClick={speak}
-      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-1 rounded transition-colors group ${className}`}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-2 py-1 rounded transition-colors group ${className}`}
       title="Click to hear American pronunciation"
     >
       {children || text}
-      <Volume2 size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+      <Volume2 size={14} className="opacity-40 group-hover:opacity-100 transition-opacity text-blue-500" />
     </button>
   );
 };
@@ -310,9 +322,22 @@ export default function Lesson51GoingShopping() {
   const grammarImage = "https://images.unsplash.com/photo-1456324504439-367cee3b3c32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
 
   // ========== LESSON 51 DATA ==========
+  // ✅ Formas verbais SEPARADAS – presente e passado clicáveis individualmente
   const verbs = [
-    { english: "to sell, sold", portuguese: "vender, vendeu" },
-    { english: "to pay, paid", portuguese: "pagar, pagou" }
+    {
+      label: "to sell, sold",
+      forms: [
+        { en: "to sell", pt: "vender", tense: "Present / Infinitive" },
+        { en: "sold",    pt: "vendeu", tense: "Past" },
+      ],
+    },
+    {
+      label: "to pay, paid",
+      forms: [
+        { en: "to pay", pt: "pagar", tense: "Present / Infinitive" },
+        { en: "paid",   pt: "pagou", tense: "Past" },
+      ],
+    },
   ];
 
   const newWords = [
@@ -348,7 +373,7 @@ export default function Lesson51GoingShopping() {
     { english: "They had never seen that style before.", portuguese: "Eles nunca tinham visto aquele estilo antes." },
   ];
 
-  // ========== VERBS SUBSTITUTION (Image 1 & 2) ==========
+  // ========== VERBS SUBSTITUTION ==========
   const verbsSubstitution: SubstitutionExercise[] = [
     {
       key: "verb-1",
@@ -482,7 +507,7 @@ export default function Lesson51GoingShopping() {
     },
   ];
 
-  // ========== VOCABULARY SUBSTITUTION (Image 2) ==========
+  // ========== VOCABULARY SUBSTITUTION ==========
   const vocabSubstitution: SubstitutionExercise[] = [
     {
       key: "vocab-1",
@@ -616,7 +641,7 @@ export default function Lesson51GoingShopping() {
     },
   ];
 
-  // ========== USEFUL PHRASES SUBSTITUTION (Images 3 & 5) ==========
+  // ========== USEFUL PHRASES SUBSTITUTION ==========
   const phrasesSubstitution: SubstitutionExercise[] = [
     {
       key: "phrase-1",
@@ -750,7 +775,7 @@ export default function Lesson51GoingShopping() {
     },
   ];
 
-  // ========== GRAMMAR SUBSTITUTION (Image 4) ==========
+  // ========== GRAMMAR SUBSTITUTION ==========
   const grammarSubstitution: SubstitutionExercise[] = [
     {
       key: "grammar-1",
@@ -821,59 +846,29 @@ export default function Lesson51GoingShopping() {
 
   // ========== REAL LIFE PRACTICE ==========
   const realLifeSentences = [
-    {
-      english: "Do you need a receipt?",
-      portuguese: "Você precisa de recibo?",
-      jsx: <>Do you <span className="text-blue-600 font-bold">need</span> a <span className="text-blue-600 font-bold">receipt</span>?</>,
-    },
-    {
-      english: "I'm still looking for a blue dress.",
-      portuguese: "Ainda estou procurando um vestido azul.",
-      jsx: <>I'm still <span className="text-blue-600 font-bold">looking for</span> a <span className="text-blue-600 font-bold">blue dress</span>.</>,
-    },
-    {
-      english: "My neighbors are having a garage sale today.",
-      portuguese: "Meus vizinhos estão fazendo uma venda de garagem hoje.",
-      jsx: <>My neighbors are <span className="text-blue-600 font-bold">having</span> a <span className="text-blue-600 font-bold">garage sale</span> today.</>,
-    },
-    {
-      english: "I get a discount when I buy three items.",
-      portuguese: "Eu ganho desconto quando compro três itens.",
-      jsx: <>I <span className="text-blue-600 font-bold">get a discount</span> when I buy <span className="text-blue-600 font-bold">three items</span>.</>,
-    },
-    {
-      english: "My mother works at a department store.",
-      portuguese: "Minha mãe trabalha em uma loja de departamento.",
-      jsx: <>My mother <span className="text-blue-600 font-bold">works at</span> a <span className="text-blue-600 font-bold">department store</span>.</>,
-    },
-    {
-      english: "He's not trying on the black suit.",
-      portuguese: "Ele não está provando o terno preto.",
-      jsx: <>He's <span className="text-blue-600 font-bold">not trying on</span> the <span className="text-blue-600 font-bold">black suit</span>.</>,
-    },
-    {
-      english: "Here's your change.",
-      portuguese: "Aqui está seu troco.",
-      jsx: <>Here's your <span className="text-blue-600 font-bold">change</span>.</>,
-    },
-    {
-      english: "Do you have change for a 20?",
-      portuguese: "Você tem troco para 20?",
-      jsx: <>Do you have <span className="text-blue-600 font-bold">change</span> for a <span className="text-blue-600 font-bold">20</span>?</>,
-    },
-    {
-      english: "The attendant is helping me.",
-      portuguese: "O atendente está me ajudando.",
-      jsx: <>The <span className="text-blue-600 font-bold">attendant</span> is <span className="text-blue-600 font-bold">helping</span> me.</>,
-    },
-    {
-      english: "We're not having lunch now.",
-      portuguese: "Nós não estamos almoçando agora.",
-      jsx: <>We're <span className="text-blue-600 font-bold">not having</span> lunch now.</>,
-    },
+    { english: "Do you need a receipt?", portuguese: "Você precisa de recibo?",
+      jsx: <>Do you <span className="text-blue-600 font-bold">need</span> a <span className="text-blue-600 font-bold">receipt</span>?</> },
+    { english: "I'm still looking for a blue dress.", portuguese: "Ainda estou procurando um vestido azul.",
+      jsx: <>I'm still <span className="text-blue-600 font-bold">looking for</span> a <span className="text-blue-600 font-bold">blue dress</span>.</> },
+    { english: "My neighbors are having a garage sale today.", portuguese: "Meus vizinhos estão fazendo uma venda de garagem hoje.",
+      jsx: <>My neighbors are <span className="text-blue-600 font-bold">having</span> a <span className="text-blue-600 font-bold">garage sale</span> today.</> },
+    { english: "I get a discount when I buy three items.", portuguese: "Eu ganho desconto quando compro três itens.",
+      jsx: <>I <span className="text-blue-600 font-bold">get a discount</span> when I buy <span className="text-blue-600 font-bold">three items</span>.</> },
+    { english: "My mother works at a department store.", portuguese: "Minha mãe trabalha em uma loja de departamento.",
+      jsx: <>My mother <span className="text-blue-600 font-bold">works at</span> a <span className="text-blue-600 font-bold">department store</span>.</> },
+    { english: "He's not trying on the black suit.", portuguese: "Ele não está provando o terno preto.",
+      jsx: <>He's <span className="text-blue-600 font-bold">not trying on</span> the <span className="text-blue-600 font-bold">black suit</span>.</> },
+    { english: "Here's your change.", portuguese: "Aqui está seu troco.",
+      jsx: <>Here's your <span className="text-blue-600 font-bold">change</span>.</> },
+    { english: "Do you have change for a 20?", portuguese: "Você tem troco para 20?",
+      jsx: <>Do you have <span className="text-blue-600 font-bold">change</span> for a <span className="text-blue-600 font-bold">20</span>?</> },
+    { english: "The attendant is helping me.", portuguese: "O atendente está me ajudando.",
+      jsx: <>The <span className="text-blue-600 font-bold">attendant</span> is <span className="text-blue-600 font-bold">helping</span> me.</> },
+    { english: "We're not having lunch now.", portuguese: "Nós não estamos almoçando agora.",
+      jsx: <>We're <span className="text-blue-600 font-bold">not having</span> lunch now.</> },
   ];
 
-  // ========== CHECKOUT – wanna / gotta / could SUBSTITUTION ==========
+  // ========== CHECKOUT SUBSTITUTION ==========
   const checkoutSubstitution: SubstitutionExercise[] = [
     {
       key: "checkout-1",
@@ -939,11 +934,7 @@ export default function Lesson51GoingShopping() {
             📚 Learn to talk about shopping, paying, discounts, and use Present Continuous, Present Perfect and Past Perfect.
           </SpeakSentence>
           <div className="w-64 h-64 mx-auto">
-            <img
-              src={mainImage}
-              alt="People shopping"
-              className="w-full h-full object-cover rounded-2xl shadow-md"
-            />
+            <img src={mainImage} alt="People shopping" className="w-full h-full object-cover rounded-2xl shadow-md" />
           </div>
         </div>
 
@@ -966,15 +957,43 @@ export default function Lesson51GoingShopping() {
             <SpeakSentence text="Click on the verbs to hear the pronunciation and practice their forms" className="text-md text-gray-600 mb-4 italic">
               🎧 Click on the verbs to hear the pronunciation and practice their forms
             </SpeakSentence>
-            <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
-              {verbs.map((verb, index) => (
-                <li key={index}>
-                  <SpeakText text={verb.english} className="text-blue-600 font-bold">
-                    {verb.english}
-                  </SpeakText> = {verb.portuguese}
-                </li>
+
+            {/* ✅ CADA FORMA VERBAL É UM BOTÃO INDEPENDENTE */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              {verbs.map((verb, vIndex) => (
+                <div
+                  key={vIndex}
+                  className="bg-blue-50 p-4 rounded-xl border border-blue-200 shadow-sm"
+                >
+                  <p className="text-xs uppercase tracking-wide text-blue-500 font-semibold mb-3">
+                    {verb.label}
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {verb.forms.map((form, fIndex) => (
+                      <div
+                        key={fIndex}
+                        className="flex items-center justify-between gap-3 bg-white rounded-lg px-3 py-2 border border-blue-100 hover:border-blue-300 hover:bg-blue-50 transition-all"
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
+                            {form.tense}
+                          </span>
+                          <SpeakText
+                            text={form.en}
+                            className="text-blue-700 font-bold text-lg"
+                          >
+                            {form.en}
+                          </SpeakText>
+                        </div>
+                        <span className="text-gray-600 text-sm italic whitespace-nowrap">
+                          = {form.pt}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
 
             {openDrills.verbs && (
               <div className="mt-4 bg-blue-50 rounded-2xl p-6 space-y-4" style={{ animation: 'fadeIn 0.3s ease-out' }}>
@@ -1163,9 +1182,7 @@ export default function Lesson51GoingShopping() {
               <h2 className="text-2xl font-bold">🔹 MAKE IT YOURS (REAL LIFE)</h2>
               <PencilIcon onClick={() => openNoteModal('Real Life Practice')} />
             </div>
-            <div className="text-sm text-blue-100">
-              Practice real-life shopping situations
-            </div>
+            <div className="text-sm text-blue-100">Practice real-life shopping situations</div>
           </div>
 
           <div className="p-8">
@@ -1209,7 +1226,7 @@ export default function Lesson51GoingShopping() {
           </div>
         </div>
 
-        {/* ===================== SECTION 6 – CHECKOUT (Slang) ===================== */}
+        {/* ===================== SECTION 6 – CHECKOUT ===================== */}
         <div className="bg-white border-2 border-blue-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
           <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
@@ -1357,14 +1374,8 @@ export default function Lesson51GoingShopping() {
 
       <style jsx global>{`
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(-10px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </div>

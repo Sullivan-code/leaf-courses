@@ -49,16 +49,16 @@ interface NoteModalState {
 }
 
 // ============================================
-// IMAGES
+// IMAGES (Placeholders since the exact 185 images were not provided)
 // ============================================
 const HERO_IMAGE =
-  "https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+  "https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
 
 const BACKGROUND =
   "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1920&q=80";
 
 const REAL_LIFE_IMAGE =
-  "https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+  "https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
 
 // ============================================
 // SPEECH SYSTEM (American Female Voice)
@@ -156,7 +156,7 @@ const SpeakSentence = ({
 );
 
 // ============================================
-// PENCIL ICON (from Lesson 63)
+// PENCIL ICON (Lesson 63 Style)
 // ============================================
 function PencilIcon({ onClick }: { onClick: () => void }) {
   return (
@@ -179,7 +179,7 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
 }
 
 // ============================================
-// NOTE MODAL (Lesson 63 functionality, 183 colors)
+// NOTE MODAL (Lesson 63 Style)
 // ============================================
 function NoteModal({
   isOpen,
@@ -451,263 +451,167 @@ function ReadingText({
 }
 
 // ============================================
-// DATA – LESSON 185
+// DATA – EXACTLY FROM THE IMAGES (LESSON 185)
 // ============================================
 const VERBS = [
-  { base: "to persuade", past: "persuaded", participle: "persuaded", pt: "persuadir" },
+  { base: "to seek", past: "sought", participle: "sought", pt: "procurar, buscar" },
+  { base: "to warn", past: "warned", participle: "warned", pt: "avisar, alertar" },
   { base: "to convince", past: "convinced", participle: "convinced", pt: "convencer" },
-  { base: "to advertise", past: "advertised", participle: "advertised", pt: "anunciar" },
-  { base: "to consume", past: "consumed", participle: "consumed", pt: "consumir" },
-  { base: "to sponsor", past: "sponsored", participle: "sponsored", pt: "patrocinar" },
 ];
 
 const NEW_WORDS: VocabularyItem[] = [
-  { word: "consumerism", definition: "the theory that an increasing consumption of goods is economically desirable" },
-  { word: "advertisement", definition: "a public notice promoting a product, service, or event" },
-  { word: "brand loyalty", definition: "the tendency to consistently buy products from a particular brand" },
-  { word: "target audience", definition: "the specific group of people a product or message is aimed at" },
-  { word: "endorsement", definition: "a public statement of support, often by a celebrity for a product" },
-  { word: "misleading", definition: "giving the wrong idea or impression" },
-  { word: "persuasive", definition: "good at convincing someone to do or believe something" },
-  { word: "subliminal", definition: "below the threshold of conscious awareness" },
-  { word: "impulse buying", definition: "purchasing something suddenly without planning" },
-  { word: "influencer", definition: "a person with a large online following who can affect buying decisions" },
-  { word: "slogan", definition: "a short, catchy phrase used in advertising" },
-  { word: "catchy", definition: "instantly appealing and memorable" },
+  { word: "content", definition: "material or information available online or in media" },
+  { word: "eyewitness", definition: "a person who saw an event happen" },
+  { word: "subscribers", definition: "people who pay or sign up to receive a service or content" },
+  { word: "mainstream", definition: "considered normal or conventional" },
+  { word: "sensationalism", definition: "presenting stories in an exciting or shocking way" },
+  { word: "real-time newsfeed", definition: "a constantly updating stream of news as it happens" },
+  { word: "awful", definition: "very bad or unpleasant" },
+  { word: "engaging", definition: "charming and attractive; interesting" },
+  { word: "successful", definition: "accomplishing a desired aim or purpose" },
 ];
 
 const USEFUL_PHRASES = [
   {
-    en: "Companies spend millions trying to persuade us to buy things we don't need.",
-    pt: "As empresas gastam milhões tentando nos persuadir a comprar coisas que não precisamos.",
-    green: ["persuade", "buy"],
+    en: "She should read the latest news to keep up with the changes.",
+    pt: "Ela deveria ler as últimas notícias para se manter atualizada com as mudanças.",
+    green: ["keep up with"],
   },
   {
-    en: "That commercial is so catchy that I can't get the jingle out of my head.",
-    pt: "Aquele comercial é tão grudento que não consigo tirar o jingle da cabeça.",
-    green: ["catchy", "jingle"],
+    en: "The teacher told us to filter out everything we read.",
+    pt: "O professor nos disse para filtrar tudo o que lemos.",
+    green: ["filter out"],
   },
   {
-    en: "It's hard to resist impulse buying when everything is on sale.",
-    pt: "É difícil resistir à compra por impulso quando tudo está em promoção.",
-    green: ["impulse buying", "on sale"],
-  },
-  {
-    en: "Many influencers promote products they have never actually used.",
-    pt: "Muitos influenciadores promovem produtos que nunca usaram de verdade.",
-    green: ["influencers", "promote"],
+    en: "Any creative content can go viral.",
+    pt: "Qualquer conteúdo criativo pode viralizar.",
+    green: ["go viral"],
   },
 ];
 
 const LANGUAGE_FUNCTIONS = [
-  {
-    direct: "I had my logo redesigned by a professional agency.",
-    reported: "He said he had had his logo redesigned by a professional agency.",
-    note: "Causative: have something done (past perfect in reported speech).",
-  },
-  {
-    direct: "She got her hair done before the commercial shoot.",
-    reported: "She told me she had gotten her hair done before the commercial shoot.",
-    note: "Causative: get something done.",
-  },
-  {
-    direct: "They had their advertisement banned for being misleading.",
-    reported: "They said they had had their advertisement banned for being misleading.",
-    note: "Passive causative with 'have'.",
-  },
-  {
-    direct: "We need to get our photos taken for the new campaign.",
-    reported: "They said they needed to get their photos taken for the new campaign.",
-    note: "Causative: get + object + past participle.",
-  },
-  {
-    direct: "You should have your target audience analyzed before launching.",
-    reported: "The consultant suggested that I should have my target audience analyzed before launching.",
-    note: "Causative in a piece of advice (reported).",
-  },
-];
-
-const OPEN_DRILLS: SubstitutionExercise[] = [
-  {
-    key: "drill-1",
-    original: "Companies often try to persuade consumers that they need the newest product.",
-    options: [
-      {
-        label: "convince",
-        replacement: "Companies often try to convince consumers that they need the newest product.",
-        pt: "As empresas muitas vezes tentam convencer os consumidores de que precisam do produto mais novo.",
-      },
-      {
-        label: "manipulate",
-        replacement: "Companies often try to manipulate consumers into thinking they need the newest product.",
-        pt: "As empresas muitas vezes tentam manipular os consumidores a pensar que precisam do produto mais novo.",
-      },
-      {
-        label: "push",
-        replacement: "Companies often try to push consumers into buying the newest product.",
-        pt: "As empresas muitas vezes tentam empurrar os consumidores a comprar o produto mais novo.",
-      },
-    ],
-    currentIndex: 0,
-  },
-  {
-    key: "drill-2",
-    original: "Discussion: Is advertising informative or manipulative?",
-    options: [
-      {
-        label: "💭 Practice",
-        replacement: "To what extent do you think advertising genuinely informs consumers rather than manipulating their desires? Share a personal example.",
-        pt: "Até que ponto você acha que a publicidade informa genuinamente os consumidores em vez de manipular seus desejos? Dê um exemplo pessoal.",
-      },
-    ],
-    currentIndex: 0,
-  },
-  {
-    key: "drill-3",
-    original: "I had my brand image completely rebuilt last year.",
-    options: [
-      {
-        label: "reputation",
-        replacement: "I had my reputation completely rebuilt last year.",
-        pt: "Eu tive minha reputação completamente reconstruída no ano passado.",
-      },
-      {
-        label: "website",
-        replacement: "I had my website completely rebuilt last year.",
-        pt: "Eu tive meu site completamente reconstruído no ano passado.",
-      },
-      {
-        label: "social media presence",
-        replacement: "I had my social media presence completely rebuilt last year.",
-        pt: "Eu tive minha presença nas redes sociais completamente reconstruída no ano passado.",
-      },
-    ],
-    currentIndex: 0,
-  },
-  {
-    key: "drill-4",
-    original: "Discussion: Do influencers have ethical responsibilities?",
-    options: [
-      {
-        label: "💭 Practice",
-        replacement: "Do you believe influencers have an ethical obligation to disclose paid partnerships, and what consequences should exist if they don't?",
-        pt: "Você acredita que influenciadores têm a obrigação ética de divulgar parcerias pagas, e quais consequências deveriam existir se não o fizerem?",
-      },
-    ],
-    currentIndex: 0,
-  },
-  {
-    key: "drill-5",
-    original: "We got our advertisement banned because of misleading claims.",
-    options: [
-      {
-        label: "subliminal messages",
-        replacement: "We got our advertisement banned because of subliminal messages.",
-        pt: "Nosso anúncio foi banido por causa de mensagens subliminares.",
-      },
-      {
-        label: "false endorsements",
-        replacement: "We got our advertisement banned because of false endorsements.",
-        pt: "Nosso anúncio foi banido por causa de endossos falsos.",
-      },
-      {
-        label: "unrealistic promises",
-        replacement: "We got our advertisement banned because of unrealistic promises.",
-        pt: "Nosso anúncio foi banido por causa de promessas irrealistas.",
-      },
-    ],
-    currentIndex: 0,
-  },
-  {
-    key: "drill-6",
-    original: "Discussion: Impulse buying and social media",
-    options: [
-      {
-        label: "💭 Practice",
-        replacement: "How has social media amplified impulse buying, and what strategies do you personally use to avoid it?",
-        pt: "Como as redes sociais ampliaram a compra por impulso, e quais estratégias você usa pessoalmente para evitá-la?",
-      },
-    ],
-    currentIndex: 0,
-  },
-  {
-    key: "drill-7",
-    original: "The agency recommended that we target a younger audience.",
-    options: [
-      {
-        label: "a broader demographic",
-        replacement: "The agency recommended that we target a broader demographic.",
-        pt: "A agência recomendou que visássemos um público mais amplo.",
-      },
-      {
-        label: "middle-aged consumers",
-        replacement: "The agency recommended that we target middle-aged consumers.",
-        pt: "A agência recomendou que visássemos consumidores de meia-idade.",
-      },
-      {
-        label: "a niche market",
-        replacement: "The agency recommended that we target a niche market.",
-        pt: "A agência recomendou que visássemos um nicho de mercado.",
-      },
-    ],
-    currentIndex: 0,
-  },
-  {
-    key: "drill-8",
-    original: "Discussion: Consumerism and happiness",
-    options: [
-      {
-        label: "💭 Practice",
-        replacement: "Some people say consumerism has replaced genuine happiness with constant acquisition. Do you agree? Why or why not?",
-        pt: "Algumas pessoas dizem que o consumismo substituiu a felicidade genuína pela aquisição constante. Você concorda? Por quê?",
-      },
-    ],
-    currentIndex: 0,
-  },
+  { direct: "I'll seek more digital influencers for content.", reported: "He said that he would seek more digital influencers for content." },
+  { direct: "I'm sure this content won't go viral.", reported: "She said she was sure that content wouldn't go viral." },
+  { direct: "I'll try to convince him it's an awful idea.", reported: "She said she would try to convince him it was an awful idea." },
+  { direct: "Will this post attract more subscribers?", reported: "He asked if that post would attract more subscribers." },
+  { direct: "She is the first eyewitness to talk about the riot.", reported: "(No reported version provided in image)" },
+  { direct: "He was the first person to warn of the dangers of fake news.", reported: "(No reported version provided in image)" },
+  { direct: "The manager was the last to arrive.", reported: "(No reported version provided in image)" },
 ];
 
 const TAKE_A_LOOK_WORDS: VocabularyItem[] = [
-  { word: "manipulative", definition: "controlling or influencing someone in a clever or unscrupulous way" },
-  { word: "subliminal", definition: "below the threshold of conscious perception" },
-  { word: "endorsement", definition: "a public statement of support, often by a celebrity" },
-  { word: "persuasive", definition: "good at convincing someone to do or believe something" },
-  { word: "misleading", definition: "giving the wrong idea or impression" },
-  { word: "conspicuous consumption", definition: "spending money on luxury goods to display wealth" },
+  { word: "foreseeable", definition: "for as long as it is possible to know what is likely to happen" },
+  { word: "outstrip", definition: "to move faster than someone or something else" },
+  { word: "willingness", definition: "the state of being prepared to do something" },
 ];
 
 const CHECK_IT_OUT_DRILLS: SubstitutionExercise[] = [
   {
     key: "check-1",
-    original: "I had my campaign reviewed by a marketing expert.",
+    original: "I'll talk to the eyewitness next week.",
     options: [
       {
         label: "Reported Speech",
-        replacement: "He said he had had his campaign reviewed by a marketing expert.",
-        pt: "Ele disse que tinha tido sua campanha revisada por um especialista em marketing.",
+        replacement: "He said he would talk to the eyewitness the following week.",
+        pt: "Ele disse que falaria com a testemunha ocular na semana seguinte.",
       },
     ],
     currentIndex: 0,
   },
   {
     key: "check-2",
-    original: "She got her brand promoted by a famous influencer yesterday.",
+    original: "We'll be able to change the content tomorrow.",
     options: [
       {
         label: "Reported Speech",
-        replacement: "She told me she had gotten her brand promoted by a famous influencer the day before.",
-        pt: "Ela me disse que tinha tido sua marca promovida por um influenciador famoso no dia anterior.",
+        replacement: "They said they would be able to change the content the next day.",
+        pt: "Eles disseram que seriam capazes de mudar o conteúdo no dia seguinte.",
       },
     ],
     currentIndex: 0,
   },
   {
     key: "check-3",
-    original: "We need to get our target audience analyzed tonight.",
+    original: "Most businesses will be online shortly.",
     options: [
       {
         label: "Reported Speech",
-        replacement: "They said they needed to get their target audience analyzed that night.",
-        pt: "Eles disseram que precisavam ter seu público-alvo analisado naquela noite.",
+        replacement: "They said most businesses would be online shortly.",
+        pt: "Eles disseram que a maioria das empresas estaria online em breve.",
+      },
+    ],
+    currentIndex: 0,
+  },
+];
+
+// ============================================
+// OPEN DRILLS (B2/C1) - Based on the lesson's theme
+// ============================================
+const OPEN_DRILLS: SubstitutionExercise[] = [
+  {
+    key: "drill-1",
+    original: "The teacher told us to filter out everything we read.",
+    options: [
+      {
+        label: "verify everything",
+        replacement: "The teacher told us to verify everything we read.",
+        pt: "O professor nos disse para verificar tudo o que lemos.",
+      },
+      {
+        label: "question everything",
+        replacement: "The teacher told us to question everything we read.",
+        pt: "O professor nos disse para questionar tudo o que lemos.",
+      },
+      {
+        label: "fact-check everything",
+        replacement: "The teacher told us to fact-check everything we read.",
+        pt: "O professor nos disse para checar os fatos de tudo o que lemos.",
+      },
+    ],
+    currentIndex: 0,
+  },
+  {
+    key: "drill-2",
+    original: "Discussion: Mainstream media vs. Sensationalism",
+    options: [
+      {
+        label: "💭 Practice",
+        replacement: "To what extent has sensationalism outrun the credibility of mainstream media in recent years?",
+        pt: "Até que ponto o sensacionalismo superou a credibilidade da mídia mainstream nos últimos anos?",
+      },
+    ],
+    currentIndex: 0,
+  },
+  {
+    key: "drill-3",
+    original: "Any creative content can go viral.",
+    options: [
+      {
+        label: "engaging",
+        replacement: "Any engaging content can go viral.",
+        pt: "Qualquer conteúdo envolvente pode viralizar.",
+      },
+      {
+        label: "controversial",
+        replacement: "Any controversial content can go viral.",
+        pt: "Qualquer conteúdo controverso pode viralizar.",
+      },
+      {
+        label: "shocking",
+        replacement: "Any shocking content can go viral.",
+        pt: "Qualquer conteúdo chocante pode viralizar.",
+      },
+    ],
+    currentIndex: 0,
+  },
+  {
+    key: "drill-4",
+    original: "Discussion: The future of truth",
+    options: [
+      {
+        label: "💭 Practice",
+        replacement: "In an era of real-time newsfeeds, what skills do we need to develop to ensure we aren't fooled by fake news?",
+        pt: "Em uma era de feeds de notícias em tempo real, quais habilidades precisamos desenvolver para garantir que não sejamos enganados por fake news?",
       },
     ],
     currentIndex: 0,
@@ -717,78 +621,58 @@ const CHECK_IT_OUT_DRILLS: SubstitutionExercise[] = [
 // ============================================
 // REAL LIFE
 // ============================================
-const REAL_LIFE_TITLE = "The Hidden Persuaders";
+const REAL_LIFE_TITLE = "THE FUTURE OF TRUTH AND MISINFORMATION ONLINE";
 
-const REAL_LIFE_TEXT = `Advertising is far more than simply informing consumers about products; it is a sophisticated art of persuasion. Every time we scroll through social media or watch television, we are exposed to carefully crafted messages designed to influence our purchasing decisions. Companies invest enormous budgets in market research to understand the target audience's desires, fears, and aspirations.
-
-What makes an advertisement truly effective is not just its visual appeal, but its ability to create an emotional connection with the viewer. Many critics argue that certain techniques, such as subliminal messaging and misleading claims, cross ethical boundaries. Consumers who are unaware of these tactics are particularly vulnerable to impulse buying.
-
-Interestingly, brand loyalty often has less to do with product quality than with the psychological associations that advertisers have cultivated over time. Therefore, being a conscious consumer requires not only awareness but also a healthy dose of skepticism toward the messages we receive daily.`;
+const REAL_LIFE_TEXT = `In today's digital age, the future of truth and misinformation online is highly uncertain. Mainstream media often struggles to compete with the sensationalism of viral content. As we scroll through our real-time newsfeed, it is crucial to filter out fake news. An eyewitness might report one thing, but without proper verification, an engaging story can quickly become an awful rumor. We must be prepared to seek credible sources and warn others about the dangers of misinformation, for as long as it is foreseeable.`;
 
 const REAL_LIFE_KEY_WORDS: Record<string, string> = {
-  persuasion: "the act of convincing someone to do or believe something",
-  sophisticated: "highly developed and complex",
-  purchasing: "the act of buying something",
-  aspirations: "hopes or ambitions of achieving something",
-  subliminal: "below the threshold of conscious awareness",
-  misleading: "giving the wrong idea or impression",
-  vulnerable: "exposed to the possibility of being harmed",
-  "impulse buying": "purchasing something suddenly without planning",
-  cultivate: "to develop or grow something over time",
-  skepticism: "doubt as to whether something is true or useful",
-  conscious: "aware of and responding to one's surroundings",
+  misinformation: "false or inaccurate information, especially that which is deliberately intended to deceive",
+  mainstream: "considered normal or conventional; the dominant trend",
+  sensationalism: "presenting stories in an exciting or shocking way",
+  "real-time newsfeed": "a constantly updating stream of news as it happens",
+  "filter out": "to remove unwanted things",
+  eyewitness: "a person who saw an event happen",
+  engaging: "charming and attractive; interesting",
+  awful: "very bad or unpleasant",
+  seek: "to attempt to find something",
+  warn: "to inform someone of a possible danger",
+  foreseeable: "for as long as it is possible to know what is likely to happen",
 };
 
 const REAL_LIFE_COMPREHENSION: ReadingQuestion[] = [
   {
     id: 1,
-    question: "According to the text, what is the primary purpose of advertising beyond informing consumers?",
+    question: "How does mainstream media struggle against sensationalism?",
   },
   {
     id: 2,
-    question: "How do companies use market research to their advantage?",
+    question: "Why is it important to filter out fake news from our real-time newsfeed?",
   },
   {
     id: 3,
-    question: "What role does emotional connection play in advertising effectiveness?",
-  },
-  {
-    id: 4,
-    question: "What ethical concerns do critics raise about certain advertising techniques?",
-  },
-  {
-    id: 5,
-    question: "According to the text, what does being a 'conscious consumer' require?",
+    question: "What can happen to an engaging story if it is not verified by an eyewitness?",
   },
 ];
 
 const REAL_LIFE_OPEN: ReadingQuestion[] = [
   {
     id: 1,
-    question: "To what extent do you think advertising manipulates consumer behavior rather than simply informing it? Share an example.",
+    question: "Do you think mainstream media is losing the battle against independent creators and influencers? Why?",
   },
   {
     id: 2,
-    question: "In your opinion, should governments regulate subliminal advertising more strictly? Why or why not?",
+    question: "What are the long-term consequences of sensationalism in digital journalism?",
   },
   {
     id: 3,
-    question: "How has social media transformed the way brands connect with their audiences?",
-  },
-  {
-    id: 4,
-    question: "Do you believe influencers have an ethical responsibility to disclose paid partnerships? Discuss.",
-  },
-  {
-    id: 5,
-    question: "What strategies do you personally use to avoid impulse buying?",
+    question: "How do you personally balance staying informed on a real-time newsfeed without falling for misinformation?",
   },
 ];
 
 // ============================================
 // MAIN COMPONENT – LESSON 185
 // ============================================
-export default function Lesson185Advertising() {
+export default function Lesson185NewsMedia() {
   const router = useRouter();
 
   const [openSections, setOpenSections] = useState<Record<SectionKey, boolean>>({
@@ -900,7 +784,7 @@ export default function Lesson185Advertising() {
           >
             <img
               src={HERO_IMAGE}
-              alt="Advertising and Consumerism – Lesson 185"
+              alt="News & Media – Lesson 185"
               className="w-full max-h-[480px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-red-950/80 via-red-900/20 to-transparent flex items-end p-6 md:p-8">
@@ -909,24 +793,19 @@ export default function Lesson185Advertising() {
                   LESSON 185
                 </div>
                 <h1 className="text-3xl md:text-5xl font-extrabold text-amber-50 drop-shadow-lg">
-                  🛒 Advertising & Consumerism
+                  📰 News, Truth & Misinformation
                 </h1>
                 <p className="text-amber-100 text-sm md:text-base mt-2 max-w-2xl">
-                  Persuasion, Causative Verbs & Media Literacy
+                  Reported Speech, Digital Influencers & The Future of Truth
                 </p>
               </div>
-            </div>
-            <div className="absolute top-4 right-4 bg-red-900/70 text-amber-100 text-xs px-3 py-1 rounded-full backdrop-blur">
-              🔍 Click to enlarge
             </div>
           </div>
 
           <div className="text-center mt-5">
             <p className="text-red-800 max-w-2xl mx-auto">
-              <SpeakBtn text="Explore the language of advertising and consumerism. Practice causative verbs, persuasion techniques, and critical reading in English.">
-                Explore the language of advertising and consumerism. Practice
-                causative verbs, persuasion techniques, and critical reading in
-                English.
+              <SpeakBtn text="Explore the language of news and misinformation. Practice reported speech, new vocabulary, and critical thinking.">
+                Explore the language of news and misinformation. Practice reported speech, new vocabulary, and critical thinking.
               </SpeakBtn>
             </p>
           </div>
@@ -943,9 +822,8 @@ export default function Lesson185Advertising() {
         >
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <p className="text-red-700 italic">
-              <SpeakBtn text="Click on each verb, past form, or participle to hear the pronunciation.">
-                🎧 Click on each verb, past form, or participle to hear the
-                pronunciation.
+              <SpeakBtn text="Click on each verb to hear the pronunciation.">
+                🎧 Click on each verb to hear the pronunciation.
               </SpeakBtn>
             </p>
             <button
@@ -1007,9 +885,8 @@ export default function Lesson185Advertising() {
           onOpenNote={() => openNoteModal("New Words")}
         >
           <p className="text-red-700 italic mb-4">
-            <SpeakBtn text="Click on each word to hear its pronunciation. Definitions are in English.">
-              🎧 Click on each word to hear its pronunciation. Definitions are in
-              English.
+            <SpeakBtn text="Click on each word to hear its pronunciation.">
+              🎧 Click on each word to hear its pronunciation.
             </SpeakBtn>
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1064,15 +941,15 @@ export default function Lesson185Advertising() {
         {/* ===================== 4. LANGUAGE FUNCTIONS ===================== */}
         <Section
           id="functions"
-          title="LANGUAGE FUNCTIONS (Causative Verbs)"
+          title="LANGUAGE FUNCTIONS"
           icon="🔹"
           open={openSections.functions}
           onToggle={() => toggleSection("functions")}
           onOpenNote={() => openNoteModal("Language Functions")}
         >
           <p className="text-red-700 italic mb-4">
-            <SpeakBtn text="Direct sentences and their reported speech versions, focusing on causative structures (have/get something done).">
-              🎧 Direct sentences → Reported speech (causative structures).
+            <SpeakBtn text="Direct sentences and their reported speech versions.">
+              🎧 Direct sentences and their reported speech versions.
             </SpeakBtn>
           </p>
           <div className="space-y-3">
@@ -1088,20 +965,21 @@ export default function Lesson185Advertising() {
                     </SpeakBtn>
                   </div>
                 </div>
-                <div className="border-t border-dashed border-amber-300 pt-2">
-                  <span className="text-xs font-bold text-amber-700 uppercase">
-                    Reported
-                  </span>
-                  <div>
-                    <SpeakBtn
-                      text={f.reported}
-                      className="text-red-800 font-semibold"
-                    >
-                      {f.reported}
-                    </SpeakBtn>
+                {f.reported !== "(No reported version provided in image)" && (
+                  <div className="border-t border-dashed border-amber-300 pt-2">
+                    <span className="text-xs font-bold text-amber-700 uppercase">
+                      Reported
+                    </span>
+                    <div>
+                      <SpeakBtn
+                        text={f.reported}
+                        className="text-red-800 font-semibold"
+                      >
+                        {f.reported}
+                      </SpeakBtn>
+                    </div>
                   </div>
-                </div>
-                <p className="mt-2 text-xs italic text-amber-800">💡 {f.note}</p>
+                )}
               </div>
             ))}
           </div>
@@ -1117,9 +995,8 @@ export default function Lesson185Advertising() {
           onOpenNote={() => openNoteModal("Open Drills")}
         >
           <p className="text-red-700 italic mb-4">
-            <SpeakBtn text="Choose an option to substitute the words. Discussion prompts are open-ended — speak freely. Click the eye icon to hide or show the English answer and its Portuguese translation.">
-              🔄 Substitute words and answer the discussion prompts. Click the eye
-              icon to hide or show the English answer.
+            <SpeakBtn text="Choose an option to substitute the words. Discussion prompts are open-ended — speak freely.">
+              🔄 Substitute words and answer the discussion prompts.
             </SpeakBtn>
           </p>
           <div className="space-y-4">
@@ -1144,10 +1021,10 @@ export default function Lesson185Advertising() {
         >
           <div className="bg-amber-100 border-2 border-amber-400 rounded-2xl p-5 mb-6">
             <h4 className="font-bold text-red-900 text-lg mb-1">
-              🔍 TAKE A LOOK – Key Words
+              🔍 TAKE A LOOK
             </h4>
             <p className="text-sm text-red-800 mb-4 italic">
-              Click each word to hear it. Definitions are in English.
+              Click each word to hear it.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {TAKE_A_LOOK_WORDS.map((item) => (
@@ -1166,7 +1043,7 @@ export default function Lesson185Advertising() {
 
           <div className="bg-white rounded-2xl border border-amber-300 shadow-sm p-6">
             <h3 className="font-bold text-red-900 text-lg mb-4">
-              ✅ CHECK IT OUT – Reported Speech with Causatives
+              ✅ CHECK IT OUT
             </h3>
             <div className="space-y-4">
               {CHECK_IT_OUT_DRILLS.map((ex) => (
@@ -1198,7 +1075,7 @@ export default function Lesson185Advertising() {
             >
               <img
                 src={REAL_LIFE_IMAGE}
-                alt="Real Life – Advertising"
+                alt="Real Life – Misinformation"
                 className="w-full max-h-[340px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-red-950/75 via-transparent to-transparent flex items-end p-4">
@@ -1207,7 +1084,7 @@ export default function Lesson185Advertising() {
                     🎧 REAL LIFE
                   </div>
                   <h3 className="text-xl md:text-2xl font-extrabold text-amber-50 drop-shadow">
-                    The Hidden Persuaders
+                    {REAL_LIFE_TITLE}
                   </h3>
                 </div>
               </div>
@@ -1273,9 +1150,6 @@ export default function Lesson185Advertising() {
             <h4 className="font-bold text-red-900 text-lg mb-3">
               📝 READING COMPREHENSION
             </h4>
-            <p className="text-sm text-gray-600 italic mb-4">
-              Answer the questions below in your own words.
-            </p>
             <div className="space-y-3">
               {REAL_LIFE_COMPREHENSION.map((q) => (
                 <div key={q.id} className="bg-amber-50 rounded-lg p-3 border border-amber-200">
@@ -1298,9 +1172,6 @@ export default function Lesson185Advertising() {
             <h4 className="font-bold text-lg mb-3 flex items-center gap-2">
               💬 OPEN-ENDED DISCUSSION (B2 / C1)
             </h4>
-            <p className="text-sm text-amber-100 italic mb-4">
-              These are opinion-based. Speak them out loud or type your answers.
-            </p>
             <div className="space-y-3">
               {REAL_LIFE_OPEN.map((q) => (
                 <div key={q.id} className="bg-white/10 backdrop-blur rounded-lg p-3 border border-amber-300/40">

@@ -57,7 +57,7 @@ interface SubstitutionExercise {
 // IMAGES & AUDIO
 // ============================================
 const HERO_IMAGE =
-  "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/Sobrecarga%20de%20Redes%20Sociais.png";
+  "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l183.png";
 
 const NEWS_BACKGROUND =
   "https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg?auto=compress&cs=tinysrgb&w=1920&q=80";
@@ -1010,7 +1010,7 @@ export default function Lesson183NewsMedia() {
           >
             <img
               src={HERO_IMAGE}
-              alt="Social Media Overload – Lesson 183"
+              alt="The Reality of Fake News – Lesson 183"
               className="w-full max-h-[480px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-red-950/80 via-red-900/20 to-transparent flex items-end p-6 md:p-8">
@@ -1019,7 +1019,7 @@ export default function Lesson183NewsMedia() {
                   LESSON 183
                 </div>
                 <h1 className="text-3xl md:text-5xl font-extrabold text-amber-50 drop-shadow-lg">
-                  📰 News & Media
+                  📰 The Reality of Fake News
                 </h1>
                 <p className="text-amber-100 text-sm md:text-base mt-2 max-w-2xl">
                   Fake News, Paparazzi & Reported Speech
@@ -1537,7 +1537,7 @@ export default function Lesson183NewsMedia() {
           <div className="relative max-w-6xl max-h-full">
             <img
               src={HERO_IMAGE}
-              alt="Social Media Overload – enlarged"
+              alt="The Reality of Fake News – enlarged"
               className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
             />
             <button

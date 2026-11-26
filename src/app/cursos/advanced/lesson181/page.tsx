@@ -914,7 +914,7 @@ export default function Lesson1NewsMedia() {
                   LESSON 1
                 </div>
                 <h1 className="text-3xl md:text-5xl font-extrabold text-amber-50 drop-shadow-lg">
-                  📰 News & Media
+                  📰 What's in the news?
                 </h1>
                 <p className="text-amber-100 text-sm md:text-base mt-2 max-w-2xl">
                   Social Media Overload · Tabloids, Headlines & Reported Speech

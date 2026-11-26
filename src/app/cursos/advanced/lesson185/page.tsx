@@ -1,6 +1,7 @@
+// app/cursos/intermediate/lesson185/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import {
   Volume2,
@@ -9,6 +10,8 @@ import {
   Eye,
   EyeOff,
   X,
+  Play,
+  Pause,
 } from "lucide-react";
 
 // ============================================
@@ -49,10 +52,10 @@ interface NoteModalState {
 }
 
 // ============================================
-// IMAGES (Placeholders since the exact 185 images were not provided)
+// IMAGES
 // ============================================
 const HERO_IMAGE =
-  "https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+  "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/L185-IMG.png";
 
 const BACKGROUND =
   "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1920&q=80";
@@ -61,10 +64,18 @@ const REAL_LIFE_IMAGE =
   "https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
 
 // ============================================
+// AUDIO SOURCE
+// ============================================
+const REAL_LIFE_AUDIO_URL =
+  "https://github.com/Sullivan-code/english-audios/raw/refs/heads/main/L185reallife%20(online-audio-converter.com).mp3";
+
+// ============================================
 // SPEECH SYSTEM (American Female Voice)
 // ============================================
 const speakEnglish = (text: string, rate = 0.9) => {
   if (!text || typeof window === "undefined") return;
+  if (!window.speechSynthesis) return;
+
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "en-US";
@@ -103,11 +114,12 @@ const SpeakBtn = ({
 }: {
   text: string;
   speech?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
   className?: string;
   rate?: number;
 }) => (
   <button
+    type="button"
     onClick={(e) => {
       e.stopPropagation();
       speakEnglish(speech || text, rate);
@@ -115,7 +127,7 @@ const SpeakBtn = ({
     className={`inline-flex items-center gap-1 cursor-pointer hover:bg-amber-100 px-1 rounded transition-colors group text-left ${className}`}
     title="Click to hear American pronunciation"
   >
-    <span className="flex-1">{children || text}</span>
+    <span className="flex-1">{children ?? text}</span>
     <Volume2
       size={12}
       className="opacity-0 group-hover:opacity-100 transition-opacity text-amber-600 flex-shrink-0"
@@ -134,10 +146,11 @@ const SpeakSentence = ({
 }: {
   text: string;
   speech?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
   className?: string;
 }) => (
   <button
+    type="button"
     onClick={(e) => {
       e.stopPropagation();
       const speechText =
@@ -147,7 +160,7 @@ const SpeakSentence = ({
     }}
     className={`group cursor-pointer hover:bg-red-50 px-1 rounded transition-colors text-left w-full ${className}`}
   >
-    <span className="inline">{children || text}</span>
+    <span className="inline">{children ?? text}</span>
     <Volume2
       size={12}
       className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-amber-600"
@@ -156,11 +169,96 @@ const SpeakSentence = ({
 );
 
 // ============================================
-// PENCIL ICON (Lesson 63 Style)
+// STICKY AUDIO PLAYER
+// ============================================
+function StickyAudioPlayer() {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const onTimeUpdate = () => {
+    if (!audioRef.current) return;
+    const current = audioRef.current.currentTime;
+    const total = audioRef.current.duration;
+    setProgress((current / total) * 100 || 0);
+  };
+
+  const onLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+    }
+  };
+
+  const onScrub = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!audioRef.current) return;
+    const scrubTime = (Number(e.target.value) / 100) * audioRef.current.duration;
+    audioRef.current.currentTime = scrubTime;
+    setProgress(Number(e.target.value));
+  };
+
+  const formatTime = (secs: number) => {
+    if (isNaN(secs)) return "0:00";
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  };
+
+  return (
+    <div className="sticky top-0 z-50 bg-gradient-to-r from-red-800 to-amber-700 text-white p-3 rounded-b-2xl shadow-lg mb-4 flex items-center gap-3">
+      <audio
+        ref={audioRef}
+        src={REAL_LIFE_AUDIO_URL}
+        onTimeUpdate={onTimeUpdate}
+        onLoadedMetadata={onLoadedMetadata}
+        onEnded={() => setIsPlaying(false)}
+        preload="metadata"
+      />
+      <button
+        type="button"
+        onClick={togglePlay}
+        className="bg-white/20 hover:bg-white/30 p-2 rounded-full transition-colors flex-shrink-0"
+        aria-label={isPlaying ? "Pause" : "Play"}
+      >
+        {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+      </button>
+      <div className="flex-1 flex items-center gap-2">
+        <span className="text-xs font-mono w-10 text-right">
+          {formatTime((progress / 100) * duration)}
+        </span>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={progress}
+          onChange={onScrub}
+          className="flex-1 h-1.5 accent-amber-300 bg-white/30 rounded-full appearance-none cursor-pointer"
+        />
+        <span className="text-xs font-mono w-10">
+          {formatTime(duration)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// PENCIL ICON
 // ============================================
 function PencilIcon({ onClick }: { onClick: () => void }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className="ml-3 text-amber-200 hover:text-white transition-colors focus:outline-none"
       aria-label="Make notes"
@@ -179,7 +277,7 @@ function PencilIcon({ onClick }: { onClick: () => void }) {
 }
 
 // ============================================
-// NOTE MODAL (Lesson 63 Style)
+// NOTE MODAL
 // ============================================
 function NoteModal({
   isOpen,
@@ -209,7 +307,7 @@ function NoteModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[70]"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[70]"
       style={{ animation: "fadeIn 0.3s ease-out" }}
       onClick={onClose}
     >
@@ -233,12 +331,14 @@ function NoteModal({
         </div>
         <div className="flex justify-end gap-3 p-6 pt-0">
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 text-red-800 hover:text-red-900 transition-colors font-semibold"
           >
             Cancel
           </button>
           <button
+            type="button"
             onClick={handleSave}
             className="px-6 py-2 bg-gradient-to-r from-red-800 to-amber-700 text-white rounded-full hover:from-red-900 hover:to-amber-800 transition-all duration-300 font-semibold"
           >
@@ -298,6 +398,7 @@ function SubstitutionOptions({
           {exercise.original}
         </p>
         <button
+          type="button"
           onClick={toggleVisibility}
           className="p-1 rounded hover:bg-amber-100 transition-colors text-red-700 hover:text-red-900 flex-shrink-0"
           title={showEnglish ? "Hide English answer" : "Show English answer"}
@@ -325,6 +426,7 @@ function SubstitutionOptions({
       <div className="flex flex-wrap gap-2">
         {exercise.options.map((option, index) => (
           <button
+            type="button"
             key={index}
             onClick={() => {
               onOptionClick(exercise.key, index);
@@ -345,7 +447,7 @@ function SubstitutionOptions({
 }
 
 // ============================================
-// SECTION WRAPPER WITH PENCIL
+// SECTION WRAPPER
 // ============================================
 function Section({
   id,
@@ -362,22 +464,33 @@ function Section({
   open: boolean;
   onToggle: () => void;
   onOpenNote: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <section className="mb-8 border-2 border-amber-300 bg-gradient-to-br from-red-50 via-amber-50 to-amber-100 rounded-3xl shadow-lg overflow-hidden">
+    <section
+      id={id}
+      className="mb-8 border-2 border-amber-300 bg-gradient-to-br from-red-50 via-amber-50 to-amber-100 rounded-3xl shadow-lg relative"
+    >
       <div className="w-full bg-gradient-to-r from-red-800 via-red-700 to-amber-700 text-amber-50 py-4 px-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={onToggle}
             className="flex items-center gap-2 hover:opacity-90 transition-opacity"
           >
             <span>{icon}</span>
-            <h2 className="text-xl md:text-2xl font-bold text-left">{title}</h2>
+            <span className="text-xl md:text-2xl font-bold text-left">
+              {title}
+            </span>
           </button>
           <PencilIcon onClick={onOpenNote} />
         </div>
-        <button onClick={onToggle} className="hover:opacity-80 transition-opacity">
+        <button
+          type="button"
+          onClick={onToggle}
+          className="hover:opacity-80 transition-opacity"
+          aria-label={open ? "Collapse section" : "Expand section"}
+        >
           {open ? <ChevronUp size={22} /> : <ChevronDown size={22} />}
         </button>
       </div>
@@ -392,7 +505,7 @@ function Section({
 }
 
 // ============================================
-// READING TEXT (clickable key words)
+// READING TEXT
 // ============================================
 function ReadingText({
   text,
@@ -451,7 +564,7 @@ function ReadingText({
 }
 
 // ============================================
-// DATA – EXACTLY FROM THE IMAGES (LESSON 185)
+// DATA
 // ============================================
 const VERBS = [
   { base: "to seek", past: "sought", participle: "sought", pt: "procurar, buscar" },
@@ -475,17 +588,17 @@ const USEFUL_PHRASES = [
   {
     en: "She should read the latest news to keep up with the changes.",
     pt: "Ela deveria ler as últimas notícias para se manter atualizada com as mudanças.",
-    green: ["keep up with"],
+    green: ["keep", "up", "with"],
   },
   {
     en: "The teacher told us to filter out everything we read.",
     pt: "O professor nos disse para filtrar tudo o que lemos.",
-    green: ["filter out"],
+    green: ["filter", "out"],
   },
   {
     en: "Any creative content can go viral.",
     pt: "Qualquer conteúdo criativo pode viralizar.",
-    green: ["go viral"],
+    green: ["go", "viral"],
   },
 ];
 
@@ -494,9 +607,9 @@ const LANGUAGE_FUNCTIONS = [
   { direct: "I'm sure this content won't go viral.", reported: "She said she was sure that content wouldn't go viral." },
   { direct: "I'll try to convince him it's an awful idea.", reported: "She said she would try to convince him it was an awful idea." },
   { direct: "Will this post attract more subscribers?", reported: "He asked if that post would attract more subscribers." },
-  { direct: "She is the first eyewitness to talk about the riot.", reported: "(No reported version provided in image)" },
-  { direct: "He was the first person to warn of the dangers of fake news.", reported: "(No reported version provided in image)" },
-  { direct: "The manager was the last to arrive.", reported: "(No reported version provided in image)" },
+  { direct: "She is the first eyewitness to talk about the riot.", reported: null },
+  { direct: "He was the first person to warn of the dangers of fake news.", reported: null },
+  { direct: "The manager was the last to arrive.", reported: null },
 ];
 
 const TAKE_A_LOOK_WORDS: VocabularyItem[] = [
@@ -544,9 +657,6 @@ const CHECK_IT_OUT_DRILLS: SubstitutionExercise[] = [
   },
 ];
 
-// ============================================
-// OPEN DRILLS (B2/C1) - Based on the lesson's theme
-// ============================================
 const OPEN_DRILLS: SubstitutionExercise[] = [
   {
     key: "drill-1",
@@ -618,59 +728,51 @@ const OPEN_DRILLS: SubstitutionExercise[] = [
   },
 ];
 
-// ============================================
-// REAL LIFE
-// ============================================
 const REAL_LIFE_TITLE = "THE FUTURE OF TRUTH AND MISINFORMATION ONLINE";
 
-const REAL_LIFE_TEXT = `In today's digital age, the future of truth and misinformation online is highly uncertain. Mainstream media often struggles to compete with the sensationalism of viral content. As we scroll through our real-time newsfeed, it is crucial to filter out fake news. An eyewitness might report one thing, but without proper verification, an engaging story can quickly become an awful rumor. We must be prepared to seek credible sources and warn others about the dangers of misinformation, for as long as it is foreseeable.`;
+const REAL_LIFE_TEXT = `"Messages can now be tailored with awful accuracy. We're doomed to living in targeted information bubbles," a consultant for Softforrm Systems commented. An anonymous survey participant warned, "Misinformation will play a major role in conflicts between nations and within competing parties within nation states."
+
+"For the foreseeable future, the economics and the mainstream networks are going to privilege the dissemination of unverified information. Where there is a capitalistic incentive to make content available to consumers, the ability to control veracity will be far outstripped by the willingness to supply any kind of speech to any kind of user."
+
+These experts mentioned that subscribers have turned to social media to get its "news". They said the public's desire for quick reads and tabloid-style sensationalism is what makes social media the field of choice for manipulative narratives, which are often packaged to appear like news headlines. They say that the public's move away from more-traditional news sources of information, which had some ethical standards, to the consumption of social media newsfeeds has weakened mainstream media organizations, making them lower-budget operations that have been forced to compete for attention by offering up clickbait headlines of their own.`;
 
 const REAL_LIFE_KEY_WORDS: Record<string, string> = {
-  misinformation: "false or inaccurate information, especially that which is deliberately intended to deceive",
-  mainstream: "considered normal or conventional; the dominant trend",
-  sensationalism: "presenting stories in an exciting or shocking way",
-  "real-time newsfeed": "a constantly updating stream of news as it happens",
-  "filter out": "to remove unwanted things",
-  eyewitness: "a person who saw an event happen",
-  engaging: "charming and attractive; interesting",
-  awful: "very bad or unpleasant",
-  seek: "to attempt to find something",
-  warn: "to inform someone of a possible danger",
+  tailored: "made or adapted for a particular purpose or person",
+  doomed: "likely to have an unfortunate and inescapable outcome",
+  bubbles: "a situation in which someone only hears or sees news and information that supports what they already believe and like",
+  warned: "informed someone of a possible danger or problem",
   foreseeable: "for as long as it is possible to know what is likely to happen",
+  dissemination: "the act of spreading something, especially information, widely",
+  veracity: "conformity to facts; accuracy",
+  outstripped: "to move faster than someone or something else; to surpass",
+  willingness: "the state of being prepared to do something",
+  sensationalism: "presenting stories in an exciting or shocking way",
+  clickbait: "content whose main purpose is to attract attention and encourage visitors to click on a link to a particular web page",
 };
 
 const REAL_LIFE_COMPREHENSION: ReadingQuestion[] = [
-  {
-    id: 1,
-    question: "How does mainstream media struggle against sensationalism?",
-  },
-  {
-    id: 2,
-    question: "Why is it important to filter out fake news from our real-time newsfeed?",
-  },
-  {
-    id: 3,
-    question: "What can happen to an engaging story if it is not verified by an eyewitness?",
-  },
+  { id: 1, question: "According to the text, what will play a major role in conflicts between nations and within competing parties?" },
+  { id: 2, question: "Why are mainstream networks going to privilege the dissemination of unverified information in the foreseeable future?" },
+  { id: 3, question: "How has the public's move to social media newsfeeds affected traditional mainstream media organizations?" },
 ];
 
 const REAL_LIFE_OPEN: ReadingQuestion[] = [
   {
     id: 1,
-    question: "Do you think mainstream media is losing the battle against independent creators and influencers? Why?",
+    question: "Do you agree that we are 'doomed to living in targeted information bubbles'? How do algorithms affect what you see online?",
   },
   {
     id: 2,
-    question: "What are the long-term consequences of sensationalism in digital journalism?",
+    question: "How can individuals practice critical thinking to avoid falling for tabloid-style sensationalism and clickbait headlines?",
   },
   {
     id: 3,
-    question: "How do you personally balance staying informed on a real-time newsfeed without falling for misinformation?",
+    question: "In your opinion, should there be stricter regulations on social media platforms to control the spread of misinformation, or would that violate freedom of speech?",
   },
 ];
 
 // ============================================
-// MAIN COMPONENT – LESSON 185
+// MAIN COMPONENT
 // ============================================
 export default function Lesson185NewsMedia() {
   const router = useRouter();
@@ -702,7 +804,6 @@ export default function Lesson185NewsMedia() {
   const [isHeroModalOpen, setIsHeroModalOpen] = useState(false);
   const [isRealLifeImageModalOpen, setIsRealLifeImageModalOpen] = useState(false);
 
-  // ---- Load persisted data ----
   useEffect(() => {
     try {
       const saved = localStorage.getItem("lesson185_notes");
@@ -713,10 +814,9 @@ export default function Lesson185NewsMedia() {
     } catch (err) {
       console.warn("Could not load saved data:", err);
     }
-    if (typeof window !== "undefined") window.speechSynthesis.getVoices();
+    if (typeof window !== "undefined") window.speechSynthesis?.getVoices();
   }, []);
 
-  // ---- Persist notes ----
   useEffect(() => {
     try {
       localStorage.setItem("lesson185_notes", JSON.stringify(savedNotes));
@@ -725,10 +825,12 @@ export default function Lesson185NewsMedia() {
     }
   }, [savedNotes]);
 
-  // ---- Persist real life answers ----
   useEffect(() => {
     try {
-      localStorage.setItem("lesson185_real_life_answers", JSON.stringify(realLifeAnswers));
+      localStorage.setItem(
+        "lesson185_real_life_answers",
+        JSON.stringify(realLifeAnswers)
+      );
     } catch (err) {
       console.warn("Could not save answers:", err);
     }
@@ -784,7 +886,7 @@ export default function Lesson185NewsMedia() {
           >
             <img
               src={HERO_IMAGE}
-              alt="News & Media – Lesson 185"
+              alt="Alternative Sources of Information – Lesson 185"
               className="w-full max-h-[480px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-red-950/80 via-red-900/20 to-transparent flex items-end p-6 md:p-8">
@@ -793,7 +895,7 @@ export default function Lesson185NewsMedia() {
                   LESSON 185
                 </div>
                 <h1 className="text-3xl md:text-5xl font-extrabold text-amber-50 drop-shadow-lg">
-                  📰 News, Truth & Misinformation
+                  📰 Alternative Sources of Information
                 </h1>
                 <p className="text-amber-100 text-sm md:text-base mt-2 max-w-2xl">
                   Reported Speech, Digital Influencers & The Future of Truth
@@ -804,8 +906,9 @@ export default function Lesson185NewsMedia() {
 
           <div className="text-center mt-5">
             <p className="text-red-800 max-w-2xl mx-auto">
-              <SpeakBtn text="Explore the language of news and misinformation. Practice reported speech, new vocabulary, and critical thinking.">
-                Explore the language of news and misinformation. Practice reported speech, new vocabulary, and critical thinking.
+              <SpeakBtn text="Explore alternative sources of information. Practice reported speech, new vocabulary, and critical thinking.">
+                Explore alternative sources of information. Practice
+                reported speech, new vocabulary, and critical thinking.
               </SpeakBtn>
             </p>
           </div>
@@ -827,6 +930,7 @@ export default function Lesson185NewsMedia() {
               </SpeakBtn>
             </p>
             <button
+              type="button"
               onClick={() => setShowVerbTranslation(!showVerbTranslation)}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100 text-red-800 border border-amber-400 text-sm font-semibold hover:bg-amber-200 transition"
             >
@@ -965,7 +1069,7 @@ export default function Lesson185NewsMedia() {
                     </SpeakBtn>
                   </div>
                 </div>
-                {f.reported !== "(No reported version provided in image)" && (
+                {f.reported && (
                   <div className="border-t border-dashed border-amber-300 pt-2">
                     <span className="text-xs font-bold text-amber-700 uppercase">
                       Reported
@@ -1049,7 +1153,10 @@ export default function Lesson185NewsMedia() {
               {CHECK_IT_OUT_DRILLS.map((ex) => (
                 <SubstitutionOptions
                   key={ex.key}
-                  exercise={{ ...ex, currentIndex: getCheckItOutIndex(ex.key) }}
+                  exercise={{
+                    ...ex,
+                    currentIndex: getCheckItOutIndex(ex.key),
+                  }}
                   onOptionClick={handleCheckItOutSelect}
                 />
               ))}
@@ -1066,7 +1173,9 @@ export default function Lesson185NewsMedia() {
           onToggle={() => toggleSection("realLife")}
           onOpenNote={() => openNoteModal("Real Life")}
         >
-          {/* Real life image */}
+          {/* STICKY AUDIO PLAYER */}
+          <StickyAudioPlayer />
+
           <div className="mb-6">
             <div
               className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-red-400/60 group cursor-pointer"
@@ -1091,7 +1200,6 @@ export default function Lesson185NewsMedia() {
             </div>
           </div>
 
-          {/* Text */}
           <div className="bg-white rounded-2xl border border-amber-300 shadow-sm p-6 mb-6">
             <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
               <h3 className="font-bold text-red-900 text-lg md:text-xl">
@@ -1101,13 +1209,13 @@ export default function Lesson185NewsMedia() {
                 text={`${REAL_LIFE_TITLE}. ${REAL_LIFE_TEXT}`}
                 className="text-sm font-semibold text-red-800 border border-red-300 rounded-full px-3 py-1 hover:bg-red-100"
               >
-                🔊 Listen to the text
+                🔊 Listen to the text (AI Voice)
               </SpeakBtn>
             </div>
 
             <div className="border-l-4 border-amber-500 pl-4 mb-4">
               <p className="text-sm text-gray-600 italic">
-                Read the text below or listen to it. Click any{" "}
+                Read the text below or use the audio player above. Click any{" "}
                 <span className="text-red-600 font-bold">red word</span> to see
                 its English definition.
               </p>
@@ -1121,7 +1229,7 @@ export default function Lesson185NewsMedia() {
             />
 
             {activeRealLifeWord && (
-              <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-red-800 to-amber-700 text-amber-50 shadow-lg animate-[fadeIn_0.2s_ease-out]">
+              <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-red-800 to-amber-700 text-amber-50 shadow-lg">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-xs uppercase tracking-wider text-amber-200 mb-1">
@@ -1135,8 +1243,10 @@ export default function Lesson185NewsMedia() {
                     </p>
                   </div>
                   <button
+                    type="button"
                     onClick={() => setActiveRealLifeWord(null)}
                     className="text-amber-200 hover:text-white transition-colors"
+                    aria-label="Close definition"
                   >
                     <X size={20} />
                   </button>
@@ -1145,14 +1255,16 @@ export default function Lesson185NewsMedia() {
             )}
           </div>
 
-          {/* Reading comprehension */}
           <div className="bg-white rounded-2xl border border-amber-300 shadow-sm p-6 mb-6">
             <h4 className="font-bold text-red-900 text-lg mb-3">
               📝 READING COMPREHENSION
             </h4>
             <div className="space-y-3">
               {REAL_LIFE_COMPREHENSION.map((q) => (
-                <div key={q.id} className="bg-amber-50 rounded-lg p-3 border border-amber-200">
+                <div
+                  key={q.id}
+                  className="bg-amber-50 rounded-lg p-3 border border-amber-200"
+                >
                   <p className="text-red-800 font-semibold text-sm mb-2">
                     {q.id}. {q.question}
                   </p>
@@ -1167,23 +1279,28 @@ export default function Lesson185NewsMedia() {
             </div>
           </div>
 
-          {/* Open-ended questions */}
           <div className="bg-gradient-to-br from-red-800 to-amber-700 rounded-2xl p-6 shadow-lg text-amber-50">
             <h4 className="font-bold text-lg mb-3 flex items-center gap-2">
               💬 OPEN-ENDED DISCUSSION (B2 / C1)
             </h4>
             <div className="space-y-3">
               {REAL_LIFE_OPEN.map((q) => (
-                <div key={q.id} className="bg-white/10 backdrop-blur rounded-lg p-3 border border-amber-300/40">
+                <div
+                  key={q.id}
+                  className="bg-white/10 backdrop-blur rounded-lg p-3 border border-amber-300/40"
+                >
                   <div className="flex items-start gap-2 mb-2">
                     <span className="text-amber-300 font-bold">Q{q.id}.</span>
                     <p className="text-sm font-medium flex-1">{q.question}</p>
-                    <SpeakBtn
-                      text={q.question}
-                      className="text-amber-200"
+                    <button
+                      type="button"
+                      onClick={() => speakEnglish(q.question, 0.85)}
+                      className="text-amber-200 hover:text-white transition-colors flex-shrink-0"
+                      title="Listen to the question"
+                      aria-label="Listen to the question"
                     >
-                      {""}
-                    </SpeakBtn>
+                      <Volume2 size={16} />
+                    </button>
                   </div>
                   <textarea
                     value={realLifeAnswers[100 + q.id] || ""}
@@ -1200,31 +1317,35 @@ export default function Lesson185NewsMedia() {
         </Section>
 
         {/* ===================== NAVIGATION ===================== */}
-        <div className="flex justify-center gap-4 mt-8">
+        <div className="flex justify-center gap-4 mt-8 flex-wrap">
           <button
+            type="button"
             onClick={() => router.push("/cursos/intermediate/lesson184")}
             className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
           >
-            &larr; Previous Lesson (184)
+            ← Previous Lesson (184)
           </button>
           <button
+            type="button"
             onClick={() => router.push("/cursos/intermediate/lesson186")}
             className="bg-gradient-to-r from-red-800 to-amber-700 hover:from-red-900 hover:to-amber-800 text-white font-semibold py-3 px-8 rounded-full transition-all"
           >
-            Next Lesson (186) &rarr;
+            Next Lesson (186) →
           </button>
         </div>
       </div>
 
       {/* ===================== FLOATING NOTE BUTTON ===================== */}
       <button
+        type="button"
         onClick={() => openNoteModal("General Notes")}
         className="fixed bottom-6 right-6 bg-gradient-to-r from-red-800 to-amber-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl hover:from-red-900 hover:to-amber-800 transition-all duration-300 z-50 flex items-center justify-center"
         title="Make general notes"
+        aria-label="Make general notes"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 animate-[spin-slow_4s_linear_infinite]"
+          className="h-6 w-6"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -1235,7 +1356,7 @@ export default function Lesson185NewsMedia() {
       {/* ===================== IMAGE MODALS ===================== */}
       {isHeroModalOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
           onClick={() => setIsHeroModalOpen(false)}
         >
           <div className="relative max-w-5xl max-h-full p-4">
@@ -1245,10 +1366,12 @@ export default function Lesson185NewsMedia() {
               className="max-w-full max-h-screen object-contain rounded-lg shadow-2xl"
             />
             <button
+              type="button"
               onClick={() => setIsHeroModalOpen(false)}
               className="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 transition-colors"
+              aria-label="Close"
             >
-              &times;
+              ×
             </button>
           </div>
         </div>
@@ -1256,7 +1379,7 @@ export default function Lesson185NewsMedia() {
 
       {isRealLifeImageModalOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
           onClick={() => setIsRealLifeImageModalOpen(false)}
         >
           <div className="relative max-w-5xl max-h-full p-4">
@@ -1266,10 +1389,12 @@ export default function Lesson185NewsMedia() {
               className="max-w-full max-h-screen object-contain rounded-lg shadow-2xl"
             />
             <button
+              type="button"
               onClick={() => setIsRealLifeImageModalOpen(false)}
               className="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 transition-colors"
+              aria-label="Close"
             >
-              &times;
+              ×
             </button>
           </div>
         </div>

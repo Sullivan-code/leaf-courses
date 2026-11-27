@@ -1,1379 +1,958 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
-import { Pause, Play, RotateCcw, Volume2, ChevronDown, ChevronUp, Check, XCircle, ArrowLeft, ArrowRight } from "lucide-react";
+import { Volume2, Eye, EyeOff, Pencil, Check, XCircle, ChevronUp, ChevronDown, ArrowLeft, ArrowRight, X } from "lucide-react";
+
+type SectionKey = 'verbs' | 'vocabulary' | 'usefulPhrases' | 'grammar' | 'realLife' | 'checkout' | 'fluency' | 'drilling' | 'questions';
+
+interface NoteModalState {
+  isOpen: boolean;
+  sectionTitle: string;
+  noteContent: string;
+}
 
 // ============================================
-// LESSON 54 - GOING SHOPPING
-// Theme: Present Continuous for actions happening now
+// SPEECH SYSTEM WITH AMERICAN FEMALE VOICE
 // ============================================
 
-// ============================================
-// KEY VOCABULARY FROM THE VIDEO
-// ============================================
-const keyVocabulary = [
-  { english: "Tech company", portuguese: "empresa de tecnologia" },
-  { english: "Finally", portuguese: "finalmente" },
-  { english: "To sit next", portuguese: "sentar perto" },
-  { english: "Interesting", portuguese: "interessante" },
-  { english: "It's a mystery", portuguese: "É de mistério (gênero)" },
-  { english: "Faster", portuguese: "mais rápido" },
-  { english: "Route", portuguese: "caminho, rota" },
-  { english: "Wednesday", portuguese: "quarta" },
-  { english: "To look out", portuguese: "olhar para fora" },
-  { english: "For work or fun?", portuguese: "A trabalho ou para se divertir?" },
-  { english: "Standing alone", portuguese: "parado sozinho" },
-  { english: "Inspiring", portuguese: "inspirador(a)" },
-  { english: "Birds", portuguese: "pássaros" },
-  { english: "To stretch", portuguese: "alongar-se" },
-  { english: "Often", portuguese: "frequentemente" },
-  { english: "Three times a week", portuguese: "três vezes por semana" },
-  { english: "Cafe", portuguese: "cafeteria" },
-  { english: "Weather", portuguese: "clima/tempo" },
-  { english: "Neighborhood", portuguese: "vizinhança" },
-  { english: "Cozy", portuguese: "confortável" },
-  { english: "Magazine", portuguese: "revista" },
-  { english: "Airport", portuguese: "aeroporto" }
-];
+interface SpeakTextProps {
+  text: string;
+  children?: React.ReactNode;
+  className?: string;
+}
 
-// ============================================
-// GRAMMAR EXPLANATION - Present Continuous
-// ============================================
-const grammarExplanation = {
-  title: "Present Continuous - Ações acontecendo agora",
-  explanation: "Usamos o Present Continuous para falar sobre ações que estão acontecendo no momento da fala.",
-  structure: {
-    affirmative: "Sujeito + am/is/are + verbo-ing",
-    negative: "Sujeito + am/is/are + not + verbo-ing",
-    interrogative: "Am/Is/Are + sujeito + verbo-ing?"
-  },
-  examples: [
-    "She is eating a sandwich.",
-    "They are looking for new shoes.",
-    "He is writing an email.",
-    "We are watching TV."
-  ],
-  timeExpressions: ["now", "right now", "at the moment", "today", "this week"]
+const sanitizeForSpeech = (text: string): string => {
+  if (!text) return "";
+  return text
+    .replace(/[\p{Extended_Pictographic}]/gu, "")
+    .replace(/[\u{FE0F}\u{200D}\u{20E3}]/gu, "")
+    .replace(/[·—]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 };
 
-// ============================================
-// VIDEO DATA - Personalized for Shopping Theme
-// ============================================
-const tuneInYourEarsVideo = {
-  youtubeId: "tjGKuuQAmYw",
-  title: "Daily Routine & Neighborhood Conversation",
-  description: "Watch this video and practice your listening skills! Pay attention to the vocabulary and answer the questions below.",
-  keyVocabulary: keyVocabulary,
-  questions: [
-    {
-      id: 1,
-      question: "What is the speaker doing right now?",
-      instructions: "Listen carefully and identify the present continuous action the speaker is doing at the moment.",
-      correctAnswer: "The speaker is sitting at a cafe and looking out the window."
-    },
-    {
-      id: 2,
-      question: "What is the speaker wearing today?",
-      instructions: "Pay attention to the clothing description mentioned in the video.",
-      correctAnswer: "The speaker is wearing casual clothes and comfortable shoes."
-    },
-    {
-      id: 3,
-      question: "Where is the speaker going after the cafe?",
-      instructions: "Listen for the destination the speaker mentions.",
-      correctAnswer: "The speaker is going to the shopping mall to buy some clothes."
-    },
-    {
-      id: 4,
-      question: "What is the speaker looking for at the mall?",
-      instructions: "Pay attention to what item the speaker needs to buy.",
-      correctAnswer: "The speaker is looking for a new jacket and some jeans."
-    },
-    {
-      id: 5,
-      question: "How is the speaker paying for the purchases?",
-      instructions: "Listen for the payment method mentioned.",
-      correctAnswer: "The speaker is paying with a credit card."
-    },
-    {
-      id: 6,
-      question: "What time is the store closing?",
-      instructions: "Pay attention to the time mentioned for store closing.",
-      correctAnswer: "The store is closing at 9 PM."
-    }
-  ]
+const speakEnglish = (text: string, rate = 0.9) => {
+  if (!text || typeof window === 'undefined') return;
+  const cleanText = sanitizeForSpeech(text);
+  if (!cleanText) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+  utterance.lang = 'en-US';
+  utterance.rate = rate;
+  utterance.pitch = 1.0;
+  const voices = window.speechSynthesis.getVoices();
+  const americanFemaleVoices = voices.filter(voice =>
+    (voice.lang === 'en-US' || voice.lang.startsWith('en-US')) &&
+    (voice.name.toLowerCase().includes('samantha') ||
+     voice.name.toLowerCase().includes('google us english') ||
+     voice.name.toLowerCase().includes('siri') ||
+     voice.name.toLowerCase().includes('female') ||
+     voice.name === 'Google US English' ||
+     voice.name === 'Samantha')
+  );
+  const americanVoices = voices.filter(voice => voice.lang === 'en-US' || voice.lang.startsWith('en-US'));
+  if (americanFemaleVoices.length > 0) utterance.voice = americanFemaleVoices[0];
+  else if (americanVoices.length > 0) utterance.voice = americanVoices[0];
+  window.speechSynthesis.speak(utterance);
 };
 
-// ============================================
-// PART 1 – FLUENCY (IMPORTANT!)
-// Images for What's + verb structure
-// ============================================
-const fluencyExercises = [
-  {
-    id: "fluency-a",
-    prompt: "what - to write",
-    image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1973&auto=format&fit=crop",
-    alt: "Person writing on paper",
-    suggestedQuestion: "What is she writing?",
-    suggestedAnswer: "She's writing a letter."
-  },
-  {
-    id: "fluency-b",
-    prompt: "what - to make",
-    image: "https://images.unsplash.com/photo-1569058242567-a8a6525d4f07?q=80&w=2070&auto=format&fit=crop",
-    alt: "Person making food in kitchen",
-    suggestedQuestion: "What is he making?",
-    suggestedAnswer: "He's making a salad."
-  },
-  {
-    id: "fluency-c",
-    prompt: "what - to look for",
-    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop",
-    alt: "Person shopping for clothes",
-    suggestedQuestion: "What is she looking for?",
-    suggestedAnswer: "She's looking for a new dress."
-  },
-  {
-    id: "fluency-d",
-    prompt: "what - to do",
-    image: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?q=80&w=2060&auto=format&fit=crop",
-    alt: "Person sleeping on sofa",
-    suggestedQuestion: "What is he doing?",
-    suggestedAnswer: "He's sleeping on the sofa."
-  },
-  {
-    id: "fluency-e",
-    prompt: "what - to watch",
-    image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=2069&auto=format&fit=crop",
-    alt: "Family watching TV together",
-    suggestedQuestion: "What are they watching?",
-    suggestedAnswer: "They're watching a movie."
-  },
-  {
-    id: "fluency-f",
-    prompt: "what - to buy",
-    image: "https://images.unsplash.com/photo-1567446537708-ac4aa75c9c28?q=80&w=2070&auto=format&fit=crop",
-    alt: "Person buying a car at dealership",
-    suggestedQuestion: "What is he buying?",
-    suggestedAnswer: "He's buying a new car."
-  }
-];
-
-// ============================================
-// PART 2 – DRILLING PRACTICE (Substitution)
-// ============================================
-const substitutionPractice = [
-  {
-    key: "subs-1",
-    original: "Ele usa roupas formais para o trabalho.",
-    base: "He wears {0} to work.",
-    options: ["formal clothes", "casual clothes", "a suit"],
-    currentIndex: 0
-  },
-  {
-    key: "subs-2",
-    original: "Seus sapatos estão debaixo da cama.",
-    base: "His shoes are under the {0}.",
-    options: ["bed", "desk", "coffee table"],
-    currentIndex: 0
-  },
-  {
-    key: "subs-3",
-    original: "Faça um favor, chame o vendedor.",
-    base: "Do me a favor, call the {0}.",
-    options: ["salesperson", "attendant", "manager"],
-    currentIndex: 0
-  },
-  {
-    key: "subs-4",
-    original: "Eu coloco minhas roupas no armário.",
-    base: "I put my {0} in the closet.",
-    options: ["clothes", "bags", "shoes"],
-    currentIndex: 0
-  },
-  {
-    key: "subs-5",
-    original: "Ela tem dez minutos para se arrumar.",
-    base: "She has {0} minutes to get dressed.",
-    options: ["ten", "fifteen", "five"],
-    currentIndex: 0
-  }
-];
-
-// ============================================
-// PART 3 – CHANGE INTO NEGATIVE
-// ============================================
-const negativeExercises = [
-  { key: "neg-1", sentence: "He's making a cheese and ham sandwich.", answer: "He isn't making a cheese and ham sandwich." },
-  { key: "neg-2", sentence: "You're doing a lot of things this week.", answer: "You aren't doing a lot of things this week." },
-  { key: "neg-3", sentence: "He's calling the doctor.", answer: "He isn't calling the doctor." },
-  { key: "neg-4", sentence: "We're talking about fashion.", answer: "We aren't talking about fashion." },
-  { key: "neg-5", sentence: "She's taking the subway to work.", answer: "She isn't taking the subway to work." },
-  { key: "neg-6", sentence: "They're writing a new report.", answer: "They aren't writing a new report." }
-];
-
-// ============================================
-// PART 4 – CHANGE INTO AFFIRMATIVE
-// ============================================
-const affirmativeExercises = [
-  { key: "aff-1", sentence: "She isn't finishing her homework.", answer: "She is finishing her homework." },
-  { key: "aff-2", sentence: "They aren't talking to the dentist.", answer: "They are talking to the dentist." },
-  { key: "aff-3", sentence: "Her mother isn't waiting for you.", answer: "Her mother is waiting for you." },
-  { key: "aff-4", sentence: "They aren't giving me any money.", answer: "They are giving me some money." },
-  { key: "aff-5", sentence: "My boss isn't looking for the attendant.", answer: "My boss is looking for the attendant." },
-  { key: "aff-6", sentence: "They aren't working at the office now.", answer: "They are working at the office now." }
-];
-
-// ============================================
-// PART 5 – CHANGE INTO INTERROGATIVE
-// ============================================
-const interrogativeExercises = [
-  { key: "int-1", sentence: "You are calling your friends.", answer: "Are you calling your friends?" },
-  { key: "int-2", sentence: "He is paying by credit card.", answer: "Is he paying by credit card?" },
-  { key: "int-3", sentence: "She is taking the children to school.", answer: "Is she taking the children to school?" },
-  { key: "int-4", sentence: "They are watching TV series.", answer: "Are they watching TV series?" },
-  { key: "int-5", sentence: "They are visiting their grandparents.", answer: "Are they visiting their grandparents?" },
-  { key: "int-6", sentence: "He is putting on his favorite shoes.", answer: "Is he putting on his favorite shoes?" }
-];
-
-// ============================================
-// PART 6 – QUESTIONS (SPEAKING)
-// ============================================
-const speakingQuestions = [
-  { id: 1, question: "What are you wearing today?" },
-  { id: 2, question: "What is your teacher wearing today?" },
-  { id: 3, question: "Do you wear casual or formal clothes to work?" },
-  { id: 4, question: "What do you wear to go out with friends?" },
-  { id: 5, question: "Do you prefer tight or loose clothes?" },
-  { id: 6, question: "What do you have to do after class?" },
-  { id: 7, question: "How much time do you usually need to get dressed?" },
-  { id: 8, question: "Where do you usually put your clothes?" },
-  { id: 9, question: "Where is your English book now?" },
-  { id: 10, question: "What are your classmates doing now?" }
-];
-
-// ============================================
-// LISTEN AND PRACTICE PHRASES
-// ============================================
-const listenItems = [
-  {
-    key: "listen-1",
-    phrase: "She is buying a new dress for the party.",
-    image: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?q=80&w=2070&auto=format&fit=crop",
-    alt: "Woman buying dress",
-    correctAnswer: "She is buying a new dress for the party."
-  },
-  {
-    key: "listen-2",
-    phrase: "They are looking for a parking spot.",
-    image: "https://images.unsplash.com/photo-1590674899484-d5640e854abe?q=80&w=2068&auto=format&fit=crop",
-    alt: "Car looking for parking",
-    correctAnswer: "They are looking for a parking spot."
-  },
-  {
-    key: "listen-3",
-    phrase: "He is trying on a pair of jeans.",
-    image: "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?q=80&w=2080&auto=format&fit=crop",
-    alt: "Man trying on jeans",
-    correctAnswer: "He is trying on a pair of jeans."
-  },
-  {
-    key: "listen-4",
-    phrase: "We are waiting for the store to open.",
-    image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop",
-    alt: "People waiting outside store",
-    correctAnswer: "We are waiting for the store to open."
-  },
-  {
-    key: "listen-5",
-    phrase: "I am paying with my credit card.",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2070&auto=format&fit=crop",
-    alt: "Person paying with credit card",
-    correctAnswer: "I am paying with my credit card."
-  },
-  {
-    key: "listen-6",
-    phrase: "They are returning a defective product.",
-    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=2070&auto=format&fit=crop",
-    alt: "Customer service return",
-    correctAnswer: "They are returning a defective product."
-  }
-];
-
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
-const checkAnswer = (userAnswer: string, correctAnswer: string): boolean => {
-  const normalize = (text: string) =>
-    text.toLowerCase().trim().replace(/[.,?!]/g, '').replace(/\s+/g, ' ');
-  
-  return normalize(userAnswer) === normalize(correctAnswer);
-};
-
-// ============================================
-// COMPONENTS
-// ============================================
-const AudioPlayer = ({ src, compact = false }: { src: string; compact?: boolean }) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressBarRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const audio = audioRef.current || new Audio(src);
-    if (!audioRef.current) audioRef.current = audio;
-    else audio.src = src;
-
-    const updateProgress = () => {
-      if (audio.duration) {
-        setProgress((audio.currentTime / audio.duration) * 100);
-      }
-    };
-
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setProgress(0);
-    };
-
-    audio.addEventListener("timeupdate", updateProgress);
-    audio.addEventListener("ended", handleEnded);
-
-    return () => {
-      audio.removeEventListener("timeupdate", updateProgress);
-      audio.removeEventListener("ended", handleEnded);
-      audio.pause();
-    };
-  }, [src]);
-
-  const togglePlayPause = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play().catch(err => console.error("Audio error:", err));
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const resetAudio = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      setIsPlaying(false);
-      setProgress(0);
-    }
-  };
-
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || !progressBarRef.current) return;
-    
-    const rect = progressBarRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const width = rect.width;
-    const percent = offsetX / width;
-    audio.currentTime = percent * audio.duration;
-    setProgress(percent * 100);
-  };
-
+const SpeakText = ({ text, children, className = "" }: SpeakTextProps) => {
+  const speak = () => speakEnglish(text, 0.9);
   return (
-    <div className={`flex items-center gap-2 ${compact ? "ml-2" : ""}`}>
-      <button
-        onClick={togglePlayPause}
-        className={`${compact ? "p-1" : "p-2"} bg-blue-500 text-white rounded-full hover:bg-blue-600 transition`}
-      >
-        {isPlaying ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
-      </button>
-      <button
-        onClick={resetAudio}
-        className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600 transition`}
-      >
-        <RotateCcw size={compact ? 12 : 16} />
-      </button>
-      
-      {!compact && (
-        <div
-          ref={progressBarRef}
-          className="w-20 h-1 bg-gray-300 rounded-full overflow-hidden cursor-pointer"
-          onClick={handleProgressClick}
-        >
-          <div
-            className="h-full bg-blue-500 transition-all duration-200"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      )}
-      
-      <audio ref={audioRef} src={src} preload="auto" />
-    </div>
+    <button
+      onClick={speak}
+      className={`inline-flex items-center gap-1 cursor-pointer hover:bg-yellow-100 px-2 py-1 rounded transition-colors group ${className}`}
+      title="Click to hear American pronunciation"
+    >
+      {children || text}
+      <Volume2 size={14} className="opacity-40 group-hover:opacity-100 transition-opacity text-yellow-600" />
+    </button>
   );
 };
 
-const AnswerResult = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correctAnswer: string }) => {
-  if (isCorrect) {
-    return (
-      <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md">
-        <Check size={16} className="text-green-600" />
-        <span className="text-sm text-green-700 font-medium">Correct!</span>
-      </div>
-    );
-  }
-
+const SpeakSentence = ({ text, children, className = "" }: SpeakTextProps) => {
   return (
-    <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-md">
-      <XCircle size={16} className="text-red-600" />
-      <span className="text-sm text-red-700">
-        <span className="font-medium">Expected:</span> {correctAnswer}
-      </span>
-    </div>
+    <button
+      onClick={() => {
+        const speechText = children && typeof children === 'string' ? children : text;
+        speakEnglish(speechText, 0.85);
+      }}
+      className={`group cursor-pointer hover:bg-yellow-50 px-1 rounded transition-colors text-left w-full ${className}`}
+    >
+      {children || text}
+      <Volume2 size={12} className="inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-yellow-500" />
+    </button>
   );
 };
 
 // ============================================
-// FLUENCY CARD COMPONENT (Part 1)
+// SUBSTITUTION EXERCISE COMPONENT
 // ============================================
-const FluencyCard = ({ 
-  exercise, 
-  onNext, 
-  onPrev, 
-  currentIndex, 
-  totalCards,
-  userQuestion,
-  userAnswer,
-  onQuestionChange,
-  onAnswerChange,
-  onCheck
-}: { 
-  exercise: typeof fluencyExercises[0];
-  onNext: () => void;
-  onPrev: () => void;
+type OptionType = string | { label: string; replacement: string; pt?: string };
+
+interface SubstitutionExercise {
+  key: string;
+  original: string;
+  options: OptionType[];
   currentIndex: number;
-  totalCards: number;
-  userQuestion: string;
-  userAnswer: string;
-  onQuestionChange: (value: string) => void;
-  onAnswerChange: (value: string) => void;
-  onCheck: () => void;
-}) => {
-  const [showHint, setShowHint] = useState(false);
+}
+
+function SubstitutionOptions({
+  exercise,
+  onOptionClick,
+}: {
+  exercise: SubstitutionExercise;
+  onOptionClick: (key: string, index: number) => void;
+}) {
+  const [showEnglish, setShowEnglish] = useState(true);
+
+  const isObjectOption = (opt: OptionType): opt is { label: string; replacement: string; pt?: string } => {
+    return typeof opt === 'object' && opt !== null && 'label' in opt && 'replacement' in opt;
+  };
+
+  const currentOption = exercise.options[exercise.currentIndex];
+  let currentSentence: string;
+  let currentPt: string | undefined;
+  if (isObjectOption(currentOption)) {
+    currentSentence = currentOption.replacement;
+    currentPt = currentOption.pt;
+  } else {
+    currentSentence = String(currentOption);
+  }
+
+  const toggleVisibility = () => setShowEnglish(prev => !prev);
+
+  const getOptionLabel = (opt: OptionType): string => isObjectOption(opt) ? opt.label : String(opt);
+  const getOptionReplacement = (opt: OptionType): string => isObjectOption(opt) ? opt.replacement : String(opt);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-pink-300">
-        {/* Card Image */}
-        <div className="relative h-64 w-full">
-          <Image
-            src={exercise.image}
-            alt={exercise.alt}
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-4 left-4 right-4">
-            <div className="flex justify-between items-center">
-              <p className="text-white text-sm font-medium bg-pink-500 inline-block px-3 py-1 rounded-full">
-                Card {currentIndex + 1} of {totalCards}
-              </p>
-              <p className="text-white text-sm font-mono bg-black/50 px-3 py-1 rounded-full">
-                {exercise.prompt}
-              </p>
+    <div className="bg-white p-4 rounded-lg border border-yellow-300 shadow-sm">
+      <div className="flex items-start justify-between mb-2">
+        <p className="text-yellow-800 font-medium block">{exercise.original}</p>
+        <button
+          onClick={toggleVisibility}
+          className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-700 ml-2 flex-shrink-0"
+          title={showEnglish ? "Ocultar resposta em inglês" : "Mostrar resposta em inglês"}
+        >
+          {showEnglish ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
+
+      {showEnglish && (
+        <div className="mb-3 p-3 bg-yellow-50 rounded-md border border-yellow-200">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-start gap-2">
+              <span className="text-yellow-700 font-medium flex-shrink-0">🇺🇸</span>
+              <SpeakSentence text={currentSentence} className="text-yellow-900 font-bold">
+                {currentSentence}
+              </SpeakSentence>
             </div>
-          </div>
-        </div>
-
-        {/* Card Content - Question & Answer Inputs */}
-        <div className="p-6">
-          <div className="mb-4">
-            <h3 className="text-sm font-semibold text-pink-500 mb-1">📝 YOUR QUESTION (Interrogative):</h3>
-            <input
-              type="text"
-              value={userQuestion}
-              onChange={(e) => onQuestionChange(e.target.value)}
-              placeholder="Example: What is she eating?"
-              className="w-full px-4 py-2 border border-pink-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-            />
-          </div>
-          
-          <div className="mb-4">
-            <h3 className="text-sm font-semibold text-green-600 mb-1">💬 YOUR ANSWER:</h3>
-            <input
-              type="text"
-              value={userAnswer}
-              onChange={(e) => onAnswerChange(e.target.value)}
-              placeholder="Example: She's eating a sandwich."
-              className="w-full px-4 py-2 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-            />
-          </div>
-
-          {/* Hint Button */}
-          <div className="mb-4">
-            <button
-              onClick={() => setShowHint(!showHint)}
-              className="text-sm text-gray-500 hover:text-gray-700 underline"
-            >
-              {showHint ? "Hide hint" : "💡 Show hint"}
-            </button>
-            {showHint && (
-              <div className="mt-2 p-3 bg-gray-100 rounded-lg text-sm text-gray-600">
-                <p><strong>Suggested Question:</strong> {exercise.suggestedQuestion}</p>
-                <p><strong>Suggested Answer:</strong> {exercise.suggestedAnswer}</p>
-                <p className="text-xs text-gray-400 mt-1">*These are just suggestions. Your answer can be different!</p>
-              </div>
+            {currentPt && (
+              <>
+                <div className="border-t border-yellow-200 my-1"></div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-600 text-sm flex-shrink-0">🇧🇷</span>
+                  <p className="text-sm text-gray-600">{currentPt}</p>
+                </div>
+              </>
             )}
           </div>
+        </div>
+      )}
 
-          {/* Check Button */}
+      <div className="flex flex-wrap gap-2">
+        {exercise.options.map((option, index) => (
           <button
-            onClick={onCheck}
-            className="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition font-medium"
+            key={index}
+            onClick={() => {
+              onOptionClick(exercise.key, index);
+              speakEnglish(getOptionReplacement(option), 0.9);
+            }}
+            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
+              exercise.currentIndex === index
+                ? 'bg-yellow-500 text-white shadow-sm'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
           >
-            Check My Answers
+            {getOptionLabel(option)}
           </button>
-
-          {/* Navigation Buttons */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              onClick={onPrev}
-              disabled={currentIndex === 0}
-              className={`p-3 rounded-full transition ${
-                currentIndex === 0
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-pink-100 text-pink-600 hover:bg-pink-200'
-              }`}
-            >
-              <ArrowLeft size={20} />
-            </button>
-            
-            <div className="flex gap-1">
-              {Array.from({ length: totalCards }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className={`w-2 h-2 rounded-full ${
-                    idx === currentIndex ? 'bg-pink-500' : 'bg-gray-300'
-                  }`}
-                />
-              ))}
-            </div>
-            
-            <button
-              onClick={onNext}
-              disabled={currentIndex === totalCards - 1}
-              className={`p-3 rounded-full transition ${
-                currentIndex === totalCards - 1
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-pink-100 text-pink-600 hover:bg-pink-200'
-              }`}
-            >
-              <ArrowRight size={20} />
-            </button>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
-};
+}
 
 // ============================================
-// GRAMMAR EXPLANATION COMPONENT
+// WRITTEN EXERCISE COMPONENT (Com Check e Show)
 // ============================================
-const GrammarExplanation = () => {
+function WrittenExercise({ 
+  exercise, 
+  borderColor = "red" 
+}: { 
+  exercise: { key: string, sentence: string, answer: string },
+  borderColor?: "red" | "green" | "blue" 
+}) {
+  const [inputValue, setInputValue] = useState("");
+  const [showResult, setShowResult] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+
+  const handleCheck = () => {
+    const normalize = (text: string) => text.toLowerCase().trim().replace(/[.,?!]/g, '').replace(/\s+/g, ' ');
+    setIsCorrect(normalize(inputValue) === normalize(exercise.answer));
+    setShowResult(true);
+  };
+
+  const handleShow = () => {
+    setInputValue(exercise.answer);
+    setShowResult(false);
+  };
+
+  const colorMap = {
+    red: { bg: "bg-red-50", border: "border-red-300", btn: "bg-red-500", focus: "focus:ring-red-500" },
+    green: { bg: "bg-green-50", border: "border-green-300", btn: "bg-green-500", focus: "focus:ring-green-500" },
+    blue: { bg: "bg-blue-50", border: "border-blue-300", btn: "bg-blue-500", focus: "focus:ring-blue-500" },
+  };
+  const colors = colorMap[borderColor];
+
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-8">
-        <h2 className="text-2xl font-bold text-center">📚 Present Continuous - Gramática</h2>
+    <div className={`bg-white p-4 rounded-lg border ${colors.border} shadow-sm`}>
+      <p className="font-medium text-gray-800 mb-2">{exercise.sentence}</p>
+      <div className="flex flex-col md:flex-row gap-2">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Write your answer..."
+          className={`flex-1 px-3 py-2 border ${colors.border} rounded-md text-sm focus:ring-2 ${colors.focus}`}
+        />
+        <div className="flex gap-2">
+          <button
+            onClick={handleCheck}
+            className={`${colors.btn} text-white px-4 py-2 rounded-md hover:opacity-90 transition text-sm`}
+          >
+            Check
+          </button>
+          <button
+            onClick={handleShow}
+            className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition text-sm"
+          >
+            Show
+          </button>
+        </div>
       </div>
-      <div className="p-8">
-        <div className="bg-white p-6 rounded-xl border-2 border-blue-200 shadow-md">
-          <h3 className="text-xl font-bold text-blue-700 mb-3 flex items-center">
-            <span className="bg-blue-100 p-2 rounded-full mr-2">⏳</span> 
-            {grammarExplanation.title}
-          </h3>
-          <p className="text-gray-700 mb-4">{grammarExplanation.explanation}</p>
-          
-          <div className="grid md:grid-cols-3 gap-4 mb-4">
-            <div className="bg-green-50 p-3 rounded-lg">
-              <p className="font-bold text-green-700">✅ Affirmative</p>
-              <p className="text-sm text-gray-600">{grammarExplanation.structure.affirmative}</p>
-            </div>
-            <div className="bg-red-50 p-3 rounded-lg">
-              <p className="font-bold text-red-700">❌ Negative</p>
-              <p className="text-sm text-gray-600">{grammarExplanation.structure.negative}</p>
-            </div>
-            <div className="bg-blue-50 p-3 rounded-lg">
-              <p className="font-bold text-blue-700">❓ Interrogative</p>
-              <p className="text-sm text-gray-600">{grammarExplanation.structure.interrogative}</p>
-            </div>
-          </div>
-          
+      {showResult && (
+        <div className={`mt-2 p-2 rounded flex items-center gap-2 ${isCorrect ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+          {isCorrect ? <Check size={16} /> : <XCircle size={16} />}
+          <span className="text-sm">
+            {isCorrect ? "Correct!" : `Expected: ${exercise.answer}`}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================
+// MAKE IT YOURS EDITOR MODAL
+// ============================================
+interface EditorSentence {
+  originalText: string;
+  translation: string;
+}
+
+function MakeItYoursModal({ isOpen, onClose, sentenceData }: { isOpen: boolean; onClose: () => void; sentenceData: EditorSentence | null }) {
+  const [userText, setUserText] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && sentenceData) {
+      setUserText(sentenceData.originalText);
+      setIsSaved(false);
+    }
+  }, [isOpen, sentenceData]);
+
+  if (!isOpen || !sentenceData) return null;
+
+  const handleSave = () => {
+    setIsSaved(true);
+    setTimeout(() => setIsSaved(false), 2000);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[110]" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden">
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-4 px-6 flex justify-between items-center">
           <div>
-            <p className="text-sm font-semibold text-gray-700 mb-2">📝 Examples:</p>
-            <div className="flex flex-wrap gap-2">
-              {grammarExplanation.examples.map((ex, idx) => (
-                <div key={idx} className="bg-gray-50 px-3 py-1 rounded-full text-sm text-gray-700 border border-gray-200">
-                  {ex}
-                </div>
-              ))}
+            <h3 className="text-xl font-bold">✏️ Make It Yours</h3>
+            <p className="text-sm text-yellow-100 mt-1">Edite a frase abaixo com suas próprias palavras.</p>
+          </div>
+          <button onClick={onClose} className="text-white hover:text-gray-200 text-2xl font-bold">&times;</button>
+        </div>
+
+        <div className="p-6">
+          <div className="mb-4">
+            <p className="text-sm font-semibold text-gray-500 mb-1">Frase Original:</p>
+            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+              <SpeakSentence text={sentenceData.originalText} className="text-lg font-medium text-yellow-900">
+                {sentenceData.originalText}
+              </SpeakSentence>
+              <p className="text-sm text-gray-600 mt-1">{sentenceData.translation}</p>
             </div>
-            <p className="text-sm text-gray-500 mt-3">
-              ⏰ Time expressions: {grammarExplanation.timeExpressions.join(", ")}
-            </p>
+          </div>
+
+          <div className="mb-4">
+            <p className="text-sm font-semibold text-gray-500 mb-1">Sua Versão:</p>
+            <textarea
+              value={userText}
+              onChange={(e) => setUserText(e.target.value)}
+              className="w-full h-24 p-3 border-2 border-yellow-300 rounded-lg focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-200 resize-none text-lg font-medium text-gray-800"
+              placeholder="Digite sua frase aqui..."
+            />
+          </div>
+
+          <div className="flex justify-between items-center mt-6">
+            <button
+              onClick={() => speakEnglish(userText, 0.85)}
+              className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors font-medium text-sm"
+            >
+              <Volume2 size={16} /> Ouvir Minha Frase
+            </button>
+            <button
+              onClick={handleSave}
+              className={`flex items-center gap-2 px-6 py-2 rounded-full text-white font-medium transition-all ${
+                isSaved ? 'bg-green-500' : 'bg-yellow-500 hover:bg-yellow-600'
+              }`}
+            >
+              {isSaved ? <><Check size={18} /> Salvo!</> : 'Salvar'}
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 // ============================================
-// VIDEO ANSWER HANDLERS
+// NOTE MODAL
 // ============================================
-const AnswerResultWithMessage = ({ isCorrect, correctAnswer }: { isCorrect: boolean; correctAnswer: string }) => {
-  if (isCorrect) {
-    return (
-      <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-        <Check size={18} className="text-green-600" />
-        <span className="text-sm text-green-700 font-medium">✓ Correct! Great job!</span>
-      </div>
-    );
-  }
+function NoteModal({ isOpen, onClose, sectionTitle, initialNote, onSave }: {
+  isOpen: boolean;
+  onClose: () => void;
+  sectionTitle: string;
+  initialNote: string;
+  onSave: (note: string) => void;
+}) {
+  const [note, setNote] = useState(initialNote);
+
+  if (!isOpen) return null;
+
+  const handleSave = () => {
+    onSave(note);
+    onClose();
+  };
 
   return (
-    <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-      <XCircle size={18} className="text-red-600" />
-      <span className="text-sm text-red-700">
-        <span className="font-medium">Expected answer:</span> {correctAnswer}
-      </span>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-4 px-6">
+          <h3 className="text-xl font-bold">📝 Anotações - {sectionTitle}</h3>
+          <p className="text-sm text-yellow-100 mt-1">Escreva suas observações, dúvidas ou traduções</p>
+        </div>
+        <div className="p-6">
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Escreva aqui suas anotações..."
+            className="w-full h-64 p-4 border border-gray-300 rounded-xl focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-200 resize-none"
+          />
+        </div>
+        <div className="flex justify-end gap-3 p-6 pt-0">
+          <button onClick={onClose} className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+            Cancelar
+          </button>
+          <button onClick={handleSave} className="px-6 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full hover:from-orange-500 hover:to-orange-600 transition-all duration-300">
+            Salvar Anotação
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// PENCIL ICON
+// ============================================
+function PencilIcon({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="ml-3 text-yellow-200 hover:text-white transition-colors focus:outline-none"
+      aria-label="Fazer anotações"
+      title="Clique para fazer anotações"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+      </svg>
+    </button>
+  );
+}
+
+// ============================================
+// FLUENCY MODAL (LIGHTBOX)
+// ============================================
+const FluencyModal = ({ isOpen, onClose, prompt, imageUrl }: { isOpen: boolean, onClose: () => void, prompt: string, imageUrl: string }) => {
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[120]" style={{ animation: 'fadeIn 0.3s ease-out' }}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden flex flex-col md:flex-row">
+        
+        {/* Imagem Grande */}
+        <div className="w-full md:w-1/2 h-64 md:h-auto bg-gray-100 relative">
+          <img src={imageUrl} alt={prompt} className="object-cover w-full h-full absolute inset-0" />
+          <div className="absolute top-4 left-4 bg-yellow-500 text-white font-bold px-4 py-2 rounded-full shadow-lg">
+            {prompt}
+          </div>
+        </div>
+
+        {/* Área de Input */}
+        <div className="w-full md:w-1/2 p-8 flex flex-col justify-center relative">
+          <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 transition">
+            <X size={28} />
+          </button>
+          
+          <h3 className="text-2xl font-bold text-yellow-800 mb-6">Create your Q&A</h3>
+          
+          <div className="mb-6">
+            <label className="block text-sm font-bold text-yellow-700 mb-2 uppercase tracking-wide">Your Question</label>
+            <input
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Write your question..."
+              className="w-full px-4 py-3 border-2 border-yellow-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-lg"
+            />
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-bold text-green-700 mb-2 uppercase tracking-wide">Your Answer</label>
+            <input
+              type="text"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder="Write your answer..."
+              className="w-full px-4 py-3 border-2 border-green-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg"
+            />
+          </div>
+
+          <div className="flex justify-between items-center mt-4">
+             <button
+                onClick={() => speakEnglish(`${question}. ${answer}`, 0.85)}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors font-medium text-sm"
+             >
+                <Volume2 size={16} /> Listen
+             </button>
+             <button
+                onClick={onClose}
+                className="px-8 py-3 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition-colors font-bold shadow-md"
+             >
+                Done
+             </button>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 };
 
 // ============================================
-// MAIN COMPONENT
+// MAIN COMPONENT – LESSON 54
 // ============================================
 export default function Lesson54GoingShopping() {
   const router = useRouter();
-  
-  // ----- SECTION VISIBILITY STATE -----
-  const [sections, setSections] = useState({
-    grammar: true,
+  const [openDrills, setOpenDrills] = useState<Record<SectionKey, boolean>>({
+    verbs: false,
+    vocabulary: false,
+    usefulPhrases: false,
+    grammar: false,
+    realLife: false,
+    checkout: false,
     fluency: true,
-    substitution: true,
-    negative: true,
-    affirmative: true,
-    interrogative: true,
-    speaking: true,
-    listen: true,
-    tuneInYourEars: true
+    drilling: true,
+    questions: true,
   });
 
-  // ----- FLUENCY STATE (Part 1) -----
-  const [fluencyIndex, setFluencyIndex] = useState(0);
-  const [fluencyQuestions, setFluencyQuestions] = useState<Record<string, string>>({});
-  const [fluencyAnswers, setFluencyAnswers] = useState<Record<string, string>>({});
-  const [fluencyResults, setFluencyResults] = useState<Record<string, { questionOk: boolean; answerOk: boolean }>>({});
+  const [noteModal, setNoteModal] = useState<NoteModalState>({
+    isOpen: false,
+    sectionTitle: '',
+    noteContent: '',
+  });
 
-  // ----- EXERCISE STATES -----
-  const [subsExercises, setSubsExercises] = useState(substitutionPractice);
-  const [writtenAnswers, setWrittenAnswers] = useState<Record<string, string>>({});
-  const [answerResults, setAnswerResults] = useState<Record<string, boolean>>({});
-  const [showAnswerResults, setShowAnswerResults] = useState<Record<string, boolean>>({});
-  const [speakingAnswers, setSpeakingAnswers] = useState<Record<number, string>>({});
+  const [editorModal, setEditorModal] = useState<{ isOpen: boolean; data: EditorSentence | null }>({
+    isOpen: false,
+    data: null,
+  });
 
-  // ----- VIDEO STATES -----
-  const [videoAnswers, setVideoAnswers] = useState<Record<number, string>>({});
-  const [videoResults, setVideoResults] = useState<Record<string, boolean>>({});
-  const [showVideoResults, setShowVideoResults] = useState<Record<string, boolean>>({});
+  // Estado do Modal Fluency
+  const [fluencyModal, setFluencyModal] = useState<{ isOpen: boolean; prompt: string; image: string }>({
+    isOpen: false,
+    prompt: "",
+    image: ""
+  });
 
-  // ============================================
-  // PERSISTENCE - LOAD
-  // ============================================
+  const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
+  const [substitutionState, setSubstitutionState] = useState<Record<string, number>>({});
+
+  const toggleDrill = (section: SectionKey) => {
+    setOpenDrills({
+      ...openDrills,
+      [section]: !openDrills[section]
+    });
+  };
+
+  const openNoteModal = (sectionTitle: string) => {
+    setNoteModal({
+      isOpen: true,
+      sectionTitle,
+      noteContent: savedNotes[sectionTitle] || '',
+    });
+  };
+
+  const saveNote = (note: string) => {
+    setSavedNotes(prev => ({
+      ...prev,
+      [noteModal.sectionTitle]: note,
+    }));
+  };
+
+  const handleOptionClick = (key: string, index: number) => {
+    setSubstitutionState(prev => ({ ...prev, [key]: index }));
+  };
+
+  const getCurrentIndex = (key: string) => substitutionState[key] || 0;
+
   useEffect(() => {
-    const savedAnswers = localStorage.getItem("lesson54Answers");
-    if (savedAnswers) {
-      try {
-        const data = JSON.parse(savedAnswers);
-        
-        setSubsExercises(data.subsExercises || substitutionPractice);
-        setWrittenAnswers(data.writtenAnswers || {});
-        setFluencyQuestions(data.fluencyQuestions || {});
-        setFluencyAnswers(data.fluencyAnswers || {});
-        setFluencyResults(data.fluencyResults || {});
-        setSpeakingAnswers(data.speakingAnswers || {});
-        setAnswerResults(data.answerResults || {});
-        setShowAnswerResults(data.showAnswerResults || {});
-        setFluencyIndex(data.fluencyIndex || 0);
-        setVideoAnswers(data.videoAnswers || {});
-        setVideoResults(data.videoResults || {});
-        setShowVideoResults(data.showVideoResults || {});
-        
-        if (data.sections) setSections(data.sections);
-        
-        console.log("✅ Lesson 54 data loaded from localStorage");
-      } catch (error) {
-        console.error("❌ Error loading saved answers:", error);
-      }
+    if (typeof window !== 'undefined') {
+      window.speechSynthesis.getVoices();
     }
   }, []);
 
-  // ============================================
-  // PERSISTENCE - SAVE
-  // ============================================
-  const saveAllAnswers = () => {
-    const data = {
-      subsExercises,
-      writtenAnswers,
-      fluencyQuestions,
-      fluencyAnswers,
-      fluencyResults,
-      speakingAnswers,
-      answerResults,
-      showAnswerResults,
-      fluencyIndex,
-      sections,
-      videoAnswers,
-      videoResults,
-      showVideoResults,
-      lastUpdated: new Date().toISOString(),
-      lessonName: "Lesson 54 - Going Shopping",
-      version: "1.0"
-    };
-    
-    try {
-      localStorage.setItem("lesson54Answers", JSON.stringify(data));
-      alert("✅ All your answers have been saved successfully!");
-    } catch (error) {
-      console.error("❌ Error saving answers:", error);
-      alert("❌ Error saving answers. Please try again.");
-    }
-  };
+  // Images
+  const mainImage = "https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
 
-  const clearAllAnswers = () => {
-    if (confirm("Are you sure you want to clear ALL your answers? This action cannot be undone.")) {
-      setSubsExercises(substitutionPractice);
-      setWrittenAnswers({});
-      setFluencyQuestions({});
-      setFluencyAnswers({});
-      setFluencyResults({});
-      setSpeakingAnswers({});
-      setAnswerResults({});
-      setShowAnswerResults({});
-      setFluencyIndex(0);
-      setVideoAnswers({});
-      setVideoResults({});
-      setShowVideoResults({});
-      
-      localStorage.removeItem("lesson54Answers");
-      alert("✅ All answers have been cleared.");
-    }
-  };
+  // ========== FLUENCY DATA (Imagens do GitHub) ==========
+  // Exemplo Fixo usa a imagem 1
+  const exampleFluency = { prompt: "what - to eat", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l54-img1.png" };
+  
+  // 6 Cards para o aluno (Imagens 2 a 7)
+  const fluencyCards = [
+    { prompt: "what - to write", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l54-img2.png" },
+    { prompt: "what - to make", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l54-img3.png" },
+    { prompt: "what - to look for", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l54-img4.png" },
+    { prompt: "what - to do", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l54-img5.png" },
+    { prompt: "what - to watch", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l54-img6.png" },
+    { prompt: "what - to buy", image: "https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l54-img7.png" },
+  ];
 
-  // ============================================
-  // HANDLER FUNCTIONS
-  // ============================================
-  const toggleSection = (section: keyof typeof sections) => {
-    setSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
+  // ========== DRILLING DATA (B1 com Passado) ==========
+  const subPractice1 = [
+    {
+      original: "He wears formal clothes for work. / casual / a suit",
+      options: [
+        { label: "formal clothes", replacement: "He usually wears formal clothes for work, but yesterday he wore casual clothes.", pt: "Ele geralmente usa roupas formais para o trabalho, mas ontem ele usou roupas casuais." },
+        { label: "casual clothes", replacement: "He usually wears casual clothes for work, but he wore a suit for the meeting yesterday.", pt: "Ele geralmente usa roupas casuais para o trabalho, mas ele usou um terno para a reunião ontem." },
+        { label: "a suit", replacement: "He usually wears a suit for work, but he found it uncomfortable last week.", pt: "Ele geralmente usa um terno para o trabalho, mas ele achou desconfortável na semana passada." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      original: "Her shoes are under the bed. / the table / the coffee table",
+      options: [
+        { label: "under the bed", replacement: "Her shoes are under the bed, but they were in the closet yesterday.", pt: "Os sapatos dela estão debaixo da cama, mas eles estavam no armário ontem." },
+        { label: "under the table", replacement: "Her shoes are under the table, but they were in the wardrobe yesterday.", pt: "Os sapatos dela estão debaixo da mesa, mas eles estavam no guarda-roupa ontem." },
+        { label: "under the coffee table", replacement: "Her shoes are under the coffee table, but they were in the dresser yesterday.", pt: "Os sapatos dela estão debaixo da mesa de centro, mas eles estavam na cômoda ontem." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      original: "Please do me a favor and call the salesperson. / the attendant / the manager",
+      options: [
+        { label: "the salesperson", replacement: "Please do me a favor and call the salesperson; I needed help yesterday too.", pt: "Por favor, me faça um favor e chame o vendedor; eu precisei de ajuda ontem também." },
+        { label: "the attendant", replacement: "Please do me a favor and call the attendant; I needed help yesterday too.", pt: "Por favor, me faça um favor e chame o atendente; eu precisei de ajuda ontem também." },
+        { label: "the manager", replacement: "Please do me a favor and call the manager; I needed help yesterday too.", pt: "Por favor, me faça um favor e chame o gerente; eu precisei de ajuda ontem também." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      original: "I put my clothes in the closet. / bags / shoes",
+      options: [
+        { label: "clothes", replacement: "I put my clothes in the closet, but I put my bags in the wardrobe last week.", pt: "Eu coloco minhas roupas no armário, mas eu coloquei minhas bolsas no guarda-roupa na semana passada." },
+        { label: "bags", replacement: "I put my bags in the closet, but I put my clothes in the wardrobe last week.", pt: "Eu coloco minhas bolsas no armário, mas eu coloquei minhas roupas no guarda-roupa na semana passada." },
+        { label: "shoes", replacement: "I put my shoes in the closet, but I put my bags in the wardrobe last week.", pt: "Eu coloco meus sapatos no armário, mas eu coloquei minhas bolsas no guarda-roupa na semana passada." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      original: "She has ten minutes to get dressed. / fifteen / five",
+      options: [
+        { label: "ten", replacement: "She has ten minutes to get dressed, but she had fifteen minutes yesterday.", pt: "Ela tem dez minutos para se arrumar, mas ela teve quinze minutos ontem." },
+        { label: "fifteen", replacement: "She has fifteen minutes to get dressed, but she had ten minutes yesterday.", pt: "Ela tem quinze minutos para se arrumar, mas ela teve dez minutos ontem." },
+        { label: "five", replacement: "She has five minutes to get dressed, but she had ten minutes yesterday.", pt: "Ela tem cinco minutos para se arrumar, mas ela teve dez minutos ontem." },
+      ],
+      currentIndex: 0,
+    },
+  ];
 
-  const handleSubsOptionClick = (exerciseKey: string, optionIndex: number) => {
-    setSubsExercises(prev =>
-      prev.map(exercise =>
-        exercise.key === exerciseKey
-          ? { ...exercise, currentIndex: optionIndex }
-          : exercise
-      )
-    );
-  };
+  const negativeExercises = [
+    { key: "neg-1", sentence: "He's making a cheese and ham sandwich right now.", answer: "He isn't making a cheese and ham sandwich right now." },
+    { key: "neg-2", sentence: "You're doing a lot of things this week.", answer: "You aren't doing a lot of things this week." },
+    { key: "neg-3", sentence: "He's calling the doctor at the moment.", answer: "He isn't calling the doctor at the moment." },
+    { key: "neg-4", sentence: "We're talking about fashion and trends.", answer: "We aren't talking about fashion and trends." },
+    { key: "neg-5", sentence: "She's taking the subway to work today.", answer: "She isn't taking the subway to work today." },
+    { key: "neg-6", sentence: "They're writing a new report for the manager.", answer: "They aren't writing a new report for the manager." },
+    { key: "neg-7", sentence: "I saw her at the mall yesterday.", answer: "I didn't see her at the mall yesterday." },
+    { key: "neg-8", sentence: "He bought a new pair of shoes last week.", answer: "He didn't buy a new pair of shoes last week." },
+  ];
 
-  const handleWrittenAnswerChange = (key: string, value: string) => {
-    setWrittenAnswers(prev => ({ ...prev, [key]: value }));
-  };
+  const subPractice2 = [
+    {
+      original: "My wallet is in the drawer. / wardrobe / dresser",
+      options: [
+        { label: "drawer", replacement: "My wallet is in the drawer next to my bed, but I lost it yesterday.", pt: "Minha carteira está na gaveta ao lado da minha cama, mas eu a perdi ontem." },
+        { label: "wardrobe", replacement: "My wallet is in the wardrobe with my clothes, but I lost it yesterday.", pt: "Minha carteira está no guarda-roupa com minhas roupas, mas eu a perdi ontem." },
+        { label: "dresser", replacement: "My wallet is in the dresser in the bedroom, but I lost it yesterday.", pt: "Minha carteira está na cômoda no quarto, mas eu a perdi ontem." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      original: "Put the books on the table. / magazines / novels",
+      options: [
+        { label: "books", replacement: "Put the books on the table, please. I put them there yesterday too.", pt: "Coloque os livros na mesa, por favor. Eu os coloquei lá ontem também." },
+        { label: "magazines", replacement: "Put the magazines on the table, please. I put them there yesterday too.", pt: "Coloque as revistas na mesa, por favor. Eu as coloquei lá ontem também." },
+        { label: "novels", replacement: "Put the novels on the table, please. I put them there yesterday too.", pt: "Coloque os romances na mesa, por favor. Eu os coloquei lá ontem também." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      original: "He wants to read the new book. / watch the new film / use this outfit",
+      options: [
+        { label: "read the new book", replacement: "He wants to read the new book, but he had a lot on his plate last week.", pt: "Ele quer ler o novo livro, mas ele tinha muito o que fazer na semana passada." },
+        { label: "watch the new film", replacement: "He wants to watch the new film, but he had a lot on his plate last week.", pt: "Ele quer assistir ao novo filme, mas ele tinha muito o que fazer na semana passada." },
+        { label: "use this outfit", replacement: "He wants to use this outfit, but he had a lot on his plate last week.", pt: "Ele quer usar este look, mas ele tinha muito o que fazer na semana passada." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      original: "What are you doing now? / studying / reading",
+      options: [
+        { label: "doing", replacement: "What are you doing now? I need some help with the shopping.", pt: "O que você está fazendo agora? Eu preciso de ajuda com as compras." },
+        { label: "studying", replacement: "What are you studying now? I need some help with the shopping.", pt: "O que você está estudando agora? Eu preciso de ajuda com as compras." },
+        { label: "reading", replacement: "What are you reading now? I need some help with the shopping.", pt: "O que você está lendo agora? Eu preciso de ajuda com as compras." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      original: "How many items are you taking? / buying / selling",
+      options: [
+        { label: "taking", replacement: "How many items are you taking to the cashier? I took five yesterday.", pt: "Quantos itens você está levando para o caixa? Eu levei cinco ontem." },
+        { label: "buying", replacement: "How many items are you buying at the store? I bought five yesterday.", pt: "Quantos itens você está comprando na loja? Eu comprei cinco ontem." },
+        { label: "selling", replacement: "How many items are you selling at the garage sale? I sold five yesterday.", pt: "Quantos itens você está vendendo na venda de garagem? Eu vendi cinco ontem." },
+      ],
+      currentIndex: 0,
+    },
+  ];
 
-  const handleCheckAnswer = (exerciseKey: string, userAnswer: string, correctAnswer: string) => {
-    const isCorrect = checkAnswer(userAnswer, correctAnswer);
-    setAnswerResults(prev => ({ ...prev, [exerciseKey]: isCorrect }));
-    setShowAnswerResults(prev => ({ ...prev, [exerciseKey]: true }));
-  };
+  const affirmativeExercises = [
+    { key: "aff-1", sentence: "She isn't finishing her homework right now.", answer: "She is finishing her homework right now." },
+    { key: "aff-2", sentence: "They aren't talking to the dentist.", answer: "They are talking to the dentist." },
+    { key: "aff-3", sentence: "Her mother isn't waiting for you at the mall.", answer: "Her mother is waiting for you at the mall." },
+    { key: "aff-4", sentence: "They aren't giving me any money for the trip.", answer: "They are giving me some money for the trip." },
+    { key: "aff-5", sentence: "My boss isn't looking for the attendant.", answer: "My boss is looking for the attendant." },
+    { key: "aff-6", sentence: "They aren't working at the office today.", answer: "They are working at the office today." },
+    { key: "aff-7", sentence: "He didn't buy a new jacket yesterday.", answer: "He bought a new jacket yesterday." },
+    { key: "aff-8", sentence: "We weren't at the mall last weekend.", answer: "We were at the mall last weekend." },
+  ];
 
-  const handleFluencyCheck = (id: string) => {
-    const userQuestion = fluencyQuestions[id] || "";
-    const userAnswer = fluencyAnswers[id] || "";
-    
-    const questionOk = userQuestion.trim().length > 0 && userQuestion.includes("?");
-    const answerOk = userAnswer.trim().length > 0 && /(am|is|are|'m|'s|'re)\s+\w+ing/i.test(userAnswer);
-    
-    setFluencyResults(prev => ({
-      ...prev,
-      [id]: { questionOk, answerOk }
-    }));
-  };
+  const interrogativeExercises = [
+    { key: "int-1", sentence: "You are calling your friends.", answer: "Are you calling your friends?" },
+    { key: "int-2", sentence: "He is paying by credit card.", answer: "Is he paying by credit card?" },
+    { key: "int-3", sentence: "She is taking the children to school.", answer: "Is she taking the children to school?" },
+    { key: "int-4", sentence: "They are watching TV series.", answer: "Are they watching TV series?" },
+    { key: "int-5", sentence: "They are visiting their grandparents.", answer: "Are they visiting their grandparents?" },
+    { key: "int-6", sentence: "He is putting on his favorite shoes.", answer: "Is he putting on his favorite shoes?" },
+    { key: "int-7", sentence: "She bought that dress last week.", answer: "Did she buy that dress last week?" },
+    { key: "int-8", sentence: "They went shopping yesterday.", answer: "Did they go shopping yesterday?" },
+  ];
 
-  const handleSpeakingAnswerChange = (id: number, value: string) => {
-    setSpeakingAnswers(prev => ({ ...prev, [id]: value }));
-  };
+  const questionsList = [
+    "What are you wearing today? Are you wearing something comfortable for shopping?",
+    "Is your teacher wearing something casual or formal today?",
+    "Do you usually wear casual or formal clothes when you go to work or school?",
+    "What kind of outfit do you like to wear when you go out with your friends?",
+    "Do you prefer to wear tight or loose clothes when you go shopping? Why?",
+    "What do you have to do after this class? Do you have a lot on your plate?",
+    "How much time do you usually need to get dressed for a special occasion?",
+    "Where do you usually put your clothes and accessories when you get home?",
+    "Where is your English book right now? Is it on the shelf or in your bag?",
+    "What are your classmates doing right now? Are they paying attention?",
+  ];
 
-  const handleVideoAnswerChange = (questionId: number, value: string) => {
-    setVideoAnswers(prev => ({ ...prev, [questionId]: value }));
-  };
-
-  const checkVideoAnswer = (questionId: number, userAnswer: string, correctAnswer: string) => {
-    const isCorrect = checkAnswer(userAnswer, correctAnswer);
-    setVideoResults(prev => ({ ...prev, [`video-${questionId}`]: isCorrect }));
-    setShowVideoResults(prev => ({ ...prev, [`video-${questionId}`]: true }));
-  };
-
-  const clearVideoAnswer = (questionId: number) => {
-    setVideoAnswers(prev => ({ ...prev, [questionId]: "" }));
-    setShowVideoResults(prev => ({ ...prev, [`video-${questionId}`]: false }));
+  const openEditor = (data: EditorSentence) => {
+    setEditorModal({ isOpen: true, data });
   };
 
   return (
-    <div className="min-h-screen rounded-2xl py-16 px-6 bg-cover bg-fixed" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop')` }}>
-      <div className="max-w-6xl mx-auto bg-white bg-opacity-95 rounded-[40px] p-10 shadow-2xl border border-gray-200">
-        
-        {/* HEADER */}
-        <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold text-pink-900 mb-4">📘 LESSON 54 – GOING SHOPPING</h1>
-          <p className="text-xl text-gray-700 max-w-4xl mx-auto">
-            Learn to ask and answer questions in the <span className="font-bold text-pink-600">Present Continuous</span>.
-            Practice actions happening <span className="font-bold text-pink-600">right now</span> in shopping situations.
-          </p>
-        </div>
+    <div
+      className="min-h-screen rounded-2xl py-16 px-6 bg-fixed"
+      style={{
+        backgroundImage: `url("https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="max-w-5xl mx-auto bg-yellow-50 bg-opacity-95 rounded-[40px] p-10 shadow-lg border-4 border-yellow-200">
 
-        {/* ======================================== */}
-        {/* GRAMMAR EXPLANATION */}
-        {/* ======================================== */}
-        <GrammarExplanation />
-
-        {/* ======================================== */}
-        {/* PART 1 – FLUENCY (IMPORTANT!) */}
-        {/* ======================================== */}
-        <div className="bg-pink-50 border-2 border-pink-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-pink-500 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🟢 PART 1 – FLUENCY (IMPORTANT!)</h2>
-              <button onClick={() => toggleSection('fluency')} className="ml-4 p-2 rounded-full hover:bg-pink-600 transition">
-                {sections.fluency ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-            <div className="text-sm bg-white text-pink-600 px-3 py-1 rounded-full">
-              What's + verb → Question + Answer
-            </div>
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-bold text-yellow-900 mb-6 flex justify-center items-center gap-3">
+            🛍️ Lesson 54 - Going Shopping
+          </h1>
+          <SpeakSentence text="Learn to talk about shopping, paying, discounts, and use Present Continuous, Present Perfect, and Past." className="text-xl text-yellow-800 max-w-3xl mx-auto mb-8">
+            📚 Learn to talk about shopping, paying, discounts, and use Present Continuous, Present Perfect, and Past.
+          </SpeakSentence>
+          <div className="w-64 h-64 mx-auto rounded-2xl overflow-hidden shadow-lg border-4 border-yellow-300">
+            <img src={mainImage} alt="People shopping" className="w-full h-full object-cover" />
           </div>
-
-          {sections.fluency && (
-            <div className="p-8">
-              <div className="text-center mb-6">
-                <p className="text-pink-700 font-medium">
-                  🎯 Create a question (interrogative) and an answer using Present Continuous for each image.
-                </p>
-                <p className="text-gray-500 text-sm mt-1">💡 Use he/she/they/we - there's no wrong answer!</p>
-              </div>
-              
-              <FluencyCard
-                exercise={fluencyExercises[fluencyIndex]}
-                currentIndex={fluencyIndex}
-                totalCards={fluencyExercises.length}
-                onNext={() => setFluencyIndex(prev => Math.min(prev + 1, fluencyExercises.length - 1))}
-                onPrev={() => setFluencyIndex(prev => Math.max(prev - 1, 0))}
-                userQuestion={fluencyQuestions[fluencyExercises[fluencyIndex].id] || ""}
-                userAnswer={fluencyAnswers[fluencyExercises[fluencyIndex].id] || ""}
-                onQuestionChange={(value) => setFluencyQuestions(prev => ({ ...prev, [fluencyExercises[fluencyIndex].id]: value }))}
-                onAnswerChange={(value) => setFluencyAnswers(prev => ({ ...prev, [fluencyExercises[fluencyIndex].id]: value }))}
-                onCheck={() => handleFluencyCheck(fluencyExercises[fluencyIndex].id)}
-              />
-              
-              {fluencyResults[fluencyExercises[fluencyIndex].id] && (
-                <div className="mt-4 p-4 rounded-lg bg-white border border-pink-200">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2">
-                      {fluencyResults[fluencyExercises[fluencyIndex].id].questionOk ? (
-                        <Check size={18} className="text-green-600" />
-                      ) : (
-                        <XCircle size={18} className="text-red-600" />
-                      )}
-                      <span className={fluencyResults[fluencyExercises[fluencyIndex].id].questionOk ? "text-green-700" : "text-red-700"}>
-                        Question: {fluencyResults[fluencyExercises[fluencyIndex].id].questionOk ? "Good! Your question is in interrogative form." : "Make sure your question starts with What/Who/Where and ends with a question mark (?)"}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {fluencyResults[fluencyExercises[fluencyIndex].id].answerOk ? (
-                        <Check size={18} className="text-green-600" />
-                      ) : (
-                        <XCircle size={18} className="text-red-600" />
-                      )}
-                      <span className={fluencyResults[fluencyExercises[fluencyIndex].id].answerOk ? "text-green-700" : "text-red-700"}>
-                        Answer: {fluencyResults[fluencyExercises[fluencyIndex].id].answerOk ? "Great! Your answer uses Present Continuous (am/is/are + verb-ing)." : "Use am/is/are + verb-ing (ex: is eating, are looking, am writing)"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
-        {/* ======================================== */}
-        {/* PART 2 – DRILLING PRACTICE (Substitution) */}
-        {/* ======================================== */}
-        <div className="bg-purple-50 border-2 border-purple-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-purple-600 text-white py-4 px-8 flex items-center justify-between">
+        {/* ===================== SECTION 1 – FLUENCY ===================== */}
+        <div className="bg-white border-2 border-yellow-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-4 px-8 flex justify-between items-center">
             <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🟡 PART 2 – DRILLING PRACTICE</h2>
-              <button onClick={() => toggleSection('substitution')} className="ml-4 p-2 rounded-full hover:bg-purple-700 transition">
-                {sections.substitution ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
+              <h2 className="text-2xl font-bold text-yellow-900">🔹 FLUENCY</h2>
+              <PencilIcon onClick={() => openNoteModal('Fluency')} />
             </div>
-          </div>
-
-          {sections.substitution && (
-            <div className="p-8">
-              <p className="text-purple-700 mb-6 font-medium italic">Substitua as palavras mantendo a estrutura. Click on options to change the sentences:</p>
-              <div className="space-y-6">
-                {subsExercises.map((exercise) => {
-                  const currentSentence = exercise.base.replace('{0}', exercise.options[exercise.currentIndex]);
-                  return (
-                    <div key={exercise.key} className="bg-white p-5 rounded-lg border-2 border-purple-200">
-                      <p className="text-gray-600 mb-2 text-sm">{exercise.original}</p>
-                      <p className="text-purple-700 font-bold text-lg mb-3">➡️ {currentSentence}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {exercise.options.map((option, index) => (
-                          <button
-                            key={index}
-                            onClick={() => handleSubsOptionClick(exercise.key, index)}
-                            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-                              exercise.currentIndex === index
-                                ? 'bg-purple-500 text-white'
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            }`}
-                          >
-                            {option}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ======================================== */}
-        {/* PART 3 – CHANGE INTO NEGATIVE */}
-        {/* ======================================== */}
-        <div className="bg-red-50 border-2 border-red-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-red-500 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔴 PART 3 – CHANGE INTO NEGATIVE</h2>
-              <button onClick={() => toggleSection('negative')} className="ml-4 p-2 rounded-full hover:bg-red-600 transition">
-                {sections.negative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.negative && (
-            <div className="p-8">
-              <div className="space-y-4">
-                {negativeExercises.map((exercise) => (
-                  <div key={exercise.key} className="bg-white p-5 rounded-lg border-2 border-red-200">
-                    <p className="font-medium text-gray-800 mb-2">🔹 {exercise.sentence}</p>
-                    <div className="flex flex-col md:flex-row gap-2">
-                      <input
-                        type="text"
-                        placeholder="Write negative form..."
-                        value={writtenAnswers[exercise.key] || ""}
-                        onChange={(e) => handleWrittenAnswerChange(exercise.key, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-red-300 rounded-md text-sm focus:ring-2 focus:ring-red-500"
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleCheckAnswer(exercise.key, writtenAnswers[exercise.key] || "", exercise.answer)}
-                          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition text-sm"
-                        >
-                          Check
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleWrittenAnswerChange(exercise.key, exercise.answer);
-                            handleCheckAnswer(exercise.key, exercise.answer, exercise.answer);
-                          }}
-                          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition text-sm"
-                        >
-                          Show
-                        </button>
-                      </div>
-                    </div>
-                    {showAnswerResults[exercise.key] && (
-                      <AnswerResult isCorrect={answerResults[exercise.key]} correctAnswer={exercise.answer} />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ======================================== */}
-        {/* PART 4 – CHANGE INTO AFFIRMATIVE */}
-        {/* ======================================== */}
-        <div className="bg-green-50 border-2 border-green-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-green-500 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔵 PART 4 – CHANGE INTO AFFIRMATIVE</h2>
-              <button onClick={() => toggleSection('affirmative')} className="ml-4 p-2 rounded-full hover:bg-green-600 transition">
-                {sections.affirmative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.affirmative && (
-            <div className="p-8">
-              <div className="space-y-4">
-                {affirmativeExercises.map((exercise) => (
-                  <div key={exercise.key} className="bg-white p-5 rounded-lg border-2 border-green-200">
-                    <p className="font-medium text-gray-800 mb-2">🔹 {exercise.sentence}</p>
-                    <div className="flex flex-col md:flex-row gap-2">
-                      <input
-                        type="text"
-                        placeholder="Write affirmative form..."
-                        value={writtenAnswers[exercise.key] || ""}
-                        onChange={(e) => handleWrittenAnswerChange(exercise.key, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-green-300 rounded-md text-sm focus:ring-2 focus:ring-green-500"
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleCheckAnswer(exercise.key, writtenAnswers[exercise.key] || "", exercise.answer)}
-                          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition text-sm"
-                        >
-                          Check
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleWrittenAnswerChange(exercise.key, exercise.answer);
-                            handleCheckAnswer(exercise.key, exercise.answer, exercise.answer);
-                          }}
-                          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition text-sm"
-                        >
-                          Show
-                        </button>
-                      </div>
-                    </div>
-                    {showAnswerResults[exercise.key] && (
-                      <AnswerResult isCorrect={answerResults[exercise.key]} correctAnswer={exercise.answer} />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ======================================== */}
-        {/* PART 5 – CHANGE INTO INTERROGATIVE */}
-        {/* ======================================== */}
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-yellow-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🟣 PART 5 – CHANGE INTO INTERROGATIVE</h2>
-              <button onClick={() => toggleSection('interrogative')} className="ml-4 p-2 rounded-full hover:bg-yellow-700 transition">
-                {sections.interrogative ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.interrogative && (
-            <div className="p-8">
-              <div className="space-y-4">
-                {interrogativeExercises.map((exercise) => (
-                  <div key={exercise.key} className="bg-white p-5 rounded-lg border-2 border-yellow-200">
-                    <p className="font-medium text-gray-800 mb-2">🔹 {exercise.sentence}</p>
-                    <div className="flex flex-col md:flex-row gap-2">
-                      <input
-                        type="text"
-                        placeholder="Write interrogative form..."
-                        value={writtenAnswers[exercise.key] || ""}
-                        onChange={(e) => handleWrittenAnswerChange(exercise.key, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-yellow-300 rounded-md text-sm focus:ring-2 focus:ring-yellow-500"
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleCheckAnswer(exercise.key, writtenAnswers[exercise.key] || "", exercise.answer)}
-                          className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition text-sm"
-                        >
-                          Check
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleWrittenAnswerChange(exercise.key, exercise.answer);
-                            handleCheckAnswer(exercise.key, exercise.answer, exercise.answer);
-                          }}
-                          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition text-sm"
-                        >
-                          Show
-                        </button>
-                      </div>
-                    </div>
-                    {showAnswerResults[exercise.key] && (
-                      <AnswerResult isCorrect={answerResults[exercise.key]} correctAnswer={exercise.answer} />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ======================================== */}
-        {/* PART 6 – QUESTIONS (SPEAKING) */}
-        {/* ======================================== */}
-        <div className="bg-orange-50 border-2 border-orange-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-orange-500 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🟠 PART 6 – QUESTIONS (SPEAKING)</h2>
-              <button onClick={() => toggleSection('speaking')} className="ml-4 p-2 rounded-full hover:bg-orange-600 transition">
-                {sections.speaking ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-          </div>
-
-          {sections.speaking && (
-            <div className="p-8">
-              <p className="text-orange-700 mb-6 font-medium italic">Answer with complete sentences. Practice speaking out loud!</p>
-              <div className="space-y-4">
-                {speakingQuestions.map((question) => (
-                  <div key={question.id} className="bg-white p-5 rounded-lg border-2 border-orange-200">
-                    <p className="font-bold text-orange-700 mb-2">❓ {question.question}</p>
-                    <textarea
-                      value={speakingAnswers[question.id] || ""}
-                      onChange={(e) => handleSpeakingAnswerChange(question.id, e.target.value)}
-                      placeholder="Write your answer here..."
-                      className="w-full p-3 border border-orange-300 rounded-md focus:ring-2 focus:ring-orange-500 resize-none h-20"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ======================================== */}
-        {/* LISTEN AND PRACTICE */}
-        {/* ======================================== */}
-        <div className="bg-teal-50 border-2 border-teal-200 rounded-[30px] shadow-lg mb-10 overflow-hidden">
-          <div className="bg-teal-600 text-white py-4 px-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <h2 className="text-2xl font-bold">🔊 LISTEN AND PRACTICE</h2>
-              <button onClick={() => toggleSection('listen')} className="ml-4 p-2 rounded-full hover:bg-teal-700 transition">
-                {sections.listen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-              </button>
-            </div>
-            <AudioPlayer src="/audios/l54_listen.mp3" />
-          </div>
-
-          {sections.listen && (
-            <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-              {listenItems.map((item) => (
-                <div key={item.key} className="flex flex-col items-center bg-white p-6 rounded-xl shadow-md border border-teal-200">
-                  <div className="w-full h-48 relative mb-4 rounded-lg overflow-hidden border-2 border-teal-300 shadow-md">
-                    <Image 
-                      src={item.image} 
-                      alt={item.alt} 
-                      fill 
-                      className="object-cover"
-                    />
-                  </div>
-                  
-                  <div className="w-full mb-3">
-                    <textarea
-                      placeholder="Write what you heard..."
-                      value={writtenAnswers[item.key] || ""}
-                      onChange={(e) => handleWrittenAnswerChange(item.key, e.target.value)}
-                      className="w-full h-20 resize-none p-3 border border-teal-300 rounded-md text-sm focus:ring-2 focus:ring-teal-500"
-                    />
-                  </div>
-                  <div className="flex gap-3 w-full">
-                    <button
-                      onClick={() => handleCheckAnswer(item.key, writtenAnswers[item.key] || "", item.correctAnswer)}
-                      className="flex-1 bg-teal-500 text-white py-2 px-4 rounded-md hover:bg-teal-600 transition font-medium"
-                    >
-                      Check
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleWrittenAnswerChange(item.key, "");
-                        setShowAnswerResults(prev => ({ ...prev, [item.key]: false }));
-                      }}
-                      className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                  {showAnswerResults[item.key] && (
-                    <AnswerResult isCorrect={answerResults[item.key]} correctAnswer={item.correctAnswer} />
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* ======================================== */}
-        {/* TUNE IN YOUR EARS (VIDEO SECTION) - FINAL */}
-        {/* ======================================== */}
-        <div className="mb-10 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 rounded-3xl shadow-lg overflow-hidden" style={{ borderColor: "#06b6d4" }}>
-          <div className="py-5 px-8 flex justify-between items-center bg-gradient-to-r from-cyan-500 to-blue-500">
-            <h2 className="text-2xl font-bold text-white flex items-center gap-2">🎧 TUNE IN YOUR EARS</h2>
-            <button onClick={() => toggleSection('tuneInYourEars')} className="p-2 rounded-full hover:bg-white/20 transition">
-              {sections.tuneInYourEars ? <ChevronUp size={24} className="text-white" /> : <ChevronDown size={24} className="text-white" />}
+            <button
+              onClick={() => toggleDrill('fluency')}
+              className="inline-block rounded-full bg-white text-yellow-700 px-8 py-3 text-sm font-bold transition-all duration-300 hover:bg-yellow-100"
+            >
+              {openDrills.fluency ? 'Hide Exercise' : 'Show Exercise'}
             </button>
           </div>
-          
-          {sections.tuneInYourEars && (
-            <div className="p-8">
-              {/* Key Vocabulary Section */}
-              <div className="mb-8 bg-white rounded-xl p-6 shadow-md border border-cyan-200">
-                <h3 className="text-xl font-bold text-cyan-700 mb-4 flex items-center gap-2">
-                  <Volume2 size={20} /> 📚 KEY VOCABULARY FROM THE VIDEO
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {tuneInYourEarsVideo.keyVocabulary.map((vocab, idx) => (
-                    <div key={idx} className="bg-cyan-50 p-2 rounded-lg border border-cyan-200">
-                      <p className="font-bold text-cyan-800 text-sm">{vocab.english}</p>
-                      <p className="text-xs text-cyan-600">{vocab.portuguese}</p>
+
+          <div className="p-8">
+            <p className="text-yellow-800 mb-6 font-medium italic text-center">
+              🎯 Click on a card to expand it and write your own questions and answers following the example.
+            </p>
+
+            {openDrills.fluency && (
+              <div className="mt-4">
+                
+                {/* EXEMPLO FIXO */}
+                <div className="bg-yellow-100 p-6 rounded-xl border-2 border-yellow-300 mb-8 max-w-2xl mx-auto shadow-inner">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="bg-yellow-500 text-white font-bold px-3 py-1 rounded-full text-sm">Exemplo</span>
+                    <span className="font-mono text-yellow-800 font-bold">{exampleFluency.prompt}</span>
+                  </div>
+                  <div className="flex flex-col md:flex-row gap-4 items-center">
+                    <div className="w-full md:w-1/3 h-32 bg-gray-200 rounded-lg overflow-hidden">
+                      <img src={exampleFluency.image} alt={exampleFluency.prompt} className="object-cover w-full h-full" />
+                    </div>
+                    <div className="w-full md:w-2/3">
+                      <div className="mb-2">
+                        <p className="text-xs font-bold text-yellow-700 mb-1">QUESTION:</p>
+                        <p className="text-lg font-semibold text-gray-800 bg-white p-2 rounded border border-yellow-200">
+                          What is she eating?
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-green-700 mb-1">ANSWER:</p>
+                        <p className="text-lg font-semibold text-gray-800 bg-white p-2 rounded border border-green-200">
+                          She is eating a sandwich.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 6 CARDS PARA O ALUNO (Clique para abrir modal) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {fluencyCards.map((card, index) => (
+                    <div 
+                      key={index} 
+                      onClick={() => setFluencyModal({ isOpen: true, prompt: card.prompt, image: card.image })}
+                      className="bg-white rounded-xl shadow-md border border-yellow-300 overflow-hidden flex flex-col cursor-pointer hover:shadow-xl hover:border-yellow-500 transition-all group"
+                    >
+                      <div className="relative h-48 w-full bg-gray-100">
+                        <img src={card.image} alt={card.prompt} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
+                        <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">
+                          {card.prompt}
+                        </div>
+                      </div>
+                      <div className="p-4 flex-1 flex items-center justify-center bg-yellow-50 text-yellow-700 font-medium text-sm">
+                        Click to write Q&A
+                      </div>
                     </div>
                   ))}
                 </div>
-              </div>
 
-              {/* Video Player */}
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-cyan-700 mb-4">{tuneInYourEarsVideo.title}</h3>
-                <p className="text-cyan-600 mb-6">{tuneInYourEarsVideo.description}</p>
-                <div className="bg-black rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-4xl">
-                  <div className="aspect-w-16 aspect-h-9">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${tuneInYourEarsVideo.youtubeId}`}
-                      title={tuneInYourEarsVideo.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="w-full h-[400px] md:h-[500px]"
-                    />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ===================== SECTION 2 – DRILLING PRACTICE ===================== */}
+        <div className="bg-white border-2 border-yellow-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold text-yellow-900">🔹 DRILLING PRACTICE</h2>
+              <PencilIcon onClick={() => openNoteModal('Drilling Practice')} />
+            </div>
+            <button
+              onClick={() => toggleDrill('drilling')}
+              className="inline-block rounded-full bg-white text-yellow-700 px-8 py-3 text-sm font-bold transition-all duration-300 hover:bg-yellow-100"
+            >
+              {openDrills.drilling ? 'Hide Exercise' : 'Show Exercise'}
+            </button>
+          </div>
+
+          <div className="p-8 space-y-8">
+            {openDrills.drilling && (
+              <>
+                {/* SUBSTITUTION PRACTICE 1 */}
+                <div>
+                  <h3 className="text-xl font-bold text-yellow-800 mb-4 bg-yellow-100 p-2 rounded inline-block">Substitution Practice I</h3>
+                  <div className="space-y-4">
+                    {subPractice1.map((ex, i) => (
+                      <SubstitutionOptions key={`sp1-${i}`} exercise={{ ...ex, key: `sp1-${i}` }} onOptionClick={handleOptionClick} />
+                    ))}
                   </div>
                 </div>
-              </div>
-              
-              {/* Questions from the video - Personalized for Shopping Theme */}
-              <div className="space-y-8">
-                {tuneInYourEarsVideo.questions.map((q) => (
-                  <div key={q.id} className="bg-white p-6 rounded-xl border-2 shadow-md" style={{ borderColor: "#06b6d430" }}>
-                    <h4 className="text-lg font-bold mb-2" style={{ color: "#06b6d4" }}>
-                      🛍️ Question {q.id}: {q.question}
-                    </h4>
-                    <p className="text-sm text-gray-500 mb-3 italic">📝 {q.instructions}</p>
-                    <textarea
-                      value={videoAnswers[q.id] || ""}
-                      onChange={(e) => handleVideoAnswerChange(q.id, e.target.value)}
-                      placeholder="Write your answer based on what you heard... Use Present Continuous when possible!"
-                      className="w-full h-32 p-4 border-2 rounded-lg focus:ring-2 focus:outline-none transition resize-none"
-                      style={{ borderColor: "#06b6d430" }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.borderColor = "#06b6d4";
-                        e.currentTarget.style.boxShadow = "0 0 0 2px #06b6d420";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.borderColor = "#06b6d430";
-                        e.currentTarget.style.boxShadow = "none";
-                      }}
-                    />
-                    <div className="flex gap-3 mt-4">
-                      <button
-                        onClick={() => checkVideoAnswer(q.id, videoAnswers[q.id] || "", q.correctAnswer)}
-                        className="text-white px-6 py-2 rounded-lg transition font-medium hover:opacity-90"
-                        style={{ backgroundColor: "#06b6d4" }}
-                      >
-                        Check Answer
-                      </button>
-                      <button
-                        onClick={() => clearVideoAnswer(q.id)}
-                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg transition font-medium"
-                      >
-                        Clear
-                      </button>
-                    </div>
-                    {showVideoResults[`video-${q.id}`] && (
-                      <div className="mt-4">
-                        <AnswerResultWithMessage isCorrect={videoResults[`video-${q.id}`] || false} correctAnswer={q.correctAnswer} />
-                      </div>
-                    )}
+
+                {/* CHANGE INTO NEGATIVE */}
+                <div>
+                  <h3 className="text-xl font-bold text-red-600 mb-4 bg-red-50 p-2 rounded inline-block">Change into Negative</h3>
+                  <div className="space-y-4">
+                    {negativeExercises.map((ex) => (
+                      <WrittenExercise key={ex.key} exercise={ex} borderColor="red" />
+                    ))}
+                  </div>
+                </div>
+
+                {/* SUBSTITUTION PRACTICE 2 */}
+                <div>
+                  <h3 className="text-xl font-bold text-yellow-800 mb-4 bg-yellow-100 p-2 rounded inline-block">Substitution Practice II</h3>
+                  <div className="space-y-4">
+                    {subPractice2.map((ex, i) => (
+                      <SubstitutionOptions key={`sp2-${i}`} exercise={{ ...ex, key: `sp2-${i}` }} onOptionClick={handleOptionClick} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* CHANGE INTO AFFIRMATIVE */}
+                <div>
+                  <h3 className="text-xl font-bold text-green-600 mb-4 bg-green-50 p-2 rounded inline-block">Change into Affirmative</h3>
+                  <div className="space-y-4">
+                    {affirmativeExercises.map((ex) => (
+                      <WrittenExercise key={ex.key} exercise={ex} borderColor="green" />
+                    ))}
+                  </div>
+                </div>
+
+                {/* CHANGE INTO INTERROGATIVE */}
+                <div>
+                  <h3 className="text-xl font-bold text-blue-600 mb-4 bg-blue-50 p-2 rounded inline-block">Change into Interrogative</h3>
+                  <div className="space-y-4">
+                    {interrogativeExercises.map((ex) => (
+                      <WrittenExercise key={ex.key} exercise={ex} borderColor="blue" />
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* ===================== SECTION 3 – QUESTIONS ===================== */}
+        <div className="bg-white border-2 border-yellow-300 rounded-[30px] shadow-lg mb-10 overflow-hidden">
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-4 px-8 flex justify-between items-center">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold text-yellow-900">🔹 QUESTIONS</h2>
+              <PencilIcon onClick={() => openNoteModal('Questions')} />
+            </div>
+            <button
+              onClick={() => toggleDrill('questions')}
+              className="inline-block rounded-full bg-white text-yellow-700 px-8 py-3 text-sm font-bold transition-all duration-300 hover:bg-yellow-100"
+            >
+              {openDrills.questions ? 'Hide Exercise' : 'Show Exercise'}
+            </button>
+          </div>
+
+          <div className="p-8">
+            {openDrills.questions && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {questionsList.map((q, idx) => (
+                  <div key={idx} className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 flex items-start gap-3">
+                     <span className="text-yellow-600 font-bold">{String.fromCharCode(97 + idx)})</span>
+                     <SpeakSentence text={q} className="text-gray-800 font-medium">{q}</SpeakSentence>
                   </div>
                 ))}
               </div>
-              
-              <div className="mt-8 bg-cyan-100 border-2 border-cyan-300 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-cyan-800 mb-4 flex items-center gap-2">
-                  <Volume2 size={20} /> 🎯 Listening & Shopping Tips:
-                </h3>
-                <ul className="list-disc pl-5 space-y-2 text-cyan-700">
-                  <li>Listen first without looking at the questions</li>
-                  <li>Watch a second time while reading the questions</li>
-                  <li>Pay attention to keywords and main ideas about shopping</li>
-                  <li>Don&apos;t worry if you don&apos;t understand every word</li>
-                  <li>You can watch multiple times if needed</li>
-                  <li>Try to identify the Present Continuous actions in the video</li>
-                  <li>Practice saying the vocabulary words out loud</li>
-                </ul>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ======================================== */}
-        {/* SAVE & NAVIGATION BUTTONS */}
-        {/* ======================================== */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-8 pt-6 border-t-2 border-gray-200">
-          <div className="flex gap-4">
-            <button
-              onClick={saveAllAnswers}
-              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 flex items-center gap-2 shadow-md"
-            >
-              <span>💾</span> Save All My Answers
-            </button>
-            <button
-              onClick={clearAllAnswers}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full text-sm transition duration-300 shadow-md"
-            >
-              Clear All
-            </button>
-          </div>
-          <div className="flex gap-4">
-            <button
-              onClick={() => router.push("/cursos/lesson53")}
-              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-md"
-            >
-              ← Previous Lesson
-            </button>
-            <button
-              onClick={() => router.push("/cursos/lesson55")}
-              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 px-8 rounded-full transition-colors shadow-md"
-            >
-              Next Lesson →
-            </button>
+            )}
           </div>
         </div>
 
-        {/* FOOTER */}
-        <div className="mt-10 text-center text-gray-500 text-sm">
-          <p>Lesson 54 – Going Shopping | Practice Present Continuous for actions happening now</p>
-          <p className="mt-1">© 2025 - English Learning Platform</p>
+        {/* Navigation buttons */}
+        <div className="flex justify-center gap-4 mt-8">
+          <button
+            onClick={() => router.push("/cursos/lesson53")}
+            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+          >
+            &larr; Previous Lesson (53)
+          </button>
+          <button
+            onClick={() => router.push("/cursos/lesson55")}
+            className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+          >
+            Next Lesson (55) &rarr;
+          </button>
         </div>
       </div>
+
+      {/* Fluency Modal */}
+      <FluencyModal 
+        isOpen={fluencyModal.isOpen} 
+        onClose={() => setFluencyModal(prev => ({ ...prev, isOpen: false }))} 
+        prompt={fluencyModal.prompt} 
+        imageUrl={fluencyModal.image} 
+      />
+
+      {/* Floating Pencil Button */}
+      <button
+        onClick={() => openNoteModal('Anotações Globais')}
+        className="fixed bottom-8 right-8 z-50 bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center group"
+        title="Fazer anotações em qualquer momento"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 group-hover:animate-bounce" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+        </svg>
+      </button>
+
+      {/* Note Modal */}
+      <NoteModal
+        isOpen={noteModal.isOpen}
+        onClose={() => setNoteModal(prev => ({ ...prev, isOpen: false }))}
+        sectionTitle={noteModal.sectionTitle}
+        initialNote={noteModal.noteContent}
+        onSave={saveNote}
+      />
     </div>
   );
 }

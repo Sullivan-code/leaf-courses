@@ -322,7 +322,6 @@ export default function Lesson51GoingShopping() {
   const grammarImage = "https://images.unsplash.com/photo-1456324504439-367cee3b3c32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
 
   // ========== LESSON 51 DATA ==========
-  // ✅ Formas verbais SEPARADAS – presente e passado clicáveis individualmente
   const verbs = [
     {
       label: "to sell, sold",
@@ -360,148 +359,174 @@ export default function Lesson51GoingShopping() {
     { english: "garage sale", portuguese: "venda de garagem" },
   ];
 
+  // ===== GRAMMAR EXAMPLES – só Present Continuous + Present Perfect =====
   const grammarExamples = [
-    { english: "I'm not doing my homework now.", portuguese: "Eu não estou fazendo minha lição agora." },
-    { english: "You aren't studying alone.", portuguese: "Você não está estudando sozinho." },
-    { english: "She isn't calling the attendant.", portuguese: "Ela não está chamando o atendente." },
-    { english: "He isn't paying with his credit card.", portuguese: "Ele não está pagando com o cartão de crédito." },
-    { english: "I have already bought a new wallet.", portuguese: "Eu já comprei uma carteira nova." },
-    { english: "She has worn that dress before.", portuguese: "Ela já usou aquele vestido antes." },
-    { english: "We have never tried this outlet mall.", portuguese: "Nós nunca experimentamos este outlet." },
-    { english: "I had already changed my clothes when he arrived.", portuguese: "Eu já tinha trocado de roupa quando ele chegou." },
-    { english: "She had bought the shoes before the sale ended.", portuguese: "Ela tinha comprado os sapatos antes da promoção acabar." },
-    { english: "They had never seen that style before.", portuguese: "Eles nunca tinham visto aquele estilo antes." },
+    // Present Continuous – affirmative
+    { english: "I'm looking for a new wallet.", portuguese: "Eu estou procurando uma carteira nova." },
+    { english: "She's trying on a blue dress.", portuguese: "Ela está provando um vestido azul." },
+    { english: "They're paying with cash today.", portuguese: "Eles estão pagando em dinheiro hoje." },
+    // Present Continuous – negative
+    { english: "I'm not buying anything today.", portuguese: "Eu não estou comprando nada hoje." },
+    { english: "He isn't wearing his new shoes.", portuguese: "Ele não está usando os sapatos novos dele." },
+    { english: "We aren't having lunch at the mall.", portuguese: "Nós não estamos almoçando no shopping." },
+    // Present Continuous – question
+    { english: "Are you looking for the fitting room?", portuguese: "Você está procurando o provador?" },
+    { english: "Is she paying by credit card?", portuguese: "Ela está pagando com cartão de crédito?" },
+    // Present Perfect – affirmative
+    { english: "I've already bought a new purse.", portuguese: "Eu já comprei uma bolsa nova." },
+    { english: "She's found a great discount at that store.", portuguese: "Ela encontrou um ótimo desconto naquela loja." },
+    { english: "We've tried this outlet mall before.", portuguese: "Nós já experimentamos este outlet antes." },
+    // Present Perfect – negative
+    { english: "I haven't paid the attendant yet.", portuguese: "Eu ainda não paguei o atendente." },
+    { english: "He hasn't gotten his receipt.", portuguese: "Ele não pegou o recibo ainda." },
+    { english: "They haven't bought anything on sale.", portuguese: "Eles não compraram nada em promoção." },
+    // Present Perfect – question
+    { english: "Have you ever tried this department store?", portuguese: "Você já experimentou esta loja de departamento?" },
+    { english: "Has she paid for the items yet?", portuguese: "Ela já pagou pelos itens?" },
   ];
 
   // ========== VERBS SUBSTITUTION ==========
   const verbsSubstitution: SubstitutionExercise[] = [
+    // 1 PRESENT
     {
-      key: "verb-1",
+      key: "verb-1-present",
       original: "I sell / We sell / They sell",
       options: [
         { label: "I sell", replacement: "I sell.", pt: "Eu vendo." },
         { label: "We sell", replacement: "We sell.", pt: "Nós vendemos." },
         { label: "They sell", replacement: "They sell.", pt: "Eles vendem." },
-        { label: "I sold (past)", replacement: "I sold.", pt: "Eu vendi." },
-        { label: "We sold (past)", replacement: "We sold.", pt: "Nós vendemos." },
-        { label: "They sold (past)", replacement: "They sold.", pt: "Eles venderam." },
       ],
       currentIndex: 0,
     },
+    // 2 PRESENT
     {
-      key: "verb-2",
+      key: "verb-2-present",
       original: "I don't sell. / He doesn't sell. / She doesn't sell.",
       options: [
         { label: "I don't sell", replacement: "I don't sell.", pt: "Eu não vendo." },
         { label: "He doesn't sell", replacement: "He doesn't sell.", pt: "Ele não vende." },
         { label: "She doesn't sell", replacement: "She doesn't sell.", pt: "Ela não vende." },
-        { label: "I didn't sell (past)", replacement: "I didn't sell.", pt: "Eu não vendi." },
-        { label: "He didn't sell (past)", replacement: "He didn't sell.", pt: "Ele não vendeu." },
-        { label: "She didn't sell (past)", replacement: "She didn't sell.", pt: "Ela não vendeu." },
       ],
       currentIndex: 0,
     },
+    // 3 PRESENT
     {
-      key: "verb-3",
+      key: "verb-3-present",
       original: "Do you sell? / Do they sell? / Does he sell?",
       options: [
         { label: "Do you sell?", replacement: "Do you sell?", pt: "Você vende?" },
         { label: "Do they sell?", replacement: "Do they sell?", pt: "Eles vendem?" },
         { label: "Does he sell?", replacement: "Does he sell?", pt: "Ele vende?" },
-        { label: "Did you sell? (past)", replacement: "Did you sell?", pt: "Você vendeu?" },
-        { label: "Did they sell? (past)", replacement: "Did they sell?", pt: "Eles venderam?" },
-        { label: "Did he sell? (past)", replacement: "Did he sell?", pt: "Ele vendeu?" },
       ],
       currentIndex: 0,
     },
+    // 4 PAST
     {
-      key: "verb-4",
+      key: "verb-4-past",
+      original: "I sold / We sold / They sold",
+      options: [
+        { label: "I sold", replacement: "I sold.", pt: "Eu vendi." },
+        { label: "We sold", replacement: "We sold.", pt: "Nós vendemos." },
+        { label: "They sold", replacement: "They sold.", pt: "Eles venderam." },
+      ],
+      currentIndex: 0,
+    },
+    // 5 PRESENT
+    {
+      key: "verb-5-present",
       original: "He sells cars. / clothes / food",
       options: [
         { label: "cars", replacement: "He sells cars.", pt: "Ele vende carros." },
         { label: "clothes", replacement: "He sells clothes.", pt: "Ele vende roupas." },
         { label: "food", replacement: "He sells food.", pt: "Ele vende comida." },
-        { label: "cars (past)", replacement: "He sold cars.", pt: "Ele vendeu carros." },
-        { label: "clothes (past)", replacement: "He sold clothes.", pt: "Ele vendeu roupas." },
-        { label: "food (past)", replacement: "He sold food.", pt: "Ele vendeu comida." },
       ],
       currentIndex: 0,
     },
+    // 6 PAST
     {
-      key: "verb-5",
-      original: "I sell books to my friends. / clothes / shoes",
+      key: "verb-6-past",
+      original: "He sold cars. / clothes / food",
       options: [
-        { label: "books", replacement: "I sell books to my friends.", pt: "Eu vendo livros para meus amigos." },
-        { label: "clothes", replacement: "I sell clothes to my friends.", pt: "Eu vendo roupas para meus amigos." },
-        { label: "shoes", replacement: "I sell shoes to my friends.", pt: "Eu vendo sapatos para meus amigos." },
-        { label: "books (past)", replacement: "I sold books to my friends.", pt: "Eu vendi livros para meus amigos." },
-        { label: "clothes (past)", replacement: "I sold clothes to my friends.", pt: "Eu vendi roupas para meus amigos." },
-        { label: "shoes (past)", replacement: "I sold shoes to my friends.", pt: "Eu vendi sapatos para meus amigos." },
+        { label: "cars", replacement: "He sold cars.", pt: "Ele vendeu carros." },
+        { label: "clothes", replacement: "He sold clothes.", pt: "Ele vendeu roupas." },
+        { label: "food", replacement: "He sold food.", pt: "Ele vendeu comida." },
       ],
       currentIndex: 0,
     },
+    // 7 PRESENT
     {
-      key: "verb-6",
-      original: "What do you want to sell? / buy / take",
-      options: [
-        { label: "sell", replacement: "What do you want to sell?", pt: "O que você quer vender?" },
-        { label: "buy", replacement: "What do you want to buy?", pt: "O que você quer comprar?" },
-        { label: "take", replacement: "What do you want to take?", pt: "O que você quer levar?" },
-        { label: "sell (past)", replacement: "What did you want to sell?", pt: "O que você queria vender?" },
-        { label: "buy (past)", replacement: "What did you want to buy?", pt: "O que você queria comprar?" },
-        { label: "take (past)", replacement: "What did you want to take?", pt: "O que você queria levar?" },
-      ],
-      currentIndex: 0,
-    },
-    {
-      key: "verb-7",
+      key: "verb-7-present",
       original: "I pay. / He pays. / She pays.",
       options: [
         { label: "I pay", replacement: "I pay.", pt: "Eu pago." },
         { label: "He pays", replacement: "He pays.", pt: "Ele paga." },
         { label: "She pays", replacement: "She pays.", pt: "Ela paga." },
-        { label: "I paid (past)", replacement: "I paid.", pt: "Eu paguei." },
-        { label: "He paid (past)", replacement: "He paid.", pt: "Ele pagou." },
-        { label: "She paid (past)", replacement: "She paid.", pt: "Ela pagou." },
       ],
       currentIndex: 0,
     },
+    // 8 PAST
     {
-      key: "verb-8",
+      key: "verb-8-past",
+      original: "I paid. / He paid. / She paid.",
+      options: [
+        { label: "I paid", replacement: "I paid.", pt: "Eu paguei." },
+        { label: "He paid", replacement: "He paid.", pt: "Ele pagou." },
+        { label: "She paid", replacement: "She paid.", pt: "Ela pagou." },
+      ],
+      currentIndex: 0,
+    },
+    // 9 PRESENT
+    {
+      key: "verb-9-present",
       original: "I don't pay. / We don't pay. / They don't pay.",
       options: [
         { label: "I don't pay", replacement: "I don't pay.", pt: "Eu não pago." },
         { label: "We don't pay", replacement: "We don't pay.", pt: "Nós não pagamos." },
         { label: "They don't pay", replacement: "They don't pay.", pt: "Eles não pagam." },
-        { label: "I didn't pay (past)", replacement: "I didn't pay.", pt: "Eu não paguei." },
-        { label: "We didn't pay (past)", replacement: "We didn't pay.", pt: "Nós não pagamos." },
-        { label: "They didn't pay (past)", replacement: "They didn't pay.", pt: "Eles não pagaram." },
       ],
       currentIndex: 0,
     },
+    // 10 PAST
     {
-      key: "verb-9",
+      key: "verb-10-past",
+      original: "I didn't pay. / We didn't pay. / They didn't pay.",
+      options: [
+        { label: "I didn't pay", replacement: "I didn't pay.", pt: "Eu não paguei." },
+        { label: "We didn't pay", replacement: "We didn't pay.", pt: "Nós não pagamos." },
+        { label: "They didn't pay", replacement: "They didn't pay.", pt: "Eles não pagaram." },
+      ],
+      currentIndex: 0,
+    },
+    // 11 PRESENT
+    {
+      key: "verb-11-present",
       original: "How much do you pay for this? / for this medicine / for this course",
       options: [
         { label: "this", replacement: "How much do you pay for this?", pt: "Quanto você paga por isso?" },
         { label: "this medicine", replacement: "How much do you pay for this medicine?", pt: "Quanto você paga por este remédio?" },
         { label: "this course", replacement: "How much do you pay for this course?", pt: "Quanto você paga por este curso?" },
-        { label: "this (past)", replacement: "How much did you pay for this?", pt: "Quanto você pagou por isso?" },
-        { label: "this medicine (past)", replacement: "How much did you pay for this medicine?", pt: "Quanto você pagou por este remédio?" },
-        { label: "this course (past)", replacement: "How much did you pay for this course?", pt: "Quanto você pagou por este curso?" },
       ],
       currentIndex: 0,
     },
+    // 12 PAST
     {
-      key: "verb-10",
-      original: "I need to pay my brother. / friend / coworker",
+      key: "verb-12-past",
+      original: "How much did you pay for this? / for this medicine / for this course",
       options: [
-        { label: "brother", replacement: "I need to pay my brother.", pt: "Eu preciso pagar meu irmão." },
-        { label: "friend", replacement: "I need to pay my friend.", pt: "Eu preciso pagar meu amigo." },
-        { label: "coworker", replacement: "I need to pay my coworker.", pt: "Eu preciso pagar meu colega de trabalho." },
-        { label: "brother (past)", replacement: "I needed to pay my brother.", pt: "Eu precisei pagar meu irmão." },
-        { label: "friend (past)", replacement: "I needed to pay my friend.", pt: "Eu precisei pagar meu amigo." },
-        { label: "coworker (past)", replacement: "I needed to pay my coworker.", pt: "Eu precisei pagar meu colega de trabalho." },
+        { label: "this", replacement: "How much did you pay for this?", pt: "Quanto você pagou por isso?" },
+        { label: "this medicine", replacement: "How much did you pay for this medicine?", pt: "Quanto você pagou por este remédio?" },
+        { label: "this course", replacement: "How much did you pay for this course?", pt: "Quanto você pagou por este curso?" },
+      ],
+      currentIndex: 0,
+    },
+    // 13 PAST
+    {
+      key: "verb-13-past",
+      original: "I needed to pay my brother. / friend / coworker",
+      options: [
+        { label: "brother", replacement: "I needed to pay my brother.", pt: "Eu precisei pagar meu irmão." },
+        { label: "friend", replacement: "I needed to pay my friend.", pt: "Eu precisei pagar meu amigo." },
+        { label: "coworker", replacement: "I needed to pay my coworker.", pt: "Eu precisei pagar meu colega de trabalho." },
       ],
       currentIndex: 0,
     },
@@ -510,132 +535,132 @@ export default function Lesson51GoingShopping() {
   // ========== VOCABULARY SUBSTITUTION ==========
   const vocabSubstitution: SubstitutionExercise[] = [
     {
-      key: "vocab-1",
+      key: "vocab-1-present",
       original: "The customer wants to buy a new wallet. / backpack / t-shirt",
       options: [
         { label: "wallet", replacement: "The customer wants to buy a new wallet.", pt: "O cliente quer comprar uma carteira nova." },
         { label: "backpack", replacement: "The customer wants to buy a new backpack.", pt: "O cliente quer comprar uma mochila nova." },
         { label: "t-shirt", replacement: "The customer wants to buy a new t-shirt.", pt: "O cliente quer comprar uma camiseta nova." },
-        { label: "wallet (past)", replacement: "The customer wanted to buy a new wallet.", pt: "O cliente queria comprar uma carteira nova." },
-        { label: "backpack (past)", replacement: "The customer wanted to buy a new backpack.", pt: "O cliente queria comprar uma mochila nova." },
-        { label: "t-shirt (past)", replacement: "The customer wanted to buy a new t-shirt.", pt: "O cliente queria comprar uma camiseta nova." },
       ],
       currentIndex: 0,
     },
     {
-      key: "vocab-2",
+      key: "vocab-2-present",
       original: "The attendant doesn't have any change. / salesperson / manager",
       options: [
         { label: "attendant", replacement: "The attendant doesn't have any change.", pt: "O atendente não tem nenhum troco." },
         { label: "salesperson", replacement: "The salesperson doesn't have any change.", pt: "O vendedor não tem nenhum troco." },
         { label: "manager", replacement: "The manager doesn't have any change.", pt: "O gerente não tem nenhum troco." },
-        { label: "attendant (past)", replacement: "The attendant didn't have any change.", pt: "O atendente não tinha nenhum troco." },
-        { label: "salesperson (past)", replacement: "The salesperson didn't have any change.", pt: "O vendedor não tinha nenhum troco." },
-        { label: "manager (past)", replacement: "The manager didn't have any change.", pt: "O gerente não tinha nenhum troco." },
       ],
       currentIndex: 0,
     },
     {
-      key: "vocab-3",
+      key: "vocab-3-present",
       original: "I have some cash in my bag. / wallet / purse",
       options: [
         { label: "bag", replacement: "I have some cash in my bag.", pt: "Eu tenho algum dinheiro na minha bolsa." },
         { label: "wallet", replacement: "I have some cash in my wallet.", pt: "Eu tenho algum dinheiro na minha carteira." },
         { label: "purse", replacement: "I have some cash in my purse.", pt: "Eu tenho algum dinheiro na minha bolsa." },
-        { label: "bag (past)", replacement: "I had some cash in my bag.", pt: "Eu tinha algum dinheiro na minha bolsa." },
-        { label: "wallet (past)", replacement: "I had some cash in my wallet.", pt: "Eu tinha algum dinheiro na minha carteira." },
-        { label: "purse (past)", replacement: "I had some cash in my purse.", pt: "Eu tinha algum dinheiro na minha bolsa." },
       ],
       currentIndex: 0,
     },
     {
-      key: "vocab-4",
+      key: "vocab-4-past",
+      original: "The customer wanted to buy a new wallet. / backpack / t-shirt",
+      options: [
+        { label: "wallet", replacement: "The customer wanted to buy a new wallet.", pt: "O cliente queria comprar uma carteira nova." },
+        { label: "backpack", replacement: "The customer wanted to buy a new backpack.", pt: "O cliente queria comprar uma mochila nova." },
+        { label: "t-shirt", replacement: "The customer wanted to buy a new t-shirt.", pt: "O cliente queria comprar uma camiseta nova." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-5-present",
       original: "How many items do you want to buy? / products / shirts",
       options: [
         { label: "items", replacement: "How many items do you want to buy?", pt: "Quantos itens você quer comprar?" },
         { label: "products", replacement: "How many products do you want to buy?", pt: "Quantos produtos você quer comprar?" },
         { label: "shirts", replacement: "How many shirts do you want to buy?", pt: "Quantas camisas você quer comprar?" },
-        { label: "items (past)", replacement: "How many items did you want to buy?", pt: "Quantos itens você queria comprar?" },
-        { label: "products (past)", replacement: "How many products did you want to buy?", pt: "Quantos produtos você queria comprar?" },
-        { label: "shirts (past)", replacement: "How many shirts did you want to buy?", pt: "Quantas camisas você queria comprar?" },
       ],
       currentIndex: 0,
     },
     {
-      key: "vocab-5",
+      key: "vocab-6-past",
+      original: "How many items did you want to buy? / products / shirts",
+      options: [
+        { label: "items", replacement: "How many items did you want to buy?", pt: "Quantos itens você queria comprar?" },
+        { label: "products", replacement: "How many products did you want to buy?", pt: "Quantos produtos você queria comprar?" },
+        { label: "shirts", replacement: "How many shirts did you want to buy?", pt: "Quantas camisas você queria comprar?" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-7-present",
       original: "The receipt is in your bag. / purse / here",
       options: [
         { label: "bag", replacement: "The receipt is in your bag.", pt: "O recibo está na sua sacola." },
         { label: "purse", replacement: "The receipt is in your purse.", pt: "O recibo está na sua bolsa." },
         { label: "here", replacement: "The receipt is here.", pt: "O recibo está aqui." },
-        { label: "bag (past)", replacement: "The receipt was in your bag.", pt: "O recibo estava na sua sacola." },
-        { label: "purse (past)", replacement: "The receipt was in your purse.", pt: "O recibo estava na sua bolsa." },
-        { label: "here (past)", replacement: "The receipt was here.", pt: "O recibo estava aqui." },
       ],
       currentIndex: 0,
     },
     {
-      key: "vocab-6",
+      key: "vocab-8-past",
+      original: "The receipt was in your bag. / purse / here",
+      options: [
+        { label: "bag", replacement: "The receipt was in your bag.", pt: "O recibo estava na sua sacola." },
+        { label: "purse", replacement: "The receipt was in your purse.", pt: "O recibo estava na sua bolsa." },
+        { label: "here", replacement: "The receipt was here.", pt: "O recibo estava aqui." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "vocab-9-present",
       original: "I want to pay cash. / He wants / She wants",
       options: [
         { label: "I want", replacement: "I want to pay cash.", pt: "Eu quero pagar em dinheiro." },
         { label: "He wants", replacement: "He wants to pay cash.", pt: "Ele quer pagar em dinheiro." },
         { label: "She wants", replacement: "She wants to pay cash.", pt: "Ela quer pagar em dinheiro." },
-        { label: "I wanted (past)", replacement: "I wanted to pay cash.", pt: "Eu queria pagar em dinheiro." },
-        { label: "He wanted (past)", replacement: "He wanted to pay cash.", pt: "Ele queria pagar em dinheiro." },
-        { label: "She wanted (past)", replacement: "She wanted to pay cash.", pt: "Ela queria pagar em dinheiro." },
       ],
       currentIndex: 0,
     },
     {
-      key: "vocab-7",
-      original: "I pay by credit card. / She pays / He pays",
+      key: "vocab-10-past",
+      original: "I wanted to pay cash. / He wanted / She wanted",
       options: [
-        { label: "I pay", replacement: "I pay by credit card.", pt: "Eu pago com o cartão de crédito." },
-        { label: "She pays", replacement: "She pays by credit card.", pt: "Ela paga com o cartão de crédito." },
-        { label: "He pays", replacement: "He pays by credit card.", pt: "Ele paga com o cartão de crédito." },
-        { label: "I paid (past)", replacement: "I paid by credit card.", pt: "Eu paguei com o cartão de crédito." },
-        { label: "She paid (past)", replacement: "She paid by credit card.", pt: "Ela pagou com o cartão de crédito." },
-        { label: "He paid (past)", replacement: "He paid by credit card.", pt: "Ele pagou com o cartão de crédito." },
+        { label: "I wanted", replacement: "I wanted to pay cash.", pt: "Eu queria pagar em dinheiro." },
+        { label: "He wanted", replacement: "He wanted to pay cash.", pt: "Ele queria pagar em dinheiro." },
+        { label: "She wanted", replacement: "She wanted to pay cash.", pt: "Ela queria pagar em dinheiro." },
       ],
       currentIndex: 0,
     },
     {
-      key: "vocab-8",
+      key: "vocab-11-present",
       original: "I need to go to the ATM. / department store / mall",
       options: [
         { label: "ATM", replacement: "I need to go to the ATM.", pt: "Eu preciso ir ao caixa eletrônico." },
         { label: "department store", replacement: "I need to go to the department store.", pt: "Eu preciso ir à loja de departamento." },
         { label: "mall", replacement: "I need to go to the mall.", pt: "Eu preciso ir ao shopping." },
-        { label: "ATM (past)", replacement: "I needed to go to the ATM.", pt: "Eu precisava ir ao caixa eletrônico." },
-        { label: "department store (past)", replacement: "I needed to go to the department store.", pt: "Eu precisava ir à loja de departamento." },
-        { label: "mall (past)", replacement: "I needed to go to the mall.", pt: "Eu precisava ir ao shopping." },
       ],
       currentIndex: 0,
     },
     {
-      key: "vocab-9",
-      original: "Where is the fitting room? / department store / outlet",
+      key: "vocab-12-past",
+      original: "I needed to go to the ATM. / department store / mall",
       options: [
-        { label: "fitting room", replacement: "Where is the fitting room?", pt: "Onde é o provador?" },
-        { label: "department store", replacement: "Where is the department store?", pt: "Onde é a loja de departamento?" },
-        { label: "outlet", replacement: "Where is the outlet?", pt: "Onde é o outlet?" },
-        { label: "fitting room (past)", replacement: "Where was the fitting room?", pt: "Onde era o provador?" },
-        { label: "department store (past)", replacement: "Where was the department store?", pt: "Onde era a loja de departamento?" },
-        { label: "outlet (past)", replacement: "Where was the outlet?", pt: "Onde era o outlet?" },
+        { label: "ATM", replacement: "I needed to go to the ATM.", pt: "Eu precisava ir ao caixa eletrônico." },
+        { label: "department store", replacement: "I needed to go to the department store.", pt: "Eu precisava ir à loja de departamento." },
+        { label: "mall", replacement: "I needed to go to the mall.", pt: "Eu precisava ir ao shopping." },
       ],
       currentIndex: 0,
     },
     {
-      key: "vocab-10",
-      original: "Let's have a garage sale! / barbecue / snack",
+      key: "vocab-13-past",
+      original: "Where was the fitting room? / department store / outlet",
       options: [
-        { label: "garage sale", replacement: "Let's have a garage sale!", pt: "Vamos fazer uma venda de garagem." },
-        { label: "barbecue", replacement: "Let's have a barbecue!", pt: "Vamos fazer um churrasco." },
-        { label: "snack", replacement: "Let's have a snack!", pt: "Vamos fazer um lanche." },
-        { label: "garage sale (past)", replacement: "We had a garage sale!", pt: "Nós fizemos uma venda de garagem." },
-        { label: "barbecue (past)", replacement: "We had a barbecue!", pt: "Nós fizemos um churrasco." },
-        { label: "snack (past)", replacement: "We had a snack!", pt: "Nós fizemos um lanche." },
+        { label: "fitting room", replacement: "Where was the fitting room?", pt: "Onde era o provador?" },
+        { label: "department store", replacement: "Where was the department store?", pt: "Onde era a loja de departamento?" },
+        { label: "outlet", replacement: "Where was the outlet?", pt: "Onde era o outlet?" },
       ],
       currentIndex: 0,
     },
@@ -644,201 +669,258 @@ export default function Lesson51GoingShopping() {
   // ========== USEFUL PHRASES SUBSTITUTION ==========
   const phrasesSubstitution: SubstitutionExercise[] = [
     {
-      key: "phrase-1",
+      key: "phrase-1-present",
       original: "Let's go shopping tomorrow! / this afternoon / this weekend",
       options: [
         { label: "tomorrow", replacement: "Let's go shopping tomorrow!", pt: "Vamos fazer compras amanhã!" },
         { label: "this afternoon", replacement: "Let's go shopping this afternoon!", pt: "Vamos fazer compras esta tarde!" },
         { label: "this weekend", replacement: "Let's go shopping this weekend!", pt: "Vamos fazer compras este fim de semana!" },
-        { label: "yesterday (past)", replacement: "We went shopping yesterday!", pt: "Fomos fazer compras ontem!" },
-        { label: "this afternoon (past)", replacement: "We went shopping this afternoon!", pt: "Fomos fazer compras esta tarde!" },
-        { label: "last weekend (past)", replacement: "We went shopping last weekend!", pt: "Fomos fazer compras no fim de semana passado!" },
       ],
       currentIndex: 0,
     },
     {
-      key: "phrase-2",
+      key: "phrase-2-present",
       original: "He is looking for a gift. / for his wife / girlfriend",
       options: [
         { label: "a gift", replacement: "He is looking for a gift.", pt: "Ele está procurando por um presente." },
         { label: "for his wife", replacement: "He is looking for a gift for his wife.", pt: "Ele está procurando por um presente para a esposa dele." },
         { label: "girlfriend", replacement: "He is looking for a gift for his girlfriend.", pt: "Ele está procurando por um presente para a namorada." },
-        { label: "a gift (past)", replacement: "He was looking for a gift.", pt: "Ele estava procurando por um presente." },
-        { label: "wife (past)", replacement: "He was looking for a gift for his wife.", pt: "Ele estava procurando por um presente para a esposa dele." },
-        { label: "girlfriend (past)", replacement: "He was looking for a gift for his girlfriend.", pt: "Ele estava procurando por um presente para a namorada." },
       ],
       currentIndex: 0,
     },
     {
-      key: "phrase-3",
+      key: "phrase-3-present",
       original: "I am looking for my wallet. / purse / sunglasses",
       options: [
         { label: "wallet", replacement: "I am looking for my wallet.", pt: "Eu estou procurando minha carteira." },
         { label: "purse", replacement: "I am looking for my purse.", pt: "Eu estou procurando minha bolsa." },
         { label: "sunglasses", replacement: "I am looking for my sunglasses.", pt: "Eu estou procurando meus óculos de sol." },
-        { label: "wallet (past)", replacement: "I was looking for my wallet.", pt: "Eu estava procurando minha carteira." },
-        { label: "purse (past)", replacement: "I was looking for my purse.", pt: "Eu estava procurando minha bolsa." },
-        { label: "sunglasses (past)", replacement: "I was looking for my sunglasses.", pt: "Eu estava procurando meus óculos de sol." },
       ],
       currentIndex: 0,
     },
     {
-      key: "phrase-4",
+      key: "phrase-4-past",
+      original: "We went shopping yesterday! / this afternoon / last weekend",
+      options: [
+        { label: "yesterday", replacement: "We went shopping yesterday!", pt: "Fomos fazer compras ontem!" },
+        { label: "this afternoon", replacement: "We went shopping this afternoon!", pt: "Fomos fazer compras esta tarde!" },
+        { label: "last weekend", replacement: "We went shopping last weekend!", pt: "Fomos fazer compras no fim de semana passado!" },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-5-present",
       original: "I always get a discount there. / sometimes / never",
       options: [
         { label: "always", replacement: "I always get a discount there.", pt: "Eu sempre consigo um desconto lá." },
         { label: "sometimes", replacement: "I sometimes get a discount there.", pt: "Eu às vezes consigo um desconto lá." },
         { label: "never", replacement: "I never get a discount there.", pt: "Eu nunca consigo um desconto lá." },
-        { label: "always (past)", replacement: "I always got a discount there.", pt: "Eu sempre conseguia um desconto lá." },
-        { label: "sometimes (past)", replacement: "I sometimes got a discount there.", pt: "Eu às vezes conseguia um desconto lá." },
-        { label: "never (past)", replacement: "I never got a discount there.", pt: "Eu nunca conseguia um desconto lá." },
       ],
       currentIndex: 0,
     },
     {
-      key: "phrase-5",
+      key: "phrase-6-past",
+      original: "I always got a discount there. / sometimes / never",
+      options: [
+        { label: "always", replacement: "I always got a discount there.", pt: "Eu sempre conseguia um desconto lá." },
+        { label: "sometimes", replacement: "I sometimes got a discount there.", pt: "Eu às vezes conseguia um desconto lá." },
+        { label: "never", replacement: "I never got a discount there.", pt: "Eu nunca conseguia um desconto lá." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-7-present",
       original: "Those products are on sale. / items / clothes",
       options: [
         { label: "products", replacement: "Those products are on sale.", pt: "Aqueles produtos estão em liquidação." },
         { label: "items", replacement: "Those items are on sale.", pt: "Aqueles itens estão em liquidação." },
         { label: "clothes", replacement: "Those clothes are on sale.", pt: "Aquelas roupas estão em liquidação." },
-        { label: "products (past)", replacement: "Those products were on sale.", pt: "Aqueles produtos estavam em liquidação." },
-        { label: "items (past)", replacement: "Those items were on sale.", pt: "Aqueles itens estavam em liquidação." },
-        { label: "clothes (past)", replacement: "Those clothes were on sale.", pt: "Aquelas roupas estavam em liquidação." },
       ],
       currentIndex: 0,
     },
     {
-      key: "phrase-6",
+      key: "phrase-8-past",
+      original: "Those products were on sale. / items / clothes",
+      options: [
+        { label: "products", replacement: "Those products were on sale.", pt: "Aqueles produtos estavam em liquidação." },
+        { label: "items", replacement: "Those items were on sale.", pt: "Aqueles itens estavam em liquidação." },
+        { label: "clothes", replacement: "Those clothes were on sale.", pt: "Aquelas roupas estavam em liquidação." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-9-present",
       original: "They aren't talking to the customer. / attendant / manager",
       options: [
         { label: "customer", replacement: "They aren't talking to the customer.", pt: "Eles não estão falando com o cliente." },
         { label: "attendant", replacement: "They aren't talking to the attendant.", pt: "Eles não estão falando com o atendente." },
         { label: "manager", replacement: "They aren't talking to the manager.", pt: "Eles não estão falando com o gerente." },
-        { label: "customer (past)", replacement: "They weren't talking to the customer.", pt: "Eles não estavam falando com o cliente." },
-        { label: "attendant (past)", replacement: "They weren't talking to the attendant.", pt: "Eles não estavam falando com o atendente." },
-        { label: "manager (past)", replacement: "They weren't talking to the manager.", pt: "Eles não estavam falando com o gerente." },
       ],
       currentIndex: 0,
     },
     {
-      key: "phrase-7",
+      key: "phrase-10-past",
+      original: "They weren't talking to the customer. / attendant / manager",
+      options: [
+        { label: "customer", replacement: "They weren't talking to the customer.", pt: "Eles não estavam falando com o cliente." },
+        { label: "attendant", replacement: "They weren't talking to the attendant.", pt: "Eles não estavam falando com o atendente." },
+        { label: "manager", replacement: "They weren't talking to the manager.", pt: "Eles não estavam falando com o gerente." },
+      ],
+      currentIndex: 0,
+    },
+    {
+      key: "phrase-11-present",
       original: "He isn't wearing a suit. / a pair of jeans / a pair of shoes",
       options: [
         { label: "a suit", replacement: "He isn't wearing a suit.", pt: "Ele não está usando um terno." },
         { label: "jeans", replacement: "He isn't wearing a pair of jeans.", pt: "Ele não está usando um par de calças jeans." },
         { label: "shoes", replacement: "He isn't wearing a pair of shoes.", pt: "Ele não está usando um par de sapatos." },
-        { label: "a suit (past)", replacement: "He wasn't wearing a suit.", pt: "Ele não estava usando um terno." },
-        { label: "jeans (past)", replacement: "He wasn't wearing a pair of jeans.", pt: "Ele não estava usando um par de calças jeans." },
-        { label: "shoes (past)", replacement: "He wasn't wearing a pair of shoes.", pt: "Ele não estava usando um par de sapatos." },
       ],
       currentIndex: 0,
     },
     {
-      key: "phrase-8",
-      original: "She isn't wearing her glasses. / favorite shoes / favorite dress",
+      key: "phrase-12-past",
+      original: "He wasn't wearing a suit. / a pair of jeans / a pair of shoes",
       options: [
-        { label: "glasses", replacement: "She isn't wearing her glasses.", pt: "Ela não está usando os óculos dela." },
-        { label: "favorite shoes", replacement: "She isn't wearing her favorite shoes.", pt: "Ela não está usando os sapatos favoritos." },
-        { label: "favorite dress", replacement: "She isn't wearing her favorite dress.", pt: "Ela não está usando o vestido favorito." },
-        { label: "glasses (past)", replacement: "She wasn't wearing her glasses.", pt: "Ela não estava usando os óculos dela." },
-        { label: "favorite shoes (past)", replacement: "She wasn't wearing her favorite shoes.", pt: "Ela não estava usando os sapatos favoritos." },
-        { label: "favorite dress (past)", replacement: "She wasn't wearing her favorite dress.", pt: "Ela não estava usando o vestido favorito." },
+        { label: "a suit", replacement: "He wasn't wearing a suit.", pt: "Ele não estava usando um terno." },
+        { label: "jeans", replacement: "He wasn't wearing a pair of jeans.", pt: "Ele não estava usando um par de calças jeans." },
+        { label: "shoes", replacement: "He wasn't wearing a pair of shoes.", pt: "Ele não estava usando um par de sapatos." },
       ],
       currentIndex: 0,
     },
     {
-      key: "phrase-9",
-      original: "They aren't looking for the ATM. / for this product / for this item",
+      key: "phrase-13-past",
+      original: "I wasn't changing clothes. / She wasn't / He wasn't",
       options: [
-        { label: "the ATM", replacement: "They aren't looking for the ATM.", pt: "Eles não estão procurando pelo caixa eletrônico." },
-        { label: "this product", replacement: "They aren't looking for this product.", pt: "Eles não estão procurando por este produto." },
-        { label: "this item", replacement: "They aren't looking for this item.", pt: "Eles não estão procurando por este item." },
-        { label: "the ATM (past)", replacement: "They weren't looking for the ATM.", pt: "Eles não estavam procurando pelo caixa eletrônico." },
-        { label: "this product (past)", replacement: "They weren't looking for this product.", pt: "Eles não estavam procurando por este produto." },
-        { label: "this item (past)", replacement: "They weren't looking for this item.", pt: "Eles não estavam procurando por este item." },
-      ],
-      currentIndex: 0,
-    },
-    {
-      key: "phrase-10",
-      original: "I'm not changing clothes. / She isn't / He isn't",
-      options: [
-        { label: "I'm not", replacement: "I'm not changing clothes.", pt: "Eu não estou trocando de roupa." },
-        { label: "She isn't", replacement: "She isn't changing clothes.", pt: "Ela não está trocando de roupa." },
-        { label: "He isn't", replacement: "He isn't changing clothes.", pt: "Ele não está trocando de roupa." },
-        { label: "I wasn't (past)", replacement: "I wasn't changing clothes.", pt: "Eu não estava trocando de roupa." },
-        { label: "She wasn't (past)", replacement: "She wasn't changing clothes.", pt: "Ela não estava trocando de roupa." },
-        { label: "He wasn't (past)", replacement: "He wasn't changing clothes.", pt: "Ele não estava trocando de roupa." },
+        { label: "I wasn't", replacement: "I wasn't changing clothes.", pt: "Eu não estava trocando de roupa." },
+        { label: "She wasn't", replacement: "She wasn't changing clothes.", pt: "Ela não estava trocando de roupa." },
+        { label: "He wasn't", replacement: "He wasn't changing clothes.", pt: "Ele não estava trocando de roupa." },
       ],
       currentIndex: 0,
     },
   ];
 
   // ========== GRAMMAR SUBSTITUTION ==========
+  // Present Continuous (affirmative + negative) + Present Perfect (affirmative + negative) + questions
   const grammarSubstitution: SubstitutionExercise[] = [
+    // 1 PRESENT CONTINUOUS – negative
     {
-      key: "grammar-1",
+      key: "grammar-1-present-continuous-neg",
       original: "I'm not working now. / cleaning the house / watching TV",
       options: [
         { label: "working", replacement: "I'm not working now.", pt: "Eu não estou trabalhando agora." },
         { label: "cleaning", replacement: "I'm not cleaning the house now.", pt: "Eu não estou limpando a casa agora." },
         { label: "watching", replacement: "I'm not watching TV now.", pt: "Eu não estou assistindo TV agora." },
-        { label: "working (past)", replacement: "I wasn't working then.", pt: "Eu não estava trabalhando então." },
-        { label: "cleaning (past)", replacement: "I wasn't cleaning the house then.", pt: "Eu não estava limpando a casa então." },
-        { label: "watching (past)", replacement: "I wasn't watching TV then.", pt: "Eu não estava assistindo TV então." },
       ],
       currentIndex: 0,
     },
+    // 2 PRESENT CONTINUOUS – negative
     {
-      key: "grammar-2",
+      key: "grammar-2-present-continuous-neg",
       original: "She isn't calling the saleswoman. / manager / attendant",
       options: [
         { label: "saleswoman", replacement: "She isn't calling the saleswoman.", pt: "Ela não está chamando a vendedora." },
         { label: "manager", replacement: "She isn't calling the manager.", pt: "Ela não está chamando o gerente." },
         { label: "attendant", replacement: "She isn't calling the attendant.", pt: "Ela não está chamando o atendente." },
-        { label: "saleswoman (past)", replacement: "She wasn't calling the saleswoman.", pt: "Ela não estava chamando a vendedora." },
-        { label: "manager (past)", replacement: "She wasn't calling the manager.", pt: "Ela não estava chamando o gerente." },
-        { label: "attendant (past)", replacement: "She wasn't calling the attendant.", pt: "Ela não estava chamando o atendente." },
       ],
       currentIndex: 0,
     },
+    // 3 PRESENT CONTINUOUS – negative
     {
-      key: "grammar-3",
+      key: "grammar-3-present-continuous-neg",
       original: "He isn't looking for his receipt. / wallet / sneakers",
       options: [
         { label: "receipt", replacement: "He isn't looking for his receipt.", pt: "Ele não está procurando pelo recibo dele." },
         { label: "wallet", replacement: "He isn't looking for his wallet.", pt: "Ele não está procurando pela carteira dele." },
         { label: "sneakers", replacement: "He isn't looking for his sneakers.", pt: "Ele não está procurando pelos tênis dele." },
-        { label: "receipt (past)", replacement: "He wasn't looking for his receipt.", pt: "Ele não estava procurando pelo recibo dele." },
-        { label: "wallet (past)", replacement: "He wasn't looking for his wallet.", pt: "Ele não estava procurando pela carteira dele." },
-        { label: "sneakers (past)", replacement: "He wasn't looking for his sneakers.", pt: "Ele não estava procurando pelos tênis dele." },
       ],
       currentIndex: 0,
     },
+    // 4 PRESENT CONTINUOUS – affirmative
     {
-      key: "grammar-4",
-      original: "I'm not trying on the shirt. / shoes / pants",
+      key: "grammar-4-present-continuous-aff",
+      original: "I'm trying on the shirt. / shoes / pants",
       options: [
-        { label: "shirt", replacement: "I'm not trying on the shirt.", pt: "Eu não estou provando a camisa." },
-        { label: "shoes", replacement: "I'm not trying on the shoes.", pt: "Eu não estou provando os sapatos." },
-        { label: "pants", replacement: "I'm not trying on the pants.", pt: "Eu não estou provando as calças." },
-        { label: "shirt (past)", replacement: "I wasn't trying on the shirt.", pt: "Eu não estava provando a camisa." },
-        { label: "shoes (past)", replacement: "I wasn't trying on the shoes.", pt: "Eu não estava provando os sapatos." },
-        { label: "pants (past)", replacement: "I wasn't trying on the pants.", pt: "Eu não estava provando as calças." },
+        { label: "shirt", replacement: "I'm trying on the shirt.", pt: "Eu estou provando a camisa." },
+        { label: "shoes", replacement: "I'm trying on the shoes.", pt: "Eu estou provando os sapatos." },
+        { label: "pants", replacement: "I'm trying on the pants.", pt: "Eu estou provando as calças." },
       ],
       currentIndex: 0,
     },
+    // 5 PRESENT CONTINUOUS – affirmative
     {
-      key: "grammar-5",
-      original: "We aren't having lunch now. / dinner / a snack",
+      key: "grammar-5-present-continuous-aff",
+      original: "She's paying with cash. / by credit card / with her phone",
       options: [
-        { label: "lunch", replacement: "We aren't having lunch now.", pt: "Nós não estamos almoçando agora." },
-        { label: "dinner", replacement: "We aren't having dinner now.", pt: "Nós não estamos jantando agora." },
-        { label: "a snack", replacement: "We aren't having a snack now.", pt: "Nós não estamos fazendo um lanche agora." },
-        { label: "lunch (past)", replacement: "We weren't having lunch then.", pt: "Nós não estávamos almoçando então." },
-        { label: "dinner (past)", replacement: "We weren't having dinner then.", pt: "Nós não estávamos jantando então." },
-        { label: "a snack (past)", replacement: "We weren't having a snack then.", pt: "Nós não estávamos fazendo um lanche então." },
+        { label: "with cash", replacement: "She's paying with cash.", pt: "Ela está pagando em dinheiro." },
+        { label: "by credit card", replacement: "She's paying by credit card.", pt: "Ela está pagando com cartão de crédito." },
+        { label: "with her phone", replacement: "She's paying with her phone.", pt: "Ela está pagando com o celular." },
+      ],
+      currentIndex: 0,
+    },
+    // 6 PRESENT CONTINUOUS – question
+    {
+      key: "grammar-6-present-continuous-question",
+      original: "Are you looking for the fitting room? / the ATM / the exit",
+      options: [
+        { label: "the fitting room", replacement: "Are you looking for the fitting room?", pt: "Você está procurando o provador?" },
+        { label: "the ATM", replacement: "Are you looking for the ATM?", pt: "Você está procurando o caixa eletrônico?" },
+        { label: "the exit", replacement: "Are you looking for the exit?", pt: "Você está procurando a saída?" },
+      ],
+      currentIndex: 0,
+    },
+    // 7 PRESENT PERFECT – affirmative
+    {
+      key: "grammar-7-present-perfect-aff",
+      original: "I've already bought a new wallet. / a new purse / a new bag",
+      options: [
+        { label: "a new wallet", replacement: "I've already bought a new wallet.", pt: "Eu já comprei uma carteira nova." },
+        { label: "a new purse", replacement: "I've already bought a new purse.", pt: "Eu já comprei uma bolsa nova." },
+        { label: "a new bag", replacement: "I've already bought a new bag.", pt: "Eu já comprei uma bolsa/saco novo." },
+      ],
+      currentIndex: 0,
+    },
+    // 8 PRESENT PERFECT – affirmative
+    {
+      key: "grammar-8-present-perfect-aff",
+      original: "She has worn that dress before. / those shoes / that jacket",
+      options: [
+        { label: "that dress", replacement: "She has worn that dress before.", pt: "Ela já usou aquele vestido antes." },
+        { label: "those shoes", replacement: "She has worn those shoes before.", pt: "Ela já usou aqueles sapatos antes." },
+        { label: "that jacket", replacement: "She has worn that jacket before.", pt: "Ela já usou aquela jaqueta antes." },
+      ],
+      currentIndex: 0,
+    },
+    // 9 PRESENT PERFECT – negative
+    {
+      key: "grammar-9-present-perfect-neg",
+      original: "I haven't paid the attendant yet. / the cashier / the manager",
+      options: [
+        { label: "the attendant", replacement: "I haven't paid the attendant yet.", pt: "Eu ainda não paguei o atendente." },
+        { label: "the cashier", replacement: "I haven't paid the cashier yet.", pt: "Eu ainda não paguei o caixa." },
+        { label: "the manager", replacement: "I haven't paid the manager yet.", pt: "Eu ainda não paguei o gerente." },
+      ],
+      currentIndex: 0,
+    },
+    // 10 PRESENT PERFECT – negative
+    {
+      key: "grammar-10-present-perfect-neg",
+      original: "He hasn't gotten his receipt yet. / his change / his bag",
+      options: [
+        { label: "his receipt", replacement: "He hasn't gotten his receipt yet.", pt: "Ele ainda não pegou o recibo dele." },
+        { label: "his change", replacement: "He hasn't gotten his change yet.", pt: "Ele ainda não pegou o troco dele." },
+        { label: "his bag", replacement: "He hasn't gotten his bag yet.", pt: "Ele ainda não pegou a sacola dele." },
+      ],
+      currentIndex: 0,
+    },
+    // 11 PRESENT PERFECT – question
+    {
+      key: "grammar-11-present-perfect-question",
+      original: "Have you ever tried this department store? / this outlet / this mall",
+      options: [
+        { label: "this department store", replacement: "Have you ever tried this department store?", pt: "Você já experimentou esta loja de departamento?" },
+        { label: "this outlet", replacement: "Have you ever tried this outlet?", pt: "Você já experimentou este outlet?" },
+        { label: "this mall", replacement: "Have you ever tried this mall?", pt: "Você já experimentou este shopping?" },
       ],
       currentIndex: 0,
     },
@@ -870,8 +952,9 @@ export default function Lesson51GoingShopping() {
 
   // ========== CHECKOUT SUBSTITUTION ==========
   const checkoutSubstitution: SubstitutionExercise[] = [
+    // 1 PRESENT
     {
-      key: "checkout-1",
+      key: "checkout-1-present",
       original: "I wanna buy this jacket. / this shirt / these shoes",
       options: [
         { label: "this jacket", replacement: "I wanna buy this jacket.", pt: "Eu quero comprar esta jaqueta." },
@@ -880,8 +963,9 @@ export default function Lesson51GoingShopping() {
       ],
       currentIndex: 0,
     },
+    // 2 PRESENT
     {
-      key: "checkout-2",
+      key: "checkout-2-present",
       original: "I gotta go to the ATM now. / the mall / the store",
       options: [
         { label: "the ATM", replacement: "I gotta go to the ATM now.", pt: "Eu tenho que ir ao caixa eletrônico agora." },
@@ -890,8 +974,9 @@ export default function Lesson51GoingShopping() {
       ],
       currentIndex: 0,
     },
+    // 3 PRESENT
     {
-      key: "checkout-3",
+      key: "checkout-3-present",
       original: "Could you give me a discount? / help me / show me the fitting room",
       options: [
         { label: "give me a discount", replacement: "Could you give me a discount?", pt: "Você poderia me dar um desconto?" },
@@ -900,13 +985,102 @@ export default function Lesson51GoingShopping() {
       ],
       currentIndex: 0,
     },
+    // 4 PAST
     {
-      key: "checkout-4",
+      key: "checkout-4-past",
+      original: "I wanted to buy this jacket. / this shirt / these shoes",
+      options: [
+        { label: "this jacket", replacement: "I wanted to buy this jacket.", pt: "Eu queria comprar esta jaqueta." },
+        { label: "this shirt", replacement: "I wanted to buy this shirt.", pt: "Eu queria comprar esta camisa." },
+        { label: "these shoes", replacement: "I wanted to buy these shoes.", pt: "Eu queria comprar estes sapatos." },
+      ],
+      currentIndex: 0,
+    },
+    // 5 PRESENT
+    {
+      key: "checkout-5-present",
       original: "Do you wanna go shopping? / get a receipt / try this product",
       options: [
         { label: "go shopping", replacement: "Do you wanna go shopping?", pt: "Você quer ir às compras?" },
         { label: "get a receipt", replacement: "Do you wanna get a receipt?", pt: "Você quer pegar um recibo?" },
         { label: "try this product", replacement: "Do you wanna try this product?", pt: "Você quer experimentar este produto?" },
+      ],
+      currentIndex: 0,
+    },
+    // 6 PAST
+    {
+      key: "checkout-6-past",
+      original: "I had to go to the ATM. / the mall / the store",
+      options: [
+        { label: "the ATM", replacement: "I had to go to the ATM.", pt: "Eu tive que ir ao caixa eletrônico." },
+        { label: "the mall", replacement: "I had to go to the mall.", pt: "Eu tive que ir ao shopping." },
+        { label: "the store", replacement: "I had to go to the store.", pt: "Eu tive que ir à loja." },
+      ],
+      currentIndex: 0,
+    },
+    // 7 PAST
+    {
+      key: "checkout-7-past",
+      original: "Could you have given me a discount? / helped me / shown me the fitting room",
+      options: [
+        { label: "given me a discount", replacement: "Could you have given me a discount?", pt: "Você poderia ter me dado um desconto?" },
+        { label: "helped me", replacement: "Could you have helped me?", pt: "Você poderia ter me ajudado?" },
+        { label: "shown me the fitting room", replacement: "Could you have shown me the fitting room?", pt: "Você poderia ter me mostrado o provador?" },
+      ],
+      currentIndex: 0,
+    },
+    // 8 PAST
+    {
+      key: "checkout-8-past",
+      original: "Did you wanna go shopping? / get a receipt / try this product",
+      options: [
+        { label: "go shopping", replacement: "Did you wanna go shopping?", pt: "Você queria ir às compras?" },
+        { label: "get a receipt", replacement: "Did you wanna get a receipt?", pt: "Você queria pegar um recibo?" },
+        { label: "try this product", replacement: "Did you wanna try this product?", pt: "Você queria experimentar este produto?" },
+      ],
+      currentIndex: 0,
+    },
+    // 9 PRESENT CONTINUOUS – affirmative
+    {
+      key: "checkout-9-present-continuous-aff",
+      original: "I'm buying this jacket right now. / this shirt / these shoes",
+      options: [
+        { label: "this jacket", replacement: "I'm buying this jacket right now.", pt: "Eu estou comprando esta jaqueta agora." },
+        { label: "this shirt", replacement: "I'm buying this shirt right now.", pt: "Eu estou comprando esta camisa agora." },
+        { label: "these shoes", replacement: "I'm buying these shoes right now.", pt: "Eu estou comprando estes sapatos agora." },
+      ],
+      currentIndex: 0,
+    },
+    // 10 PRESENT CONTINUOUS – negative
+    {
+      key: "checkout-10-present-continuous-neg",
+      original: "I'm not paying with cash. / by credit card / with my phone",
+      options: [
+        { label: "with cash", replacement: "I'm not paying with cash.", pt: "Eu não estou pagando em dinheiro." },
+        { label: "by credit card", replacement: "I'm not paying by credit card.", pt: "Eu não estou pagando com cartão de crédito." },
+        { label: "with my phone", replacement: "I'm not paying with my phone.", pt: "Eu não estou pagando com o celular." },
+      ],
+      currentIndex: 0,
+    },
+    // 11 PRESENT PERFECT – affirmative
+    {
+      key: "checkout-11-present-perfect-aff",
+      original: "I've already found a discount. / a receipt / the fitting room",
+      options: [
+        { label: "a discount", replacement: "I've already found a discount.", pt: "Eu já encontrei um desconto." },
+        { label: "a receipt", replacement: "I've already found a receipt.", pt: "Eu já encontrei um recibo." },
+        { label: "the fitting room", replacement: "I've already found the fitting room.", pt: "Eu já encontrei o provador." },
+      ],
+      currentIndex: 0,
+    },
+    // 12 PRESENT PERFECT – negative
+    {
+      key: "checkout-12-present-perfect-neg",
+      original: "I haven't paid for these items yet. / this product / this jacket",
+      options: [
+        { label: "these items", replacement: "I haven't paid for these items yet.", pt: "Eu ainda não paguei por estes itens." },
+        { label: "this product", replacement: "I haven't paid for this product yet.", pt: "Eu ainda não paguei por este produto." },
+        { label: "this jacket", replacement: "I haven't paid for this jacket yet.", pt: "Eu ainda não paguei por esta jaqueta." },
       ],
       currentIndex: 0,
     },
@@ -930,8 +1104,8 @@ export default function Lesson51GoingShopping() {
           <h1 className="text-5xl font-bold text-[#0c4a6e] mb-6">
             🛍️ Lesson 51 - Going Shopping
           </h1>
-          <SpeakSentence text="Learn to talk about shopping, paying, discounts, and use Present Continuous, Present Perfect and Past Perfect." className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            📚 Learn to talk about shopping, paying, discounts, and use Present Continuous, Present Perfect and Past Perfect.
+          <SpeakSentence text="Learn to talk about shopping, paying, discounts, and use Present Continuous and Present Perfect naturally." className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
+            📚 Learn to talk about shopping, paying, discounts, and use Present Continuous and Present Perfect naturally.
           </SpeakSentence>
           <div className="w-64 h-64 mx-auto">
             <img src={mainImage} alt="People shopping" className="w-full h-full object-cover rounded-2xl shadow-md" />
@@ -958,7 +1132,6 @@ export default function Lesson51GoingShopping() {
               🎧 Click on the verbs to hear the pronunciation and practice their forms
             </SpeakSentence>
 
-            {/* ✅ CADA FORMA VERBAL É UM BOTÃO INDEPENDENTE */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               {verbs.map((verb, vIndex) => (
                 <div
@@ -1129,25 +1302,43 @@ export default function Lesson51GoingShopping() {
           <div className="p-8">
             <div className="bg-blue-100 rounded-2xl p-6 mb-6">
               <h3 className="text-xl font-bold text-blue-800 mb-4 text-center">
-                📚 PRESENT CONTINUOUS (NEGATIVE) · PRESENT PERFECT · PAST PERFECT
+                📚 PRESENT CONTINUOUS · PRESENT PERFECT
               </h3>
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div className="bg-white rounded-xl p-4 border-l-4 border-blue-500">
-                  <h4 className="text-lg font-bold text-blue-700 mb-2">📘 Present Continuous (Negative)</h4>
-                  <p className="text-gray-700 text-sm">Subject + am/is/are + not + verb-ing</p>
-                  <p className="text-xs text-gray-500 mt-2">Ações que NÃO estão acontecendo agora.</p>
+                  <h4 className="text-lg font-bold text-blue-700 mb-2">📘 Present Continuous</h4>
+                  <p className="text-gray-700 text-sm">
+                    Use para coisas que estão acontecendo <strong>agora</strong>.
+                  </p>
+                  <p className="text-gray-700 text-sm mt-1">
+                    👍 <strong>I'm looking for a wallet.</strong> (estou procurando)
+                  </p>
+                  <p className="text-gray-700 text-sm">
+                    👎 <strong>I'm not buying anything.</strong> (não estou comprando)
+                  </p>
+                  <p className="text-gray-700 text-sm mt-1">
+                    ❓ <strong>Are you paying by card?</strong> (você está pagando?)
+                  </p>
                 </div>
                 <div className="bg-white rounded-xl p-4 border-l-4 border-green-500">
                   <h4 className="text-lg font-bold text-green-700 mb-2">✨ Present Perfect</h4>
-                  <p className="text-gray-700 text-sm">have/has + past participle</p>
-                  <p className="text-xs text-gray-500 mt-2">Experiências / ações recentes.</p>
-                </div>
-                <div className="bg-white rounded-xl p-4 border-l-4 border-purple-500">
-                  <h4 className="text-lg font-bold text-purple-700 mb-2">⏳ Past Perfect</h4>
-                  <p className="text-gray-700 text-sm">had + past participle</p>
-                  <p className="text-xs text-gray-500 mt-2">Ação anterior a outra no passado.</p>
+                  <p className="text-gray-700 text-sm">
+                    Use para experiências ou coisas que já aconteceram (mas importam agora).
+                  </p>
+                  <p className="text-gray-700 text-sm mt-1">
+                    👍 <strong>I've already bought a purse.</strong> (já comprei)
+                  </p>
+                  <p className="text-gray-700 text-sm">
+                    👎 <strong>I haven't paid yet.</strong> (ainda não paguei)
+                  </p>
+                  <p className="text-gray-700 text-sm mt-1">
+                    ❓ <strong>Have you ever tried this store?</strong> (você já experimentou?)
+                  </p>
                 </div>
               </div>
+              <p className="text-center text-gray-500 text-xs mt-4 italic">
+                Sem gramática pesada — use no dia a dia!
+              </p>
             </div>
 
             <div className="bg-blue-50 p-4 rounded-[20px] text-gray-800 space-y-3 mb-6">
@@ -1308,13 +1499,14 @@ export default function Lesson51GoingShopping() {
             </div>
 
             <div className="bg-red-800 text-white flex-1 p-6 space-y-4">
-              <h3 className="font-bold text-lg mb-4 text-yellow-300">PRESENT PERFECT & PAST PERFECT</h3>
+              <h3 className="font-bold text-lg mb-4 text-yellow-300">PRESENT PERFECT & PRESENT CONTINUOUS</h3>
               {[
+                { en: "I'm looking for a new wallet.", pt: "Eu estou procurando uma carteira nova." },
+                { en: "She's trying on a blue dress.", pt: "Ela está provando um vestido azul." },
+                { en: "I'm not buying anything today.", pt: "Eu não estou comprando nada hoje." },
                 { en: "I have bought a new shirt.", pt: "Eu comprei uma camisa nova." },
                 { en: "She has worn that dress before.", pt: "Ela já usou aquele vestido antes." },
-                { en: "We have never tried this store.", pt: "Nós nunca experimentamos esta loja." },
-                { en: "I had already changed my clothes.", pt: "Eu já tinha trocado de roupa." },
-                { en: "She had bought the shoes before the sale.", pt: "Ela tinha comprado os sapatos antes da promoção." },
+                { en: "I haven't paid the attendant yet.", pt: "Eu ainda não paguei o atendente." },
               ].map((item, idx) => (
                 <div key={idx} className="p-3 bg-red-700 rounded-lg">
                   <SpeakSentence text={item.en} className="font-bold text-red-50">{item.en}</SpeakSentence>
@@ -1327,7 +1519,7 @@ export default function Lesson51GoingShopping() {
                   <img src={grammarImage} alt="Grammar practice" className="w-full h-32 object-cover" />
                   <div className="p-3">
                     <p className="text-yellow-200 text-sm font-medium">📚 Grammar Focus</p>
-                    <p className="text-red-200 text-xs">Present Continuous, Present Perfect, Past Perfect</p>
+                    <p className="text-red-200 text-xs">Present Continuous & Present Perfect</p>
                   </div>
                 </div>
               </div>

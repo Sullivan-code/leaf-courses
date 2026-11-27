@@ -133,7 +133,7 @@ const fluencyExercises = [
 ];
 
 // ============================================
-// AUDIO PLAYER COMPONENT
+// AUDIO PLAYER COMPONENT (FIXED)
 // ============================================
 const AudioPlayer = ({ src, compact = false, wide = false }: { src: string; compact?: boolean; wide?: boolean }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -141,15 +141,17 @@ const AudioPlayer = ({ src, compact = false, wide = false }: { src: string; comp
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const audio = audioRef.current || new Audio(src);
-    if (!audioRef.current) audioRef.current = audio;
-    else audio.src = src;
+    const audio = new Audio();
+    audio.preload = "auto";
+    audio.src = src;
+    audioRef.current = audio;
 
     const updateProgress = () => {
-      if (audio.duration) {
+      if (audio.duration && isFinite(audio.duration)) {
         setProgress((audio.currentTime / audio.duration) * 100);
         setCurrentTime(audio.currentTime);
         setDuration(audio.duration);
@@ -163,30 +165,49 @@ const AudioPlayer = ({ src, compact = false, wide = false }: { src: string; comp
     };
 
     const handleLoadedMetadata = () => {
-      setDuration(audio.duration);
+      if (isFinite(audio.duration)) setDuration(audio.duration);
+    };
+
+    const handleError = () => {
+      setError("Não foi possível carregar o áudio. Verifique a conexão.");
+      setIsPlaying(false);
     };
 
     audio.addEventListener("timeupdate", updateProgress);
     audio.addEventListener("ended", handleEnded);
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("error", handleError);
 
     return () => {
       audio.removeEventListener("timeupdate", updateProgress);
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("error", handleError);
       audio.pause();
+      audio.src = "";
+      audioRef.current = null;
     };
   }, [src]);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
     if (!audio) return;
+    setError(null);
     if (isPlaying) {
       audio.pause();
+      setIsPlaying(false);
     } else {
-      audio.play().catch(err => console.error("Audio error:", err));
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsPlaying(true))
+          .catch((err) => {
+            console.error("Audio play error:", err);
+            setError("Erro ao reproduzir o áudio.");
+            setIsPlaying(false);
+          });
+      }
     }
-    setIsPlaying(!isPlaying);
   };
 
   const resetAudio = () => {
@@ -202,12 +223,12 @@ const AudioPlayer = ({ src, compact = false, wide = false }: { src: string; comp
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const audio = audioRef.current;
-    if (!audio || !progressBarRef.current) return;
+    if (!audio || !progressBarRef.current || !isFinite(audio.duration)) return;
 
     const rect = progressBarRef.current.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const width = rect.width;
-    const percent = offsetX / width;
+    const percent = Math.max(0, Math.min(1, offsetX / width));
     audio.currentTime = percent * audio.duration;
     setProgress(percent * 100);
     setCurrentTime(percent * audio.duration);
@@ -221,43 +242,46 @@ const AudioPlayer = ({ src, compact = false, wide = false }: { src: string; comp
   };
 
   return (
-    <div className={`flex items-center gap-2 ${compact ? "ml-2" : ""} ${wide ? "w-full" : ""}`}>
-      <button
-        onClick={togglePlayPause}
-        className={`${compact ? "p-1" : "p-2"} bg-blue-500 text-white rounded-full hover:bg-blue-600 transition flex-shrink-0`}
-        title={isPlaying ? "Pause" : "Play"}
-      >
-        {isPlaying ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
-      </button>
-      <button
-        onClick={resetAudio}
-        className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600 transition flex-shrink-0`}
-        title="Restart"
-      >
-        <RotateCcw size={compact ? 12 : 16} />
-      </button>
+    <div className={`flex flex-col gap-1 ${wide ? "w-full" : ""}`}>
+      <div className={`flex items-center gap-2 ${compact ? "ml-2" : ""}`}>
+        <button
+          onClick={togglePlayPause}
+          className={`${compact ? "p-1" : "p-2"} bg-blue-500 text-white rounded-full hover:bg-blue-600 transition flex-shrink-0`}
+          title={isPlaying ? "Pause" : "Play"}
+          aria-label={isPlaying ? "Pause" : "Play"}
+        >
+          {isPlaying ? <Pause size={compact ? 12 : 16} /> : <Play size={compact ? 12 : 16} />}
+        </button>
+        <button
+          onClick={resetAudio}
+          className={`${compact ? "p-1" : "p-2"} bg-gray-500 text-white rounded-full hover:bg-gray-600 transition flex-shrink-0`}
+          title="Restart"
+          aria-label="Restart"
+        >
+          <RotateCcw size={compact ? 12 : 16} />
+        </button>
 
-      {!compact && (
-        <>
-          <div
-            ref={progressBarRef}
-            className={`${wide ? "flex-1 min-w-[120px]" : "w-20"} h-2 bg-gray-300 rounded-full overflow-hidden cursor-pointer`}
-            onClick={handleProgressClick}
-          >
+        {!compact && (
+          <>
             <div
-              className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-200"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          {wide && (
-            <span className="text-xs text-gray-600 font-mono whitespace-nowrap">
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </span>
-          )}
-        </>
-      )}
-
-      <audio ref={audioRef} src={src} preload="auto" />
+              ref={progressBarRef}
+              className={`${wide ? "flex-1 min-w-[120px]" : "w-20"} h-2 bg-gray-300 rounded-full overflow-hidden cursor-pointer`}
+              onClick={handleProgressClick}
+            >
+              <div
+                className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-200"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            {wide && (
+              <span className="text-xs text-gray-600 font-mono whitespace-nowrap">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </span>
+            )}
+          </>
+        )}
+      </div>
+      {error && <p className="text-xs text-red-500 ml-1">{error}</p>}
     </div>
   );
 };
@@ -575,7 +599,7 @@ export default function Lesson52GoingShopping() {
             <span className="text-sm text-indigo-100 hidden md:inline">🎧 Audio acompanha seu scroll</span>
           </div>
 
-          {/* STICKY FLOATING PLAYER – posicionado mais abaixo para não ficar escondido */}
+          {/* STICKY FLOATING PLAYER */}
           <div className="sticky top-24 z-40 px-6 pt-4">
             <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-3 shadow-2xl border-2 border-indigo-400">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -654,6 +678,23 @@ export default function Lesson52GoingShopping() {
 
           {sections.roleplayImproved && (
             <div className="p-8">
+              {/* NEW AUDIO PLAYER FOR EXPRESS YOURSELF */}
+              <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-4 shadow-xl border-2 border-fuchsia-400 mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl animate-pulse">🎧</span>
+                    <div>
+                      <p className="text-sm font-bold text-fuchsia-800">Express Yourself Audio</p>
+                      <p className="text-xs text-gray-500">At the Clothing Store (B1–B2) · Full dialogue</p>
+                    </div>
+                  </div>
+                  <AudioPlayer
+                    src="https://raw.githubusercontent.com/Sullivan-code/english-audios/main/l52-express%20yourself%20(online-audio-converter.com).mp3"
+                    wide
+                  />
+                </div>
+              </div>
+
               <div className="bg-fuchsia-100 border border-fuchsia-300 rounded-xl p-4 mb-6">
                 <p className="text-fuchsia-800 text-sm font-medium">
                   🚀 <strong>Level up!</strong> Este diálogo usa estruturas mais avançadas — <em>reported speech</em>, <em>conditionals</em>, <em>phrasal verbs</em>, <em>present perfect</em> — para te preparar para situações reais em nível intermediário-avançado.
